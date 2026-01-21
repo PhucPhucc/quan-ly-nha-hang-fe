@@ -47,72 +47,123 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* ===============================
+       Base surfaces & text
+       Phong cách: Clean & Professional
+       =============================== */
+  /* Nền tổng thể hơi xám nhẹ để làm nổi bật các Card trắng */
+  --background: oklch(0.985 0.002 240);
+  /* Chữ chính màu đen dịu (không đen kịt) để đỡ mỏi mắt */
+  --foreground: oklch(0.18 0.005 285);
+
+  /* Card màu trắng tinh để tạo sự sạch sẽ, vệ sinh (quan trọng trong F&B) */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.14 0.005 285);
+
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.14 0.005 285);
+
+  /* ===============================
+       Primary (CTA only) - GIỮ NGUYÊN
+       =============================== */
+  --primary: oklch(0.505 0.213 27.518);
+  /* Hover sáng hơn một chút nhưng giữ độ đậm */
+  --primary-hover: oklch(0.48 0.21 27.518);
+  --primary-active: oklch(0.45 0.2 27.518);
+  --primary-disabled: oklch(0.85 0.05 27.518);
+  --primary-foreground: oklch(0.98 0 0);
+
+  /* ===============================
+       Secondary / Muted
+       Dùng cho các nút phụ, tag không quan trọng
+       =============================== */
+  /* Màu xám nhạt hiện đại (Slate tint) */
+  --secondary: oklch(0.96 0.01 240);
+  --secondary-foreground: oklch(0.25 0.02 240);
+
+  --muted: oklch(0.96 0.01 240);
+  --muted-foreground: oklch(0.55 0.02 240);
+
+  /* ===============================
+       Semantic colors (Trạng thái)
+       Tăng Chroma (độ rực) để dễ nhận diện trong môi trường bếp ồn ào
+       =============================== */
+  /* Success: Xanh lá tươi (Emerald) */
+  --success: oklch(0.65 0.18 150);
+  --success-foreground: oklch(0.98 0 0);
+
+  /* Warning: Vàng cam (Amber) - Cảnh báo món chậm/hết hàng */
+  --warning: oklch(0.78 0.15 85);
+  --warning-foreground: oklch(0.2 0.03 85);
+
+  /* Danger: Đỏ tươi hơn Primary một chút để báo lỗi/xóa */
+  --danger: oklch(0.58 0.23 25);
+  --danger-foreground: oklch(0.98 0 0);
+
+  /* Info: Xanh dương (Sky) */
+  --info: oklch(0.7 0.12 230);
+  --info-foreground: oklch(0.98 0 0);
+
+  /* ===============================
+       Borders / inputs / focus
+       =============================== */
+  /* Border mảnh, xám nhẹ */
+  --border: oklch(0.92 0.01 240);
+  --input: oklch(0.92 0.01 240);
+  /* Ring focus trùng màu Primary để đồng bộ thương hiệu */
+  --ring: oklch(0.505 0.213 27.518);
+
+  --radius: 0.5rem; /* Bo góc vừa phải (0.5rem) trông chuyên nghiệp hơn 0.625rem */
+
+  /* ===============================
+       Order / KDS status (Semantic chuyên biệt)
+       =============================== */
+  /* Pending: Xám (Chưa xử lý) */
+  --order-pending: oklch(0.6 0.02 240);
+  /* Cooking: Cam lửa (Đang nấu) - Cần nổi bật nhất */
+  --order-cooking: oklch(0.68 0.18 60);
+  /* Completed: Xanh lá (Đã xong bếp) */
+  --order-completed: oklch(0.65 0.18 150);
+  /* Served: Xanh dương nhạt hoặc Tím nhạt (Đã phục vụ) - Để phân biệt với xong bếp */
+  --order-served: oklch(0.7 0.1 260);
+
+  /* ===============================
+       Shadows (Deep & Clean)
+       =============================== */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Nền tối sâu (Deep Slate) */
+  --background: oklch(0.12 0.01 240);
+  --foreground: oklch(0.98 0 0);
+
+  /* Card sáng hơn nền một chút để nổi khối */
+  --card: oklch(0.17 0.01 240);
+  --card-foreground: oklch(0.98 0 0);
+
+  --popover: oklch(0.17 0.01 240);
+  --popover-foreground: oklch(0.98 0 0);
+
+  /* Primary giữ nguyên hoặc sáng lên 1 xíu để nổi trên nền đen */
+  --primary: oklch(0.6 0.213 27.518);
+  --primary-foreground: oklch(0.98 0 0);
+
+  --secondary: oklch(0.25 0.02 240);
+  --secondary-foreground: oklch(0.98 0 0);
+
+  --muted: oklch(0.25 0.02 240);
+  --muted-foreground: oklch(0.7 0.02 240);
+
+  --border: oklch(0.28 0.02 240);
+  --input: oklch(0.28 0.02 240);
+  --ring: oklch(0.6 0.213 27.518);
+
+  /* Điều chỉnh KDS cho dark mode */
+  --order-cooking: oklch(0.7 0.2 50);
 }
 
 @layer base {
