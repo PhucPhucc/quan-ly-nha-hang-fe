@@ -23,8 +23,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "var(--primary)",
+          DEFAULT: "var(--primary-hover)",
           foreground: "var(--primary-foreground)",
+          hov: "var(--primary-hover)",
          
         },
         secondary: {
