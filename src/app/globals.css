@@ -110,7 +110,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-
 :root {
   /* ===============================
        Base surfaces & text
@@ -199,6 +198,27 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg:
     0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* ===============================
+     Sidebar (Light Mode - Clean White)
+     =============================== */
+  /* Nền trắng để nổi bật trên nền xám nhạt (bg-background) */
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.18 0.005 285);
+
+  /* Primary trong sidebar (Logo hoặc nút Active) - Đồng bộ với Brand */
+  --sidebar-primary: oklch(0.505 0.213 27.518);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+
+  /* Accent (Hover state) - Đồng bộ với Secondary */
+  --sidebar-accent: oklch(0.96 0.01 240);
+  --sidebar-accent-foreground: oklch(0.18 0.005 285);
+
+  /* Border tách biệt sidebar và nội dung chính */
+  --sidebar-border: oklch(0.92 0.01 240);
+
+  /* Ring focus */
+  --sidebar-ring: oklch(0.505 0.213 27.518);
 }
 
 .dark {
@@ -229,6 +249,26 @@
 
   /* Điều chỉnh KDS cho dark mode */
   --order-cooking: oklch(0.7 0.2 50);
+
+  /* ===============================
+     Sidebar (Dark Mode - Deep Slate)
+     =============================== */
+  /* Màu nằm giữa background (0.12) và card (0.17) để tạo lớp lang */
+  --sidebar: oklch(0.15 0.01 240);
+  --sidebar-foreground: oklch(0.98 0 0);
+
+  /* Primary giữ độ sáng của dark mode */
+  --sidebar-primary: oklch(0.6 0.213 27.518);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+
+  /* Accent cho dark mode */
+  --sidebar-accent: oklch(0.25 0.02 240);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+
+  /* Border tối màu */
+  --sidebar-border: oklch(0.28 0.02 240);
+
+  --sidebar-ring: oklch(0.6 0.213 27.518);
 }
 
 @layer base {
