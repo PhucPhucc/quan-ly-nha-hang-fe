@@ -1,9 +1,9 @@
-import React from 'react'
+import axios from 'axios'
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
+const page = async () => {
+  await axios.post('/api/logout', {}, {
+    withCredentials: true
+  })
 }
 
 export default page

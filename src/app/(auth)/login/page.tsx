@@ -1,6 +1,4 @@
-"use client";
-
-import FieldPassword from "@/components/FieldPassword";
+import FieldPassword from "@/components/shared/FieldPassword";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
