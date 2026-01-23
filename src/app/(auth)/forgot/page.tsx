@@ -1,3 +1,4 @@
+"use client";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -13,38 +14,35 @@ const ForgotPasswordPage = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-primary bg-card px-5 py-6 shadow-2xl"
+      className='rounded-2xl border border-primary bg-card px-5 py-6 shadow-2xl'
     >
-      <h1 className="mb-2 text-center text-3xl font-semibold">
+      <h1 className='mb-2 text-center text-3xl font-semibold'>
         Forgot your password?
       </h1>
-      <p className="mb-6 text-center text-sm text-muted-foreground">
+      <p className='mb-6 text-center text-sm text-muted-foreground'>
         Please enter your username or email to recover your password
       </p>
       <FieldGroup>
-        <Field className="gap-1">
-          <FieldLabel htmlFor="username">Username</FieldLabel>
+        <Field className='gap-1'>
+          <FieldLabel htmlFor='username'>Username</FieldLabel>
           <Input
-            id="username"
-            name="username"
-            placeholder="Enter your username"
+            id='username'
+            name='username'
+            placeholder='Enter your username'
             required
-            className="border-primary"
+            className='border-primary'
           />
         </Field>
       </FieldGroup>
       <Button
-        type="submit"
-        size="lg"
-        className="mt-6 w-full hover:bg-primary-hover"
+        type='submit'
+        size='lg'
+        className='mt-6 w-full hover:bg-primary-hover'
       >
         Submit Now
       </Button>
-      <div className="mt-4 text-center text-sm">
-        <Link
-          href="/login"
-          className="underline hover:text-primary-hover"
-        >
+      <div className='mt-4 text-center text-sm'>
+        <Link href='/login' className='underline hover:text-primary-hover'>
           Back to login
         </Link>
       </div>
