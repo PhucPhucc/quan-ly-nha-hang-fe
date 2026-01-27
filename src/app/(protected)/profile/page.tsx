@@ -1,13 +1,122 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Eye, EyeOff } from "lucide-react";
 
 const ProfilePage = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // ===== PROFILE STATE =====
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [dob, setDob] = useState("");
+  const [address, setAddress] = useState("");
+
+  // ===== UPDATE PROFILE =====
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Update profile (ADMIN)");
+
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          fullName,
+          phone,
+          dob,
+          address,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Update profile failed");
+
+      console.log("✅ Profile updated");
+    } catch (err) {
+      console.error("❌ Update profile error", err);
+    }
+  };
+
+  // ===== PASSWORD STATE =====
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const [errors, setErrors] = useState<{
+    current?: string;
+    new?: string;
+    confirm?: string;
+  }>({});
+
+  // ===== VALIDATE PASSWORD =====
+  const validatePassword = () => {
+    const newErrors: typeof errors = {};
+
+    if (!currentPassword) {
+      newErrors.current = "Current password is required";
+    }
+
+    if (!newPassword) {
+      newErrors.new = "New password is required";
+    } else if (newPassword.length < 8) {
+      newErrors.new = "Password must be at least 8 characters";
+    } else if (newPassword === currentPassword) {
+      newErrors.new = "New password must be different from current password";
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirm = "Please confirm new password";
+    } else if (confirmPassword !== newPassword) {
+      newErrors.confirm = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // ===== CHANGE PASSWORD =====
+  const handleChangePassword = async () => {
+    if (!validatePassword()) return;
+
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Change password failed");
+
+      console.log("✅ Password changed");
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setErrors({});
+    } catch (err) {
+      console.error("❌ Change password error", err);
+    }
   };
 
   return (
@@ -24,9 +133,8 @@ const ProfilePage = () => {
           </p>
         </div>
 
-        {/* Main Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* LEFT - Personal Information */}
+          {/* LEFT */}
           <section className="lg:col-span-2 rounded-lg border bg-background p-4 shadow-sm space-y-3">
             <h2 className="text-sm font-semibold">Personal Information</h2>
 
@@ -35,7 +143,11 @@ const ProfilePage = () => {
                 <FieldLabel className="text-xs text-muted-foreground">
                   Full Name
                 </FieldLabel>
-                <Input className="h-9 text-sm" placeholder="Admin Name" />
+                <Input
+                  className="h-9 text-sm"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
               </Field>
 
               <Field>
@@ -53,21 +165,29 @@ const ProfilePage = () => {
                 <FieldLabel className="text-xs text-muted-foreground">
                   Phone
                 </FieldLabel>
-                <Input className="h-9 text-sm" placeholder="0123456789" />
+                <Input
+                  className="h-9 text-sm"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
               </Field>
 
               <Field>
                 <FieldLabel className="text-xs text-muted-foreground">
                   Date of Birth
                 </FieldLabel>
-                <Input className="h-9 text-sm" type="date" />
+                <Input
+                  className="h-9 text-sm"
+                  type="date"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                />
               </Field>
             </FieldGroup>
           </section>
 
           {/* RIGHT */}
           <div className="flex flex-col gap-4">
-            {/* Additional Info */}
             <section className="rounded-lg border bg-background p-4 shadow-sm space-y-3">
               <h2 className="text-sm font-semibold">Additional Info</h2>
 
@@ -78,7 +198,8 @@ const ProfilePage = () => {
                   </FieldLabel>
                   <Input
                     className="h-9 text-sm"
-                    placeholder="123 Street, City"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                   />
                 </Field>
 
@@ -95,30 +216,125 @@ const ProfilePage = () => {
               </FieldGroup>
             </section>
 
-            {/* Security */}
+            {/* SECURITY */}
             <section className="rounded-lg border bg-background p-4 shadow-sm space-y-3">
               <h2 className="text-sm font-semibold">Security</h2>
 
-              <FieldGroup className="space-y-2">
-                <Field>
-                  <FieldLabel className="text-xs text-muted-foreground">
-                    New Password
-                  </FieldLabel>
-                  <Input className="h-9 text-sm" type="password" />
-                </Field>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    Change Password
+                  </Button>
+                </DialogTrigger>
 
-                <Field>
-                  <FieldLabel className="text-xs text-muted-foreground">
-                    Confirm Password
-                  </FieldLabel>
-                  <Input className="h-9 text-sm" type="password" />
-                </Field>
-              </FieldGroup>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Change Password</DialogTitle>
+                  </DialogHeader>
+
+                  <FieldGroup className="space-y-3">
+                    {/* Current */}
+                    <Field>
+                      <FieldLabel className="text-xs text-muted-foreground">
+                        Current Password
+                      </FieldLabel>
+                      <div className="relative">
+                        <Input
+                          type={showCurrent ? "text" : "password"}
+                          className="pr-10"
+                          value={currentPassword}
+                          onChange={(e) =>
+                            setCurrentPassword(e.target.value)
+                          }
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowCurrent(!showCurrent)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2"
+                        >
+                          {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                      {errors.current && (
+                        <p className="text-xs text-destructive mt-1">
+                          {errors.current}
+                        </p>
+                      )}
+                    </Field>
+
+                    {/* New */}
+                    <Field>
+                      <FieldLabel className="text-xs text-muted-foreground">
+                        New Password
+                      </FieldLabel>
+                      <div className="relative">
+                        <Input
+                          type={showNew ? "text" : "password"}
+                          className="pr-10"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNew(!showNew)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2"
+                        >
+                          {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                      {errors.new && (
+                        <p className="text-xs text-destructive mt-1">
+                          {errors.new}
+                        </p>
+                      )}
+                    </Field>
+
+                    {/* Confirm */}
+                    <Field>
+                      <FieldLabel className="text-xs text-muted-foreground">
+                        Confirm New Password
+                      </FieldLabel>
+                      <div className="relative">
+                        <Input
+                          type={showConfirm ? "text" : "password"}
+                          className="pr-10"
+                          value={confirmPassword}
+                          onChange={(e) =>
+                            setConfirmPassword(e.target.value)
+                          }
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirm(!showConfirm)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2"
+                        >
+                          {showConfirm ? (
+                            <EyeOff size={16} />
+                          ) : (
+                            <Eye size={16} />
+                          )}
+                        </button>
+                      </div>
+                      {errors.confirm && (
+                        <p className="text-xs text-destructive mt-1">
+                          {errors.confirm}
+                        </p>
+                      )}
+                    </Field>
+                  </FieldGroup>
+
+                  <DialogFooter className="mt-4">
+                    <Button variant="outline">Cancel</Button>
+                    <Button onClick={handleChangePassword}>
+                      Update Password
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </section>
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end gap-3 border-t pt-3">
           <Button variant="outline">Cancel</Button>
           <Button type="submit">Save Changes</Button>
