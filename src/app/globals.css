@@ -142,7 +142,7 @@
        Dùng cho các nút phụ, tag không quan trọng
        =============================== */
   /* Màu xám nhạt hiện đại (Slate tint) */
-  --secondary: oklch(0.96 0.01 240);
+  --secondary: oklch(0.93 0.00011 271.152);
   --secondary-foreground: oklch(0.25 0.02 240);
 
   --muted: oklch(0.96 0.01 240);
@@ -173,7 +173,7 @@
        =============================== */
   /* Border mảnh, xám nhẹ */
   --border: oklch(0.92 0.01 240);
-  --input: oklch(0.92 0.01 240);
+  --input: oklch(0.78 0.00471 33.404);
   /* Ring focus trùng màu Primary để đồng bộ thương hiệu */
   --ring: oklch(0.505 0.213 27.518);
 
