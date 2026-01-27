@@ -1,13 +1,12 @@
 "use client";
 
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { Field, FieldLabel } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Eye, EyeClosed } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 type FieldPasswordProps = {

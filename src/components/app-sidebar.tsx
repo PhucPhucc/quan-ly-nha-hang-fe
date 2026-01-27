@@ -62,8 +62,8 @@ const data = {
       icon: Package,
     },
     {
-      title: "Staff",
-      url: "/staff",
+      title: "Employee",
+      url: "/employee",
       icon: Users,
     },
   ],

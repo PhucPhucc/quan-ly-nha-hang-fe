@@ -9,13 +9,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const StaffTable = ({ employees }: { employees: Employee[] }) => {
+// { employees }: { employees: Employee[] }
+const EmployeeTable = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const respone = await fetch("http://localhost:5133/api/employees");
+      const data = await respone.json()
+      console.log(data.items);
+      setEmployees(data.items);
+    };
+    fetchData()
+  }, []);
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className=''>ID</TableHead>
-          <TableHead>Name</TableHead>
+          <TableHead className="">Employee Code</TableHead>
           <TableHead>Full Name</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Email</TableHead>
@@ -28,14 +40,13 @@ const StaffTable = ({ employees }: { employees: Employee[] }) => {
       </TableHeader>
       <TableBody>
         {employees.map((employee) => (
-          <TableRow key={employee.employee_id}>
-            <TableCell>{employee.employee_id}</TableCell>
-            <TableCell>{employee.username}</TableCell>
-            <TableCell>{employee.full_name}</TableCell>
+          <TableRow key={employee.employeeId}>
+            <TableCell>{employee.employeeCode}</TableCell>
+            <TableCell>{employee.fullName}</TableCell>
             <TableCell>{employee.phone}</TableCell>
             <TableCell>{employee.email}</TableCell>
             <TableCell>{employee.address}</TableCell>
-            <TableCell>{employee.date_of_birth}</TableCell>
+            <TableCell>{employee.dateOfBirth}</TableCell>
             <TableCell>{employee.role}</TableCell>
             <TableCell>{employee.status}</TableCell>
             <TableCell className='flex justify-center gap-2'>
@@ -61,8 +72,9 @@ const StaffTable = ({ employees }: { employees: Employee[] }) => {
   );
 };
 
-export default StaffTable;
+export default EmployeeTable;
 
 import { Employee } from "@/types/Employee";
 import { Button } from "@/components/ui/button";
 import { PenBox, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
