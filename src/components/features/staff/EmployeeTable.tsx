@@ -15,7 +15,13 @@ const EmployeeTable = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const respone = await fetch("http://localhost:5133/api/employees");
+      const respone = await fetch("/employees");
+
+      if(!respone.ok) {
+        const data = await respone.json();
+        throw new Error('Co loi: ' + (data.message || 'khong the ket noi den backend'));
+      }
+
       const data = await respone.json()
       console.log(data.items);
       setEmployees(data.items);
