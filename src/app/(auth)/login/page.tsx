@@ -10,51 +10,33 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
+import { login } from "@/services/authService";
 
 const Page = () => {
   const router = useRouter();
   const [error, setError] = useState("");
 
-  const setUser = useAuthStore((state) => state.setUser); 
-
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const employeeCode = formData.get("employeeCode");
-    const password = formData.get("password");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            employeeCode,
-            password,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Login failed");
-      }
-
-      const data = await res.json();
-
-      setUser({
-      username: data.user.employeeCode,
-      role: data.user.role,
-      permissions: data.user.permissions ?? [],
+      const data = await login({
+        employeeCode: formData.get("employeeCode"),
+        password: formData.get("password"),
       });
 
+      setUser({
+        username: data.user.employeeCode,
+        role: data.user.role,
+        permissions: data.user.permissions ?? [],
+      });
 
-router.push("/dashboard");
-    } catch (err) {
+      router.push("/dashboard");
+    } catch {
       setError("Invalid username or password");
     }
   };
@@ -64,9 +46,7 @@ router.push("/dashboard");
       onSubmit={handleLogin}
       className="border border-primary bg-card rounded-2xl px-5 py-6 shadow-2xl"
     >
-      <p className="font-semibold text-3xl mb-6 text-center">
-        Welcome Back
-      </p>
+      <p className="font-semibold text-3xl mb-6 text-center">Welcome Back</p>
 
       <FieldGroup>
         <Field className="gap-1">
@@ -90,9 +70,7 @@ router.push("/dashboard");
         <FieldGroup>
           <Field orientation="horizontal">
             <Checkbox name="remember" id="remember" />
-            <FieldLabel htmlFor="remember">
-              Remember me
-            </FieldLabel>
+            <FieldLabel htmlFor="remember">Remember me</FieldLabel>
           </Field>
         </FieldGroup>
 
