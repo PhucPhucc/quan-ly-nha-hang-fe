@@ -120,24 +120,6 @@ const ProfilePage = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <form
-      onSubmit={handleSubmit}
-      className="border border-primary bg-card rounded-2xl px-6 py-6 shadow-2xl space-y-6 max-w-4xl mx-auto"
-    >
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold text-center">My Profile</h1>
-        <p className="text-sm text-muted-foreground text-center">
-          Manage your personal information
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <p className="text-sm font-medium text-muted-foreground">
-            Personal Information
-=======
     <div className="w-full px-6 py-6">
       <form
         onSubmit={handleSubmit}
@@ -148,30 +130,9 @@ const ProfilePage = () => {
           <h1 className="text-xl font-semibold">My Profile</h1>
           <p className="text-sm text-muted-foreground">
             Update your personal information and security settings
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
           </p>
         </div>
 
-<<<<<<< HEAD
-        <div className="space-y-4">
-          <p className="text-sm font-medium text-muted-foreground">
-            Change Password
-          </p>
-          <Field className="gap-1">
-            <FieldLabel htmlFor="currentPassword">Current Password</FieldLabel>
-            <Input
-              id="currentPassword"
-              name="currentPassword"
-              type="password"
-              placeholder="Enter current password"
-            />
-          </Field>
-          <FieldGroup>
-            <Field className="gap-1">
-              <FieldLabel htmlFor="newPassword">New Password</FieldLabel>
-              <Input id="newPassword" type="password" />
-            </Field>
-=======
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* LEFT */}
           <section className="lg:col-span-2 rounded-lg border bg-background p-4 shadow-sm space-y-3">
@@ -188,7 +149,6 @@ const ProfilePage = () => {
                   onChange={(e) => setFullName(e.target.value)}
                 />
               </Field>
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
 
               <Field>
                 <FieldLabel className="text-xs text-muted-foreground">
@@ -375,24 +335,12 @@ const ProfilePage = () => {
           </div>
         </div>
 
-<<<<<<< HEAD
-      <div className="flex justify-end gap-3 border-t pt-6">
-        <Button type="button" variant="outline">
-          Cancel
-        </Button>
-        <Button type="submit" className="hover:bg-primary-hover">
-          Save Changes
-        </Button>
-      </div>
-    </form>
-=======
         <div className="flex justify-end gap-3 border-t pt-3">
           <Button variant="outline">Cancel</Button>
           <Button type="submit">Save Changes</Button>
         </div>
       </form>
     </div>
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
   );
 };
 
