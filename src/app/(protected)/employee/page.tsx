@@ -1,6 +1,7 @@
+import EmployeeContainerTable from "@/components/features/staff/EmployeeContainerTable";
 import EmployeeCount from "@/components/features/staff/EmployeeCount";
 import EmployeeDialog from "@/components/features/staff/EmployeeDialog";
-import EmployeeTable from "@/components/features/staff/EmployeeTable";
+
 import {
   Select,
   SelectContent,
@@ -31,7 +32,7 @@ const page = () => {
         </div>
       </div>
       <div className='mt-12'>
-        <EmployeeTable />
+        <EmployeeContainerTable />
       </div>
     </div>
   );

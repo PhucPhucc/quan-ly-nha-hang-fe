@@ -1,17 +1,43 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-import { DialogClose } from "@radix-ui/react-dialog";
+import { DialogClose } from "@/components/ui/dialog";
 import EmployeeRole from "./EmployeeRole";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { Employee } from "@/types/Employee";
+import { addEmployee } from "@/services/employeeService";
 
 const EmployeeForm = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const fullName = formData.get("fullName") as string;
+    const email = formData.get("email") as string;
+    const role = formData.get("role") as string;
+    const employeeCode = formData.get("employeeCode") as string;
+
+    const employee: Partial<Employee> = {
+      employeeCode,
+      fullName,
+      email,
+      role,
+    };
+
+    console.log(employee);
+    addEmployee(employee);
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <FieldGroup className='grid grid-cols-1 gap-4'>
         <Field>
-          <FieldLabel htmlFor='fullName'>{UI_TEXT.EMPLOYEE.FULLNAME}</FieldLabel>
+          <FieldLabel htmlFor='fullName'>
+            {UI_TEXT.EMPLOYEE.FULLNAME}
+          </FieldLabel>
           <Input
             id='fullName'
             name='fullName'

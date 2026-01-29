@@ -17,8 +17,11 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
     try {
       const data = await res.json();
+      console.error("[API Error Data]:", data); // Added logging
       message = data.message || message;
-    } catch {}
+    } catch (e) {
+      console.error("[API Error Parse Failed]:", e);
+    }
 
     throw new Error(message);
   }

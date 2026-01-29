@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/table";
 
 // { employees }: { employees: Employee[] }
-const EmployeeTable = () => {
+const EmployeeTable = ({
+  onEdit,
+}: {
+  onEdit: (employee: Employee) => void;
+}) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [error, setError] = useState("");
 
@@ -40,7 +44,7 @@ const EmployeeTable = () => {
           <TableHead>{UI_TEXT.EMPLOYEE.DOB}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.ROLE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.STATUS}</TableHead>
-          <TableHead className='text-center'></TableHead>
+          <TableHead className='text-center'>{UI_TEXT.COMMON.ACTION}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -60,6 +64,9 @@ const EmployeeTable = () => {
                   size='icon'
                   variant='secondary'
                   className='hover:bg-secondary-foreground/20'
+                  onClick={() => {
+                    onEdit(employee);
+                  }}
                 >
                   <PenBox />
                 </Button>

@@ -8,6 +8,11 @@ export const UI_TEXT = {
     SAVE: "Lưu",
     CANCEL: "Hủy",
     CONFIRM: "Xác nhận",
+    ACTION: "Thao tác",
+    CREATE_AT: "Ngày tạo",
+    UPDATE_AT: "Ngày cập nhật",
+    NULL: "Null",
+    EMPTY: "Trống",
   },
 
   AUTH: {
@@ -20,6 +25,7 @@ export const UI_TEXT = {
 
   EMPLOYEE: {
     TITLE: "Danh sách nhân viên",
+    INFO: "Thông tin nhân viên",
     EMPTY: "Chưa có nhân viên",
     ADD: "Thêm nhân viên",
     EDIT: "Sửa nhân viên",
