@@ -3,12 +3,12 @@
 export interface Employee {
   employeeId: string;
   employeeCode: string;
-  username: string;
+  username?: string;
   fullName: string;
-  phone: string;
+  phone?: string;
   email: string;
-  address: string;
-  dateOfBirth: string; 
+  address?: string;
+  dateOfBirth?: string; 
   role: string;
   status: string;
   created_at: string;  
