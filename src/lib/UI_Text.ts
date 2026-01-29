@@ -60,4 +60,20 @@ export const UI_TEXT = {
     TIMEOUT: "Hết thời gian phản hồi",
     UNAUTHORIZED: "Bạn chưa đăng nhập",
   },
+
+  ORDER: {
+    TITLE: "Đơn hàng",
+    EMPTY: "Chưa có đơn hàng nào",
+    FETCH_ERROR: "Không thể tải danh sách đơn hàng",
+  },
+
+  TABLE: {
+    TITLE: "Bàn",
+    ALL: "Tất cả",
+    INPROCESS: "Đang sử dụng",
+    READY: "Bàn trống",
+    CLEANING: "Đang dọn dẹp",
+    EMPTY: "Chưa có bàn nào",
+    FETCH_ERROR: "Không thể tải danh sách bàn",
+  },
 } as const;
