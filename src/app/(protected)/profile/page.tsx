@@ -17,17 +17,13 @@ const ProfilePage = () => {
     >
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-center">
-          My Profile
-        </h1>
+        <h1 className="text-2xl font-semibold text-center">My Profile</h1>
         <p className="text-sm text-muted-foreground text-center">
           Manage your personal information
         </p>
       </div>
 
- 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-       
         <div className="space-y-4">
           <p className="text-sm font-medium text-muted-foreground">
             Personal Information
@@ -60,12 +56,18 @@ const ProfilePage = () => {
           <p className="text-sm font-medium text-muted-foreground">
             Change Password
           </p>
-
+          <Field className="gap-1">
+            <FieldLabel htmlFor="currentPassword">Current Password</FieldLabel>
+            <Input
+              id="currentPassword"
+              name="currentPassword"
+              type="password"
+              placeholder="Enter current password"
+            />
+          </Field>
           <FieldGroup>
             <Field className="gap-1">
-              <FieldLabel htmlFor="newPassword">
-                New Password
-              </FieldLabel>
+              <FieldLabel htmlFor="newPassword">New Password</FieldLabel>
               <Input id="newPassword" type="password" />
             </Field>
 
@@ -83,10 +85,7 @@ const ProfilePage = () => {
         <Button type="button" variant="outline">
           Cancel
         </Button>
-        <Button
-          type="submit"
-          className="hover:bg-primary-hover"
-        >
+        <Button type="submit" className="hover:bg-primary-hover">
           Save Changes
         </Button>
       </div>
