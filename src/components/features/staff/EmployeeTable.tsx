@@ -44,7 +44,7 @@ const EmployeeTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {error !== "" &&
+        {error === "" &&
           employees.map((employee) => (
             <TableRow key={employee.employeeId}>
               <TableCell>{employee.employeeCode}</TableCell>
