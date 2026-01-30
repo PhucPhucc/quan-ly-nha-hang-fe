@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { Filter } from "lucide-react";
 
 const page = () => {
   return (
@@ -19,9 +20,14 @@ const page = () => {
         <div className='flex gap-2'>
           <EmployeeDialog />
           <Select>
-            <SelectTrigger className='w-28'>
-              <SelectValue placeholder='Lọc' />
+            <SelectTrigger className='flex w-auto  items-center gap-2 px-2 md:w-26'>
+              <Filter className='md:hidden h-4 w-4' />
+
+              <span className='hidden md:inline'>
+                <SelectValue placeholder='Lọc' />
+              </span>
             </SelectTrigger>
+
             <SelectContent position='popper'>
               <SelectItem value='manager'>{UI_TEXT.ROLE.MANAGER}</SelectItem>
               <SelectItem value='cashier'>{UI_TEXT.ROLE.CASHIER}</SelectItem>

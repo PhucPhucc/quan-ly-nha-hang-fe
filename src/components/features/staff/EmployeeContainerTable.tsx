@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import EmployeeTable from "./EmployeeTable";
-import EmployeeUpdate from "./EmployeeUpdate";
 import { Employee } from "@/types/Employee";
+import EmployeeUpdateModal from "./EmployeeUpdateModal";
 
 const EmployeeContainerTable = () => {
   const [open, setOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] =
-    useState<Employee | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
 
-  const handleEdit = (employee:Employee) => {
+  const handleEdit = (employee: Employee) => {
     setSelectedEmployee(employee);
     setOpen(true);
   };
@@ -18,7 +19,7 @@ const EmployeeContainerTable = () => {
   return (
     <>
       <EmployeeTable onEdit={handleEdit} />
-      <EmployeeUpdate
+      <EmployeeUpdateModal
         open={open}
         onToggle={setOpen}
         employee={selectedEmployee}
