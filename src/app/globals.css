@@ -183,7 +183,9 @@
        Order / KDS status (Semantic chuyên biệt)
        =============================== */
   /* Pending: Xám (Chưa xử lý) */
-  --order-pending: oklch(0.6 0.02 240);
+  --order-ready: oklch(0.63 0.00007 271.152);
+
+  --order-pending: oklch(0.63 0.00007 271.152);
   /* Cooking: Cam lửa (Đang nấu) - Cần nổi bật nhất */
   --order-cooking: oklch(0.68 0.18 60);
   /* Completed: Xanh lá (Đã xong bếp) */

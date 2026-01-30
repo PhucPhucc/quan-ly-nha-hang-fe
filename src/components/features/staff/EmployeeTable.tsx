@@ -38,10 +38,10 @@ const EmployeeTable = ({
         <TableRow>
           <TableHead className=''>{UI_TEXT.EMPLOYEE.EMPLOYEECODE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.FULLNAME}</TableHead>
-          <TableHead>{UI_TEXT.EMPLOYEE.PHONE}</TableHead>
+          <TableHead className="hidden lg:table-cell">{UI_TEXT.EMPLOYEE.PHONE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.EMAIL}</TableHead>
-          <TableHead>{UI_TEXT.EMPLOYEE.ADDRESS}</TableHead>
-          <TableHead>{UI_TEXT.EMPLOYEE.DOB}</TableHead>
+          <TableHead className="hidden xl:table-cell">{UI_TEXT.EMPLOYEE.ADDRESS}</TableHead>
+          <TableHead className="hidden xl:table-cell">{UI_TEXT.EMPLOYEE.DOB}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.ROLE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.STATUS}</TableHead>
           <TableHead className='text-center'>{UI_TEXT.COMMON.ACTION}</TableHead>
@@ -53,10 +53,10 @@ const EmployeeTable = ({
             <TableRow key={employee.employeeId}>
               <TableCell>{employee.employeeCode}</TableCell>
               <TableCell>{employee.fullName}</TableCell>
-              <TableCell>{employee.phone}</TableCell>
+              <TableCell className="hidden lg:table-cell">{employee.phone}</TableCell>
               <TableCell>{employee.email}</TableCell>
-              <TableCell>{employee.address}</TableCell>
-              <TableCell>{employee.dateOfBirth}</TableCell>
+              <TableCell className="hidden xl:table-cell">{employee.address}</TableCell>
+              <TableCell className="hidden xl:table-cell">{employee.dateOfBirth}</TableCell>
               <TableCell>{employee.role}</TableCell>
               <TableCell>{employee.status}</TableCell>
               <TableCell className='flex justify-center gap-2'>
@@ -64,18 +64,12 @@ const EmployeeTable = ({
                   size='icon'
                   variant='secondary'
                   className='hover:bg-secondary-foreground/20'
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.currentTarget.blur(); 
                     onEdit(employee);
                   }}
                 >
                   <PenBox />
-                </Button>
-                <Button
-                  size='icon'
-                  variant='secondary'
-                  className='hover:bg-secondary-foreground/20'
-                >
-                  <Trash2 />
                 </Button>
               </TableCell>
             </TableRow>

@@ -11,7 +11,7 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="">
         <HeaderBar />
         <div className='flex flex-1 flex-col gap-4 m-4 pt-0'>
           {children}
