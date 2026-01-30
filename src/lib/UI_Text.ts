@@ -13,6 +13,7 @@ export const UI_TEXT = {
     UPDATE_AT: "Ngày cập nhật",
     NULL: "Null",
     EMPTY: "Trống",
+    UPDATE: "Đã cập nhật"
   },
 
   AUTH: {
@@ -21,6 +22,12 @@ export const UI_TEXT = {
     REGISTER: "Đăng ký",
     EMAIL: "Email",
     PASSWORD: "Mật khẩu",
+    LOGIN_TITLE: "Chào mừng quay lại",
+    EMPLOYEE_CODE: "Mã nhân viên",
+    EMPLOYEE_CODE_PLACEHOLDER: "VD: M000001",
+    REMEMBER_ME: "Ghi nhớ đăng nhập",
+    FORGOT_PASSWORD: "Quên mật khẩu?",
+    ERROR_INVALID_CREDENTIALS: "Sai mã nhân viên hoặc mật khẩu",
   },
 
   EMPLOYEE: {
@@ -82,4 +89,25 @@ export const UI_TEXT = {
     EMPTY: "Chưa có bàn nào",
     FETCH_ERROR: "Không thể tải danh sách bàn",
   },
-} as const;
+
+  CHANGE_PASSWORD: {
+    TITLE: "Đổi mật khẩu",
+    BUTTON: "Đổi mật khẩu",
+
+    CURRENT_PASSWORD: "Mật khẩu hiện tại",
+    NEW_PASSWORD: "Mật khẩu mới",
+    CONFIRM_PASSWORD: "Xác nhận mật khẩu",
+
+    CONFIRM_NOT_MATCH: "Mật khẩu xác nhận không khớp",
+  },
+  PROFILE: {
+    TITLE: "Thông tin cá nhân",
+    DESCRIPTION: "Cập nhật thông tin cá nhân của bạn",
+
+    CHANGE_PASSWORD: "Đổi mật khẩu",
+    CURRENT_PASSWORD: "Mật khẩu hiện tại",
+    NEW_PASSWORD: "Mật khẩu mới",
+    CONFIRM_PASSWORD: "Xác nhận mật khẩu",
+    CONFIRM_PASSWORD_MISMATCH: "Mật khẩu xác nhận không khớp",
+  } as const
+};

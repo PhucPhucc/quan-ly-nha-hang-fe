@@ -11,7 +11,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { login } from "@/services/authService";
-
+import { UI_TEXT } from "@/lib/UI_Text";
+import { setCookie } from "cookies-next";
 const LoginForm = () => {
   const router = useRouter();
   const [error, setError] = useState("");
@@ -21,13 +22,21 @@ const LoginForm = () => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-
     try {
       const data = await login({
         employeeCode: formData.get("employeeCode") as string,
         password: formData.get("password") as string,
       });
 
+      setCookie("accessToken", data.accessToken, {
+        maxAge: 60 * 60,
+        path: "/",
+      });
+
+      setCookie("refreshToken", data.refreshToken, {
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
       setUser({
         username: data.user.employeeCode,
         role: data.user.role,
@@ -36,7 +45,7 @@ const LoginForm = () => {
 
       router.push("/dashboard");
     } catch {
-      setError("Invalid username or password");
+      setError(UI_TEXT.AUTH.ERROR_INVALID_CREDENTIALS);
     }
   };
 
@@ -45,30 +54,34 @@ const LoginForm = () => {
       onSubmit={handleLogin}
       className="border border-primary bg-card rounded-2xl px-5 py-6 shadow-2xl"
     >
-      <p className="font-semibold text-3xl mb-6 text-center">Welcome Back</p>
+      <p className="font-semibold text-3xl mb-6 text-center">
+        {UI_TEXT.AUTH.LOGIN_TITLE}
+      </p>
 
       <FieldGroup>
         <Field className="gap-1">
-          <FieldLabel htmlFor="employeeCode">Employee Code</FieldLabel>
+          <FieldLabel htmlFor="employeeCode">
+            {UI_TEXT.AUTH.EMPLOYEE_CODE}
+          </FieldLabel>
           <Input
             id="employeeCode"
             name="employeeCode"
-            placeholder="Ex: M000001"
+            placeholder={UI_TEXT.AUTH.EMPLOYEE_CODE_PLACEHOLDER}
             required
           />
         </Field>
 
-        <FieldPassword name="password" label="Password" />
+        <FieldPassword name="password" label={UI_TEXT.AUTH.PASSWORD} />
       </FieldGroup>
 
       <div className="text-sm flex mt-2 mb-4 justify-between">
         <Field orientation="horizontal">
           <Checkbox name="remember" id="remember" />
-          <FieldLabel htmlFor="remember">Remember me</FieldLabel>
+          <FieldLabel htmlFor="remember">{UI_TEXT.AUTH.REMEMBER_ME}</FieldLabel>
         </Field>
 
-        <Link href="/forgot" className="underline">
-          Forgot Your Password?
+        <Link href="/forgot" className="underline whitespace-nowrap">
+          {UI_TEXT.AUTH.FORGOT_PASSWORD}
         </Link>
       </div>
 
@@ -80,7 +93,7 @@ const LoginForm = () => {
       )}
 
       <Button type="submit" size="lg" className="w-full">
-        Login
+        {UI_TEXT.AUTH.LOGIN}
       </Button>
     </form>
   );
