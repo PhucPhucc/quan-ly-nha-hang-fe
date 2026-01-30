@@ -9,26 +9,19 @@ import { Info } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-<<<<<<< HEAD
 import { useAuthStore } from "@/store/useAuthStore";
 import { login } from "@/services/authService";
-=======
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
 
 const Page = () => {
   const router = useRouter();
   const [error, setError] = useState("");
 
-<<<<<<< HEAD
   const setUser = useAuthStore((state) => state.setUser);
 
-=======
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-<<<<<<< HEAD
 
     try {
       const data = await login({
@@ -44,38 +37,6 @@ const Page = () => {
 
       router.push("/dashboard");
     } catch {
-=======
-    const username = formData.get("username");
-    const password = formData.get("password");
-
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            password,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Login failed");
-      }
-
-      const data = await res.json();
-
-      // lưu token
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      router.push("/dashboard");
-    } catch (err) {
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
       setError("Invalid username or password");
     }
   };
@@ -85,36 +46,19 @@ const Page = () => {
       onSubmit={handleLogin}
       className="border border-primary bg-card rounded-2xl px-5 py-6 shadow-2xl"
     >
-<<<<<<< HEAD
       <p className="font-semibold text-3xl mb-6 text-center">Welcome Back</p>
 
       <FieldGroup>
         <Field className="gap-1">
           <FieldLabel className="text-md" htmlFor="employeeCode">
             Employee Code
-=======
-      <p className="font-semibold text-3xl mb-6 text-center">
-        Welcome Back
-      </p>
-
-      <FieldGroup>
-        <Field className="gap-1">
-          <FieldLabel className="text-md" htmlFor="username">
-            Username
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
           </FieldLabel>
           <Input
             className="border-primary outline-none ring-0"
             type="text"
-<<<<<<< HEAD
             id="employeeCode"
             name="employeeCode"
             placeholder="Ex: M000001"
-=======
-            id="username"
-            name="username"
-            placeholder="Enter Username"
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
             required
           />
         </Field>
@@ -126,13 +70,7 @@ const Page = () => {
         <FieldGroup>
           <Field orientation="horizontal">
             <Checkbox name="remember" id="remember" />
-<<<<<<< HEAD
             <FieldLabel htmlFor="remember">Remember me</FieldLabel>
-=======
-            <FieldLabel htmlFor="remember">
-              Remember me
-            </FieldLabel>
->>>>>>> ca2629262827584f63d0fe67e54804bb6126b32b
           </Field>
         </FieldGroup>
 
