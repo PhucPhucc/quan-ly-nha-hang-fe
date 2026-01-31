@@ -5,29 +5,27 @@ import { UI_TEXT } from "@/lib/UI_Text";
 const page = () => {
   return (
     <div>
-      <div className='mb-4'>
+      <div className="mb-4">
         <TableCount />
       </div>
       <div>
-        <Tabs defaultValue='all'>
+        <Tabs defaultValue="all">
           <TabsList>
-            <TabsTrigger value='all'>{UI_TEXT.TABLE.ALL}</TabsTrigger>
-            <TabsTrigger value='inprocess'>
-              {UI_TEXT.TABLE.INPROCESS}
-            </TabsTrigger>
-            <TabsTrigger value='ready'>{UI_TEXT.TABLE.READY}</TabsTrigger>
-            <TabsTrigger value='cleaning'>{UI_TEXT.TABLE.CLEANING}</TabsTrigger>
+            <TabsTrigger value="all">{UI_TEXT.COMMON.ALL}</TabsTrigger>
+            <TabsTrigger value="inprocess">{UI_TEXT.TABLE.INPROCESS}</TabsTrigger>
+            <TabsTrigger value="ready">{UI_TEXT.TABLE.READY}</TabsTrigger>
+            <TabsTrigger value="cleaning">{UI_TEXT.TABLE.CLEANING}</TabsTrigger>
           </TabsList>
-          <TabsContent value='all'>
+          <TabsContent value="all">
             <TablesList />
           </TabsContent>
-          <TabsContent value='inprocess'>
+          <TabsContent value="inprocess">
             <p>inprocess</p>
           </TabsContent>
-          <TabsContent value='ready'>
+          <TabsContent value="ready">
             <p>ready</p>
           </TabsContent>
-          <TabsContent value='cleaning'>
+          <TabsContent value="cleaning">
             <p>cleaning</p>
           </TabsContent>
         </Tabs>

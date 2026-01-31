@@ -1,9 +1,9 @@
 "use client";
 
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -12,10 +12,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Eye, EyeOff } from "lucide-react";
-
-import { UI_TEXT } from "@/lib/UI_Text";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { getErrorMessage } from "@/lib/error";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { changePassword } from "@/services/profileService";
 
 export default function ChangePasswordDialog() {
@@ -125,9 +125,7 @@ export default function ChangePasswordDialog() {
             </div>
           </Field>
 
-          {error && (
-            <p className="text-sm text-destructive text-center">{error}</p>
-          )}
+          {error && <p className="text-sm text-destructive text-center">{error}</p>}
         </FieldGroup>
 
         <DialogFooter className="flex justify-between gap-2">

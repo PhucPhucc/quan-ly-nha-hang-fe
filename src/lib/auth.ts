@@ -1,7 +1,8 @@
+import axios from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+
 import { api } from "./axios";
-import axios from "axios";
 
 export async function requirePermission(permission: string) {
   const token = (await cookies()).get("accessToken")?.value;

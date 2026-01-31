@@ -1,10 +1,11 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { UI_TEXT } from "@/lib/UI_Text";
 import clsx from "clsx";
 import { Clock, SprayCan, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+import { Badge } from "@/components/ui/badge";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 const TablesList = () => {
   const router = useRouter();
@@ -14,26 +15,23 @@ const TablesList = () => {
   };
 
   return (
-    <ul className='grid xl:grid-cols-8 lg:grid-cols-6 md:grid-cols-4 grid-cols-4 gap-6'>
+    <ul className="grid xl:grid-cols-8 lg:grid-cols-6 md:grid-cols-4 grid-cols-4 gap-6">
       {tables.map((table) => (
         <li
           key={table.tableNumber}
           className={clsx(
             "w-full h-full py-2 px-3 aspect-square shadow-2xs hover:shadow-xl hover:scale-105 ring-2 transition duration-300 rounded-lg",
             {
-              "bg-order-pending/50 ring-order-pending":
-                table.status === "READY",
-              "bg-order-cooking/50 ring-order-cooking":
-                table.status === "INPROCESS",
-              "bg-order-served/50 ring-order-served":
-                table.status === "CLEANING",
-            },
+              "bg-order-pending/50 ring-order-pending": table.status === "READY",
+              "bg-order-cooking/50 ring-order-cooking": table.status === "INPROCESS",
+              "bg-order-served/50 ring-order-served": table.status === "CLEANING",
+            }
           )}
           onClick={() => handleOrder(table.tableNumber)}
         >
-          <div className='w-full h-full flex flex-col justify-between items-center'>
-            <p className='text-2xl font-semibold'>{table.tableNumber}</p>
-            <Badge variant='outline' className='bg-white hidden md:inline'>
+          <div className="w-full h-full flex flex-col justify-between items-center">
+            <p className="text-2xl font-semibold">{table.tableNumber}</p>
+            <Badge variant="outline" className="bg-white hidden md:inline">
               {table.label}
             </Badge>
             <span className="inline md:hidden text-gray-700">

@@ -13,7 +13,8 @@ export const UI_TEXT = {
     UPDATE_AT: "Ngày cập nhật",
     NULL: "Null",
     EMPTY: "Trống",
-    UPDATE: "Đã cập nhật"
+    UPDATE: "Đã cập nhật",
+    ALL: "Tất cả",
   },
 
   AUTH: {
@@ -82,7 +83,6 @@ export const UI_TEXT = {
 
   TABLE: {
     TITLE: "Bàn",
-    ALL: "Tất cả",
     INPROCESS: "Đang sử dụng",
     READY: "Bàn trống",
     CLEANING: "Đang dọn dẹp",
@@ -103,11 +103,10 @@ export const UI_TEXT = {
   PROFILE: {
     TITLE: "Thông tin cá nhân",
     DESCRIPTION: "Cập nhật thông tin cá nhân của bạn",
-
     CHANGE_PASSWORD: "Đổi mật khẩu",
     CURRENT_PASSWORD: "Mật khẩu hiện tại",
     NEW_PASSWORD: "Mật khẩu mới",
     CONFIRM_PASSWORD: "Xác nhận mật khẩu",
     CONFIRM_PASSWORD_MISMATCH: "Mật khẩu xác nhận không khớp",
-  } as const
+  } as const,
 };

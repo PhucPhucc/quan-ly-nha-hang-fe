@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-import { UI_TEXT } from "@/lib/UI_Text";
 import { getErrorMessage } from "@/lib/error";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { updateMyProfile } from "@/services/profileService";
 
 type ProfileFormProps = {
@@ -77,24 +77,16 @@ const ProfileForm = ({ initialData }: ProfileFormProps) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4 rounded-xl border bg-card p-5 shadow-sm"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
       <div className="space-y-1 border-b pb-3">
         <h2 className="text-lg font-semibold">{UI_TEXT.PROFILE.TITLE}</h2>
-        <p className="text-sm text-muted-foreground">
-          {UI_TEXT.PROFILE.DESCRIPTION}
-        </p>
+        <p className="text-sm text-muted-foreground">{UI_TEXT.PROFILE.DESCRIPTION}</p>
       </div>
 
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Field>
           <FieldLabel>{UI_TEXT.EMPLOYEE.FULLNAME}</FieldLabel>
-          <Input
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
+          <Input value={fullName} onChange={(e) => setFullName(e.target.value)} />
         </Field>
 
         <Field>
@@ -104,11 +96,7 @@ const ProfileForm = ({ initialData }: ProfileFormProps) => {
 
         <Field>
           <FieldLabel>{UI_TEXT.EMPLOYEE.DOB}</FieldLabel>
-          <Input
-            type="date"
-            value={dob}
-            onChange={(e) => setDob(e.target.value)}
-          />
+          <Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
         </Field>
 
         <Field>
@@ -131,12 +119,7 @@ const ProfileForm = ({ initialData }: ProfileFormProps) => {
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       <div className="flex justify-end gap-3 pt-2 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleReset}
-          disabled={loading}
-        >
+        <Button type="button" variant="outline" onClick={handleReset} disabled={loading}>
           {UI_TEXT.COMMON.CANCEL}
         </Button>
 

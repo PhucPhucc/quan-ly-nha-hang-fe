@@ -1,5 +1,5 @@
-import ProfileForm from "@/components/features/profile/ProfileForm";
 import ChangePasswordDialog from "@/components/features/profile/ChangePasswordDialog";
+import ProfileForm from "@/components/features/profile/ProfileForm";
 
 const ProfilePage = () => {
   return (

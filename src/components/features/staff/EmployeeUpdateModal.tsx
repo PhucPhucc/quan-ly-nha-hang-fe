@@ -1,3 +1,5 @@
+import { Lock, Unlock } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -8,10 +10,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Employee } from "@/types/Employee";
-import { Lock, Unlock } from "lucide-react";
+
 import EmployeeUpdateForm from "./EmployeeUpdateForm";
 const EmployeeUpdateModal = ({
   open,
@@ -24,12 +25,9 @@ const EmployeeUpdateModal = ({
 }) => {
   return (
     <Sheet open={open} onOpenChange={onToggle}>
-      <SheetContent
-        className='rounded-l-xl'
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
+      <SheetContent className="rounded-l-xl" onOpenAutoFocus={(e) => e.preventDefault()}>
         <SheetHeader>
-          <SheetTitle className=' text-3xl flex items-center gap-2 '>
+          <SheetTitle className=" text-3xl flex items-center gap-2 ">
             {UI_TEXT.EMPLOYEE.EDIT}
             <span>{employee?.status === "active" ? <Lock /> : <Unlock />}</span>
           </SheetTitle>
@@ -39,9 +37,9 @@ const EmployeeUpdateModal = ({
         <EmployeeUpdateForm employee={employee} />
 
         <SheetFooter>
-          <Button type='submit'>{UI_TEXT.COMMON.SAVE}</Button>
+          <Button type="submit">{UI_TEXT.COMMON.SAVE}</Button>
           <SheetClose asChild>
-            <Button variant='outline' type='button'>
+            <Button variant="outline" type="button">
               Cancel
             </Button>
           </SheetClose>

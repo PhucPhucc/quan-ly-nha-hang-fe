@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   ChartColumn,
   LayoutDashboard,
@@ -10,6 +9,7 @@ import {
   Users,
   UtensilsCrossed,
 } from "lucide-react";
+import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -27,7 +27,7 @@ const data = {
   user: {
     name: "username",
     email: "m@example.com",
-    avtHoder: 'u'
+    avtHoder: "u",
   },
   team: {
     name: "FoodHub",
@@ -71,7 +71,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible='icon' {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher team={data.team} />
       </SidebarHeader>

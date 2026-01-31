@@ -10,11 +10,7 @@ import {
 } from "@/components/ui/table";
 
 // { employees }: { employees: Employee[] }
-const EmployeeTable = ({
-  onEdit,
-}: {
-  onEdit: (employee: Employee) => void;
-}) => {
+const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [error, setError] = useState("");
 
@@ -36,7 +32,7 @@ const EmployeeTable = ({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className=''>{UI_TEXT.EMPLOYEE.EMPLOYEECODE}</TableHead>
+          <TableHead className="">{UI_TEXT.EMPLOYEE.EMPLOYEECODE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.FULLNAME}</TableHead>
           <TableHead className="hidden lg:table-cell">{UI_TEXT.EMPLOYEE.PHONE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.EMAIL}</TableHead>
@@ -44,7 +40,7 @@ const EmployeeTable = ({
           <TableHead className="hidden xl:table-cell">{UI_TEXT.EMPLOYEE.DOB}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.ROLE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.STATUS}</TableHead>
-          <TableHead className='text-center'>{UI_TEXT.COMMON.ACTION}</TableHead>
+          <TableHead className="text-center">{UI_TEXT.COMMON.ACTION}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -59,13 +55,13 @@ const EmployeeTable = ({
               <TableCell className="hidden xl:table-cell">{employee.dateOfBirth}</TableCell>
               <TableCell>{employee.role}</TableCell>
               <TableCell>{employee.status}</TableCell>
-              <TableCell className='flex justify-center gap-2'>
+              <TableCell className="flex justify-center gap-2">
                 <Button
-                  size='icon'
-                  variant='secondary'
-                  className='hover:bg-secondary-foreground/20'
+                  size="icon"
+                  variant="secondary"
+                  className="hover:bg-secondary-foreground/20"
                   onClick={(e) => {
-                    e.currentTarget.blur(); 
+                    e.currentTarget.blur();
                     onEdit(employee);
                   }}
                 >
@@ -81,10 +77,11 @@ const EmployeeTable = ({
 
 export default EmployeeTable;
 
-import { Employee } from "@/types/Employee";
-import { Button } from "@/components/ui/button";
-import { PenBox, Trash2 } from "lucide-react";
+import { PenBox } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getEmployees } from "@/services/employeeService";
+
+import { Button } from "@/components/ui/button";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { getEmployees } from "@/services/employeeService";
+import { Employee } from "@/types/Employee";

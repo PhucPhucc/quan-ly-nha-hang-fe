@@ -1,6 +1,7 @@
 "use client";
 
 import { type LucideIcon } from "lucide-react";
+import Link from "next/link";
 
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -9,7 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
 
 export function NavMain({
   items,
@@ -24,13 +24,13 @@ export function NavMain({
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible key={item.title} asChild className='group/collapsible'>
+          <Collapsible key={item.title} asChild className="group/collapsible">
             <Link href={item.url}>
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
                     {item.icon && <item.icon />}
-                    <span className=''>{item.title}</span>
+                    <span className="">{item.title}</span>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
               </SidebarMenuItem>

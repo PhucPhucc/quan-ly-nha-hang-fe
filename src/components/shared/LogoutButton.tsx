@@ -1,7 +1,8 @@
 "use client";
 
-import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
+
+import { useAuthStore } from "@/store/useAuthStore";
 
 export function LogoutButton() {
   const clearAuth = useAuthStore((s) => s.clearAuth);

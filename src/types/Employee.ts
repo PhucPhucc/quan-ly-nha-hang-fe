@@ -8,10 +8,10 @@ export interface Employee {
   phone?: string;
   email: string;
   address?: string;
-  dateOfBirth?: string; 
+  dateOfBirth?: string;
   role: string;
   status: string;
-  createdAt: string;  
+  createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
 }

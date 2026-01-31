@@ -1,18 +1,19 @@
 "use client";
 
+import { setCookie } from "cookies-next";
+import { Info } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import FieldPassword from "@/components/shared/FieldPassword";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Info } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
-import { login } from "@/services/authService";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { setCookie } from "cookies-next";
+import { login } from "@/services/authService";
+import { useAuthStore } from "@/store/useAuthStore";
 const LoginForm = () => {
   const router = useRouter();
   const [error, setError] = useState("");
@@ -54,15 +55,11 @@ const LoginForm = () => {
       onSubmit={handleLogin}
       className="border border-primary bg-card rounded-2xl px-5 py-6 shadow-2xl"
     >
-      <p className="font-semibold text-3xl mb-6 text-center">
-        {UI_TEXT.AUTH.LOGIN_TITLE}
-      </p>
+      <p className="font-semibold text-3xl mb-6 text-center">{UI_TEXT.AUTH.LOGIN_TITLE}</p>
 
       <FieldGroup>
         <Field className="gap-1">
-          <FieldLabel htmlFor="employeeCode">
-            {UI_TEXT.AUTH.EMPLOYEE_CODE}
-          </FieldLabel>
+          <FieldLabel htmlFor="employeeCode">{UI_TEXT.AUTH.EMPLOYEE_CODE}</FieldLabel>
           <Input
             id="employeeCode"
             name="employeeCode"

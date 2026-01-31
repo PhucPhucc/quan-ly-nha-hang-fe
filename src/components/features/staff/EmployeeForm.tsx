@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { DialogClose } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-import { DialogClose } from "@/components/ui/dialog";
-import EmployeeRole from "./EmployeeRole";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { Employee } from "@/types/Employee";
 import { addEmployee } from "@/services/employeeService";
+import { Employee } from "@/types/Employee";
+
+import EmployeeRole from "./EmployeeRole";
 
 const EmployeeForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,25 +33,23 @@ const EmployeeForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <FieldGroup className='grid grid-cols-1 gap-4'>
+      <FieldGroup className="grid grid-cols-1 gap-4">
         <Field>
-          <FieldLabel htmlFor='fullName'>
-            {UI_TEXT.EMPLOYEE.FULLNAME}
-          </FieldLabel>
+          <FieldLabel htmlFor="fullName">{UI_TEXT.EMPLOYEE.FULLNAME}</FieldLabel>
           <Input
-            id='fullName'
-            name='fullName'
-            type='text'
+            id="fullName"
+            name="fullName"
+            type="text"
             placeholder={`Enter ${UI_TEXT.EMPLOYEE.FULLNAME}`}
           />
         </Field>
 
         <Field>
-          <FieldLabel htmlFor='email'>{UI_TEXT.EMPLOYEE.EMAIL}</FieldLabel>
+          <FieldLabel htmlFor="email">{UI_TEXT.EMPLOYEE.EMAIL}</FieldLabel>
           <Input
-            id='email'
-            name='email'
-            type='email'
+            id="email"
+            name="email"
+            type="email"
             placeholder={`Enter ${UI_TEXT.EMPLOYEE.EMAIL}`}
           />
         </Field>
@@ -59,18 +57,14 @@ const EmployeeForm = () => {
         <EmployeeRole />
       </FieldGroup>
 
-      <div className='flex gap-4 justify-end mt-4'>
+      <div className="flex gap-4 justify-end mt-4">
         <DialogClose asChild>
-          <Button
-            type='button'
-            variant='secondary'
-            className='hover:bg-secondary-foreground/20'
-          >
+          <Button type="button" variant="secondary" className="hover:bg-secondary-foreground/20">
             {UI_TEXT.BUTTON.CLOSE}
           </Button>
         </DialogClose>
 
-        <Button type='submit'>{UI_TEXT.BUTTON.SUBMIT}</Button>
+        <Button type="submit">{UI_TEXT.BUTTON.SUBMIT}</Button>
       </div>
     </form>
   );

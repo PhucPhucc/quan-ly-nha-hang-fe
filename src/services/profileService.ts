@@ -26,9 +26,7 @@ export const getMyProfile = async (): Promise<ProfileResponse> => {
 };
 
 // UPDATE profile
-export const updateMyProfile = async (
-  data: UpdateProfilePayload
-): Promise<void> => {
+export const updateMyProfile = async (data: UpdateProfilePayload): Promise<void> => {
   await apiFetch("/profile", {
     method: "PUT",
     body: JSON.stringify(data),
@@ -39,9 +37,7 @@ export type ChangePasswordPayload = {
   newPassword: string;
 };
 
-export const changePassword = async (
-  data: ChangePasswordPayload
-): Promise<void> => {
+export const changePassword = async (data: ChangePasswordPayload): Promise<void> => {
   await apiFetch("/profile/change-password", {
     method: "POST",
     body: JSON.stringify(data),

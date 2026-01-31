@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import EmployeeTable from "./EmployeeTable";
+
 import { Employee } from "@/types/Employee";
+
+import EmployeeTable from "./EmployeeTable";
 import EmployeeUpdateModal from "./EmployeeUpdateModal";
 
 const EmployeeContainerTable = () => {
   const [open, setOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
-    null,
-  );
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const handleEdit = (employee: Employee) => {
     setSelectedEmployee(employee);
@@ -19,11 +19,7 @@ const EmployeeContainerTable = () => {
   return (
     <>
       <EmployeeTable onEdit={handleEdit} />
-      <EmployeeUpdateModal
-        open={open}
-        onToggle={setOpen}
-        employee={selectedEmployee}
-      />
+      <EmployeeUpdateModal open={open} onToggle={setOpen} employee={selectedEmployee} />
     </>
   );
 };
