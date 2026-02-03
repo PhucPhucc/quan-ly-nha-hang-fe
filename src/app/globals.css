@@ -63,6 +63,17 @@
   --color-order-cooking: var(--order-cooking);
   --color-order-completed: var(--order-completed);
   --color-order-served: var(--order-served);
+  --color-order-ready: var(--order-ready);
+
+  --color-table-empty: var(--table-empty);
+  --color-table-reserved: var(--table-reserved);
+  --color-table-inprocess: var(--table-inprocess);
+  --color-table-cleaning: var(--table-cleaning);
+
+  --color-role-manager: var(--role-manager);
+  --color-role-chef: var(--role-chef);
+  --color-role-waiter: var(--role-waiter);
+  --color-role-cashier: var(--role-cashier);
 
   /* ===============================
      Sidebar (giữ nguyên theo hệ hiện tại)
@@ -183,9 +194,9 @@
        Order / KDS status (Semantic chuyên biệt)
        =============================== */
   /* Pending: Xám (Chưa xử lý) */
-  --order-ready: oklch(0.63 0.00007 271.152);
-
   --order-pending: oklch(0.63 0.00007 271.152);
+  /* Ready: Xanh lá nhạt (Đã xong bếp, chờ phục vụ) */
+  --order-ready: oklch(0.7 0.15 150);
   /* Cooking: Cam lửa (Đang nấu) - Cần nổi bật nhất */
   --order-cooking: oklch(0.68 0.18 60);
   /* Completed: Xanh lá (Đã xong bếp) */
@@ -193,13 +204,29 @@
   /* Served: Xanh dương nhạt hoặc Tím nhạt (Đã phục vụ) - Để phân biệt với xong bếp */
   --order-served: oklch(0.7 0.1 260);
 
+  /* Bàn trống: Xám xanh nhạt - Nhẹ, không gây chú ý */
+  --table-empty: oklch(0.551 0.0234 264.36);
+
+  /* Bàn đã đặt: Vàng cam - Cảnh báo nhẹ */
+  --table-reserved: oklch(0.7952 0.1617 86.05);
+
+  /* Bàn đang phục vụ: Xanh lá - Trạng thái chính */
+  --table-inprocess: oklch(0.7227 0.192 149.58);
+
+  /* Bàn đang dọn dẹp: Cam đỏ - Đang xử lý */
+  --table-cleaning: oklch(47.472% 0.19003 27.453);
+
+  --role-manager: oklch(0.5 0.2 10);
+  --role-chef: oklch(0.65 0.2 50);
+  --role-waiter: oklch(0.6 0.2 320);
+  --role-cashier: oklch(0.55 0.2 220);
+
   /* ===============================
        Shadows (Deep & Clean)
        =============================== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg:
-    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
   /* ===============================
      Sidebar (Light Mode - Clean White)

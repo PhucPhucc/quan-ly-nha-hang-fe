@@ -2,6 +2,7 @@
 
 import { type LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -20,6 +21,10 @@ export function NavMain({
     icon?: LucideIcon;
   }[];
 }) {
+  const path = usePathname();
+
+  const isActive = (url: string) => path === url;
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -28,7 +33,11 @@ export function NavMain({
             <Link href={item.url}>
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    aria-current={isActive(item.url) ? "page" : undefined}
+                    isActive={isActive(item.url)}
+                  >
                     {item.icon && <item.icon />}
                     <span className="">{item.title}</span>
                   </SidebarMenuButton>

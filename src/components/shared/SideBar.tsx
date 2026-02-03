@@ -4,6 +4,8 @@ import clsx from "clsx";
 import { ChevronRight, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
+
 import { Button } from "../ui/button";
 
 const SideBar = () => {
@@ -20,7 +22,7 @@ const SideBar = () => {
         {isOpen && (
           <div className="flex-1 text-center flex items-center justify-center gap-3 ">
             <UtensilsCrossed />
-            <p className="text-3xl font-semibold font-serif">FoodHub</p>
+            <p className="text-3xl font-semibold font-serif">{UI_TEXT.COMMON.NAME_PROJECT}</p>
           </div>
         )}
         <Button

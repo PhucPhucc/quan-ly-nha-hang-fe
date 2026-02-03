@@ -6,12 +6,15 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { addEmployee } from "@/services/employeeService";
+import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { Employee } from "@/types/Employee";
 
 import EmployeeRole from "./EmployeeRole";
 
-const EmployeeForm = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const incrementRefreshCount = useEmployeeStore((state) => state.increment);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -24,11 +27,12 @@ const EmployeeForm = () => {
       employeeCode,
       fullName,
       email,
-      role,
+      role: Number(role),
     };
 
-    console.log(employee);
-    addEmployee(employee);
+    await addEmployee(employee);
+    incrementRefreshCount();
+    onSuccess();
   };
 
   return (

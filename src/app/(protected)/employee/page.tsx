@@ -1,8 +1,10 @@
+"use client";
+
 import { Filter } from "lucide-react";
 
-import EmployeeContainerTable from "@/components/features/staff/EmployeeContainerTable";
-import EmployeeCount from "@/components/features/staff/EmployeeCount";
-import EmployeeDialog from "@/components/features/staff/EmployeeDialog";
+import EmployeeContainerTable from "@/components/features/Employee/EmployeeContainerTable";
+import EmployeeCount from "@/components/features/Employee/EmployeeCount";
+import EmployeeDialog from "@/components/features/Employee/EmployeeDialog";
 import {
   Select,
   SelectContent,
@@ -12,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
 
-const page = () => {
+const Page = () => {
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -24,7 +26,7 @@ const page = () => {
               <Filter className="md:hidden h-4 w-4" />
 
               <span className="hidden md:inline">
-                <SelectValue placeholder="Lọc" />
+                <SelectValue placeholder={UI_TEXT.COMMON.FILTER} />
               </span>
             </SelectTrigger>
 
@@ -44,4 +46,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -1,21 +1,28 @@
+// store/authStore.ts
 import { create } from "zustand";
 
-type User = {
-  username: string;
-  role: string;
-  permissions: string[];
-};
+import { Employee } from "@/types/Employee";
 
 type AuthState = {
-  user: User | null;
-  isAuthenticated: boolean;
-  setUser: (user: User) => void;
-  clearAuth: () => void;
+  accessToken: string | null;
+  employee: Partial<Employee> | null;
+
+  setAccessToken: (token: string | null) => void;
+  setEmployee: (employee: Partial<Employee> | null) => void;
+  logout: () => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  setUser: (user) => set({ user, isAuthenticated: true }),
-  clearAuth: () => set({ user: null, isAuthenticated: false }),
+  accessToken: null,
+  employee: null,
+
+  setAccessToken: (token) => set({ accessToken: token }),
+
+  setEmployee: (employee) => set({ employee }),
+
+  logout: () =>
+    set({
+      accessToken: null,
+      employee: null,
+    }),
 }));

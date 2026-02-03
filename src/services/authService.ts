@@ -6,8 +6,14 @@ type LoginPayload = {
 };
 
 export async function login(payload: LoginPayload) {
-  return apiFetch("/api/auth/login", {
+  return apiFetch("/auth/login", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export async function logout() {
+  return apiFetch("/auth/logout", {
+    method: "POST",
   });
 }

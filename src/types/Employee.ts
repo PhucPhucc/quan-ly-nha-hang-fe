@@ -9,7 +9,7 @@ export interface Employee {
   email: string;
   address?: string;
   dateOfBirth?: string;
-  role: string;
+  role: number;
   status: string;
   createdAt: string;
   updatedAt: string;

@@ -1,6 +1,5 @@
 "use client";
 
-import { setCookie } from "cookies-next";
 import { Info } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,8 +17,8 @@ const LoginForm = () => {
   const router = useRouter();
   const [error, setError] = useState("");
 
-  const setUser = useAuthStore((state) => state.setUser);
-
+  const setEmployee = useAuthStore((state) => state.setEmployee);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -28,22 +27,14 @@ const LoginForm = () => {
         employeeCode: formData.get("employeeCode") as string,
         password: formData.get("password") as string,
       });
-
-      setCookie("accessToken", data.accessToken, {
-        maxAge: 60 * 60,
-        path: "/",
+      setEmployee({
+        username: data.employeeCode,
+        role: data.role,
       });
-
-      setCookie("refreshToken", data.refreshToken, {
-        maxAge: 60 * 60 * 24 * 7,
-        path: "/",
-      });
-      setUser({
-        username: data.user.employeeCode,
-        role: data.user.role,
-        permissions: data.user.permissions ?? [],
-      });
-
+      setAccessToken(data.accessToken);
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      console.log(data);
       router.push("/dashboard");
     } catch {
       setError(UI_TEXT.AUTH.ERROR_INVALID_CREDENTIALS);

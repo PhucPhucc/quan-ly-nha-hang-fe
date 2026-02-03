@@ -15,6 +15,9 @@ export const UI_TEXT = {
     EMPTY: "Trống",
     UPDATE: "Đã cập nhật",
     ALL: "Tất cả",
+    FILTER: "Bộ lọc",
+    SEARCH: "Tìm kiếm",
+    NAME_PROJECT: "FoodHub",
   },
 
   AUTH: {
@@ -82,12 +85,15 @@ export const UI_TEXT = {
   },
 
   TABLE: {
-    TITLE: "Bàn",
+    TITLE: "Sơ đồ bàn",
     INPROCESS: "Đang sử dụng",
     READY: "Bàn trống",
     CLEANING: "Đang dọn dẹp",
+    RESERVED: "Đã đặt trước",
     EMPTY: "Chưa có bàn nào",
     FETCH_ERROR: "Không thể tải danh sách bàn",
+    RESERVATION_BTN: "Đặt bàn",
+    PEOPLE: "Khách",
   },
 
   CHANGE_PASSWORD: {
