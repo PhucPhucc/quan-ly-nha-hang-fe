@@ -1,18 +1,9 @@
 "use client";
 
-import { Filter } from "lucide-react";
-
 import EmployeeContainerTable from "@/components/features/Employee/EmployeeContainerTable";
 import EmployeeCount from "@/components/features/Employee/EmployeeCount";
 import EmployeeDialog from "@/components/features/Employee/EmployeeDialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { UI_TEXT } from "@/lib/UI_Text";
+import EmployeeFilter from "@/components/features/Employee/EmployeeFilter";
 
 const Page = () => {
   return (
@@ -21,22 +12,8 @@ const Page = () => {
         <EmployeeCount />
         <div className="flex gap-2">
           <EmployeeDialog />
-          <Select>
-            <SelectTrigger className="flex w-auto  items-center gap-2 px-2 md:w-26">
-              <Filter className="md:hidden h-4 w-4" />
 
-              <span className="hidden md:inline">
-                <SelectValue placeholder={UI_TEXT.COMMON.FILTER} />
-              </span>
-            </SelectTrigger>
-
-            <SelectContent position="popper">
-              <SelectItem value="manager">{UI_TEXT.ROLE.MANAGER}</SelectItem>
-              <SelectItem value="cashier">{UI_TEXT.ROLE.CASHIER}</SelectItem>
-              <SelectItem value="waiter">{UI_TEXT.ROLE.WAITER}</SelectItem>
-              <SelectItem value="chef">{UI_TEXT.ROLE.CHEF}</SelectItem>
-            </SelectContent>
-          </Select>
+          <EmployeeFilter />
         </div>
       </div>
       <div className="mt-12">

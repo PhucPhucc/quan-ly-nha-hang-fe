@@ -18,6 +18,7 @@ export const UI_TEXT = {
     FILTER: "Bộ lọc",
     SEARCH: "Tìm kiếm",
     NAME_PROJECT: "FoodHub",
+    RESET: "Đặt lại",
   },
 
   AUTH: {
