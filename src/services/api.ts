@@ -10,15 +10,16 @@ let isRefreshing = false;
 let refreshQueue: (() => void)[] = [];
 
 async function refreshToken() {
+  console.log(localStorage.getItem("refreshToken"));
   const res = await fetch(BASE_URL + "/api/auth/refresh-token", {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify({
-      refreshToken: localStorage.getItem("refreshToken"),
-    }),
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      refreshToken: localStorage.getItem("refreshToken"),
+    }),
   });
 
   if (!res.ok) {

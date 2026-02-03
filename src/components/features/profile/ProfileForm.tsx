@@ -1,79 +1,46 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
+import DOBPicker from "@/components/shared/DOBPicker";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { updateMyProfile } from "@/services/profileService";
+import { getMyProfile } from "@/services/profileService";
+import { Employee } from "@/types/Employee";
 
-type ProfileFormProps = {
-  initialData?: {
-    fullName?: string;
-    phone?: string;
-    dob?: string;
-    address?: string;
-    email?: string;
-    role?: string;
-  };
-};
-
-const ProfileForm = ({ initialData }: ProfileFormProps) => {
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [dob, setDob] = useState("");
-  const [address, setAddress] = useState("");
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+const ProfileForm = () => {
+  const [profile, setProfile] = useState<Partial<Employee>>({});
 
   useEffect(() => {
-    if (!initialData) return;
-    setFullName(initialData.fullName ?? "");
-    setPhone(initialData.phone ?? "");
-    setDob(initialData.dob ?? "");
-    setAddress(initialData.address ?? "");
-  }, [initialData]);
-
-  const isChanged = useMemo(() => {
-    return (
-      fullName !== (initialData?.fullName ?? "") ||
-      phone !== (initialData?.phone ?? "") ||
-      dob !== (initialData?.dob ?? "") ||
-      address !== (initialData?.address ?? "")
-    );
-  }, [fullName, phone, dob, address, initialData]);
+    const fetchProfile = async () => {
+      const data = await getMyProfile();
+      console.log(data);
+      setProfile(data);
+    };
+    fetchProfile();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isChanged) return;
+    // if (!isChanged) return;
 
-    setError("");
-    setLoading(true);
+    // setError("");
+    // setLoading(true);
 
-    try {
-      await updateMyProfile({
-        fullName: fullName.trim(),
-        phone: phone.trim(),
-        dob,
-        address: address.trim(),
-      });
-    } catch (err) {
-      setError(getErrorMessage(err));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleReset = () => {
-    if (!initialData) return;
-    setFullName(initialData.fullName ?? "");
-    setPhone(initialData.phone ?? "");
-    setDob(initialData.dob ?? "");
-    setAddress(initialData.address ?? "");
-    setError("");
+    // try {
+    //   await updateMyProfile({
+    //     fullName: fullName.trim(),
+    //     phone: phone.trim(),
+    //     dob,
+    //     address: address.trim(),
+    //   });
+    // } catch (err) {
+    //   setError(getErrorMessage(err));
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
@@ -85,46 +52,44 @@ const ProfileForm = ({ initialData }: ProfileFormProps) => {
 
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Field>
-          <FieldLabel>{UI_TEXT.EMPLOYEE.FULLNAME}</FieldLabel>
-          <Input value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <FieldLabel htmlFor="fullName">{UI_TEXT.EMPLOYEE.FULLNAME}</FieldLabel>
+          <Input name="fullName" defaultValue={profile.fullName} />
         </Field>
 
         <Field>
-          <FieldLabel>{UI_TEXT.EMPLOYEE.PHONE}</FieldLabel>
-          <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <FieldLabel htmlFor="phone">{UI_TEXT.EMPLOYEE.PHONE}</FieldLabel>
+          <Input name="phone" defaultValue={profile.phone} />
         </Field>
 
-        <Field>
-          <FieldLabel>{UI_TEXT.EMPLOYEE.DOB}</FieldLabel>
-          <Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
-        </Field>
+        <DOBPicker dob={profile.dateOfBirth} />
 
         <Field>
-          <FieldLabel>{UI_TEXT.EMPLOYEE.ADDRESS}</FieldLabel>
-          <Input value={address} onChange={(e) => setAddress(e.target.value)} />
+          <FieldLabel htmlFor="address">{UI_TEXT.EMPLOYEE.ADDRESS}</FieldLabel>
+          <Input name="address" defaultValue={profile.address} />
         </Field>
 
         {/* Read-only */}
         <Field>
           <FieldLabel>{UI_TEXT.EMPLOYEE.EMAIL}</FieldLabel>
-          <Input value={initialData?.email ?? ""} disabled />
+          <Input defaultValue={profile.email} disabled />
         </Field>
 
         <Field>
           <FieldLabel>{UI_TEXT.EMPLOYEE.ROLE}</FieldLabel>
-          <Input value={initialData?.role ?? ""} disabled />
+          <Input disabled defaultValue={profile.role} />
         </Field>
       </FieldGroup>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {/* {error && <p className="text-sm text-destructive">{error}</p>} */}
 
       <div className="flex justify-end gap-3 pt-2 border-t">
-        <Button type="button" variant="outline" onClick={handleReset} disabled={loading}>
+        <Button type="reset" variant="outline">
           {UI_TEXT.COMMON.CANCEL}
         </Button>
 
-        <Button type="submit" disabled={loading || !isChanged}>
-          {loading ? UI_TEXT.COMMON.LOADING : UI_TEXT.COMMON.SAVE}
+        <Button type="submit">
+          {/* {loading ? UI_TEXT.COMMON.LOADING : UI_TEXT.COMMON.SAVE} */}
+          Save
         </Button>
       </div>
     </form>

@@ -17,13 +17,12 @@ export type UpdateProfilePayload = {
 };
 
 // GET profile
-export const getMyProfile = async (): Promise<ProfileResponse> => {
+export async function getMyProfile() {
   const res = await apiFetch("/profile", {
     method: "GET",
   });
-
-  return res as ProfileResponse;
-};
+  return res.data;
+}
 
 // UPDATE profile
 export const updateMyProfile = async (data: UpdateProfilePayload): Promise<void> => {

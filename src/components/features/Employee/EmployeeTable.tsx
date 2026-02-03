@@ -19,7 +19,9 @@ import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { Employee } from "@/types/Employee";
 
 const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  // const [employees, setEmployees] = useState<Employee[]>([]);
+  const setEmployees = useEmployeeStore((state) => state.setEmployees);
+  const employees = useEmployeeStore((state) => state.employees);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const refreshCount = useEmployeeStore((state) => state.refreshCount);
@@ -29,16 +31,9 @@ const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => 
       try {
         setLoading(true);
 
-        const data = await getEmployees();
+        const { employees } = await getEmployees();
 
-        const employeeList = data.items.map((emp: Employee) => ({
-          ...emp,
-          dateOfBirth: emp.dateOfBirth ? new Date(emp.dateOfBirth) : null,
-          createdAt: new Date(emp.createdAt),
-          updatedAt: emp.updatedAt ? new Date(emp.updatedAt) : null,
-        }));
-        setEmployees(employeeList);
-        console.log(employeeList);
+        setEmployees(employees);
       } catch (err) {
         setError(getErrorMessage(err));
       } finally {
@@ -47,7 +42,7 @@ const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => 
     };
 
     fetchData();
-  }, [refreshCount]);
+  }, [refreshCount, setEmployees]);
 
   return (
     <Table>
