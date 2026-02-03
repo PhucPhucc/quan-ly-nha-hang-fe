@@ -1,23 +1,9 @@
+import { Employee } from "@/types/Employee";
+
 import { apiFetch } from "./api";
 
-export type ProfileResponse = {
-  fullName: string;
-  phone: string;
-  dob: string;
-  address: string;
-  email: string;
-  role: string;
-};
-
-export type UpdateProfilePayload = {
-  fullName: string;
-  phone: string;
-  dob: string;
-  address: string;
-};
-
 // GET profile
-export async function getMyProfile() {
+export async function getMyProfile(): Promise<Employee> {
   const res = await apiFetch("/profile", {
     method: "GET",
   });
@@ -25,7 +11,7 @@ export async function getMyProfile() {
 }
 
 // UPDATE profile
-export const updateMyProfile = async (data: UpdateProfilePayload): Promise<void> => {
+export const updateMyProfile = async (data: Partial<Employee>): Promise<void> => {
   await apiFetch("/profile", {
     method: "PUT",
     body: JSON.stringify(data),

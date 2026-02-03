@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -10,11 +10,19 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 const DOBPicker = ({ dob }: { dob: string | undefined }) => {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(() => {
-    if (!dob) return undefined;
-    const d = new Date(dob);
-    return isNaN(d.getTime()) ? undefined : d;
-  });
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+
+  useEffect(() => {
+    if (!dob) {
+      return;
+    }
+
+    if (dob) {
+      const d = new Date(dob);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDate(isNaN(d.getTime()) ? undefined : d);
+    }
+  }, [dob]);
 
   // Handle date selection
   const handleSelect = (selectedDate: Date | undefined) => {
@@ -22,7 +30,6 @@ const DOBPicker = ({ dob }: { dob: string | undefined }) => {
     setOpen(false);
   };
 
-  // Format date as YYYY-MM-DD for backend
   const formattedDate = date
     ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
     : "";
