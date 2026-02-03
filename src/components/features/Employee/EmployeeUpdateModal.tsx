@@ -29,7 +29,7 @@ const EmployeeUpdateModal = ({
         <SheetHeader>
           <SheetTitle className=" text-3xl flex items-center gap-2 ">
             {UI_TEXT.EMPLOYEE.EDIT}
-            <span>{employee?.status === "active" ? <Lock /> : <Unlock />}</span>
+            <span>{employee?.status === "Active" ? <Lock /> : <Unlock />}</span>
           </SheetTitle>
           <SheetDescription>{UI_TEXT.EMPLOYEE.INFO}</SheetDescription>
         </SheetHeader>
@@ -37,7 +37,6 @@ const EmployeeUpdateModal = ({
         <EmployeeUpdateForm employee={employee} />
 
         <SheetFooter>
-          <Button type="submit">{UI_TEXT.COMMON.SAVE}</Button>
           <SheetClose asChild>
             <Button variant="outline" type="button">
               Cancel

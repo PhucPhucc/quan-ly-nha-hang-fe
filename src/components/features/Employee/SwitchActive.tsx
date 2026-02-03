@@ -6,15 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
 
-const SwitchActive = ({ active }: { active?: string }) => {
-  const [isActive, setIsActive] = useState(false);
-
+const SwitchActive = ({ status }: { status?: string | number }) => {
+  const [isActive, setIsActive] = useState(status === "Active");
   useEffect(() => {
-    setIsActive(active === "Active");
-  }, [active]);
+    setIsActive(status === "Active");
+  }, [status]);
 
-  const text = isActive ? "Active" : "InActive";
-
+  const text = isActive ? "Active" : "Inactive";
   return (
     <Field>
       <div className="flex items-center justify-between">
@@ -23,7 +21,7 @@ const SwitchActive = ({ active }: { active?: string }) => {
         <Switch id="employeeStatus" checked={isActive} onCheckedChange={setIsActive} />
       </div>
 
-      <Input name="active" value={text} readOnly />
+      <Input name="status" value={text} readOnly />
     </Field>
   );
 };
