@@ -6,17 +6,37 @@ import { UI_TEXT } from "@/lib/UI_Text";
 
 import { Button } from "../ui/button";
 import { Field } from "../ui/field";
+import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-const DOBPicker = () => {
+const DOBPicker = ({ dob }: { dob: string | undefined }) => {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [date, setDate] = React.useState<Date | undefined>(() => {
+    if (!dob) return undefined;
+    const d = new Date(dob);
+    return isNaN(d.getTime()) ? undefined : d;
+  });
+
+  // Handle date selection
+  const handleSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    setOpen(false);
+  };
+
+  // Format date as YYYY-MM-DD for backend
+  const formattedDate = date
+    ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+    : "";
 
   return (
     <Field className="">
       <Label htmlFor="date">{UI_TEXT.EMPLOYEE.DOB}</Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" id="date" className="justify-start font-normal border-input">
+          <Button
+            variant="outline"
+            id="date"
+            className="justify-start font-normal border-input w-full"
+          >
             {date ? date.toLocaleDateString() : "Select date"}
           </Button>
         </PopoverTrigger>
@@ -26,13 +46,13 @@ const DOBPicker = () => {
             selected={date}
             defaultMonth={date}
             captionLayout="dropdown"
-            onSelect={(date) => {
-              setDate(date);
-              setOpen(false);
-            }}
+            fromYear={1900}
+            toYear={new Date().getFullYear()}
+            onSelect={handleSelect}
           />
         </PopoverContent>
       </Popover>
+      <Input type="hidden" name="dateOfBirth" value={formattedDate} />
     </Field>
   );
 };
