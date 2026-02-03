@@ -115,4 +115,17 @@ export const UI_TEXT = {
     CONFIRM_PASSWORD: "Xác nhận mật khẩu",
     CONFIRM_PASSWORD_MISMATCH: "Mật khẩu xác nhận không khớp",
   } as const,
+  AUDIT_LOG: {
+    TITLE: "Lịch sử hệ thống",
+    EMPTY: "Chưa có lịch sử nào",
+    FETCH_ERROR: "Không thể tải lịch sử hệ thống",
+    LOG_ID: "Mã Log",
+    ORDER_ID: "Mã Đơn hàng",
+    EMPLOYEE_ID: "Mã Nhân viên",
+    ACTION: "Hành động",
+    REASON: "Lý do thay đổi",
+    OLD_VALUE: "Giá trị cũ",
+    NEW_VALUE: "Giá trị mới",
+    CREATED_AT: "Thời gian",
+  },
 };
