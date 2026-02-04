@@ -92,7 +92,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
     try {
       const data = await res.json();
-      message = data.message || message;
+      message = data.errors || message;
     } catch {}
 
     throw new Error(message);

@@ -37,11 +37,20 @@ export const UI_TEXT = {
 
   EMPLOYEE: {
     TITLE: "Danh sách nhân viên",
+    DESCRIPTION: "Quản lý thông tin nhân viên",
     INFO: "Thông tin nhân viên",
     EMPTY: "Chưa có nhân viên",
     ADD: "Thêm nhân viên",
+    ADD_DESCRIPTION: "Thêm nhân viên mới vào hệ thống",
+    ADD_SUSCESS: "Thêm nhân viên thành công",
+    ADD_FAILED: "Thêm nhân viên thất bại",
     EDIT: "Sửa nhân viên",
     DELETE: "Xóa nhân viên",
+    DELETE_CONFIRM: "Bạn có chắc chắn muốn xóa nhân viên này không?",
+    DELETE_SUSCESS: "Xóa nhân viên thành công",
+    DELETE_FAILED: "Xóa nhân viên thất bại",
+    UPDATE_SUSCESS: "Cập nhật nhân viên thành công",
+    UPDATE_FAILED: "Cập nhật nhân viên thất bại",
     FETCH_ERROR: "Không thể tải danh sách nhân viên",
     EMPLOYEECODE: "Mã nhân viên",
     FULLNAME: "Họ và tên",
@@ -51,6 +60,7 @@ export const UI_TEXT = {
     ADDRESS: "Địa chỉ",
     DOB: "Ngày sinh",
     STATUS: "Trạng thái",
+    DELETE_CONFIRM_NAME: (name: string) => `Bạn có chắc chắn muốn xóa "${name}" không?`,
   },
 
   FORM: {
@@ -95,6 +105,9 @@ export const UI_TEXT = {
     FETCH_ERROR: "Không thể tải danh sách bàn",
     RESERVATION_BTN: "Đặt bàn",
     PEOPLE: "Khách",
+    TABLE_NUMBER(num: number) {
+      return `Bàn ${num}`;
+    },
   },
 
   CHANGE_PASSWORD: {

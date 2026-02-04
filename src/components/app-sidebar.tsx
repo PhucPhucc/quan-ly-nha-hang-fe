@@ -52,6 +52,11 @@ const data = {
       icon: Table,
     },
     {
+      title: "Orders",
+      url: "/order",
+      icon: UtensilsCrossed,
+    },
+    {
       title: "Analytics",
       url: "/analytics",
       icon: ChartColumn,
