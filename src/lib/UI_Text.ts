@@ -129,4 +129,75 @@ export const UI_TEXT = {
     NEW_VALUE: "Giá trị mới",
     CREATED_AT: "Thời gian",
   },
+
+  LANDING: {
+    HERO_TITLE: "Tối ưu hóa quy trình",
+    HERO_SUBTITLE: "Vận hành ẩm thực",
+    HERO_DESC:
+      "Từ gọi món tại bàn đến sức nóng của bếp. FoodHub cung cấp nền tảng số cho các hoạt động nhà hàng hiện đại và quản lý bếp thông minh.",
+    ENTER_SYSTEM: "Vào hệ thống",
+    DASHBOARD: "Tổng quan",
+    STAFF_LOGIN: "Đăng nhập nhân viên",
+    KITCHEN_TERMINAL: "Thiết bị Bếp",
+    MISSION_CRITICAL: "Giải pháp cốt lõi cho BOH",
+    MISSION_DESC: "Phần mềm được thiết kế chuyên biệt cho nhịp độ và áp lực của khu vực hậu sảnh.",
+    KITCHEN_INTEL: "Trí tuệ nhà bếp",
+    KDS_PREVIEW: "Giao diện KDS Terminal 01",
+    TECH_REDUCING: "Giảm trung bình 24% thời gian lên món",
+
+    ABOUT_TITLE: "Về FoodHub",
+    ABOUT_DESC:
+      "FoodHub là đối tác tin cậy của hơn 500 nhà hàng lớn nhỏ, cung cấp hệ sinh thái quản lý toàn diện giúp nâng tầm trải nghiệm thực khách.",
+    ESTABLISHED: "Thành lập từ 2018",
+    TEAM_SIZE: "Hơn 100 chuyên gia kỹ thuật và ẩm thực",
+
+    BLOG_TITLE: "Tin tức & Sự nghiệp",
+    BLOG_DESC: "Cập nhật những xu hướng công nghệ nhà hàng và tin tức nội bộ mới nhất từ FoodHub.",
+    READ_MORE: "Đọc thêm",
+
+    REVIEWS_TITLE: "Đánh giá từ đối tác",
+    REVIEWS_DESC: "Những gì các bếp trưởng và quản lý nói về chúng tôi.",
+    REVIEWS_LIST: [
+      {
+        author: "Bếp trưởng Toàn Nguyễn",
+        role: "Ocean Grill",
+        content:
+          "Kể từ khi dùng FoodHub, tình trạng sai sót ticket gần như bằng không. Đội ngũ bếp phối hợp nhịp nhàng hơn hẳn.",
+      },
+      {
+        author: "Chị Lan Anh",
+        role: "Manager tại Red Coral",
+        content:
+          "Hệ thống báo cáo chi tiết giúp tôi nắm bắt tình hình kinh doanh ngay cả khi không có mặt tại quán.",
+      },
+      {
+        author: "Anh Minh Quân",
+        role: "Chủ chuỗi Tasty Hub",
+        content: "Phần mềm ổn định, giao diện hiện đại và rất dễ để đào tạo nhân viên mới.",
+      },
+    ],
+  },
+
+  DASHBOARD: {
+    PORTAL_TITLE: "Cổng thông tin vận hành",
+    PORTAL_SUBTITLE: "Hệ thống quản lý FoodHub | Trung tâm điều hành",
+    OVERVIEW: "Tổng quan Dashboard",
+    USER_ROLE: (role: string) => `Bạn đang đăng nhập với vai trò: ${role}`,
+    STALE_DATA: "Dữ liệu cũ (5p)",
+    SYSTEM_HEALTH: "Sức khỏe hệ thống",
+    OPERATIONAL_DATA_LOCKED: "Dữ liệu vận hành bị khóa",
+    LOCKED_DESC:
+      "Dữ liệu tài chính và lịch sử đơn hàng bị hạn chế theo bộ phận của bạn. Vui lòng sử dụng Terminal Bếp hoặc POS để quản lý trực tiếp.",
+    POS_STATUS: "Trạng thái POS",
+    PRINTER_STATUS: "Máy in Bếp",
+    INVENTORY_SYNC: "Đồng bộ kho",
+    ONLINE: "TRỰC TUYẾN",
+    READY: "SẴN SÀNG",
+    STALE: "TRỄ",
+    BULLETIN_TITLE: "Thông báo nội bộ",
+    BULLETIN_TAG: "Thông báo chính thức",
+    RESOURCES_TITLE: "Tài nguyên chung",
+    VIEW_ALL: "Xem tất cả thông báo",
+    PULSE: "Nhịp đập nhà hàng",
+  },
 };
