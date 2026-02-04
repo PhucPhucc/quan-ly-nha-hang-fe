@@ -5,7 +5,7 @@
 
 @theme inline {
   /* ===============================
-     Core colors
+     Core colors (F&B Optimized)
      =============================== */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -60,7 +60,7 @@
   --color-ring: var(--ring);
 
   /* ===============================
-     Order / KDS status (RẤT QUAN TRỌNG)
+     Order / KDS status
      =============================== */
   --color-order-pending: var(--order-pending);
   --color-order-cooking: var(--order-cooking);
@@ -79,7 +79,7 @@
   --color-role-cashier: var(--role-cashier);
 
   /* ===============================
-     Sidebar (giữ nguyên theo hệ hiện tại)
+     Sidebar
      =============================== */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
@@ -111,116 +111,149 @@
   --radius-4xl: calc(var(--radius) + 16px);
 
   /* ===============================
-     Shadows (token hóa để dùng shadow-*)
+     Shadows
      =============================== */
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px var(--color-primary);
 
   /* ===============================
      Fonts
      =============================== */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* ===============================
+     Animations
+     =============================== */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-in-up: fade-in-up 0.8s ease-out forwards;
+  --animate-scale-in: scale-in 0.5s ease-out forwards;
+  --animate-shimmer: shimmer 2s linear infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes scale-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
 }
 
 :root {
   /* ===============================
-       Base surfaces & text
-       Phong cách: Clean & Professional
+       Base surfaces & text (Warm F&B Theme)
        =============================== */
-  /* Nền tổng thể hơi xám nhẹ để làm nổi bật các Card trắng */
-  --background: oklch(0.985 0.002 240);
-  /* Chữ chính màu đen dịu (không đen kịt) để đỡ mỏi mắt */
-  --foreground: oklch(0.18 0.005 285);
+  /* Nền trắng ấm (Warm White) thay vì Cold White */
+  --background: oklch(0.99 0.005 50);
+  /* Chữ màu than chì ấm */
+  --foreground: oklch(0.18 0.02 50);
 
-  /* Card màu trắng tinh để tạo sự sạch sẽ, vệ sinh (quan trọng trong F&B) */
+  /* Card trắng tinh khiết để nổi bật đồ ăn */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.14 0.005 285);
+  --card-foreground: oklch(0.18 0.02 50);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.14 0.005 285);
+  --popover-foreground: oklch(0.18 0.02 50);
 
   /* ===============================
-       Primary (CTA only) - GIỮ NGUYÊN
+       Brand / Primary (Vibrant Orange-Red)
        =============================== */
-  --primary: oklch(0.505 0.213 27.518);
-  /* Hover sáng hơn một chút nhưng giữ độ đậm */
-  --primary-hover: oklch(0.45 0.21 27.518);
-  --primary-active: oklch(0.45 0.2 27.518);
-  --primary-disabled: oklch(0.85 0.05 27.518);
-  --primary-foreground: oklch(0.98 0 0);
+  /* Điều chỉnh Hue về 35 (Cam đỏ) - Kích thích ăn uống */
+  --primary: oklch(0.58 0.22 35);
+  --primary-hover: oklch(0.52 0.22 35);
+  --primary-active: oklch(0.48 0.22 35);
+  --primary-disabled: oklch(0.85 0.05 35);
+  --primary-foreground: oklch(1 0 0);
 
   /* ===============================
        Secondary / Muted
-       Dùng cho các nút phụ, tag không quan trọng
        =============================== */
-  /* Màu xám nhạt hiện đại (Slate tint) */
-  --secondary: oklch(0.93 0.00011 271.152);
-  --secondary-foreground: oklch(0.25 0.02 240);
+  /* Warm Gray cho các yếu tố phụ */
+  --secondary: oklch(0.96 0.01 50);
+  --secondary-foreground: oklch(0.3 0.03 50);
 
-  --muted: oklch(0.96 0.01 240);
-  --muted-foreground: oklch(0.55 0.02 240);
+  --muted: oklch(0.97 0.01 50);
+  --muted-foreground: oklch(0.55 0.03 50);
 
   /* ===============================
-       Semantic colors (Trạng thái)
-       Tăng Chroma (độ rực) để dễ nhận diện trong môi trường bếp ồn ào
+       Semantic colors (Vibrant & Clear)
        =============================== */
-  /* Success: Xanh lá tươi (Emerald) */
-  --success: oklch(0.65 0.18 150);
-  --success-foreground: oklch(0.98 0 0);
+  /* Success: Fresh Green */
+  --success: oklch(0.65 0.18 145);
+  --success-foreground: oklch(1 0 0);
 
-  /* Warning: Vàng cam (Amber) - Cảnh báo món chậm/hết hàng */
-  --warning: oklch(0.78 0.15 85);
-  --warning-foreground: oklch(0.2 0.03 85);
+  /* Warning: Amber/Gold */
+  --warning: oklch(0.82 0.15 85);
+  --warning-foreground: oklch(0.25 0.05 85);
 
-  /* Danger: Đỏ tươi hơn Primary một chút để báo lỗi/xóa */
-  --danger: oklch(0.58 0.23 25);
-  --danger-foreground: oklch(0.98 0 0);
+  /* Danger: Red */
+  --danger: oklch(0.6 0.22 25);
+  --danger-foreground: oklch(1 0 0);
 
-  --destructive: oklch(0.65 0.15 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
 
-  /* Info: Xanh dương (Sky) */
+  /* Info: Sky Blue */
   --info: oklch(0.7 0.12 230);
-  --info-foreground: oklch(0.98 0 0);
+  --info-foreground: oklch(1 0 0);
 
   /* ===============================
-       Borders / inputs / focus
+       Borders / inputs
        =============================== */
-  /* Border mảnh, xám nhẹ */
-  --border: oklch(0.92 0.01 240);
-  --input: oklch(0.78 0.00471 33.404);
-  /* Ring focus trùng màu Primary để đồng bộ thương hiệu */
-  --ring: oklch(0.505 0.213 27.518);
+  --border: oklch(0.92 0.01 50);
+  --input: oklch(0.92 0.01 50);
+  --ring: oklch(0.58 0.22 35);
 
-  --radius: 0.5rem; /* Bo góc vừa phải (0.5rem) trông chuyên nghiệp hơn 0.625rem */
+  --radius: 0.75rem; /* Bo góc tròn hơn (12px) hiện đại hơn */
 
   /* ===============================
-       Order / KDS status (Semantic chuyên biệt)
+       Order Status (Giữ nguyên logic semantic)
        =============================== */
-  /* Pending: Xám (Chưa xử lý) */
-  --order-pending: oklch(0.63 0.00007 271.152);
-  /* Ready: Xanh lá nhạt (Đã xong bếp, chờ phục vụ) */
-  --order-ready: oklch(0.7 0.15 150);
-  /* Cooking: Cam lửa (Đang nấu) - Cần nổi bật nhất */
-  --order-cooking: oklch(0.68 0.18 60);
-  /* Completed: Xanh lá (Đã xong bếp) */
-  --order-completed: oklch(0.65 0.18 150);
-  /* Served: Xanh dương nhạt hoặc Tím nhạt (Đã phục vụ) - Để phân biệt với xong bếp */
-  --order-served: oklch(0.7 0.1 260);
+  --order-pending: oklch(0.65 0.02 270);
+  --order-ready: oklch(0.72 0.16 145);
+  --order-cooking: oklch(0.65 0.2 45); /* Cam đậm hơn */
+  --order-completed: oklch(0.65 0.16 150);
+  --order-served: oklch(0.7 0.1 240);
 
-  /* Bàn trống: Xám xanh nhạt - Nhẹ, không gây chú ý */
-  --table-empty: oklch(0.551 0.0234 264.36);
-
-  /* Bàn đã đặt: Vàng cam - Cảnh báo nhẹ */
-  --table-reserved: oklch(0.7952 0.1617 86.05);
-
-  /* Bàn đang phục vụ: Xanh lá - Trạng thái chính */
-  --table-inprocess: oklch(0.7227 0.192 149.58);
-
-  /* Bàn đang dọn dẹp: Cam đỏ - Đang xử lý */
-  --table-cleaning: oklch(47.472% 0.19003 27.453);
+  /* Table Status */
+  --table-empty: oklch(0.94 0.02 90); /* Màu kem nhạt */
+  --table-reserved: oklch(0.85 0.15 85);
+  --table-inprocess: oklch(0.75 0.18 145);
+  --table-cleaning: oklch(0.6 0.18 30);
 
   --role-manager: oklch(0.5 0.2 10);
   --role-chef: oklch(0.65 0.2 50);
@@ -228,82 +261,59 @@
   --role-cashier: oklch(0.55 0.2 220);
 
   /* ===============================
-       Shadows (Deep & Clean)
+       Shadows
        =============================== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08); /* Đậm hơn xíu */
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08);
 
   /* ===============================
-     Sidebar (Light Mode - Clean White)
+     Sidebar
      =============================== */
-  /* Nền trắng để nổi bật trên nền xám nhạt (bg-background) */
   --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.18 0.005 285);
-
-  /* Primary trong sidebar (Logo hoặc nút Active) - Đồng bộ với Brand */
-  --sidebar-primary: oklch(0.505 0.213 27.518);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-
-  /* Accent (Hover state) - Đồng bộ với Secondary */
-  --sidebar-accent: oklch(0.96 0.01 240);
-  --sidebar-accent-foreground: oklch(0.18 0.005 285);
-
-  /* Border tách biệt sidebar và nội dung chính */
-  --sidebar-border: oklch(0.92 0.01 240);
-
-  /* Ring focus */
-  --sidebar-ring: oklch(0.505 0.213 27.518);
+  --sidebar-foreground: oklch(0.25 0.02 50);
+  --sidebar-primary: oklch(0.58 0.22 35);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.97 0.01 50);
+  --sidebar-accent-foreground: oklch(0.25 0.02 50);
+  --sidebar-border: oklch(0.92 0.01 50);
+  --sidebar-ring: oklch(0.58 0.22 35);
 }
 
 .dark {
-  /* Nền tối sâu (Deep Slate) */
-  --background: oklch(0.12 0.01 240);
-  --foreground: oklch(0.98 0 0);
+  /* Dark Mode: Deep Charcoal (Warm) */
+  --background: oklch(0.14 0.01 40); /* Hơi nâu/ấm rất nhẹ thay vì xanh */
+  --foreground: oklch(0.98 0.005 50);
 
-  /* Card sáng hơn nền một chút để nổi khối */
-  --card: oklch(0.17 0.01 240);
-  --card-foreground: oklch(0.98 0 0);
+  --card: oklch(0.18 0.015 40);
+  --card-foreground: oklch(0.98 0.005 50);
 
-  --popover: oklch(0.17 0.01 240);
-  --popover-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.18 0.015 40);
+  --popover-foreground: oklch(0.98 0.005 50);
 
-  /* Primary giữ nguyên hoặc sáng lên 1 xíu để nổi trên nền đen */
-  --primary: oklch(0.6 0.213 27.518);
-  --primary-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.65 0.2 35); /* Sáng hơn trong dark mode */
+  --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.25 0.02 240);
-  --secondary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.22 0.02 40);
+  --secondary-foreground: oklch(0.98 0.005 50);
 
-  --muted: oklch(0.25 0.02 240);
-  --muted-foreground: oklch(0.7 0.02 240);
+  --muted: oklch(0.22 0.02 40);
+  --muted-foreground: oklch(0.7 0.02 40);
 
-  --border: oklch(0.28 0.02 240);
-  --input: oklch(0.28 0.02 240);
-  --ring: oklch(0.6 0.213 27.518);
+  --border: oklch(0.26 0.02 40);
+  --input: oklch(0.26 0.02 40);
+  --ring: oklch(0.65 0.2 35);
 
-  /* Điều chỉnh KDS cho dark mode */
-  --order-cooking: oklch(0.7 0.2 50);
+  --order-cooking: oklch(0.7 0.2 45);
 
-  /* ===============================
-     Sidebar (Dark Mode - Deep Slate)
-     =============================== */
-  /* Màu nằm giữa background (0.12) và card (0.17) để tạo lớp lang */
-  --sidebar: oklch(0.15 0.01 240);
-  --sidebar-foreground: oklch(0.98 0 0);
-
-  /* Primary giữ độ sáng của dark mode */
-  --sidebar-primary: oklch(0.6 0.213 27.518);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-
-  /* Accent cho dark mode */
-  --sidebar-accent: oklch(0.25 0.02 240);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-
-  /* Border tối màu */
-  --sidebar-border: oklch(0.28 0.02 240);
-
-  --sidebar-ring: oklch(0.6 0.213 27.518);
+  --sidebar: oklch(0.16 0.015 40);
+  --sidebar-foreground: oklch(0.98 0.005 50);
+  --sidebar-primary: oklch(0.65 0.2 35);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.22 0.02 40);
+  --sidebar-accent-foreground: oklch(0.98 0.005 50);
+  --sidebar-border: oklch(0.26 0.02 40);
 }
 
 @layer base {
@@ -312,5 +322,19 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-xl bg-white/70 dark:bg-black/40 border border-white/20 dark:border-white/10 shadow-lg;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-md bg-white/60 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-md transition-all duration-300 hover:bg-white/80 dark:hover:bg-black/40 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .text-balance {
+    text-wrap: balance;
   }
 }

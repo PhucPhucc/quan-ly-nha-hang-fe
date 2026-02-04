@@ -6,7 +6,7 @@ import { logout } from "@/services/authService";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function LogoutPage() {
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const logoutStore = useAuthStore((state) => state.logout);
 
   useEffect(() => {
     const handleLogout = async () => {
@@ -15,14 +15,14 @@ export default function LogoutPage() {
       } catch (error) {
         console.error("Logout failed", error);
       } finally {
-        clearAuth();
+        logoutStore();
         // Force a hard navigation to login to ensure all states/cache are cleared
         window.location.href = "/login";
       }
     };
 
     handleLogout();
-  }, [clearAuth]);
+  }, [logoutStore]);
 
   return (
     <div className="flex items-center justify-center h-screen">
