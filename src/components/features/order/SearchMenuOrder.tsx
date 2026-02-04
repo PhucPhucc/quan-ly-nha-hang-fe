@@ -5,8 +5,8 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 
 const SearchMenuOrder = () => {
   return (
-    <InputGroup className="w-md">
-      <InputGroupInput placeholder="Search..." />
+    <InputGroup className="ml-2 w-full max-w-xs">
+      <InputGroupInput placeholder="Tim mon..." />
       <InputGroupAddon>
         <SearchIcon />
       </InputGroupAddon>

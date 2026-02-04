@@ -1,40 +1,48 @@
-import OrderCount from "@/components/features/order/OrderCount";
-import OrderCurrent from "@/components/features/order/OrderCurrent";
-import OrderList from "@/components/features/order/OrderList";
+import OrderCurrent from "@/components/features/order/orderCurrent/OrderCurrent";
+import CardMenu from "@/components/features/order/orderMenu/CardMenu";
+import CardTable from "@/components/features/order/orderTable/CardTable";
 import SearchMenuOrder from "@/components/features/order/SearchMenuOrder";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MOCK_MENU_ITEMS } from "@/data/mockMenu";
-import { UI_TEXT } from "@/lib/UI_Text";
 
 const page = () => {
   return (
-    <div className="min-h-0 flex-1">
-      <div className="mb-4">
-        <OrderCount />
-      </div>
-      <div className="flex gap-4 w-full flex-1 min-h-0">
-        <div className="flex-2/3">
+    <div className="min-h-0 flex-1 flex gap-4">
+      {/* left side */}
+      <Tabs defaultValue="table" className="flex-1">
+        <TabsList variant="line" className="w-full flex gap-2 justify-between mb-2">
+          <div className="flex items-center">
+            <TabsTrigger value="table">Table</TabsTrigger>
+            <TabsTrigger value="menu">Menu</TabsTrigger>
+          </div>
           <SearchMenuOrder />
-          <Tabs defaultValue="all" className="mt-2">
-            <TabsList>
-              <TabsTrigger value="all">{UI_TEXT.COMMON.ALL}</TabsTrigger>
-              <TabsTrigger value="cf">Caffee</TabsTrigger>
-            </TabsList>
-            <TabsContent value="all">
-              <OrderList menuList={menuAll} />
-            </TabsContent>
-            <TabsContent value="cf">
-              <OrderList menuList={menuCF} />
-            </TabsContent>
-          </Tabs>
-        </div>
-        <OrderCurrent />
-      </div>
+        </TabsList>
+        <TabsContent value="table">
+          <CardTable />
+        </TabsContent>
+        <TabsContent value="menu">
+          <CardMenu />
+        </TabsContent>
+      </Tabs>
+
+      {/* right side */}
+      <Tabs defaultValue="current" className="flex-1">
+        <TabsList variant="line" className="mb-2">
+          <TabsTrigger value="current">
+            {/* {UI_TEXT.ORDER.CURRENT_ORDER} */}
+            don hang hien tai
+          </TabsTrigger>
+          <TabsTrigger value="order-history">
+            {/* {UI_TEXT.ORDER.ORDER_HISTORY} */}
+            lich su don hang
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="current">
+          <OrderCurrent />
+        </TabsContent>
+        <TabsContent value="order-history">{/* <OrderHistory /> */}</TabsContent>
+      </Tabs>
     </div>
   );
 };
 
 export default page;
-
-const menuAll = MOCK_MENU_ITEMS.filter((item) => item);
-const menuCF = MOCK_MENU_ITEMS.filter((item) => item.category_id === "CAT_01");

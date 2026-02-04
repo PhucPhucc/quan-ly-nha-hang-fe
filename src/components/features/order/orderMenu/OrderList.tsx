@@ -14,14 +14,14 @@ const OrderList = ({ menuList }: { menuList: MenuItem[] }) => {
       {menuList.map((item) => (
         <li
           key={item.code}
-          className="aspect-square bg-card border shadow-md py-2 px-4 rounded-md hover:ring-2 hover:ring-ring hover:shadow-2xl transition duration-300"
+          className="flex flex-col justify-between aspect-square bg-card border shadow-md py-2 px-4 rounded-md hover:ring-2 hover:ring-ring hover:shadow-2xl transition duration-300"
           onClick={() => {
             toast.success("Them thanh cong");
             addOrder(item, 1);
           }}
         >
-          <p className="text-lg font-semibold">{item.name}</p>
-          <p>{item.dine_in_price} VND</p>
+          <p className=" font-semibold">{item.name}</p>
+          <p className="text-center">{item.dine_in_price} VND</p>
         </li>
       ))}
     </ul>
