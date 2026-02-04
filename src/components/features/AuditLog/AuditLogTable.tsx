@@ -1,5 +1,8 @@
 "use client";
 
+import { format } from "date-fns";
+import { Info } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -9,15 +12,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UI_TEXT } from "@/lib/UI_Text";
-import { ActionType } from "@/types/enums";
-import { OrderAuditLog } from "@/types/Order";
-import { format } from "date-fns";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { UI_TEXT } from "@/lib/UI_Text";
+import { EmployeeAuditLog } from "@/types/Employee";
 
 interface AuditLogTableProps {
-  logs: OrderAuditLog[];
+  logs: EmployeeAuditLog[];
   loading: boolean;
   error: string | null;
 }
@@ -75,7 +75,7 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
             </TableRow>
           )}
           {!loading &&
-            logs.map((log: any, idx: number) => {
+            logs.map((log: EmployeeAuditLog) => {
               // Defensive property mapping
               const action = log.action;
               const actor = log.actorName;
@@ -83,7 +83,7 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
               const reason = log.reason;
               const metadata = log.metadata;
               return (
-                <TableRow key={log.log_id || log.logId || idx}>
+                <TableRow key={log.logId}>
                   <TableCell>
                     <Badge variant={getActionBadgeVariant(action)} className="capitalize">
                       {action.toLowerCase()}
@@ -110,14 +110,14 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
                           <TooltipTrigger asChild>
                             <Info className="h-4 w-4 ml-auto cursor-help opacity-50 hover:opacity-100 transition-opacity" />
                           </TooltipTrigger>
-                          <TooltipContent className="max-w-[450px] p-0 overflow-hidden rounded-lg border-none shadow-xl">
+                          <TooltipContent className="max-w-md p-0 overflow-hidden rounded-lg border-none shadow-xl">
                             <div className="bg-card text-card-foreground">
                               <div className="px-4 py-2 bg-muted/50 border-b flex items-center justify-between">
                                 <span className="text-xs font-semibold uppercase tracking-wider opacity-70">
                                   Chi tiết thay đổi
                                 </span>
                               </div>
-                              <div className="p-4 space-y-4 max-h-[400px] overflow-auto">
+                              <div className="p-4 space-y-4 max-h-md overflow-auto">
                                 {(() => {
                                   try {
                                     // Handle stringified JSON if necessary

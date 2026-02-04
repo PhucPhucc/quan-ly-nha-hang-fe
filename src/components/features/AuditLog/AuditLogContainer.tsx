@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAuditLogs } from "@/services/auditService";
-import { OrderAuditLog } from "@/types/Order";
+
 import { getErrorMessage } from "@/lib/error";
-import { UI_TEXT } from "@/lib/UI_Text";
+import { getAuditLogs } from "@/services/auditService";
+import { EmployeeAuditLog } from "@/types/Employee";
+
 import AuditLogTable from "./AuditLogTable";
 
 interface AuditLogContainerProps {
@@ -12,7 +13,7 @@ interface AuditLogContainerProps {
 }
 
 const AuditLogContainer = ({ employeeId }: AuditLogContainerProps) => {
-  const [logs, setLogs] = useState<OrderAuditLog[]>([]);
+  const [logs, setLogs] = useState<EmployeeAuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
