@@ -30,6 +30,13 @@ export async function updateEmployee(employee: Partial<Employee>) {
   });
 }
 
+export async function deleteEmployee(employeeId: string) {
+  return apiFetch(`/employees/${employeeId}`, {
+    method: "DELETE",
+    cache: "no-store",
+  });
+}
+
 export async function filterEmployee(role: number) {
   return apiFetch(`/employees?filters=role:${role}`, {
     method: "GET",

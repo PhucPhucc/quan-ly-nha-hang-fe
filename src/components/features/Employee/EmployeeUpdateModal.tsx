@@ -6,16 +6,15 @@ import {
   SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Employee } from "@/types/Employee";
 
-import EmployeeUpdateForm from "./EmployeeUpdateForm";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuditLogContainer from "../AuditLog/AuditLogContainer";
+import EmployeeUpdateForm from "./EmployeeUpdateForm";
 
 const EmployeeUpdateModal = ({
   open,

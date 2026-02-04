@@ -1,18 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { addEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { Employee } from "@/types/Employee";
-
-import EmployeeRole from "./EmployeeRole";
 
 const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const incrementRefreshCount = useEmployeeStore((state) => state.increment);
@@ -46,6 +52,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     setLoading(false);
     incrementRefreshCount();
     onSuccess();
+    toast.success(UI_TEXT.EMPLOYEE.ADD_SUSCESS); // ehehe :P
   };
 
   return (
@@ -57,6 +64,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
             id="fullName"
             name="fullName"
             type="text"
+            required
             placeholder={`Enter ${UI_TEXT.EMPLOYEE.FULLNAME}`}
           />
         </Field>
@@ -67,13 +75,41 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
             id="email"
             name="email"
             type="email"
+            required
             placeholder={`Enter ${UI_TEXT.EMPLOYEE.EMAIL}`}
           />
         </Field>
 
-        <EmployeeRole />
+        <Field>
+          <FieldLabel>{UI_TEXT.ROLE.TITLE}</FieldLabel>
+          <Select name="role" required>
+            <SelectTrigger>
+              <SelectValue placeholder="Role" />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem className="hover:bg-secondary-foreground/20" value="1">
+                {UI_TEXT.ROLE.MANAGER}
+              </SelectItem>
+              <SelectItem className="hover:bg-secondary-foreground/20" value="2">
+                {UI_TEXT.ROLE.CASHIER}
+              </SelectItem>
+              <SelectItem className="hover:bg-secondary-foreground/20" value="3">
+                {UI_TEXT.ROLE.WAITER}
+              </SelectItem>
+              <SelectItem className="hover:bg-secondary-foreground/20" value="4">
+                {UI_TEXT.ROLE.CHEF}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
       </FieldGroup>
-      <div className="text-center bg-primary/30 text-primary font-bold">{error}</div>
+
+      {error && (
+        <div className="text-center bg-primary/30 text-primary font-bold my-2 py-2 rounded-md">
+          {error}
+        </div>
+      )}
+
       <div className="flex gap-4 justify-end mt-4">
         <DialogClose asChild>
           <Button type="button" variant="secondary" className="hover:bg-secondary-foreground/20">

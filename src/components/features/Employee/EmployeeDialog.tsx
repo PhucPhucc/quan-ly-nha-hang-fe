@@ -28,9 +28,9 @@ const EmployeeDialog = () => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle className="text-3xl text-center font-semibold mb-6">
+          <DialogTitle className="text-xl md:text-3xl text-center font-semibold">
             {UI_TEXT.EMPLOYEE.ADD}
           </DialogTitle>
         </DialogHeader>
