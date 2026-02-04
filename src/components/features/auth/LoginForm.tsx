@@ -28,6 +28,7 @@ const LoginForm = () => {
         password: formData.get("password") as string,
       });
       setEmployee({
+        email: data.email,
         username: data.employeeCode,
         role: data.role,
       });
