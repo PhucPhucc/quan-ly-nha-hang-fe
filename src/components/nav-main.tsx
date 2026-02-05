@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import { type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -37,6 +38,9 @@ export function NavMain({
                     tooltip={item.title}
                     aria-current={isActive(item.url) ? "page" : undefined}
                     isActive={isActive(item.url)}
+                    className={clsx({
+                      "hover:bg-sidebar-primary text-sidebar-accent-foreground": isActive(item.url),
+                    })}
                   >
                     {item.icon && <item.icon />}
                     <span className="">{item.title}</span>

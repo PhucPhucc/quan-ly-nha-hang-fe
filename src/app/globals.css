@@ -5,7 +5,7 @@
 
 @theme inline {
   /* ===============================
-     Core colors (F&B Optimized)
+     Core colors
      =============================== */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -33,6 +33,9 @@
 
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --colose-accent-foreground: var(--accent-foreground);
 
   /* ===============================
      Semantic states
@@ -209,6 +212,9 @@
   --muted: oklch(0.97 0.01 50);
   --muted-foreground: oklch(0.55 0.03 50);
 
+  --accent: oklch(0.97 0.01 50);
+  --accent-foreground: oklch(0.3 0.03 50);
+
   /* ===============================
        Semantic colors (Vibrant & Clear)
        =============================== */
@@ -235,7 +241,7 @@
        Borders / inputs
        =============================== */
   --border: oklch(0.92 0.01 50);
-  --input: oklch(0.92 0.01 50);
+  --input: oklch(0.8 0.008 48.204);
   --ring: oklch(0.58 0.22 35);
 
   --radius: 0.75rem; /* Bo góc tròn hơn (12px) hiện đại hơn */
