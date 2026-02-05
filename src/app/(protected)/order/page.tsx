@@ -3,43 +3,58 @@ import CardMenu from "@/components/features/order/orderMenu/CardMenu";
 import CardTable from "@/components/features/order/orderTable/CardTable";
 import SearchMenuOrder from "@/components/features/order/SearchMenuOrder";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 const page = () => {
   return (
-    <div className="min-h-0 flex-1 flex gap-4">
-      {/* left side */}
-      <Tabs defaultValue="table" className="flex-1">
-        <TabsList variant="line" className="w-full flex gap-2 justify-between mb-2">
-          <div className="flex items-center">
-            <TabsTrigger value="table">Table</TabsTrigger>
-            <TabsTrigger value="menu">Menu</TabsTrigger>
+    <div className="h-[calc(100vh-80px)] flex flex-col lg:flex-row gap-6 p-4 overflow-hidden bg-background/50">
+      {/* left side: Table & Menu Selection */}
+      <Tabs defaultValue="table" className="flex-[1.5] flex flex-col min-h-0">
+        <TabsList
+          variant="line"
+          className="w-full flex items-center justify-between mb-4 border-b border-foreground/5"
+        >
+          <div className="flex items-center gap-1">
+            <TabsTrigger value="table" className="px-6">
+              {UI_TEXT.TABLE.TITLE}
+            </TabsTrigger>
+            <TabsTrigger value="menu" className="px-6">
+              Menu
+            </TabsTrigger>
           </div>
           <SearchMenuOrder />
         </TabsList>
-        <TabsContent value="table">
-          <CardTable />
-        </TabsContent>
-        <TabsContent value="menu">
-          <CardMenu />
-        </TabsContent>
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <TabsContent value="table" className="flex-1 min-h-0 m-0">
+            <CardTable />
+          </TabsContent>
+          <TabsContent value="menu" className="flex-1 min-h-0 m-0">
+            <CardMenu />
+          </TabsContent>
+        </div>
       </Tabs>
 
-      {/* right side */}
-      <Tabs defaultValue="current" className="flex-1">
-        <TabsList variant="line" className="mb-2">
-          <TabsTrigger value="current">
-            {/* {UI_TEXT.ORDER.CURRENT_ORDER} */}
-            don hang hien tai
+      {/* right side: Current Order & History */}
+      <Tabs defaultValue="current" className="flex-1 flex flex-col min-h-0">
+        <TabsList variant="line" className="w-full flex gap-4 mb-4 border-b border-foreground/5">
+          <TabsTrigger value="current" className="px-6">
+            {UI_TEXT.DASHBOARD.RECENT_ORDERS.TITLE}
           </TabsTrigger>
-          <TabsTrigger value="order-history">
-            {/* {UI_TEXT.ORDER.ORDER_HISTORY} */}
-            lich su don hang
+          <TabsTrigger value="order-history" className="px-6">
+            Lịch sử
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="current">
-          <OrderCurrent />
-        </TabsContent>
-        <TabsContent value="order-history">{/* <OrderHistory /> */}</TabsContent>
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <TabsContent value="current" className="flex-1 min-h-0 h-full m-0">
+            <OrderCurrent />
+          </TabsContent>
+          <TabsContent
+            value="order-history"
+            className="flex-1 min-h-0 h-full m-0 text-muted-foreground text-center pt-20"
+          >
+            {UI_TEXT.ORDER.EMPTY}
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );

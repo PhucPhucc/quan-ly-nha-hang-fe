@@ -250,10 +250,11 @@
   --order-served: oklch(0.7 0.1 240);
 
   /* Table Status */
-  --table-empty: oklch(0.94 0.02 90); /* Màu kem nhạt */
-  --table-reserved: oklch(0.85 0.15 85);
-  --table-inprocess: oklch(0.75 0.18 145);
-  --table-cleaning: oklch(0.6 0.18 30);
+  /* Table Status - Darker for better contrast */
+  --table-empty: oklch(0.92 0.05 90); /* Màu kem đậm hơn */
+  --table-reserved: oklch(0.75 0.15 85); /* Vàng sậm hơn */
+  --table-inprocess: oklch(0.6 0.18 145); /* Xanh lá đậm hơn */
+  --table-cleaning: oklch(0.55 0.15 40); /* Đỏ nâu/Cam thay vì đỏ rực để đỡ chói */
 
   --role-manager: oklch(0.5 0.2 10);
   --role-chef: oklch(0.65 0.2 50);
