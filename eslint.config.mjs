@@ -18,6 +18,7 @@ const eslintConfig = defineConfig([
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
       "unused-imports/no-unused-imports": "error",
+      "@next/next/no-img-element": "off",
       "unused-imports/no-unused-vars": [
         "warn",
         {

@@ -44,3 +44,8 @@ export enum SetMenuType {
   SET_MORNING = "SET_MORNING",
   SET_LUNCH = "SET_LUNCH",
 }
+export enum Station {
+  BARs = "BAR",
+  KITCHEN_HOT = "KITCHEN_HOT",
+  KITCHEN_COLD = "KITCHEN_COLD",
+}
