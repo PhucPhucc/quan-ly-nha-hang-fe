@@ -3,37 +3,39 @@
 import { DollarSign, ShoppingCart, Users, Utensils } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 export function StatsCards() {
+  const t = UI_TEXT.DASHBOARD.STATS;
   const stats = [
     {
-      title: "Total Revenue",
+      title: t.REVENUE,
       value: "$24,580.00",
-      description: "+12.5% from last month",
+      description: t.REVENUE_DESC("+12.5%"),
       icon: DollarSign,
       color: "text-success",
       bg: "bg-success/10",
     },
     {
-      title: "New Orders",
+      title: t.ORDERS,
       value: "456",
-      description: "+5.2% from yesterday",
+      description: t.ORDERS_DESC("+5.2%"),
       icon: ShoppingCart,
       color: "text-info",
       bg: "bg-info/10",
     },
     {
-      title: "Active Tables",
+      title: t.TABLES,
       value: "18 / 25",
-      description: "72% occupancy rate",
+      description: t.TABLES_DESC("72%"),
       icon: Utensils,
       color: "text-warning",
       bg: "bg-warning/10",
     },
     {
-      title: "Staff On Duty",
+      title: t.STAFF,
       value: "12",
-      description: "4 chefs, 8 waiters",
+      description: t.STAFF_DESC(4, 8),
       icon: Users,
       color: "text-primary",
       bg: "bg-primary/10",

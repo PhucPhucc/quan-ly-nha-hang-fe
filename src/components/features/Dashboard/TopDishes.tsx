@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 const dishes = [
   {
@@ -24,10 +25,11 @@ const dishes = [
 ];
 
 export function TopDishes() {
+  const t = UI_TEXT.DASHBOARD.TOP_DISHES;
   return (
     <Card className="border-none shadow-md">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Top Performing Dishes</CardTitle>
+        <CardTitle className="text-lg font-bold">{t.TITLE}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {dishes.map((dish, index) => (
@@ -41,7 +43,7 @@ export function TopDishes() {
             </div>
             <div className="flex flex-1 flex-col">
               <span className="font-semibold text-sm">{dish.name}</span>
-              <span className="text-muted-foreground text-xs">{dish.orders} orders this week</span>
+              <span className="text-muted-foreground text-xs">{t.ORDERS_COUNT(dish.orders)}</span>
             </div>
             <div className="text-sm font-bold text-blue-600">{dish.price}</div>
           </div>

@@ -22,6 +22,13 @@ const TablesList = () => {
   );
 };
 
+export interface Table {
+  tableNumber: number;
+  status: "READY" | "INPROCESS" | "CLEANING" | "RESERVED";
+  label: string;
+  people: number;
+}
+
 export default TablesList;
 
 export const tables: Table[] = [

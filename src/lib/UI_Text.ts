@@ -221,5 +221,72 @@ export const UI_TEXT = {
     RESOURCES_TITLE: "Tài nguyên chung",
     VIEW_ALL: "Xem tất cả thông báo",
     PULSE: "Nhịp đập nhà hàng",
+    WEATHER_CLOUDY: "28°C / Có mây",
+    MAIN_LOBBY: "Sảnh chính",
+    STALE_DURATION: (mins: number) => `(${mins} phút)`,
+
+    STATS: {
+      REVENUE: "Tổng doanh thu",
+      ORDERS: "Đơn hàng mới",
+      TABLES: "Bàn hoạt động",
+      STAFF: "Nhân viên trực ca",
+      REVENUE_DESC: (percent: string) => `${percent} so với tháng trước`,
+      ORDERS_DESC: (percent: string) => `${percent} so với hôm qua`,
+      TABLES_DESC: (percent: string) => `${percent} tỉ lệ sử dụng`,
+      STAFF_DESC: (chefs: number, waiters: number) => `${chefs} đầu bếp, ${waiters} phục vụ`,
+    },
+
+    TABLE_OCCUPANCY: {
+      TITLE: "Tình trạng sử dụng bàn",
+      FREE: "Bàn trống",
+      OCCUPIED: "Đang sử dụng",
+      RESERVED: "Đã đặt trước",
+    },
+
+    RECENT_ORDERS: {
+      TITLE: "Đơn hàng gần đây",
+      ORDER_ID: "Mã đơn",
+      CUSTOMER: "Khách hàng",
+      TABLE: "Bàn",
+      AMOUNT: "Số tiền",
+      STATUS: "Trạng thái",
+      TIME: "Thời gian",
+      MINS_AGO: (mins: number) => `${mins} phút trước`,
+      HOUR_AGO: (hours: number) => `${hours} giờ trước`,
+      STATUS_COMPLETED: "Hoàn tất",
+      STATUS_PREPARING: "Đang chế biến",
+      STATUS_PENDING: "Chờ xử lý",
+      STATUS_CANCELLED: "Đã hủy",
+    },
+
+    REVENUE_CHART: {
+      TITLE: "Hiệu suất hàng tuần",
+      AVG_DAILY: "Trung bình ngày",
+      PEAK_DAY: "Ngày cao điểm",
+      DAYS: {
+        MON: "Thứ 2",
+        TUE: "Thứ 3",
+        WED: "Thứ 4",
+        THU: "Thứ 5",
+        FRI: "Thứ 6",
+        SAT: "Thứ 7",
+        SUN: "Chủ nhật",
+      },
+    },
+
+    RESOURCES: {
+      TITLE: "Tài nguyên chung",
+      RECIPES: "Công thức chuẩn",
+      SCHEDULE: "Lịch phân ca",
+      TRAINING: "Cổng đào tạo",
+      HACCP: "Nhật ký HACCP",
+      SUPPORT: "Hỗ trợ IT Bếp",
+      PUNCH_CLOCK: "Máy chấm công",
+    },
+
+    TOP_DISHES: {
+      TITLE: "Món ăn bán chạy",
+      ORDERS_COUNT: (count: number) => `${count} đơn trong tuần`,
+    },
   },
 };
