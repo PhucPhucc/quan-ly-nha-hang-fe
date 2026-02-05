@@ -43,3 +43,27 @@ export async function filterEmployee(role: number) {
     cache: "no-store",
   });
 }
+
+export async function changeEmployeePassword(
+  employeeId: string,
+  reason: string,
+  newPassword?: string
+) {
+  return apiFetch(`/employees/reset-password`, {
+    method: "POST",
+    body: JSON.stringify({ employeeId, reason, newPassword }),
+    cache: "no-store",
+  });
+}
+
+export async function changeEmployeeRole(
+  employeeCode: string,
+  currentRole: number,
+  newRole: number
+) {
+  return apiFetch(`/employees/change-role`, {
+    method: "POST",
+    body: JSON.stringify({ employeeCode, currentRole, newRole }),
+    cache: "no-store",
+  });
+}

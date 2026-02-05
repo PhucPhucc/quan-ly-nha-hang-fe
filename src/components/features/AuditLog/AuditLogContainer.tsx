@@ -22,8 +22,6 @@ const AuditLogContainer = ({ employeeId }: AuditLogContainerProps) => {
       try {
         setLoading(true);
         const data = await getAuditLogs(employeeId);
-        console.log("Audit log raw data:", data);
-        // Assuming API returns an object with items array
         setLogs(data.items || data);
       } catch (err) {
         setError(getErrorMessage(err));

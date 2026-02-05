@@ -13,7 +13,14 @@ export async function login(payload: LoginPayload) {
 }
 
 export async function logout() {
-  return apiFetch("/auth/logout", {
+  return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
     method: "POST",
+    body: JSON.stringify({
+      refreshToken: localStorage.getItem("refreshToken"),
+    }),
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }

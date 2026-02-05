@@ -1,9 +1,9 @@
 "use client";
 
-import EmployeeContainerTable from "@/components/features/Employee/EmployeeContainerTable";
 import EmployeeCount from "@/components/features/Employee/EmployeeCount";
 import EmployeeDialog from "@/components/features/Employee/EmployeeDialog";
 import EmployeeFilter from "@/components/features/Employee/EmployeeFilter";
+import EmployeeTable from "@/components/features/Employee/EmployeeTable";
 
 const Page = () => {
   return (
@@ -17,7 +17,7 @@ const Page = () => {
         </div>
       </div>
       <div className="mt-12">
-        <EmployeeContainerTable />
+        <EmployeeTable />
       </div>
     </div>
   );

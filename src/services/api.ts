@@ -9,8 +9,7 @@ if (!BASE_URL) {
 let isRefreshing = false;
 let refreshQueue: (() => void)[] = [];
 
-async function refreshToken() {
-  console.log(localStorage.getItem("refreshToken"));
+export async function refreshToken() {
   const res = await fetch(BASE_URL + "/api/auth/refresh-token", {
     method: "POST",
     credentials: "include",
@@ -55,7 +54,6 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
       try {
         const data = await refreshToken();
-        console.log("refesh:" + JSON.stringify(data));
         store.setAccessToken(data.accessToken);
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
@@ -66,6 +64,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
       } catch {
         isRefreshing = false;
         store.logout();
+        window.location.href = "/login";
         throw new Error("Session expired");
       }
     }
@@ -89,10 +88,10 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
   if (!res.ok) {
     let message = "API Error";
-
+    console.log(123);
     try {
       const data = await res.json();
-      message = data.errors || message;
+      message = data.error || data.message || message;
     } catch {}
 
     throw new Error(message);

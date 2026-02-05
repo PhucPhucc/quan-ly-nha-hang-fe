@@ -7,18 +7,13 @@ import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { addEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { Employee } from "@/types/Employee";
+
+import EmployeeSelectRole from "./EmployeeSelectRole";
 
 const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const incrementRefreshCount = useEmployeeStore((state) => state.increment);
@@ -43,6 +38,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
     try {
       setError("");
+      console.log(employee);
       await addEmployee(employee);
     } catch (err) {
       setError((err as Error).message);
@@ -80,28 +76,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
           />
         </Field>
 
-        <Field>
-          <FieldLabel>{UI_TEXT.ROLE.TITLE}</FieldLabel>
-          <Select name="role" required>
-            <SelectTrigger>
-              <SelectValue placeholder="Role" />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem className="hover:bg-secondary-foreground/20" value="1">
-                {UI_TEXT.ROLE.MANAGER}
-              </SelectItem>
-              <SelectItem className="hover:bg-secondary-foreground/20" value="2">
-                {UI_TEXT.ROLE.CASHIER}
-              </SelectItem>
-              <SelectItem className="hover:bg-secondary-foreground/20" value="3">
-                {UI_TEXT.ROLE.WAITER}
-              </SelectItem>
-              <SelectItem className="hover:bg-secondary-foreground/20" value="4">
-                {UI_TEXT.ROLE.CHEF}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
+        <EmployeeSelectRole />
       </FieldGroup>
 
       {error && (

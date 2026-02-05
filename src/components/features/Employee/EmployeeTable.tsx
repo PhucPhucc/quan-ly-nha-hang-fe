@@ -1,10 +1,7 @@
 "use client";
 
-import { PenBox, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -15,14 +12,14 @@ import {
 } from "@/components/ui/table";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { deleteEmployee, getEmployees } from "@/services/employeeService";
+import { getEmployees } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
-import { Employee } from "@/types/Employee";
 
-const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => {
+import EmployeeAction from "./EmployeeAction";
+
+const EmployeeTable = () => {
   const setEmployees = useEmployeeStore((state) => state.setEmployees);
   const employees = useEmployeeStore((state) => state.employees);
-  const increment = useEmployeeStore((state) => state.increment);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const refreshCount = useEmployeeStore((state) => state.refreshCount);
@@ -45,32 +42,6 @@ const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => 
     fetchData();
   }, [refreshCount, setEmployees]);
 
-  const handleDelete = (employeeId: string, employeeName: string) => {
-    console.log(employeeId);
-    toast.info(UI_TEXT.EMPLOYEE.DELETE_CONFIRM_NAME(employeeName), {
-      classNames: {
-        actionButton: "!bg-primary !text-primary-foreground !hover:bg-primary-hover",
-      },
-      cancel: { label: UI_TEXT.COMMON.CANCEL, onClick: () => {} },
-
-      action: {
-        label: UI_TEXT.COMMON.CONFIRM,
-        onClick: () => actionConfirmDelete(employeeId),
-      },
-    });
-  };
-  const actionConfirmDelete = async (employeeId: string) => {
-    try {
-      setLoading(true);
-      await deleteEmployee(employeeId);
-      increment();
-      toast.success(UI_TEXT.EMPLOYEE.DELETE_SUSCESS);
-    } catch (err) {
-      toast.error((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
     <Table>
       <TableHeader>
@@ -83,7 +54,6 @@ const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => 
           <TableHead className="hidden xl:table-cell">{UI_TEXT.EMPLOYEE.DOB}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.ROLE}</TableHead>
           <TableHead>{UI_TEXT.EMPLOYEE.STATUS}</TableHead>
-          <TableHead className="text-center">{UI_TEXT.COMMON.ACTION}</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -127,27 +97,7 @@ const EmployeeTable = ({ onEdit }: { onEdit: (employee: Employee) => void }) => 
               <TableCell>{employee.status}</TableCell>
 
               <TableCell className="flex justify-center">
-                <div>
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    className="hover:bg-secondary-foreground/20"
-                    onClick={(e) => {
-                      e.currentTarget.blur();
-                      onEdit(employee);
-                    }}
-                  >
-                    <PenBox />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    className="ml-2 hover:bg-secondary-foreground/20"
-                    onClick={() => handleDelete(employee.employeeId, employee.fullName)}
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
+                <EmployeeAction employee={employee} />
               </TableCell>
             </TableRow>
           ))}

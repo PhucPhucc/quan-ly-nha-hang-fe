@@ -60,6 +60,8 @@ export const UI_TEXT = {
     ADDRESS: "Địa chỉ",
     DOB: "Ngày sinh",
     STATUS: "Trạng thái",
+    CHANGE_PASSWORD: "Đổi mật khẩu",
+    CHANGE_ROLE: "Thay đổi vai trò",
     DELETE_CONFIRM_NAME: (name: string) => `Bạn có chắc chắn muốn xóa "${name}" không?`,
   },
 
@@ -71,6 +73,8 @@ export const UI_TEXT = {
 
   ROLE: {
     TITLE: "Vai trò nhân viên",
+    CURRENT_ROLE: "Vai trò hiện tại",
+    NEW_ROLE: "Vai trò mới",
     MANAGER: "Quản lý",
     CASHIER: "Thu ngân",
     WAITER: "Phục vụ",
@@ -81,6 +85,10 @@ export const UI_TEXT = {
     SUBMIT: "Gửi",
     RESET: "Đặt lại",
     CLOSE: "Đóng",
+    EDIT: "Sửa",
+    DELETE: "Xóa",
+    ADD: "Thêm",
+    SAVE_CHANGES: "Lưu thay đổi",
   },
 
   API: {
@@ -129,6 +137,7 @@ export const UI_TEXT = {
     CONFIRM_PASSWORD: "Xác nhận mật khẩu",
     CONFIRM_PASSWORD_MISMATCH: "Mật khẩu xác nhận không khớp",
   } as const,
+
   AUDIT_LOG: {
     TITLE: "Lịch sử hệ thống",
     EMPTY: "Chưa có lịch sử nào",

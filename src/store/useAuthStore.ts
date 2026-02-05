@@ -12,7 +12,7 @@ type AuthState = {
   logout: () => void;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>()((set) => ({
   accessToken: null,
   employee: null,
 
@@ -20,9 +20,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setEmployee: (employee) => set({ employee }),
 
-  logout: () =>
+  logout: () => {
     set({
       accessToken: null,
       employee: null,
-    }),
+    });
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  },
 }));

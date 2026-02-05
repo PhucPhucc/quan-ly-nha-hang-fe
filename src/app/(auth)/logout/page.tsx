@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { logout } from "@/services/authService";
@@ -7,7 +8,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export default function LogoutPage() {
   const logoutStore = useAuthStore((state) => state.logout);
-
+  const router = useRouter();
   useEffect(() => {
     const handleLogout = async () => {
       try {
@@ -17,12 +18,12 @@ export default function LogoutPage() {
       } finally {
         logoutStore();
         // Force a hard navigation to login to ensure all states/cache are cleared
-        window.location.href = "/login";
+        router.push("/login");
       }
     };
 
     handleLogout();
-  }, [logoutStore]);
+  }, [logoutStore, router]);
 
   return (
     <div className="flex items-center justify-center h-screen">

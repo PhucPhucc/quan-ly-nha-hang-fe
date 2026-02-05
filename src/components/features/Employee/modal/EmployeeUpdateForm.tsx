@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SheetClose } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { updateEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
@@ -52,7 +54,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <FieldGroup className="px-4 grid grid-cols-2 gap-x-2 gap-y-4">
+      <FieldGroup className="grid grid-cols-2 gap-x-2 gap-y-4 px-0.5">
         <Field>
           <Label>{UI_TEXT.EMPLOYEE.EMPLOYEECODE}</Label>
           <Input
@@ -98,12 +100,25 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
 
         <Field className="col-span-2">
           <Label htmlFor="address">{UI_TEXT.EMPLOYEE.ADDRESS}</Label>
-          <Input id="address" name="address" defaultValue={employee?.address || ""} />
+          <Textarea
+            id="address"
+            name="address"
+            placeholder={UI_TEXT.EMPLOYEE.ADDRESS}
+            defaultValue={employee?.address || ""}
+          />
         </Field>
-        <Button type="submit">
-          {UI_TEXT.COMMON.SAVE}
-          {loading && <Spinner />}
-        </Button>
+
+        <Field orientation="horizontal" className="flex gap-4 mt-2 col-span-2">
+          <Button type="submit" className="flex-1/2" disabled={loading}>
+            {UI_TEXT.COMMON.SAVE}
+            {loading && <Spinner />}
+          </Button>
+          <SheetClose asChild className="flex-1/2">
+            <Button variant="outline" className="">
+              Cancel
+            </Button>
+          </SheetClose>
+        </Field>
       </FieldGroup>
     </form>
   );
