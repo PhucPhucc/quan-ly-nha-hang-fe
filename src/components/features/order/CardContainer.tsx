@@ -11,9 +11,11 @@ const CardContainer = ({
   className?: string;
 }) => {
   return (
-    <Card className={cn("h-full flex flex-col", className)}>
+    <Card className={cn("h-full flex flex-col overflow-hidden", className)}>
       {header && <CardHeader>{header}</CardHeader>}
-      <CardContent className="flex-1 min-h-0 p-0 flex flex-col">{children}</CardContent>
+      <CardContent className="flex-1 min-h-0 p-0 flex flex-col overflow-hidden">
+        {children}
+      </CardContent>
     </Card>
   );
 };

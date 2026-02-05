@@ -11,7 +11,7 @@ const legendItems = [
 
 const TableLegend = () => {
   return (
-    <div className="flex flex-wrap items-center gap-4 py-4 px-2 border-b border-foreground/5 mb-4">
+    <div className="flex flex-wrap items-center gap-4 py-2 border-b border-foreground/5 mb-2 px-2">
       {legendItems.map((item) => (
         <div key={item.status} className="flex items-center gap-2">
           <div className={cn("size-3 rounded-full shadow-sm", item.color)} />

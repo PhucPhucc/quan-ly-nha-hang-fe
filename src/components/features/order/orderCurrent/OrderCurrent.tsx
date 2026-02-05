@@ -22,22 +22,25 @@ const OrderCurrent = () => {
   const total = subtotal + tax;
 
   return (
-    <CardContainer>
+    <CardContainer className="h-full">
       <div className="flex flex-col h-full min-h-0">
-        <CardHeader className="px-4 py-3 border-b flex flex-row items-center justify-between">
+        <CardHeader className="py-2 px-3 border-b flex flex-row items-center justify-between shrink-0">
           <div>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <ReceiptText className="size-5 text-primary" />
+            <CardTitle className="text-lg font-bold flex items-center gap-2">
+              <ReceiptText className="size-4 text-primary" />
               {UI_TEXT.DASHBOARD.RECENT_ORDERS.TITLE}
             </CardTitle>
-            <p className="text-xs text-muted-foreground mt-0.5">Bàn số 05 • 3 món</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">Bàn số 05 • 3 món</p>
           </div>
-          <Badge variant="outline" className="bg-table-inprocess text-white border-none">
+          <Badge
+            variant="outline"
+            className="bg-table-inprocess text-white border-none py-0 text-[10px]"
+          >
             {UI_TEXT.TABLE.INPROCESS}
           </Badge>
         </CardHeader>
-        <ScrollArea className="flex-1 px-4">
-          <div className="py-4 space-y-4">
+        <ScrollArea className="flex-1 overflow-auto" type="always">
+          <div className="py-4 space-y-4 px-2">
             {orderItems.map((item) => (
               <div
                 key={item.id}
@@ -96,26 +99,40 @@ const OrderCurrent = () => {
             ))}
           </div>
         </ScrollArea>
-        <CardFooter className="flex flex-col p-4 bg-secondary/30 border-t gap-3">
-          <div className="w-full space-y-2 text-sm">
-            <div className="flex justify-between items-center text-muted-foreground italic gap-4">
-              <span className="shrink-0 text-xs">Tạm tính</span>
-              <span className="truncate font-medium">{subtotal.toLocaleString()}đ</span>
+        <CardFooter className="flex flex-col p-2 bg-secondary/40 border-t gap-2 shrink-0">
+          <div className="w-full space-y-1.5">
+            <div className="flex justify-between items-center text-muted-foreground gap-2 px-1">
+              <span className="text-[10px]">Tạm tính</span>
+              <span className="font-semibold text-xs text-foreground">
+                {subtotal.toLocaleString()}đ
+              </span>
             </div>
-            <div className="flex justify-between items-center text-muted-foreground italic gap-4">
-              <span className="shrink-0 text-xs">Thuế (10%)</span>
-              <span className="truncate font-medium">{tax.toLocaleString()}đ</span>
+            <div className="flex justify-between items-center text-muted-foreground gap-2 px-1">
+              <span className="text-[10px]">Thuế (VAT 10%)</span>
+              <span className="font-semibold text-xs text-foreground">{tax.toLocaleString()}đ</span>
             </div>
-            <div className="flex justify-between items-center text-lg font-black pt-2 border-t border-dashed border-border/50 gap-4">
-              <span className="uppercase tracking-tighter shrink-0">Tổng cộng</span>
-              <span className="text-primary truncate">{total.toLocaleString()}đ</span>
+            <div className="flex justify-between items-center mt-1 p-2 rounded-xl bg-primary/10 border border-primary/20 shadow-sm transition-all hover:bg-primary/15">
+              <div className="flex flex-col">
+                <span className="text-[9px] uppercase font-black tracking-widest text-primary/80 leading-none mb-0.5">
+                  Tổng thanh toán
+                </span>
+                <span className="text-xl font-black text-primary leading-none tracking-tighter">
+                  {total.toLocaleString()}đ
+                </span>
+              </div>
+              <div className="p-1.5 bg-primary rounded-lg text-white shadow-glow-sm">
+                <ReceiptText className="size-4" />
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2 w-full mt-2">
-            <Button variant="outline" className="font-bold">
+          <div className="grid grid-cols-2 gap-2 w-full">
+            <Button variant="outline" size="sm" className="font-bold text-xs h-9">
               In tạm tính
             </Button>
-            <Button className="font-bold shadow-glow hover:shadow-none transition-all">
+            <Button
+              size="sm"
+              className="font-bold shadow-glow hover:shadow-none transition-all text-xs h-9"
+            >
               Gửi yêu cầu
             </Button>
           </div>

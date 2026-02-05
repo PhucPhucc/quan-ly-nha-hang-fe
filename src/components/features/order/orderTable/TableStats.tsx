@@ -18,7 +18,7 @@ const TableStats = ({ tables }: TableStatsProps) => {
   };
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-2 px-2">
       <StatCard
         label={UI_TEXT.COMMON.ALL}
         value={stats.total}
@@ -50,10 +50,10 @@ const TableStats = ({ tables }: TableStatsProps) => {
 
 const StatCard = ({ label, value, color }: { label: string; value: number; color: string }) => (
   <div
-    className={`p-4 rounded-2xl border flex flex-col items-center justify-center transition-all shadow-sm ${color}`}
+    className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all shadow-sm ${color}`}
   >
-    <span className="text-2xl font-black">{value}</span>
-    <span className="text-[9px] font-black uppercase tracking-tighter opacity-70">{label}</span>
+    <span className="text-xl font-black leading-tight">{value}</span>
+    <span className="text-[8px] font-black uppercase tracking-tighter opacity-80">{label}</span>
   </div>
 );
 

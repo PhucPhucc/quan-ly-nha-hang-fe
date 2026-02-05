@@ -60,7 +60,7 @@ const TableItem = ({ table, onClick }: TableItemProps) => {
     >
       <div
         className={cn(
-          "relative border-2 w-20 h-20 sm:w-24 sm:h-24 rounded-xl transition-all duration-300 shadow-sm group-hover:shadow-md overflow-visible",
+          "relative border-2 w-28 h-20 sm:w-32 sm:h-24 rounded-xl transition-all duration-300 shadow-sm group-hover:shadow-md overflow-visible",
           getStatusColor(table.status)
         )}
       >
