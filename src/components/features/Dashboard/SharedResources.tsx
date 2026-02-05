@@ -3,31 +3,33 @@
 import { BookOpen, CalendarRange, Clock, LifeBuoy, ShieldCheck, Soup } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 export function SharedResources() {
+  const t = UI_TEXT.DASHBOARD.RESOURCES;
   const resources = [
-    { title: "Standard Recipes", icon: Soup, color: "text-orange-500", bg: "bg-orange-500/10" },
-    { title: "Shift Schedule", icon: CalendarRange, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { title: t.RECIPES, icon: Soup, color: "text-orange-500", bg: "bg-orange-500/10" },
+    { title: t.SCHEDULE, icon: CalendarRange, color: "text-blue-500", bg: "bg-blue-500/10" },
     {
-      title: "Training Portal",
+      title: t.TRAINING,
       icon: BookOpen,
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
     },
-    { title: "HACCP Logs", icon: ShieldCheck, color: "text-rose-500", bg: "bg-rose-500/10" },
+    { title: t.HACCP, icon: ShieldCheck, color: "text-rose-500", bg: "bg-rose-500/10" },
     {
-      title: "Kitchen IT Support",
+      title: t.SUPPORT,
       icon: LifeBuoy,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
     },
-    { title: "Punch Clock", icon: Clock, color: "text-slate-500", bg: "bg-slate-500/10" },
+    { title: t.PUNCH_CLOCK, icon: Clock, color: "text-slate-500", bg: "bg-slate-500/10" },
   ];
 
   return (
     <Card className="border-none shadow-md overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Shared Resources</CardTitle>
+        <CardTitle className="text-lg font-bold">{t.TITLE}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-3">

@@ -57,16 +57,18 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border shadow-sm">
             <Clock className="h-4 w-4 text-primary" />
             <span className="text-xs font-bold text-slate-700 min-w-[70px]">
-              {currentTime.toLocaleTimeString("en-US", { hour12: false })}
+              {currentTime.toLocaleTimeString("vi-VN", { hour12: false })}
             </span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border shadow-sm">
             <Cloud className="h-4 w-4 text-blue-500" />
-            <span className="text-xs font-bold text-slate-700">28°C / Có mây</span>
+            <span className="text-xs font-bold text-slate-700">
+              {UI_TEXT.DASHBOARD.WEATHER_CLOUDY}
+            </span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border shadow-sm">
             <MapPin className="h-4 w-4 text-rose-500" />
-            <span className="text-xs font-bold text-slate-700">Sảnh chính</span>
+            <span className="text-xs font-bold text-slate-700">{UI_TEXT.DASHBOARD.MAIN_LOBBY}</span>
           </div>
         </div>
       </div>
@@ -139,7 +141,9 @@ export default function DashboardPage() {
               </div>
               <div className="flex justify-between items-center text-[10px]">
                 <span className="opacity-70">{UI_TEXT.DASHBOARD.INVENTORY_SYNC}</span>
-                <span className="text-amber-400 font-bold">{UI_TEXT.DASHBOARD.STALE} (5m)</span>
+                <span className="text-amber-400 font-bold">
+                  {UI_TEXT.DASHBOARD.STALE} {UI_TEXT.DASHBOARD.STALE_DURATION(5)}
+                </span>
               </div>
             </div>
           </div>

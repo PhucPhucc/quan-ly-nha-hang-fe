@@ -3,34 +3,35 @@
 import { AlertCircle, Calendar, Megaphone, Pin } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 export function TeamAnnouncements() {
+  const t = UI_TEXT.DASHBOARD;
   const announcements = [
     {
       id: 1,
       type: "urgent",
-      title: "Main walk-in fridge maintenance",
-      time: "Today, 14:00 - 16:00",
-      content:
-        "Maintenance team will be on-site to check the compressor. Please minimize door openings.",
-      tag: "Maintenance",
+      title: "Bảo trì tủ đông tổng",
+      time: "Hôm nay, 14:00 - 16:00",
+      content: "Đội bảo trì sẽ đến kiểm tra máy nén. Vui lòng hạn chế mở cửa tủ.",
+      tag: "Bảo trì",
     },
     {
       id: 2,
       type: "info",
-      title: "New Set Menu training",
-      time: "Tomorrow, 09:00",
+      title: "Đào tạo Thực đơn mới",
+      time: "Ngày mai, 09:00",
       content:
-        "All servers and chefs must attend the tasting and plating session for the Spring Menu.",
-      tag: "Training",
+        "Tất cả nhân viên phục vụ và bếp trưởng phải tham gia buổi nếm thử và trình bày món cho Thực đơn Xuân.",
+      tag: "Đào tạo",
     },
     {
       id: 3,
       type: "event",
-      title: "Private Event: Tech Corp Dinner",
-      time: "Feb 6th, 19:00",
-      content: "Booking for 45 pax in the VIP Lounge. Specific set menu required.",
-      tag: "Event",
+      title: "Tiệc công ty: Tech Corp Dinner",
+      time: "06/02, 19:00",
+      content: "Đặt trước cho 45 khách tại phòng VIP. Yêu cầu thực đơn set menu riêng.",
+      tag: "Sự kiện",
     },
   ];
 
@@ -40,10 +41,10 @@ export function TeamAnnouncements() {
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-bold flex items-center gap-2">
             <Megaphone className="h-5 w-5 text-primary" />
-            Internal Bulletin
+            {t.BULLETIN_TITLE}
           </CardTitle>
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-white px-2 py-1 rounded border">
-            Official Notices
+            {t.BULLETIN_TAG}
           </span>
         </div>
       </CardHeader>
@@ -85,7 +86,7 @@ export function TeamAnnouncements() {
           ))}
         </div>
         <button className="w-full py-3 bg-slate-50 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
-          View All Announcements
+          {t.VIEW_ALL}
         </button>
       </CardContent>
     </Card>
