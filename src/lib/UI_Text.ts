@@ -113,6 +113,7 @@ export const UI_TEXT = {
     FETCH_ERROR: "Không thể tải danh sách bàn",
     RESERVATION_BTN: "Đặt bàn",
     PEOPLE: "Khách",
+    NO_TABLES_FOUND: "Không tìm thấy bàn nào phù hợp.",
     TABLE_NUMBER(num: number) {
       return `Bàn ${num}`;
     },
