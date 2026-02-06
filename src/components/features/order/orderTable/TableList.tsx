@@ -3,6 +3,7 @@
 import React from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 import { mockTables } from "./mockData";
 import TableItem from "./TableItem";
@@ -31,7 +32,7 @@ const TableList = ({ statusFilter = "all" }: TableListProps) => {
 
         {filteredTables.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-            <p className="text-sm">Không tìm thấy bàn nào</p>
+            <p className="text-sm">{UI_TEXT.TABLE.NO_TABLES_FOUND}</p>
           </div>
         )}
       </ScrollArea>

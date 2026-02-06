@@ -133,7 +133,7 @@ const OrderCurrent = () => {
             </Button>
             <Button
               size="sm"
-              className="font-bold shadow-glow hover:shadow-none transition-all text-xs h-9"
+              className="font-bold shadow-sm hover:bg-primary/90 transition-all text-xs h-9"
             >
               Gửi yêu cầu
             </Button>

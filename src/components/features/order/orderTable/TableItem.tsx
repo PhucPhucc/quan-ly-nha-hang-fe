@@ -82,13 +82,13 @@ const TableItem = ({ table, onClick }: TableItemProps) => {
             )}
           </div>
 
-          <div className="flex flex-col gap-0.5">
+          <div className="flex justify-between items-center gap-0.5">
             <p className="flex items-center gap-0.5 text-[8px] font-bold text-foreground/70 truncate">
               <UtensilsCrossed className="size-2 shrink-0" />
               <span>{table.people} Khách</span>
             </p>
             {table.status === "INPROCESS" && (
-              <p className="font-black text-[9px] text-primary truncate leading-none">
+              <p className="font-black text-xs text-primary truncate leading-none">
                 {table.price || "0"}
               </p>
             )}
@@ -97,7 +97,7 @@ const TableItem = ({ table, onClick }: TableItemProps) => {
       </div>
       <p
         className={cn(
-          "mt-1.5 text-[8px] font-black uppercase tracking-tighter transition-colors text-center w-full",
+          "mt-3 text-[10px] font-black uppercase tracking-tighter transition-colors text-center w-full",
           table.status === "READY" ? "text-muted-foreground" : "text-foreground"
         )}
       >
