@@ -34,6 +34,7 @@ const ProfileForm = () => {
     const formData = new FormData(e.currentTarget);
     const updatedProfile = {
       fullName: formData.get("fullName") as string,
+      email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       dateOfBirth: formData.get("dateOfBirth") as string,
       address: formData.get("address") as string,

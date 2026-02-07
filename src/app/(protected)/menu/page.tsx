@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-import MenuContainerHeader from "@/components/features/menu/MenuContainerHeader";
 import MenuFilters from "@/components/features/menu/MenuFilters";
 import { MenuFormDialog } from "@/components/features/menu/MenuFormDialog";
 import { MenuTable } from "@/components/features/menu/MenuTable";
@@ -57,8 +56,8 @@ export default function MenuManagementPage() {
   };
 
   return (
-    <div className="p-6 space-y-8 bg-slate-50/50 min-h-screen">
-      <MenuContainerHeader onAddNew={() => setIsFormOpen(true)} />
+    <div className="p-6 space-y-4 bg-muted/40 rounded-xl min-h-screen">
+      {/* <MenuContainerHeader onAddNew={() => setIsFormOpen(true)} /> */}
 
       <MenuFilters
         searchQuery={searchQuery}
@@ -73,7 +72,7 @@ export default function MenuManagementPage() {
         onReset={handleReset}
       />
 
-      <Tabs defaultValue="items" className="w-full">
+      <Tabs defaultValue="items" className="w-full gap-1">
         <TabsList className="bg-slate-200/50 p-1 rounded-lg">
           <TabsTrigger value="items" className="px-8 font-semibold">
             Món lẻ
@@ -83,7 +82,7 @@ export default function MenuManagementPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="items" className="mt-6">
+        <TabsContent value="items" className="">
           <MenuTable
             items={filteredItems}
             role={userRole}
@@ -95,7 +94,7 @@ export default function MenuManagementPage() {
 
         <TabsContent
           value="sets"
-          className="mt-6 italic text-slate-400 text-center py-20 bg-white rounded-xl border border-dashed"
+          className="italic text-slate-400 text-center py-20 bg-white rounded-xl border border-dashed"
         >
           Chưa có dữ liệu Combo...
         </TabsContent>

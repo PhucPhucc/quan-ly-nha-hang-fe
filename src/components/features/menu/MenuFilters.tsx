@@ -3,7 +3,7 @@
 import { RotateCcw, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
@@ -42,19 +42,21 @@ export default function MenuFilters({
   return (
     <div className="flex flex-wrap items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
       {/* Search */}
-      <div className="relative flex-1 min-w-[200px]">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-        <Input
+      <InputGroup className="relative flex-1 min-w-50 ">
+        <InputGroupAddon>
+          <Search />
+        </InputGroupAddon>
+        <InputGroupInput
           placeholder="Tìm tên / mã món..."
-          className="pl-10 border-slate-200 focus-visible:ring-[#cc0000]"
+          className="pl-10"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </div>
+      </InputGroup>
 
       {/* Loại món */}
       <Select value={filterCategory} onValueChange={setFilterCategory}>
-        <SelectTrigger className="w-[160px] border-slate-200 focus:ring-[#cc0000]">
+        <SelectTrigger className="w-40">
           <SelectValue placeholder="Tất cả loại" />
         </SelectTrigger>
         <SelectContent>
