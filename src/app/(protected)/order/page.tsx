@@ -1,42 +1,66 @@
-import { Armchair, UtensilsCrossed } from "lucide-react";
+"use client";
+
+import { Armchair, ClipboardList, UtensilsCrossed } from "lucide-react";
+import { useState } from "react";
 
 import OrderCurrent from "@/components/features/order/orderCurrent/OrderCurrent";
 import CardMenu from "@/components/features/order/orderMenu/CardMenu";
-import CardTable from "@/components/features/order/orderTable/CardTable";
+import OrderBoard from "@/components/features/order/orderTable/OrderBoard";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
-const page = () => {
+const OrderPage = () => {
+  const [activeView, setActiveView] = useState<"order" | "menu">("order");
+
   return (
     <div className="flex h-[calc(100vh-100px)] w-full bg-muted/40 p-2 gap-2 overflow-hidden">
-      {/* Left Column: Table List & Menu Selection */}
-      <Tabs defaultValue="table" className="flex-[1.5] gap-0 w-full min-w-0 h-full flex flex-col">
-        <TabsList className="w-full flex justify-start gap-0 p-0 bg-transparent h-auto z-10 rounded-t-lg rounded-b-none relative border-b border-border">
-          <TabsTrigger
-            value="table"
-            className="gap-2 rounded-t-none data-[state=active]:rounded-t-xl rounded-b-none border border-b-0 border-transparent px-4 py-3 text-muted-foreground transition-all relative top-px data-[state=active]:border-border data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:font-black data-[state=active]:shadow-none"
+      {/* Left Column: Order Board & Menu Selection */}
+      <div className="flex-[1.8] flex flex-col h-full min-w-0">
+        <div className="flex bg-muted/30 p-1.5 rounded-t-2xl border border-b-0 border-border gap-2">
+          <Button
+            variant="ghost"
+            onClick={() => setActiveView("order")}
+            className={cn(
+              "flex-1 h-12 rounded-xl gap-3 text-sm font-black transition-all",
+              activeView === "order"
+                ? "bg-background text-primary shadow-sm border border-border/50"
+                : "text-muted-foreground hover:bg-background/50"
+            )}
           >
-            <Armchair className="size-4" />
-            <span>Bàn</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="menu"
-            className="gap-2 rounded-t-none data-[state=active]:rounded-t-xl rounded-b-none border border-b-0 border-transparent px-4 py-3 text-muted-foreground transition-all relative top-px data-[state=active]:border-border data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:font-black data-[state=active]:shadow-none"
+            <ClipboardList
+              className={cn(
+                "size-5",
+                activeView === "order" ? "text-primary" : "text-muted-foreground"
+              )}
+            />
+            <span>ĐƠN HÀNG</span>
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => setActiveView("menu")}
+            className={cn(
+              "flex-1 h-12 rounded-xl gap-3 text-sm font-black transition-all",
+              activeView === "menu"
+                ? "bg-background text-primary shadow-sm border border-border/50"
+                : "text-muted-foreground hover:bg-background/50"
+            )}
           >
-            <UtensilsCrossed className="size-4" />
-            <span>Thực đơn</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <div className="flex-1 min-h-0 border border-border border-t-0 bg-background rounded-b-xl shadow-sm overflow-hidden flex flex-col">
-          <TabsContent value="table" className="flex-1 min-h-0 h-full m-0 p-0 ">
-            <CardTable />
-          </TabsContent>
-          <TabsContent value="menu" className="flex-1 min-h-0 h-full m-0 p-0">
-            <CardMenu />
-          </TabsContent>
+            <UtensilsCrossed
+              className={cn(
+                "size-5",
+                activeView === "menu" ? "text-primary" : "text-muted-foreground"
+              )}
+            />
+            <span>THỰC ĐƠN</span>
+          </Button>
         </div>
-      </Tabs>
+
+        <div className="flex-1 min-h-0 border border-border bg-background rounded-b-2xl shadow-sm overflow-hidden flex flex-col relative z-0">
+          {activeView === "order" ? <OrderBoard /> : <CardMenu />}
+        </div>
+      </div>
 
       {/* Right Column: Order Details */}
       <div className="flex-1 flex flex-col h-full min-h-0 w-full">
@@ -89,4 +113,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default OrderPage;

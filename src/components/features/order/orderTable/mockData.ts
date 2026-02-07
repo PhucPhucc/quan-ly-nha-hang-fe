@@ -59,3 +59,35 @@ export const mockTables: Table[] = [
   { tableNumber: 19, status: "READY", label: UI_TEXT.TABLE.READY, people: 4 },
   { tableNumber: 20, status: "READY", label: UI_TEXT.TABLE.READY, people: 4 },
 ];
+
+import { TakeawayOrder } from "./TakeawayItem";
+
+export const mockTakeawayOrders: TakeawayOrder[] = [
+  {
+    id: "TK001",
+    orderCode: "ORD-20240523-001",
+    status: "INPROCESS",
+    label: "Mang đi #001",
+    people: 1,
+    elapsedTime: "10m",
+    price: "85.000đ",
+  },
+  {
+    id: "TK002",
+    orderCode: "ORD-20240523-002",
+    status: "READY",
+    label: "Mang đi #002",
+    people: 1,
+    elapsedTime: "5m",
+    price: "150.000đ",
+  },
+  {
+    id: "TK003",
+    orderCode: "ORD-20240523-003",
+    status: "INPROCESS",
+    label: "Mang đi #003",
+    people: 2,
+    elapsedTime: "25m",
+    price: "320.000đ",
+  },
+];
