@@ -30,8 +30,10 @@ const LoginForm = () => {
       setEmployee({
         email: data.email,
         username: data.employeeCode,
+        fullName: data.fullName,
         role: data.role,
       });
+
       setAccessToken(data.accessToken);
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
