@@ -16,7 +16,7 @@ export type Table = {
   price?: string;
 };
 
-interface TableItemProps {
+export interface TableItemProps {
   table: Table;
   onClick?: (table: Table) => void;
 }

@@ -17,7 +17,7 @@ export type TakeawayOrder = {
   price?: string;
 };
 
-interface TakeawayItemProps {
+export interface TakeawayItemProps {
   order: TakeawayOrder;
   onClick?: (order: TakeawayOrder) => void;
 }
