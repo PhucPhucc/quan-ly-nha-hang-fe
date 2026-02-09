@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import DOBPicker from "@/components/shared/DOBPicker";
 import { Button } from "@/components/ui/button";
@@ -19,8 +20,13 @@ const ProfileForm = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
-      const data = await getMyProfile();
-      console.log(data);
+      let data = {};
+      try {
+        data = await getMyProfile();
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+        toast.error(UI_TEXT.COMMON.ERROR);
+      }
       setProfile(data);
       setLoading(false);
     };
@@ -41,7 +47,13 @@ const ProfileForm = () => {
     };
 
     console.log(updatedProfile);
-    await updateMyProfile(updatedProfile);
+    try {
+      await updateMyProfile(updatedProfile);
+      toast.success(UI_TEXT.COMMON.UPDATE_SUCCESS);
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      toast.error(UI_TEXT.COMMON.UPDATE_ERROR);
+    }
     setLoading(false);
   };
 

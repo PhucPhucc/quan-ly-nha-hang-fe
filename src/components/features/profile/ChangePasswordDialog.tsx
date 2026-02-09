@@ -1,8 +1,8 @@
 "use client";
 
-import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
+import FieldPassword from "@/components/shared/FieldPassword";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,127 +12,106 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { getErrorMessage } from "@/lib/error";
+import { FieldGroup } from "@/components/ui/field";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { validateNewPassword } from "@/lib/utils";
 import { changePassword } from "@/services/profileService";
 
 export default function ChangePasswordDialog() {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwords, setPasswords] = useState({
+    current: "",
+    new: "",
+    confirm: "",
+  });
 
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
-  const handleSubmit = async () => {
-    if (newPassword !== confirmPassword) {
-      setError(UI_TEXT.CHANGE_PASSWORD.CONFIRM_NOT_MATCH);
-      return;
-    }
+  const handleChange = useCallback(
+    (key: "current" | "new" | "confirm") => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPasswords((prev) => ({
+        ...prev,
+        [key]: e.target.value,
+      }));
+    },
+    []
+  );
+
+  // ===== validation =====
+  const passwordError = useMemo(() => {
+    return validateNewPassword(passwords.new, passwords.confirm);
+  }, [passwords.new, passwords.confirm]);
+
+  const canSubmit = !loading && !passwordError && passwords.current;
+
+  // ===== submit =====
+  const handleSubmit = useCallback(async () => {
+    if (passwordError) return;
 
     try {
       setLoading(true);
-      setError("");
+      setServerError("");
 
-      await changePassword({ currentPassword, newPassword });
+      await changePassword({
+        currentPassword: passwords.current,
+        newPassword: passwords.new,
+        confirmPassword: passwords.confirm,
+      });
 
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setOpen(false);
-    } catch (err) {
-      setError(getErrorMessage(err));
+      setPasswords({ current: "", new: "", confirm: "" });
+    } catch (err: unknown) {
+      setServerError(String(err));
     } finally {
       setLoading(false);
     }
-  };
+  }, [passwordError, passwords]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full">
           {UI_TEXT.CHANGE_PASSWORD.BUTTON}
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-md">
+      <DialogContent aria-describedby={undefined} className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{UI_TEXT.CHANGE_PASSWORD.TITLE}</DialogTitle>
+          <DialogTitle className="text-2xl text-center">
+            {UI_TEXT.CHANGE_PASSWORD.TITLE}
+          </DialogTitle>
         </DialogHeader>
 
-        <FieldGroup className="space-y-4">
-          {/* Current password */}
-          <Field>
-            <FieldLabel>{UI_TEXT.CHANGE_PASSWORD.CURRENT_PASSWORD}</FieldLabel>
-            <div className="relative">
-              <Input
-                type={showCurrent ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              >
-                {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </Field>
+        <FieldGroup className="gap-3">
+          <FieldPassword
+            name="currentPassword"
+            label={UI_TEXT.CHANGE_PASSWORD.CURRENT_PASSWORD}
+            value={passwords.current}
+            onChange={handleChange("current")}
+          />
 
-          {/* New password */}
-          <Field>
-            <FieldLabel>{UI_TEXT.CHANGE_PASSWORD.NEW_PASSWORD}</FieldLabel>
-            <div className="relative">
-              <Input
-                type={showNew ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowNew(!showNew)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              >
-                {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </Field>
+          <FieldPassword
+            name="newPassword"
+            label={UI_TEXT.CHANGE_PASSWORD.NEW_PASSWORD}
+            value={passwords.new}
+            onChange={handleChange("new")}
+          />
 
-          {/* Confirm password */}
-          <Field>
-            <FieldLabel>{UI_TEXT.CHANGE_PASSWORD.CONFIRM_PASSWORD}</FieldLabel>
-            <div className="relative">
-              <Input
-                type={showConfirm ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              >
-                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </Field>
+          <FieldPassword
+            name="confirmPassword"
+            label={UI_TEXT.CHANGE_PASSWORD.CONFIRM_PASSWORD}
+            value={passwords.confirm}
+            onChange={handleChange("confirm")}
+          />
 
-          {error && <p className="text-sm text-destructive text-center">{error}</p>}
+          {(passwordError || serverError) && (
+            <p className="text-sm text-destructive text-center">{passwordError || serverError}</p>
+          )}
         </FieldGroup>
 
         <DialogFooter className="flex justify-between gap-2">
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            {UI_TEXT.COMMON.CANCEL}
-          </Button>
-          <Button onClick={handleSubmit} disabled={loading}>
+          <Button variant="outline">{UI_TEXT.COMMON.CANCEL}</Button>
+
+          <Button onClick={handleSubmit} disabled={!canSubmit}>
             {loading ? UI_TEXT.COMMON.LOADING : UI_TEXT.COMMON.UPDATE}
           </Button>
         </DialogFooter>

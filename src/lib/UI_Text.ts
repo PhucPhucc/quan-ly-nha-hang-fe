@@ -19,6 +19,8 @@ export const UI_TEXT = {
     SEARCH: "Tìm kiếm",
     NAME_PROJECT: "FoodHub",
     RESET: "Đặt lại",
+    UPDATE_SUCCESS: "Cập nhật thông tin thành công",
+    UPDATE_ERROR: "Cập nhật thông tin thất bại",
   },
 
   AUTH: {
@@ -128,6 +130,7 @@ export const UI_TEXT = {
     CONFIRM_PASSWORD: "Xác nhận mật khẩu",
 
     CONFIRM_NOT_MATCH: "Mật khẩu xác nhận không khớp",
+    REQUIRED: "Vui lòng điền vào tất cả các trường",
   },
   PROFILE: {
     TITLE: "Thông tin cá nhân",
@@ -137,7 +140,7 @@ export const UI_TEXT = {
     NEW_PASSWORD: "Mật khẩu mới",
     CONFIRM_PASSWORD: "Xác nhận mật khẩu",
     CONFIRM_PASSWORD_MISMATCH: "Mật khẩu xác nhận không khớp",
-  } as const,
+  },
 
   AUDIT_LOG: {
     TITLE: "Lịch sử hệ thống",

@@ -20,10 +20,11 @@ export const updateMyProfile = async (data: Partial<Employee>): Promise<void> =>
 export type ChangePasswordPayload = {
   currentPassword: string;
   newPassword: string;
+  confirmPassword?: string;
 };
 
 export const changePassword = async (data: ChangePasswordPayload): Promise<void> => {
-  await apiFetch("/profile/change-password", {
+  await apiFetch("/auth/change-password", {
     method: "POST",
     body: JSON.stringify(data),
   });
