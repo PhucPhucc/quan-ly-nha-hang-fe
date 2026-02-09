@@ -6,6 +6,7 @@ import FieldPassword from "@/components/shared/FieldPassword";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -23,6 +24,7 @@ export default function ChangePasswordDialog() {
     new: "",
     confirm: "",
   });
+  const [open, setOpen] = useState(false);
 
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -58,8 +60,9 @@ export default function ChangePasswordDialog() {
         confirmPassword: passwords.confirm,
       });
 
-      setPasswords({ current: "", new: "", confirm: "" });
+      setOpen(false);
     } catch (err: unknown) {
+      console.log(err);
       setServerError(String(err));
     } finally {
       setLoading(false);
@@ -67,7 +70,7 @@ export default function ChangePasswordDialog() {
   }, [passwordError, passwords]);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full">
           {UI_TEXT.CHANGE_PASSWORD.BUTTON}
@@ -109,10 +112,14 @@ export default function ChangePasswordDialog() {
         </FieldGroup>
 
         <DialogFooter className="flex justify-between gap-2">
-          <Button variant="outline">{UI_TEXT.COMMON.CANCEL}</Button>
+          <DialogClose asChild>
+            <Button type="reset" variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+          </DialogClose>
 
-          <Button onClick={handleSubmit} disabled={!canSubmit}>
-            {loading ? UI_TEXT.COMMON.LOADING : UI_TEXT.COMMON.UPDATE}
+          <Button type="submit" onClick={handleSubmit} disabled={!canSubmit}>
+            {loading ? UI_TEXT.COMMON.LOADING : UI_TEXT.BUTTON.SAVE_CHANGES}
           </Button>
         </DialogFooter>
       </DialogContent>

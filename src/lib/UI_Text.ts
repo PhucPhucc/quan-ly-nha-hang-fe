@@ -131,6 +131,11 @@ export const UI_TEXT = {
 
     CONFIRM_NOT_MATCH: "Mật khẩu xác nhận không khớp",
     REQUIRED: "Vui lòng điền vào tất cả các trường",
+    UPPERCASE_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ cái viết hoa",
+    LOWERCASE_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ cái viết thường",
+    NUMBER_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ số",
+    SPECIAL_CHAR_REQUIRED: "Mật khẩu mới phải chứa ít nhất một ký tự đặc biệt",
+    MIN_LENGTH: "Mật khẩu mới phải có ít nhất 8 ký tự",
   },
   PROFILE: {
     TITLE: "Thông tin cá nhân",
