@@ -22,10 +22,15 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, []);
 
-  const role = employee?.role || 0;
-  const isManager = role === 1;
-  const isChef = role === 4;
-  const isCashier = role === 2;
+  const role = employee?.role;
+  const isManager =
+    role === 1 ||
+    role === "1" ||
+    role === "manager" ||
+    role === "Manager" ||
+    role === "Admin Manager"; // Based on subagent finding "Admin Manager" in token
+  const isChef = role === 4 || role === "4" || role === "chefbar" || role === "Chef";
+  const isCashier = role === 2 || role === "2" || role === "cashier" || role === "Cashier";
 
   const getRoleName = () => {
     if (isManager) return UI_TEXT.ROLE.MANAGER;
