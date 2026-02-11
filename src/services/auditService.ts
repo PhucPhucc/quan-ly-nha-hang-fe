@@ -1,7 +1,7 @@
+import { ApiResponse, PaginationResult } from "@/types/Api";
 import { EmployeeAuditLog } from "@/types/Employee";
 
 import { apiFetch } from "./api";
-import { ApiResponse, PaginationResult } from "./menuService";
 
 export async function getAuditLogs(
   employeeId?: string

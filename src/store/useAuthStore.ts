@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 import { Employee } from "@/types/Employee";
 
-type AuthState = {
+export type AuthState = {
   employee: Partial<Employee> | null;
 
   setEmployee: (employee: Partial<Employee> | null) => void;

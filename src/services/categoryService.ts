@@ -1,11 +1,12 @@
+import { ApiResponse, PaginationResult } from "@/types/Api";
 import { Category } from "@/types/Menu";
 
 import { apiFetch } from "./api";
-import { ApiResponse } from "./menuService";
 
 export const categoryService = {
   // Lấy tất cả danh mục
-  getAll: (): Promise<ApiResponse<Category[]>> => apiFetch<Category[]>("/v1/categories"),
+  getAll: (): Promise<ApiResponse<PaginationResult<Category>>> =>
+    apiFetch<PaginationResult<Category>>("/v1/categories"),
 
   // Thêm danh mục mới
   create: (data: Partial<Category>): Promise<ApiResponse<Category>> =>

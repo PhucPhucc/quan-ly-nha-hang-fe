@@ -21,7 +21,7 @@ const OrderList = ({ menuList }: { menuList: MenuItem[] }) => {
           }}
         >
           <p className=" font-semibold">{item.name}</p>
-          <p className="text-center">{item.dine_in_price} VND</p>
+          <p className="text-center">{item.priceDineIn} VND</p>
         </li>
       ))}
     </ul>

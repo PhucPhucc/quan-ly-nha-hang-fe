@@ -1,4 +1,4 @@
-"use client";
+"use logout";
 
 import { useEffect, useState } from "react";
 

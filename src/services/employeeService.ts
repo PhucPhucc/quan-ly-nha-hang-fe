@@ -1,7 +1,7 @@
+import { ApiResponse, PaginationResult } from "@/types/Api";
 import { Employee } from "@/types/Employee";
 
 import { apiFetch } from "./api";
-import { ApiResponse, PaginationResult } from "./menuService";
 
 export async function getEmployees(): Promise<ApiResponse<PaginationResult<Employee>>> {
   const res = await apiFetch<PaginationResult<Employee>>("/v1/employees");

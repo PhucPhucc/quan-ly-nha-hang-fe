@@ -39,7 +39,7 @@ export default function MenuManagementPage() {
         setMenuData(menuRes.data.items || []);
       }
       if (catRes && catRes.data) {
-        setCategories(catRes.data || []);
+        setCategories(catRes.data?.items || []);
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Đã xảy ra lỗi";

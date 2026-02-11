@@ -29,6 +29,7 @@ const LoginForm = () => {
 
       if (res.data) {
         const { employeeCode, role, email } = res.data;
+
         setEmployee({
           email: email || "",
           username: employeeCode,

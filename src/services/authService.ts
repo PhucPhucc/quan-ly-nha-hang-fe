@@ -31,3 +31,20 @@ export async function logout(): Promise<ApiResponse<void>> {
     },
   });
 }
+
+export async function requestPasswordReset(email: string): Promise<ApiResponse<string>> {
+  return apiFetch<string>("/v1/auth/request-password-reset", {
+    method: "POST",
+    body: { email },
+  });
+}
+
+export async function resetPassword(data: {
+  token: string;
+  newPassword: string;
+}): Promise<ApiResponse<string>> {
+  return apiFetch<string>("/v1/auth/reset-password", {
+    method: "POST",
+    body: data,
+  });
+}

@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export function LogoutButton() {
-  const clearAuth = useAuthStore((s) => s.clearAuth);
+  const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
 
   const handleLogout = async () => {
-    clearAuth();
+    logout();
     router.replace("/login");
   };
   return <button onClick={handleLogout}>Đăng xuất</button>;

@@ -1,7 +1,7 @@
+import { ApiResponse } from "@/types/Api";
 import { Employee } from "@/types/Employee";
 
 import { apiFetch } from "./api";
-import { ApiResponse } from "./menuService";
 
 // GET profile
 export async function getMyProfile(): Promise<ApiResponse<Employee>> {

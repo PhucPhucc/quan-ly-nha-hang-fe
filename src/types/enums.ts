@@ -1,16 +1,22 @@
-export {};
 // Các Enum liên quan đến Order
 export enum OrderType {
-  DINE_IN = "DINE_IN",
-  TAKEAWAY = "TAKEAWAY",
+  DineIn = "DineIn",
+  Takeaway = "Takeaway",
 }
 
 export enum OrderStatus {
-  DRAFT = "DRAFT",
-  PREPARING = "PREPARING",
-  COOKING = "COOKING",
-  READY = "READY",
-  COMPLETED = "COMPLETED",
+  Serving = "Serving",
+  Completed = "Completed",
+  Cancelled = "Cancelled",
+}
+
+export enum OrderItemStatus {
+  Preparing = "Preparing",
+  Cooking = "Cooking",
+  Ready = "Ready",
+  Completed = "Completed",
+  Cancelled = "Cancelled",
+  Rejected = "Rejected",
 }
 
 export enum ActionType {
