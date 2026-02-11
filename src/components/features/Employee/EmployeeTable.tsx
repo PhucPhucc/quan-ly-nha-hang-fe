@@ -29,9 +29,11 @@ const EmployeeTable = () => {
       try {
         setLoading(true);
 
-        const { employees } = await getEmployees();
+        const res = await getEmployees();
 
-        setEmployees(employees);
+        if (res.data) {
+          setEmployees(res.data.items || []);
+        }
       } catch (err) {
         setError(getErrorMessage(err));
       } finally {

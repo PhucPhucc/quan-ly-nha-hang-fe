@@ -17,12 +17,16 @@ const EmployeeFilter = () => {
 
   const handleSelectedRole = async (value: string) => {
     if (value === "all") {
-      const { employees } = await getEmployees();
-      setEmployees(employees);
+      const res = await getEmployees();
+      if (res.data) {
+        setEmployees(res.data.items || []);
+      }
       return;
     }
-    const filteredEmployees = await filterEmployee(Number(value));
-    setEmployees(filteredEmployees.items);
+    const res = await filterEmployee(Number(value));
+    if (res.data) {
+      setEmployees(res.data.items || []);
+    }
   };
 
   return (

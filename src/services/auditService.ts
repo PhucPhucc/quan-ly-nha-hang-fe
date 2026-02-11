@@ -1,14 +1,24 @@
-import { OrderAuditLog } from "@/types/Order";
+import { EmployeeAuditLog } from "@/types/Employee";
+
 import { apiFetch } from "./api";
+import { ApiResponse, PaginationResult } from "./menuService";
 
-export interface AuditLogResponse {
-  items: OrderAuditLog[];
-  totalCount: number;
-}
-
-export async function getAuditLogs(employeeId?: string) {
+export async function getAuditLogs(
+  employeeId?: string
+): Promise<ApiResponse<PaginationResult<EmployeeAuditLog>>> {
   if (!employeeId) {
-    return { items: [], totalCount: 0 };
+    return {
+      isSuccess: true,
+      data: {
+        items: [],
+        totalCount: 0,
+        pageSize: 10,
+        currentPage: 1,
+        totalPages: 0,
+      },
+    };
   }
-  return apiFetch(`/employees/${employeeId}/audit-logs`, { cache: "no-store" });
+  return apiFetch<PaginationResult<EmployeeAuditLog>>(`/v1/employees/${employeeId}/audit-logs`, {
+    cache: "no-store",
+  });
 }

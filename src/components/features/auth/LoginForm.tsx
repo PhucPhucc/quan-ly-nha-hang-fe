@@ -23,21 +23,25 @@ const LoginForm = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const data = await login({
+      const res = await login({
         employeeCode: formData.get("employeeCode") as string,
         password: formData.get("password") as string,
       });
-      setEmployee({
-        email: data.email,
-        username: data.employeeCode,
-        role: data.role,
-      });
-      setAccessToken(data.accessToken);
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      console.log(data);
-      router.push("/dashboard");
-    } catch {
+
+      if (res.data) {
+        const { employeeCode, role, email, accessToken, refreshToken } = res.data;
+        setEmployee({
+          email: email || "",
+          username: employeeCode,
+          role: role,
+        });
+        setAccessToken(accessToken);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      console.error("Login handleLogin error:", err);
       setError(UI_TEXT.AUTH.ERROR_INVALID_CREDENTIALS);
     }
   };

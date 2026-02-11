@@ -19,9 +19,10 @@ const ProfileForm = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
-      const data = await getMyProfile();
-      console.log(data);
-      setProfile(data);
+      const res = await getMyProfile();
+      if (res.data) {
+        setProfile(res.data);
+      }
       setLoading(false);
     };
     fetchProfile();

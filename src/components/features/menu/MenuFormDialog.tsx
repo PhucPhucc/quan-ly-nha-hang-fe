@@ -56,7 +56,7 @@ export function MenuFormDialog({
   // 3. THAY ĐỔI QUAN TRỌNG: Dùng useWatch thay cho watch để fix lỗi Compiler
   const [currentStation, currentCategory, imageUrl] = useWatch({
     control,
-    name: ["station", "category_id", "image_url"],
+    name: ["station", "categoryId", "imageUrl"],
   });
 
   useEffect(() => {
@@ -68,11 +68,11 @@ export function MenuFormDialog({
           name: "",
           code: "",
           description: "",
-          image_url: "",
-          dine_in_price: 0,
-          cost_price: 0,
+          imageUrl: "",
+          priceDineIn: 0,
+          cost: 0,
           station: Station.BAR,
-          category_id: categories[0]?.category_id || "",
+          categoryId: categories[0]?.categoryId || "",
         });
       }
     }
@@ -96,7 +96,7 @@ export function MenuFormDialog({
         >
           <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <div className="col-span-2 flex items-center gap-4 p-4 bg-red-50/30 rounded-xl border border-dashed border-red-200">
-              <div className="h-20 w-20 rounded-lg overflow-hidden border border-red-100 bg-white flex-shrink-0">
+              <div className="h-20 w-20 rounded-lg overflow-hidden border border-red-100 bg-white shrink-0">
                 <img
                   src={imageUrl || "https://placehold.co/100x100?text=FoodHub"}
                   alt="Preview"
@@ -105,14 +105,14 @@ export function MenuFormDialog({
               </div>
               <div className="flex-1 space-y-1.5">
                 <Label
-                  htmlFor="image_url"
+                  htmlFor="imageUrl"
                   className="text-[10px] font-bold uppercase tracking-wider text-red-600 flex items-center gap-2"
                 >
                   <ImageIcon size={14} /> Đường dẫn ảnh món ăn
                 </Label>
                 <Input
-                  id="image_url"
-                  {...register("image_url")}
+                  id="imageUrl"
+                  {...register("imageUrl")}
                   placeholder="Dán link ảnh tại đây..."
                   className="h-9 bg-white border-red-100 focus-visible:ring-[#cc0000]"
                 />
@@ -167,13 +167,13 @@ export function MenuFormDialog({
               <Label className="text-sm font-bold flex items-center gap-2 text-slate-700">
                 <LayoutGrid size={14} className="text-[#cc0000]" /> Danh mục
               </Label>
-              <Select value={currentCategory} onValueChange={(val) => setValue("category_id", val)}>
+              <Select value={currentCategory} onValueChange={(val) => setValue("categoryId", val)}>
                 <SelectTrigger className="h-11 focus:ring-[#cc0000]">
                   <SelectValue placeholder="Chọn nhóm" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.category_id} value={cat.category_id}>
+                  {categories?.map((cat) => (
+                    <SelectItem key={cat.categoryId} value={cat.categoryId}>
                       {cat.name}
                     </SelectItem>
                   ))}
@@ -183,30 +183,30 @@ export function MenuFormDialog({
 
             <div className="space-y-1.5">
               <Label
-                htmlFor="price"
+                htmlFor="priceDineIn"
                 className="text-sm font-bold flex items-center gap-2 text-[#cc0000]"
               >
                 <DollarSign size={14} /> Giá bán (VNĐ)
               </Label>
               <Input
-                id="price"
+                id="priceDineIn"
                 type="number"
-                {...register("dine_in_price")}
+                {...register("priceDineIn")}
                 className="h-11 font-black text-[#cc0000] border-red-100 bg-red-50/30 focus-visible:ring-[#cc0000]"
               />
             </div>
 
             <div className="space-y-1.5">
               <Label
-                htmlFor="cost_price"
+                htmlFor="cost"
                 className="text-sm font-bold flex items-center gap-2 text-slate-500"
               >
                 <Wallet size={14} /> Giá vốn (VNĐ)
               </Label>
               <Input
-                id="cost_price"
+                id="cost"
                 type="number"
-                {...register("cost_price")}
+                {...register("cost")}
                 className="h-11 font-bold text-slate-600 focus-visible:ring-slate-400"
               />
             </div>
@@ -216,16 +216,20 @@ export function MenuFormDialog({
                 <Store size={14} className="text-[#cc0000]" /> Trạm thực hiện
               </Label>
               <Select
-                value={currentStation || Station.BAR}
-                onValueChange={(val) => setValue("station", val as Station)}
+                value={currentStation?.toString() || Station.BAR.toString()}
+                onValueChange={(val) => setValue("station", parseInt(val) as Station)}
               >
                 <SelectTrigger className="h-11 focus:ring-[#cc0000]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={Station.BAR}>Quầy Bar (Đồ uống)</SelectItem>
-                  <SelectItem value={Station.KITCHEN_HOT}>Bếp Nóng (Món chính)</SelectItem>
-                  <SelectItem value={Station.KITCHEN_COLD}>Bếp Lạnh (Salad/Tráng miệng)</SelectItem>
+                  <SelectItem value={Station.BAR.toString()}>Quầy Bar (Đồ uống)</SelectItem>
+                  <SelectItem value={Station.HOT_KITCHEN.toString()}>
+                    Bếp Nóng (Món chính)
+                  </SelectItem>
+                  <SelectItem value={Station.COLD_KITCHEN.toString()}>
+                    Bếp Lạnh (Salad/Tráng miệng)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -242,7 +246,7 @@ export function MenuFormDialog({
             </Button>
             <Button
               type="submit"
-              className="flex-[2] bg-[#cc0000] hover:bg-[#aa0000] text-white shadow-lg shadow-red-100 font-bold uppercase tracking-wider"
+              className="flex-2 bg-[#cc0000] hover:bg-[#aa0000] text-white shadow-lg shadow-red-100 font-bold uppercase tracking-wider"
             >
               {initialData ? "Lưu thay đổi" : "Xác nhận thêm món"}
             </Button>

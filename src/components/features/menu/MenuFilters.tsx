@@ -59,8 +59,8 @@ export default function MenuFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Tất cả loại</SelectItem>
-          {categories.map((cat) => (
-            <SelectItem key={cat.category_id} value={cat.category_id}>
+          {categories?.map((cat) => (
+            <SelectItem key={cat.categoryId} value={cat.categoryId}>
               {cat.name}
             </SelectItem>
           ))}
@@ -74,9 +74,9 @@ export default function MenuFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Tất cả trạm</SelectItem>
-          <SelectItem value="BAR">Quầy Bar</SelectItem>
-          <SelectItem value="KITCHEN_HOT">Bếp Nóng</SelectItem>
-          <SelectItem value="KITCHEN_COLD">Bếp Lạnh</SelectItem>
+          <SelectItem value="1">Bếp Nóng</SelectItem>
+          <SelectItem value="2">Bếp Lạnh</SelectItem>
+          <SelectItem value="3">Quầy Bar</SelectItem>
         </SelectContent>
       </Select>
 
