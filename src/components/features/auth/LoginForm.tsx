@@ -18,7 +18,6 @@ const LoginForm = () => {
   const [error, setError] = useState("");
 
   const setEmployee = useAuthStore((state) => state.setEmployee);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -29,15 +28,12 @@ const LoginForm = () => {
       });
 
       if (res.data) {
-        const { employeeCode, role, email, accessToken, refreshToken } = res.data;
+        const { employeeCode, role, email } = res.data;
         setEmployee({
           email: email || "",
           username: employeeCode,
           role: role,
         });
-        setAccessToken(accessToken);
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
         router.push("/dashboard");
       }
     } catch (err) {

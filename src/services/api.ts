@@ -17,9 +17,7 @@ export async function refreshToken() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      refreshToken: localStorage.getItem("refreshToken"),
-    }),
+    body: JSON.stringify({}),
   });
 
   if (!res.ok) {
@@ -34,9 +32,6 @@ export async function apiFetch<T>(
   path: string,
   options: Omit<RequestInit, "body"> & { body?: object | string | number | boolean | null } = {}
 ): Promise<ApiResponse<T>> {
-  const store = useAuthStore.getState();
-  const token = store.accessToken ? store.accessToken : localStorage.getItem("accessToken");
-
   const headers: Record<string, string> = {
     ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
     ...((options.headers as Record<string, string>) || {}),
@@ -44,10 +39,6 @@ export async function apiFetch<T>(
 
   if (headers["Content-Type"] === "none") {
     delete headers["Content-Type"];
-  }
-
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const fetchOptions = {
@@ -65,19 +56,18 @@ export async function apiFetch<T>(
   if (res.status === 401) {
     if (!isRefreshing) {
       isRefreshing = true;
+      console.log("[API] 401 Unauthorized - Attempting refresh...");
 
       try {
-        const data = await refreshToken();
-        store.setAccessToken(data.accessToken);
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-
+        await refreshToken();
         isRefreshing = false;
+        console.log("[API] Refresh successful, retrying original request.");
         refreshQueue.forEach((cb) => cb());
         refreshQueue = [];
-      } catch {
+      } catch (err) {
         isRefreshing = false;
-        store.logout();
+        console.error("[API] Refresh failed:", err);
+        useAuthStore.getState().logout();
         window.location.href = "/login";
         throw new Error("Session expired");
       }
@@ -87,15 +77,8 @@ export async function apiFetch<T>(
       refreshQueue.push(resolve);
     });
 
-    const newToken = useAuthStore.getState().accessToken;
-
-    if (newToken) {
-      const authHeaders = {
-        ...headers,
-        Authorization: `Bearer ${newToken}`,
-      };
-      fetchOptions.headers = authHeaders;
-    }
+    // Short delay to ensure browser processed cookies
+    await new Promise((r) => setTimeout(r, 100));
 
     res = await fetch(BASE_URL + "/api" + path, fetchOptions);
   }
@@ -112,10 +95,13 @@ export async function apiFetch<T>(
     throw new Error(message);
   }
 
-  const json = (await res.json()) as ApiResponse<T> | T;
+  const json = (await res.json()) as unknown;
 
-  if (json && typeof json === "object" && "data" in (json as object)) {
-    return json as ApiResponse<T>;
+  if (json && typeof json === "object" && "data" in (json as Record<string, unknown>)) {
+    return {
+      isSuccess: true,
+      ...(json as Record<string, unknown>),
+    } as ApiResponse<T>;
   }
 
   return {
