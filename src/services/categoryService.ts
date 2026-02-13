@@ -27,4 +27,8 @@ export const categoryService = {
     apiFetch<void>(`/v1/categories/${id}`, {
       method: "DELETE",
     }),
+
+  // Lấy danh mục theo ID
+  getById: (id: string): Promise<ApiResponse<Category>> =>
+    apiFetch<Category>(`/v1/categories/${id}`),
 };

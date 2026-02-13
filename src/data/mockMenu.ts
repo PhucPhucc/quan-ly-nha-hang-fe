@@ -19,16 +19,38 @@ export const MOCK_CATEGORIES: Category[] = [
     createdAt: NOW,
     updatedAt: NOW,
   },
+  {
+    categoryId: "CAT_03",
+    name: "Sinh Tố & Nước Ép",
+    type: CategoryType.NORMAL,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
+  {
+    categoryId: "CAT_04",
+    name: "Bánh Ngọt & Tráng Miệng",
+    type: CategoryType.NORMAL,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
+  {
+    categoryId: "CAT_05",
+    name: "Đồ Ăn Vặt",
+    type: CategoryType.NORMAL,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
 ];
 
 // 2. Món ăn
 export const MOCK_MENU_ITEMS: MenuItem[] = [
-  // Món 1: Cà phê muối (Có option đường đá)
+  // --- Cà Phê Việt Nam ---
   {
     menuItemId: "ITEM_CF_MUOI",
     code: "CF01",
     name: "Cà Phê Muối Huế",
-    imageUrl: "https://placehold.co/200x200?text=Ca+Phe+Muoi",
+    imageUrl:
+      "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=200&h=200",
     description: "Vị mặn béo của kem muối hòa quyện cà phê đậm đà",
     categoryId: "CAT_01",
     categoryName: "Cà Phê Việt Nam",
@@ -40,29 +62,12 @@ export const MOCK_MENU_ITEMS: MenuItem[] = [
     createdAt: NOW,
     updatedAt: NOW,
   },
-  // Món 2: Trà Lài Vải (Có option Topping)
-  {
-    menuItemId: "ITEM_TRA_VAI",
-    code: "TEA01",
-    name: "Trà Lài Vải Tươi",
-    imageUrl: "https://placehold.co/200x200?text=Tra+Vai",
-    description: "Trà lài thơm ngát kết hợp vải ngâm giòn ngọt",
-    categoryId: "CAT_02",
-    categoryName: "Trà Trái Cây",
-    priceDineIn: 35000,
-    priceTakeAway: 35000,
-    cost: 12000,
-    station: Station.BAR,
-    isOutOfStock: false,
-    createdAt: NOW,
-    updatedAt: NOW,
-  },
-  // Món 3: Bạc Xỉu
   {
     menuItemId: "ITEM_BAC_XIU",
     code: "CF02",
     name: "Bạc Xỉu",
-    imageUrl: "https://placehold.co/200x200?text=Bac+Xiu",
+    imageUrl:
+      "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=200&h=200",
     description: "Sữa đặc hòa quyện cà phê đậm vị",
     categoryId: "CAT_01",
     categoryName: "Cà Phê Việt Nam",
@@ -74,13 +79,12 @@ export const MOCK_MENU_ITEMS: MenuItem[] = [
     createdAt: NOW,
     updatedAt: NOW,
   },
-
-  // Món 4: Cà phê sữa đá
   {
     menuItemId: "ITEM_CF_SUA_DA",
     code: "CF03",
     name: "Cà Phê Sữa Đá",
-    imageUrl: "https://placehold.co/200x200?text=Ca+Phe+Sua+Da",
+    imageUrl:
+      "https://images.unsplash.com/photo-1572286258217-401fd7486f4a?auto=format&fit=crop&w=200&h=200",
     description: "Cà phê phin truyền thống với sữa đặc",
     categoryId: "CAT_01",
     categoryName: "Cà Phê Việt Nam",
@@ -93,12 +97,30 @@ export const MOCK_MENU_ITEMS: MenuItem[] = [
     updatedAt: NOW,
   },
 
-  // Món 5: Trà đào cam sả
+  // --- Trà Trái Cây ---
+  {
+    menuItemId: "ITEM_TRA_VAI",
+    code: "TEA01",
+    name: "Trà Lài Vải Tươi",
+    imageUrl:
+      "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=200&h=200",
+    description: "Trà lài thơm ngát kết hợp vải ngâm giòn ngọt",
+    categoryId: "CAT_02",
+    categoryName: "Trà Trái Cây",
+    priceDineIn: 35000,
+    priceTakeAway: 35000,
+    cost: 12000,
+    station: Station.BAR,
+    isOutOfStock: false,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
   {
     menuItemId: "ITEM_TRA_DAO",
     code: "TEA02",
     name: "Trà Đào Cam Sả",
-    imageUrl: "https://placehold.co/200x200?text=Tra+Dao+Cam+Sa",
+    imageUrl:
+      "https://images.unsplash.com/photo-1499638673689-79a0b5115d87?auto=format&fit=crop&w=200&h=200",
     description: "Trà đào kết hợp cam tươi và sả thơm",
     categoryId: "CAT_02",
     categoryName: "Trà Trái Cây",
@@ -110,13 +132,12 @@ export const MOCK_MENU_ITEMS: MenuItem[] = [
     createdAt: NOW,
     updatedAt: NOW,
   },
-
-  // Món 6: Trà sữa trân châu
   {
     menuItemId: "ITEM_TRA_SUA",
     code: "MILK01",
     name: "Trà Sữa Trân Châu",
-    imageUrl: "https://placehold.co/200x200?text=Tra+Sua",
+    imageUrl:
+      "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&h=200",
     description: "Trà sữa béo ngậy kèm trân châu đen",
     categoryId: "CAT_02",
     categoryName: "Trà Trái Cây",
@@ -129,46 +150,117 @@ export const MOCK_MENU_ITEMS: MenuItem[] = [
     updatedAt: NOW,
   },
 
-  // Món 7: Matcha Latte
+  // --- Sinh Tố & Nước Ép ---
   {
-    menuItemId: "ITEM_MATCHA",
-    code: "MT01",
-    name: "Matcha Latte",
-    imageUrl: "https://placehold.co/200x200?text=Matcha+Latte",
-    description: "Matcha Nhật Bản hòa sữa tươi",
-    categoryId: "CAT_01",
-    categoryName: "Cà Phê Việt Nam",
-    priceDineIn: 42000,
-    priceTakeAway: 42000,
-    cost: 16000,
+    menuItemId: "ITEM_NUOC_EP_CAM",
+    code: "JUICE01",
+    name: "Nước Ép Cam Tươi",
+    imageUrl:
+      "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=200&h=200",
+    description: "Cam tươi vắt trong ngày, giàu Vitamin C",
+    categoryId: "CAT_03",
+    categoryName: "Sinh Tố & Nước Ép",
+    priceDineIn: 35000,
+    priceTakeAway: 35000,
+    cost: 12000,
+    station: Station.BAR,
+    isOutOfStock: false,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
+  {
+    menuItemId: "ITEM_SINH_TO_BO",
+    code: "SMOOTH01",
+    name: "Sinh Tố Bơ Sáp",
+    imageUrl:
+      "https://images.unsplash.com/photo-1525385133335-842822916523?auto=format&fit=crop&w=200&h=200",
+    description: "Bơ sáp loại 1 xay cùng sữa đặc béo ngậy",
+    categoryId: "CAT_03",
+    categoryName: "Sinh Tố & Nước Ép",
+    priceDineIn: 45000,
+    priceTakeAway: 45000,
+    cost: 20000,
     station: Station.BAR,
     isOutOfStock: false,
     createdAt: NOW,
     updatedAt: NOW,
   },
 
-  // Món 8: Chocolate đá xay
+  // --- Bánh Ngọt ---
   {
-    menuItemId: "ITEM_CHOCOLATE_FROZEN",
-    code: "FR01",
-    name: "Chocolate Đá Xay",
-    imageUrl: "https://placehold.co/200x200?text=Chocolate",
-    description: "Chocolate nguyên chất xay lạnh mát",
-    categoryId: "CAT_01",
-    categoryName: "Cà Phê Việt Nam",
+    menuItemId: "ITEM_TIRAMISU",
+    code: "CAKE01",
+    name: "Bánh Tiramisu",
+    imageUrl:
+      "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=200&h=200",
+    description: "Bánh bông lan cà phê xen kẽ lớp kem mascarpone",
+    categoryId: "CAT_04",
+    categoryName: "Bánh Ngọt & Tráng Miệng",
     priceDineIn: 45000,
     priceTakeAway: 45000,
-    cost: 18000,
-    station: Station.BAR,
+    cost: 15000,
+    station: Station.COLD_KITCHEN,
+    isOutOfStock: false,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
+  {
+    menuItemId: "ITEM_CROISSANT",
+    code: "CAKE02",
+    name: "Bánh Sừng Bò Bơ Pháp",
+    imageUrl:
+      "https://images.unsplash.com/photo-1555507036-ab10bc72b94e?auto=format&fit=crop&w=200&h=200",
+    description: "Bánh sừng bò nướng giòn với bơ thơm lừng",
+    categoryId: "CAT_04",
+    categoryName: "Bánh Ngọt & Tráng Miệng",
+    priceDineIn: 25000,
+    priceTakeAway: 25000,
+    cost: 10000,
+    station: Station.HOT_KITCHEN,
+    isOutOfStock: false,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
+
+  // --- Đồ Ăn Vặt ---
+  {
+    menuItemId: "ITEM_KHOAI_TAY_CHIEN",
+    code: "SNACK01",
+    name: "Khoai Tây Chiên Bơ Tỏi",
+    imageUrl:
+      "https://images.unsplash.com/photo-1518013045931-e847cd3959d6?auto=format&fit=crop&w=200&h=200",
+    description: "Khoai tây chiên giòn rụm tẩm bơ tỏi thơm nồng",
+    categoryId: "CAT_05",
+    categoryName: "Đồ Ăn Vặt",
+    priceDineIn: 35000,
+    priceTakeAway: 35000,
+    cost: 12000,
+    station: Station.HOT_KITCHEN,
+    isOutOfStock: false,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
+  {
+    menuItemId: "ITEM_NEM_CHUA_RAN",
+    code: "SNACK02",
+    name: "Nem Chua Rán Hà Nội",
+    imageUrl:
+      "https://images.unsplash.com/photo-1562967914-6c827382d540?auto=format&fit=crop&w=200&h=200",
+    description: "Nem chua rán chuẩn vị Hà Nội, kèm tương ớt",
+    categoryId: "CAT_05",
+    categoryName: "Đồ Ăn Vặt",
+    priceDineIn: 40000,
+    priceTakeAway: 40000,
+    cost: 15000,
+    station: Station.HOT_KITCHEN,
     isOutOfStock: false,
     createdAt: NOW,
     updatedAt: NOW,
   },
 ];
 
-// 3. Nhóm Option (Gắn vào món)
+// 3. Nhóm Option
 export const MOCK_OPTION_GROUPS: OptionGroup[] = [
-  // Group Sugar cho Cà phê muối
   {
     optionGroupId: "GRP_SUGAR",
     menuItemId: "ITEM_CF_MUOI",
@@ -183,7 +275,20 @@ export const MOCK_OPTION_GROUPS: OptionGroup[] = [
     updatedAt: NOW,
     deletedAt: null,
   },
-  // Group Topping cho Trà vải
+  {
+    optionGroupId: "GRP_ICE",
+    menuItemId: "ITEM_CF_MUOI",
+    name: "Mức đá",
+    optionType: OptionType.SINGLE_SELECT,
+    isRequired: true,
+    minSelect: 1,
+    maxSelect: 1,
+    sortOrder: 2,
+    isActive: true,
+    createdAt: NOW,
+    updatedAt: NOW,
+    deletedAt: null,
+  },
   {
     optionGroupId: "GRP_TOPPING",
     menuItemId: "ITEM_TRA_VAI",
@@ -227,6 +332,31 @@ export const MOCK_OPTION_ITEMS: OptionItem[] = [
     updatedAt: NOW,
     deletedAt: null,
   },
+  // Option cho group Ice
+  {
+    optionItemId: "OPT_ICE_100",
+    optionGroupId: "GRP_ICE",
+    label: "Nhiều đá",
+    value: "100",
+    extraPrice: 0,
+    sortOrder: 1,
+    isActive: true,
+    createdAt: NOW,
+    updatedAt: NOW,
+    deletedAt: null,
+  },
+  {
+    optionItemId: "OPT_ICE_50",
+    optionGroupId: "GRP_ICE",
+    label: "Ít đá",
+    value: "50",
+    extraPrice: 0,
+    sortOrder: 2,
+    isActive: true,
+    createdAt: NOW,
+    updatedAt: NOW,
+    deletedAt: null,
+  },
   // Option cho group Topping
   {
     optionItemId: "OPT_TOPPING_TRAN_CHAU",
@@ -254,9 +384,14 @@ export const MOCK_OPTION_ITEMS: OptionItem[] = [
   },
 ];
 
-// Dữ liệu bàn giả lập (Cho bước chọn bàn)
+// Dữ liệu bàn giả lập
 export const MOCK_TABLES = [
   { id: "TABLE_01", name: "Bàn 01", zone: "Tầng 1" },
   { id: "TABLE_02", name: "Bàn 02", zone: "Tầng 1" },
-  { id: "TABLE_VIP", name: "Phòng VIP", zone: "Tầng 2" },
+  { id: "TABLE_03", name: "Bàn 03", zone: "Tầng 1" },
+  { id: "TABLE_04", name: "Bàn 04", zone: "Tầng 1" },
+  { id: "TABLE_05", name: "Bàn 05", zone: "Sân thượng" },
+  { id: "TABLE_06", name: "Bàn 06", zone: "Sân thượng" },
+  { id: "TABLE_VIP_01", name: "VIP 01", zone: "Phòng VIP" },
+  { id: "TABLE_VIP_02", name: "VIP 02", zone: "Phòng VIP" },
 ];

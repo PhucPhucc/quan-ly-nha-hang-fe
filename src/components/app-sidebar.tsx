@@ -22,13 +22,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-// This is sample data.
 const data = {
-  user: {
-    name: "username",
-    email: "m@example.com",
-    avtHoder: "u",
-  },
   team: {
     name: "FoodHub",
     logo: UtensilsCrossed,
@@ -37,7 +31,7 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/",
+      url: "/dashboard",
       icon: LayoutDashboard,
       isActive: true,
     },
@@ -57,19 +51,19 @@ const data = {
       icon: UtensilsCrossed,
     },
     {
-      title: "Analytics",
-      url: "/analytics",
+      title: "Employee",
+      url: "/employee",
+      icon: Users,
+    },
+    {
+      title: "Audit Logs",
+      url: "/audit-log",
       icon: ChartColumn,
     },
     {
       title: "Inventory",
       url: "/inventory",
       icon: Package,
-    },
-    {
-      title: "Employee",
-      url: "/employee",
-      icon: Users,
     },
   ],
 };
@@ -84,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

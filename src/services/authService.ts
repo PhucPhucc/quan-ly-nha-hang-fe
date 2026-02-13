@@ -48,3 +48,9 @@ export async function resetPassword(data: {
     body: data,
   });
 }
+
+export async function getCurrentUserInfo(): Promise<ApiResponse<AuthResponse>> {
+  return apiFetch<AuthResponse>("/v1/auth/me", {
+    method: "GET",
+  });
+}

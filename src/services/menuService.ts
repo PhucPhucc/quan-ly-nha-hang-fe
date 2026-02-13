@@ -10,7 +10,7 @@ export const menuService = {
   ): Promise<ApiResponse<PaginationResult<MenuItem>>> => {
     const filteredParams = params
       ? Object.entries(params)
-          .filter(([_, v]) => v !== undefined)
+          .filter(([, v]) => v !== undefined)
           .reduce((acc, [k, v]) => ({ ...acc, [k]: String(v) }), {} as Record<string, string>)
       : undefined;
     const query = filteredParams ? new URLSearchParams(filteredParams).toString() : "";
@@ -43,4 +43,8 @@ export const menuService = {
     apiFetch<void>(`/v1/menuitems/${id}`, {
       method: "DELETE",
     }),
+
+  // Lấy chi tiết món theo ID
+  getById: (id: string): Promise<ApiResponse<MenuItem>> =>
+    apiFetch<MenuItem>(`/v1/menuitems/${id}`),
 };

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import MenuContainerHeader from "@/components/features/menu/MenuContainerHeader";
 import MenuFilters from "@/components/features/menu/MenuFilters";
 import { MenuFormDialog } from "@/components/features/menu/MenuFormDialog";
 import { MenuTable } from "@/components/features/menu/MenuTable";
@@ -108,15 +107,35 @@ export default function MenuManagementPage() {
 
   const handleSubmit = async (data: MenuItem) => {
     try {
+      // Chuẩn hóa dữ liệu theo DTO của Backend
+      const payload = {
+        name: data.name,
+        code: data.code,
+        imageUrl: data.imageUrl || "",
+        description: data.description || "",
+        categoryId: data.categoryId,
+        station: Number(data.station),
+        expectedTime: 15,
+        priceDineIn: Number(data.priceDineIn),
+        priceTakeAway: Number(data.priceTakeAway || data.priceDineIn),
+        cost: Number(data.cost || 0),
+        costPrice: Number(data.cost || 0),
+      };
+
       if (selectedItem) {
-        const res = await menuService.update(selectedItem.menuItemId, data);
+        // Cập nhật món ăn
+        const res = await menuService.update(selectedItem.menuItemId, {
+          ...payload,
+          menuItemId: selectedItem.menuItemId,
+        } as Partial<MenuItem>);
         if (res.isSuccess) {
           toast.success("Đã cập nhật món ăn");
           setIsFormOpen(false);
           fetchData();
         }
       } else {
-        const res = await menuService.create(data);
+        // Thêm món mới
+        const res = await menuService.create(payload as Partial<MenuItem>);
         if (res.isSuccess) {
           toast.success("Đã thêm món mới");
           setIsFormOpen(false);
@@ -137,14 +156,7 @@ export default function MenuManagementPage() {
   };
 
   return (
-    <div className="p-6 space-y-8 bg-slate-50/50 min-h-screen">
-      <MenuContainerHeader
-        onAddNew={() => {
-          setSelectedItem(null);
-          setIsFormOpen(true);
-        }}
-      />
-
+    <div className="p-4 space-y-4 bg-slate-50/50 min-h-screen">
       <MenuFilters
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -156,6 +168,10 @@ export default function MenuManagementPage() {
         setFilterPrice={setFilterPrice}
         categories={categories}
         onReset={handleReset}
+        onAddNew={() => {
+          setSelectedItem(null);
+          setIsFormOpen(true);
+        }}
       />
 
       <Tabs

@@ -28,10 +28,8 @@ const EmployeeTable = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         const res = await getEmployees();
-
-        if (res.data) {
+        if (res.isSuccess && res.data) {
           setEmployees(res.data.items || []);
         }
       } catch (err) {
@@ -40,71 +38,171 @@ const EmployeeTable = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [refreshCount, setEmployees]);
 
+  const getRoleLabel = (role: string | number) => {
+    const r = String(role).toLowerCase();
+    if (r === "1" || r === "manager") return UI_TEXT.ROLE.MANAGER;
+    if (r === "2" || r === "cashier") return UI_TEXT.ROLE.CASHIER;
+    if (r === "3" || r === "waiter") return UI_TEXT.ROLE.WAITER;
+    if (r === "4" || r === "chef" || r === "chefbar") return UI_TEXT.ROLE.CHEF;
+    return role || "N/A";
+  };
+
+  const isRoleActive = (role: string | number) => {
+    const r = String(role).toLowerCase();
+    return r === "1" || r === "manager" || r === "4" || r === "chef" || r === "chefbar";
+  };
+
+  const getStatusLabel = (status: string | number) => {
+    const s = String(status).toLowerCase();
+    return s === "1" || s === "active" ? "Đang kích hoạt" : "Không kích hoạt";
+  };
+
+  const isStatusActive = (status: string | number) => {
+    const s = String(status).toLowerCase();
+    return s === "1" || s === "active";
+  };
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{UI_TEXT.EMPLOYEE.EMPLOYEECODE}</TableHead>
-          <TableHead>{UI_TEXT.EMPLOYEE.FULLNAME}</TableHead>
-          <TableHead className="hidden lg:table-cell">{UI_TEXT.EMPLOYEE.PHONE}</TableHead>
-          <TableHead>{UI_TEXT.EMPLOYEE.EMAIL}</TableHead>
-          <TableHead className="hidden xl:table-cell">{UI_TEXT.EMPLOYEE.ADDRESS}</TableHead>
-          <TableHead className="hidden xl:table-cell">{UI_TEXT.EMPLOYEE.DOB}</TableHead>
-          <TableHead>{UI_TEXT.EMPLOYEE.ROLE}</TableHead>
-          <TableHead>{UI_TEXT.EMPLOYEE.STATUS}</TableHead>
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-        {loading && (
-          <TableRow>
-            <TableCell colSpan={9} className="text-center">
-              Đang tải...
-            </TableCell>
+    <div className="relative w-full overflow-auto">
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent border-slate-100 bg-slate-50/50">
+            <TableHead className="w-[100px] py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider pl-6">
+              Mã NV
+            </TableHead>
+            <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              Nhân viên
+            </TableHead>
+            <TableHead className="hidden lg:table-cell py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              Liên hệ
+            </TableHead>
+            <TableHead className="hidden xl:table-cell py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              Địa chỉ
+            </TableHead>
+            <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              Vai trò
+            </TableHead>
+            <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              Trạng thái
+            </TableHead>
+            <TableHead className="text-right py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider pr-6">
+              {UI_TEXT.COMMON.ACTION}
+            </TableHead>
           </TableRow>
-        )}
+        </TableHeader>
 
-        {error && (
-          <TableRow>
-            <TableCell colSpan={9} className="text-center text-red-500">
-              {error}
-            </TableCell>
-          </TableRow>
-        )}
-
-        {!loading &&
-          !error &&
-          employees.map((employee) => (
-            <TableRow key={employee.employeeId}>
-              <TableCell>{employee.employeeCode}</TableCell>
-              <TableCell>{employee.fullName}</TableCell>
-              <TableCell className="hidden lg:table-cell">{employee.phone}</TableCell>
-              <TableCell>{employee.email}</TableCell>
-              <TableCell className="hidden xl:table-cell">{employee.address}</TableCell>
-              <TableCell className="hidden xl:table-cell">
-                {employee.dateOfBirth
-                  ? new Date(employee.dateOfBirth).toLocaleDateString("vi-VN", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "-"}
-              </TableCell>
-
-              <TableCell>{employee.role}</TableCell>
-              <TableCell>{employee.status}</TableCell>
-
-              <TableCell className="flex justify-center">
-                <EmployeeAction employee={employee} />
+        <TableBody>
+          {loading && (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center py-20">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <div className="size-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="size-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="size-2 bg-primary rounded-full animate-bounce"></div>
+                  </div>
+                  <span className="text-xs font-medium text-slate-400 uppercase tracking-widest">
+                    {UI_TEXT.COMMON.LOADING}
+                  </span>
+                </div>
               </TableCell>
             </TableRow>
-          ))}
-      </TableBody>
-    </Table>
+          )}
+
+          {error && (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center py-20">
+                <div className="flex flex-col items-center gap-2 text-rose-500">
+                  <span className="font-semibold">{error}</span>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="text-xs underline opacity-70 hover:opacity-100"
+                  >
+                    Thử lại
+                  </button>
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+
+          {!loading && !error && employees.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center py-20">
+                <span className="text-sm text-slate-400 font-medium tracking-wide">
+                  Không tìm thấy nhân viên nào
+                </span>
+              </TableCell>
+            </TableRow>
+          )}
+
+          {!loading &&
+            !error &&
+            employees.map((employee) => (
+              <TableRow
+                key={employee.employeeId}
+                className="group border-slate-50 transition-all duration-200 hover:bg-slate-50/80"
+              >
+                <TableCell className="pl-6 font-medium text-slate-500 text-xs">
+                  {employee.employeeCode}
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-slate-800 text-sm leading-tight">
+                      {employee.fullName}
+                    </span>
+                    <span className="text-[11px] text-slate-400 font-medium">{employee.email}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden lg:table-cell font-medium text-slate-600 text-[13px]">
+                  {employee.phone || "-"}
+                </TableCell>
+                <TableCell className="hidden xl:table-cell text-slate-500 text-[12px] max-w-[220px] truncate font-medium">
+                  {employee.address || "-"}
+                </TableCell>
+
+                <TableCell>
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
+                      isRoleActive(employee.role)
+                        ? "bg-primary/10 text-primary border border-primary/10"
+                        : "bg-slate-100 text-slate-500 border border-slate-200/50"
+                    }`}
+                  >
+                    {getRoleLabel(employee.role)}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`size-1.5 rounded-full ${
+                        isStatusActive(employee.status)
+                          ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                          : "bg-slate-300"
+                      }`}
+                    />
+                    <span
+                      className={`text-[11px] font-medium tracking-tight ${
+                        isStatusActive(employee.status) ? "text-emerald-600" : "text-slate-400"
+                      }`}
+                    >
+                      {getStatusLabel(employee.status)}
+                    </span>
+                  </div>
+                </TableCell>
+
+                <TableCell className="text-right pr-6">
+                  <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                    <EmployeeAction employee={employee} />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

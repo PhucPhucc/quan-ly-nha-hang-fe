@@ -1,46 +1,117 @@
 "use client";
 
-import { Separator } from "@radix-ui/react-separator";
+import {
+  Bell,
+  History,
+  LayoutDashboard,
+  Settings,
+  ShoppingCart,
+  Table as TableIcon,
+  User,
+  Users,
+  Utensils,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import { Badge } from "../ui/badge";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../ui/breadcrumb";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 
-const ROUTE_NAMES: Record<string, string> = {
-  dashboard: "Dashboard",
-  orders: "Orders Management",
-  menu: "Menu",
-  staff: "Staff Management",
-  settings: "Settings",
-  inventory: "Inventory",
+const ROUTE_CONFIG: Record<string, { label: string; icon: React.ReactNode }> = {
+  dashboard: { label: "Tổng quan", icon: <LayoutDashboard className="size-3.5" /> },
+  order: { label: "Bán hàng", icon: <ShoppingCart className="size-3.5" /> },
+  menu: { label: "Thực đơn", icon: <Utensils className="size-3.5" /> },
+  employee: { label: "Nhân viên", icon: <Users className="size-3.5" /> },
+  "audit-log": { label: "Lịch sử", icon: <History className="size-3.5" /> },
+  profile: { label: "Cá nhân", icon: <User className="size-3.5" /> },
+  table: { label: "Sơ đồ bàn", icon: <TableIcon className="size-3.5" /> },
 };
 
 const HeaderBar = () => {
   const pathname = usePathname();
+  const pathSegments = pathname.split("/").filter((seg) => seg);
 
-  const pathSegment = pathname.split("/").filter((seg) => seg);
   return (
-    <header
-      className="flex h-16 shrink-0 items-center gap-2
-                          transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
-    >
-      <div className="flex items-center gap-2 px-2">
-        <div className="hover:bg-sidebar-accent p-0.5 rounded-lg">
-          <SidebarTrigger />
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-md transition-all">
+      {/* Left section: Sidebar Trigger + Breadcrumbs */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger className="h-9 w-9" />
+          <Separator orientation="vertical" className="h-4" />
         </div>
-        <Separator
-          orientation="vertical"
-          className="mr-2 data-[orientation=vertical]:h-4 bg-foreground w-px"
-        />
-        <p className="text-sm">
-          {pathSegment.map((segment) => {
-            const displayName = !isNaN(Number(segment))
-              ? `#${segment}`
-              : ROUTE_NAMES[segment] || segment;
 
-            return displayName;
-          })}
-        </p>
+        <Breadcrumb className="hidden md:block">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard" className="flex items-center gap-1">
+                <LayoutDashboard className="size-3.5" />
+                <span className="text-xs font-medium">FoodHub</span>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            {pathSegments.map((segment, index) => {
+              const config = ROUTE_CONFIG[segment];
+              const isLast = index === pathSegments.length - 1;
+              const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
+
+              if (segment === "dashboard" && index === 0) return null;
+
+              return (
+                <React.Fragment key={segment}>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    {isLast ? (
+                      <BreadcrumbPage className="flex items-center gap-1.5 font-bold text-primary">
+                        {config?.icon}
+                        <span className="text-xs uppercase tracking-wider">
+                          {config?.label || segment}
+                        </span>
+                      </BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink href={href} className="flex items-center gap-1.5">
+                        {config?.icon}
+                        <span className="text-xs">{config?.label || segment}</span>
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                </React.Fragment>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
+      {/* Right section: Actions */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative h-10 w-10 rounded-full hover:bg-muted"
+        >
+          <Bell className="size-5 text-slate-600" />
+          <Badge
+            className="absolute right-2 top-2 h-4 w-4 border-2 border-background p-0 flex items-center justify-center text-[8px]"
+            variant="destructive"
+          >
+            3
+          </Badge>
+        </Button>
+
+        <Separator orientation="vertical" className="mx-2 h-6" />
+
+        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted">
+          <Settings className="size-5 text-slate-600" />
+        </Button>
       </div>
     </header>
   );

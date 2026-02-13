@@ -3,8 +3,21 @@ import { Employee } from "@/types/Employee";
 
 import { apiFetch } from "./api";
 
-export async function getEmployees(): Promise<ApiResponse<PaginationResult<Employee>>> {
-  const res = await apiFetch<PaginationResult<Employee>>("/v1/employees");
+export async function getEmployees(params?: {
+  search?: string;
+  filters?: string;
+  pageSize?: number;
+}): Promise<ApiResponse<PaginationResult<Employee>>> {
+  let url = "/v1/employees";
+  const queryParams = new URLSearchParams();
+  if (params?.search) queryParams.append("search", params.search);
+  if (params?.filters) queryParams.append("filters", params.filters);
+  if (params?.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+
+  const queryString = queryParams.toString();
+  if (queryString) url += `?${queryString}`;
+
+  const res = await apiFetch<PaginationResult<Employee>>(url);
   return res;
 }
 
@@ -60,6 +73,13 @@ export async function changeEmployeeRole(
   return apiFetch<void>(`/v1/employees/change-role`, {
     method: "POST",
     body: { employeeCode, currentRole, newRole },
+    cache: "no-store",
+  });
+}
+
+export async function getEmployeeById(employeeId: string): Promise<ApiResponse<Employee>> {
+  return apiFetch<Employee>(`/v1/employees/${employeeId}`, {
+    method: "GET",
     cache: "no-store",
   });
 }
