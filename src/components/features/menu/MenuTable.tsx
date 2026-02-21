@@ -28,9 +28,17 @@ interface MenuTableProps {
   onDelete: (item: MenuItem) => void;
   role: string;
   onToggleStock: (id: string) => void;
+  onManageOptions: (item: MenuItem) => void;
 }
 
-export function MenuTable({ items, role, onToggleStock, onEdit, onDelete }: MenuTableProps) {
+export function MenuTable({
+  items,
+  role,
+  onToggleStock,
+  onEdit,
+  onDelete,
+  onManageOptions,
+}: MenuTableProps) {
   const isManager = role === "Manager";
   const canSeeCost = role === "Manager" || role === "Cashier";
 
@@ -152,6 +160,12 @@ export function MenuTable({ items, role, onToggleStock, onEdit, onDelete }: Menu
                       className="cursor-pointer py-2 text-slate-700 font-medium focus:bg-slate-50"
                     >
                       <Edit className="mr-2 h-4 w-4 text-[#cc0000]" /> Sửa thông tin
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onManageOptions(item)}
+                      className="cursor-pointer py-2 text-slate-700 font-medium focus:bg-slate-50"
+                    >
+                      <MoreVertical className="mr-2 h-4 w-4 text-slate-500" /> Cấu hình tùy chọn
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

@@ -11,6 +11,7 @@ import { categoryService } from "@/services/categoryService";
 import { menuService } from "@/services/menuService";
 import { Category, MenuItem } from "@/types/Menu";
 
+import { MenuOptionSelectionDialog } from "./MenuOptionSelectionDialog";
 import OrderList from "./OrderList";
 
 const CardMenu = () => {
@@ -18,6 +19,9 @@ const CardMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
+
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [isOptionDialogOpen, setIsOptionDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +53,11 @@ const CardMenu = () => {
     return menuItems.filter((item) => item.categoryId === activeTab);
   }, [menuItems, activeTab]);
 
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
+    setIsOptionDialogOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -59,45 +68,53 @@ const CardMenu = () => {
   }
 
   return (
-    <Tabs
-      value={activeTab}
-      onValueChange={setActiveTab}
-      className="w-full h-full flex flex-col bg-background overflow-hidden"
-    >
-      <div className="px-3 py-2 border-b bg-muted/20 overflow-x-auto no-scrollbar">
-        <TabsList className="flex w-max justify-start gap-2 bg-transparent p-0 h-auto">
-          <TabsTrigger
-            value="all"
-            className="rounded-full border border-transparent bg-transparent px-4 py-1.5 text-xs font-bold text-muted-foreground data-[state=active]:border-primary/20 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all uppercase tracking-wider"
-          >
-            {UI_TEXT.COMMON.ALL}
-          </TabsTrigger>
-          {categories.map((cat) => (
+    <>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="w-full h-full flex flex-col bg-background overflow-hidden"
+      >
+        <div className="px-3 py-2 border-b bg-muted/20 overflow-x-auto no-scrollbar">
+          <TabsList className="flex w-max justify-start gap-2 bg-transparent p-0 h-auto">
             <TabsTrigger
-              key={cat.categoryId}
-              value={cat.categoryId}
-              className="rounded-full border border-transparent bg-transparent px-4 py-1.5 text-xs font-bold text-muted-foreground data-[state=active]:border-primary/20 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all uppercase tracking-wider whitespace-nowrap"
+              value="all"
+              className="rounded-full border border-transparent bg-transparent px-4 py-1.5 text-xs font-bold text-muted-foreground data-[state=active]:border-primary/20 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all uppercase tracking-wider"
             >
-              {cat.name}
+              {UI_TEXT.COMMON.ALL}
             </TabsTrigger>
-          ))}
-        </TabsList>
-      </div>
+            {categories.map((cat) => (
+              <TabsTrigger
+                key={cat.categoryId}
+                value={cat.categoryId}
+                className="rounded-full border border-transparent bg-transparent px-4 py-1.5 text-xs font-bold text-muted-foreground data-[state=active]:border-primary/20 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all uppercase tracking-wider whitespace-nowrap"
+              >
+                {cat.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar">
-        <TabsContent value={activeTab} className="m-0 h-full p-0 outline-none">
-          {filteredItems.length > 0 ? (
-            <OrderList menuList={filteredItems} />
-          ) : (
-            <EmptyState
-              title="Trống"
-              description="Danh mục này hiện chưa có món nào"
-              icon={UtensilsCrossed}
-            />
-          )}
-        </TabsContent>
-      </div>
-    </Tabs>
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar">
+          <TabsContent value={activeTab} className="m-0 h-full p-0 outline-none">
+            {filteredItems.length > 0 ? (
+              <OrderList menuList={filteredItems} onItemClick={handleItemClick} />
+            ) : (
+              <EmptyState
+                title="Trống"
+                description="Danh mục này hiện chưa có món nào"
+                icon={UtensilsCrossed}
+              />
+            )}
+          </TabsContent>
+        </div>
+      </Tabs>
+
+      <MenuOptionSelectionDialog
+        open={isOptionDialogOpen}
+        onOpenChange={setIsOptionDialogOpen}
+        menuItem={selectedItem}
+      />
+    </>
   );
 };
 

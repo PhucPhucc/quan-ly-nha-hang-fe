@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import MenuFilters from "@/components/features/menu/MenuFilters";
 import { MenuFormDialog } from "@/components/features/menu/MenuFormDialog";
 import { MenuTable } from "@/components/features/menu/MenuTable";
+import { OptionManagementDialog } from "@/components/features/menu/OptionManagementDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { categoryService } from "@/services/categoryService";
 import { menuService } from "@/services/menuService";
@@ -23,6 +24,10 @@ export default function MenuManagementPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+
+  const [isOptionDialogOpen, setIsOptionDialogOpen] = useState(false);
+  const [selectedItemForOption, setSelectedItemForOption] = useState<MenuItem | null>(null);
+
   const userRole = "Manager";
 
   // Fetch dữ liệu từ API
@@ -206,6 +211,10 @@ export default function MenuManagementPage() {
                 setIsFormOpen(true);
               }}
               onDelete={handleDelete}
+              onManageOptions={(item) => {
+                setSelectedItemForOption(item);
+                setIsOptionDialogOpen(true);
+              }}
             />
           )}
         </TabsContent>
@@ -223,6 +232,12 @@ export default function MenuManagementPage() {
         categories={categories}
         onSubmit={handleSubmit}
         initialData={selectedItem}
+      />
+
+      <OptionManagementDialog
+        open={isOptionDialogOpen}
+        onOpenChange={setIsOptionDialogOpen}
+        menuItem={selectedItemForOption}
       />
     </div>
   );

@@ -36,6 +36,7 @@ export interface OptionGroup {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  optionItems?: OptionItem[]; // Added from backend response
 }
 
 export interface OptionItem {

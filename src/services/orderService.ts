@@ -28,6 +28,14 @@ export interface AddOrderItemRequest {
   menuItemId: string;
   quantity: number;
   note?: string;
+  selectedOptions?: {
+    optionGroupId: string;
+    selectedValues: {
+      optionItemId: string;
+      quantity: number;
+      note?: string;
+    }[];
+  }[];
 }
 
 export interface SubmitOrderToKitchenRequest {
@@ -55,7 +63,7 @@ export const orderService = {
     if (params.pageNumber) queryParams.append("pageNumber", params.pageNumber.toString());
     if (params.pageSize) queryParams.append("pageSize", params.pageSize.toString());
     if (params.search) queryParams.append("search", params.search);
-    if (params.status) queryParams.append("status", params.status); // Enum value
+    if (params.status) queryParams.append("status", params.status.toString());
     if (params.fromDate) queryParams.append("fromDate", params.fromDate);
     if (params.toDate) queryParams.append("toDate", params.toDate);
 
