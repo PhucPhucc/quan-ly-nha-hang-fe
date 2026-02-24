@@ -10,6 +10,7 @@ import { MOCK_CATEGORIES, MOCK_MENU_ITEMS } from "@/data/mockMenu";
 import { MenuItem } from "@/types/Menu";
 
 export default function MenuManagementPage() {
+  console.log(123);
   // State quản lý dữ liệu và lọc
   const [menuData, setMenuData] = useState<MenuItem[]>(MOCK_MENU_ITEMS);
   const [searchQuery, setSearchQuery] = useState("");
