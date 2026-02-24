@@ -13,10 +13,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    // Cleanup old tokens from localStorage if any (stale data from previous versions)
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-
     const checkAuth = async () => {
       if (!employee) {
         try {
