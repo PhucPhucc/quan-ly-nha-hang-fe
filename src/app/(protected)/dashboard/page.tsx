@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Cloud, Info, LayoutGrid, MapPin } from "lucide-react";
+import { Clock, Info, MapPin } from "lucide-react";
 import React from "react";
 
 import { RecentOrders } from "@/components/features/Dashboard/RecentOrders";
@@ -15,9 +15,12 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export default function DashboardPage() {
   const { employee } = useAuthStore();
-  const [currentTime, setCurrentTime] = React.useState(new Date());
+  const [currentTime, setCurrentTime] = React.useState<Date | null>(null);
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
+    setMounted(true);
+    setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -40,55 +43,36 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 py-6 pb-12">
-      {/* Portal System Header */}
-      <div className="flex flex-col gap-6 px-1 md:flex-row md:items-center md:justify-between lg:px-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <div className="bg-primary/10 p-1.5 rounded-lg">
-              <LayoutGrid className="h-5 w-5 text-primary" />
-            </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 uppercase">
-              {UI_TEXT.DASHBOARD.PORTAL_TITLE}
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-sm font-medium">
-            {UI_TEXT.DASHBOARD.PORTAL_SUBTITLE}
-          </p>
-        </div>
-
-        {/* Global System Status Widgets */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border shadow-sm">
-            <Clock className="h-4 w-4 text-primary" />
-            <span className="text-xs font-bold text-slate-700 min-w-[70px]">
-              {currentTime.toLocaleTimeString("vi-VN", { hour12: false })}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border shadow-sm">
-            <Cloud className="h-4 w-4 text-blue-500" />
-            <span className="text-xs font-bold text-slate-700">
-              {UI_TEXT.DASHBOARD.WEATHER_CLOUDY}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border shadow-sm">
-            <MapPin className="h-4 w-4 text-rose-500" />
-            <span className="text-xs font-bold text-slate-700">{UI_TEXT.DASHBOARD.MAIN_LOBBY}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 1. Global Performance Metrics */}
+    <div className="flex flex-col gap-8 py-4 pb-12">
+      {/* Performance Summary Section */}
       <div className="px-3 lg:px-4">
-        <div className="mb-4">
-          <h2 className="text-lg font-bold text-slate-700 flex items-center gap-2">
-            <span className="w-1 h-6 bg-primary rounded-full"></span>
-            {UI_TEXT.DASHBOARD.OVERVIEW}
-          </h2>
-          <p className="text-xs text-muted-foreground ml-3">
-            {UI_TEXT.DASHBOARD.USER_ROLE(getRoleName())}
-          </p>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col">
+            <h2 className="text-xl font-semibold text-slate-800 tracking-tight uppercase">
+              {UI_TEXT.DASHBOARD.OVERVIEW}
+            </h2>
+            <p className="text-xs text-muted-foreground font-normal">
+              {UI_TEXT.DASHBOARD.USER_ROLE(getRoleName())}
+            </p>
+          </div>
+
+          {/* Subtle System Info */}
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-muted/40 rounded-full text-[10px] font-medium text-muted-foreground">
+              <Clock className="size-3" />
+              <span>
+                {mounted && currentTime
+                  ? currentTime.toLocaleTimeString("vi-VN", { hour12: false })
+                  : "--:--:--"}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-muted/40 rounded-full text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+              <MapPin className="size-3 text-rose-500" />
+              <span>{UI_TEXT.DASHBOARD.MAIN_LOBBY}</span>
+            </div>
+          </div>
         </div>
+
         <StatsCards />
       </div>
 
@@ -96,7 +80,7 @@ export default function DashboardPage() {
         {/* LEFT COLUMN: Operations */}
         <div className="lg:col-span-8 flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+            <h3 className="text-sm font-medium uppercase tracking-widest text-slate-500 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
               {UI_TEXT.DASHBOARD.PULSE}
             </h3>

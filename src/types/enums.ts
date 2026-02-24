@@ -1,16 +1,22 @@
-export {};
 // Các Enum liên quan đến Order
 export enum OrderType {
-  DINE_IN = "DINE_IN",
-  TAKEAWAY = "TAKEAWAY",
+  DineIn = 1,
+  Takeaway = 2,
 }
 
 export enum OrderStatus {
-  DRAFT = "DRAFT",
-  PREPARING = "PREPARING",
-  COOKING = "COOKING",
-  READY = "READY",
-  COMPLETED = "COMPLETED",
+  Serving = 1,
+  Completed = 2,
+  Cancelled = 3,
+}
+
+export enum OrderItemStatus {
+  Preparing = 1,
+  Cooking = 2,
+  Ready = 3,
+  Completed = 4,
+  Cancelled = 5,
+  Rejected = 6,
 }
 
 export enum ActionType {
@@ -21,32 +27,26 @@ export enum ActionType {
   CANCEL = "CANCEL",
 }
 
-// Các Enum liên quan đến Menu & Bếp
 export enum Station {
-  HOT_KITCHEN = "HOT_KITCHEN",
-  COLD_KITCHEN = "COLD_KITCHEN",
-  BAR = "BAR",
+  HOT_KITCHEN = 1,
+  COLD_KITCHEN = 2,
+  BAR = 3,
 }
 
 export enum CategoryType {
-  NORMAL = "NORMAL",
-  SPECIAL_GROUP = "SPECIAL_GROUP",
+  NORMAL = 1,
+  SPECIAL_GROUP = 2,
 }
 
 export enum OptionType {
-  SINGLE_SELECT = "SINGLE_SELECT",
-  MULTI_SELECT = "MULTI_SELECT",
-  SCALE = "SCALE",
-  FREE_TEXT = "FREE_TEXT",
+  SINGLE_SELECT = 1,
+  MULTI_SELECT = 2,
+  SCALE = 3,
+  FREE_TEXT = 4,
 }
 
 export enum SetMenuType {
-  COMBO = "COMBO",
-  SET_MORNING = "SET_MORNING",
-  SET_LUNCH = "SET_LUNCH",
-}
-export enum Station {
-  BARs = "BAR",
-  KITCHEN_HOT = "KITCHEN_HOT",
-  KITCHEN_COLD = "KITCHEN_COLD",
+  COMBO = 1,
+  SET_MORNING = 2,
+  SET_LUNCH = 3,
 }

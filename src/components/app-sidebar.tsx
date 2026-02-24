@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/useAuthStore";
 
-// This is sample data.
 const data = {
   team: {
     name: "FoodHub",
@@ -53,19 +52,19 @@ const data = {
       icon: UtensilsCrossed,
     },
     {
-      title: "Analytics",
-      url: "/analytics",
+      title: "Employee",
+      url: "/employee",
+      icon: Users,
+    },
+    {
+      title: "Audit Logs",
+      url: "/audit-log",
       icon: ChartColumn,
     },
     {
       title: "Inventory",
       url: "/inventory",
       icon: Package,
-    },
-    {
-      title: "Employee",
-      url: "/employee",
-      icon: Users,
     },
   ],
 };
@@ -88,7 +87,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

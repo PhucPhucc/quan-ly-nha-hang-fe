@@ -28,30 +28,44 @@ interface MenuTableProps {
   onDelete: (item: MenuItem) => void;
   role: string;
   onToggleStock: (id: string) => void;
+  onManageOptions: (item: MenuItem) => void;
 }
 
-export function MenuTable({ items, role, onToggleStock, onEdit, onDelete }: MenuTableProps) {
+export function MenuTable({
+  items,
+  role,
+  onToggleStock,
+  onEdit,
+  onDelete,
+  onManageOptions,
+}: MenuTableProps) {
   const isManager = role === "Manager";
   const canSeeCost = role === "Manager" || role === "Cashier";
 
-  const getStationBadge = (station: string) => {
+  const getStationBadge = (station: number) => {
     switch (station) {
-      case "BAR":
-        return (
-          <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none flex gap-1 items-center">
-            <Beer size={12} /> Quầy Bar
-          </Badge>
-        );
-      case "KITCHEN_HOT":
+      case 1: // HotKitchen
         return (
           <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none flex gap-1 items-center">
             <UtensilsCrossed size={12} /> Bếp Nóng
           </Badge>
         );
-      default:
+      case 2: // ColdKitchen
         return (
           <Badge variant="secondary" className="flex gap-1 items-center">
             <Coffee size={12} /> Bếp Lạnh
+          </Badge>
+        );
+      case 3: // Bar
+        return (
+          <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none flex gap-1 items-center">
+            <Beer size={12} /> Quầy Bar
+          </Badge>
+        );
+      default:
+        return (
+          <Badge variant="outline" className="flex gap-1 items-center">
+            <UtensilsCrossed size={12} /> Không xác định
           </Badge>
         );
     }
@@ -78,16 +92,16 @@ export function MenuTable({ items, role, onToggleStock, onEdit, onDelete }: Menu
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map((item) => (
+          {items?.map((item) => (
             <TableRow
-              key={item.menu_item_id}
-              className={`hover:bg-slate-50/80 transition-colors ${item.is_out_of_stock ? "opacity-60 bg-slate-50/30" : ""}`}
+              key={item.menuItemId}
+              className={`hover:bg-slate-50/80 transition-colors ${item.isOutOfStock ? "opacity-60 bg-slate-50/30" : ""}`}
             >
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 flex-shrink-0">
+                  <div className="h-12 w-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shrink-0">
                     <img
-                      src={item.image_url || "https://placehold.co/100x100?text=No+Image"}
+                      src={item.imageUrl || "https://placehold.co/100x100?text=No+Image"}
                       alt={item.name}
                       className="h-full w-full object-cover"
                     />
@@ -106,26 +120,26 @@ export function MenuTable({ items, role, onToggleStock, onEdit, onDelete }: Menu
                 </code>
               </TableCell>
               <TableCell className="font-bold text-slate-800">
-                {item.dine_in_price.toLocaleString()}đ
+                {item.priceDineIn?.toLocaleString()}đ
               </TableCell>
               {canSeeCost && (
                 <TableCell className="text-red-600 font-bold bg-red-50/20">
-                  {item.cost_price.toLocaleString()}đ
+                  {(item.cost || 0).toLocaleString()}đ
                 </TableCell>
               )}
               <TableCell>{getStationBadge(item.station)}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
                   <Switch
-                    checked={!item.is_out_of_stock}
-                    onCheckedChange={() => onToggleStock(item.menu_item_id)}
+                    checked={!item.isOutOfStock}
+                    onCheckedChange={() => onToggleStock(item.menuItemId)}
                     disabled={!isManager}
                     className="data-[state=checked]:bg-green-600 scale-90"
                   />
                   <span
-                    className={`text-[10px] font-black uppercase tracking-wider ${item.is_out_of_stock ? "text-slate-400" : "text-green-600"}`}
+                    className={`text-[10px] font-black uppercase tracking-wider ${item.isOutOfStock ? "text-slate-400" : "text-green-600"}`}
                   >
-                    {item.is_out_of_stock ? "Hết" : "Bán"}
+                    {item.isOutOfStock ? "Hết" : "Bán"}
                   </span>
                 </div>
               </TableCell>
@@ -146,6 +160,12 @@ export function MenuTable({ items, role, onToggleStock, onEdit, onDelete }: Menu
                       className="cursor-pointer py-2 text-slate-700 font-medium focus:bg-slate-50"
                     >
                       <Edit className="mr-2 h-4 w-4 text-[#cc0000]" /> Sửa thông tin
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onManageOptions(item)}
+                      className="cursor-pointer py-2 text-slate-700 font-medium focus:bg-slate-50"
+                    >
+                      <MoreVertical className="mr-2 h-4 w-4 text-slate-500" /> Cấu hình tùy chọn
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

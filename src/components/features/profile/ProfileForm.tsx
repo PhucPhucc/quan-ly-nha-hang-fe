@@ -20,14 +20,10 @@ const ProfileForm = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
-      let data = {};
-      try {
-        data = await getMyProfile();
-      } catch (error) {
-        console.error("Failed to fetch profile:", error);
-        toast.error(UI_TEXT.COMMON.ERROR);
+      const res = await getMyProfile();
+      if (res.data) {
+        setProfile(res.data);
       }
-      setProfile(data);
       setLoading(false);
     };
     fetchProfile();

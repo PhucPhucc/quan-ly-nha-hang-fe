@@ -56,7 +56,7 @@ export function MenuFormDialog({
   // 3. THAY ĐỔI QUAN TRỌNG: Dùng useWatch thay cho watch để fix lỗi Compiler
   const [currentStation, currentCategory, imageUrl] = useWatch({
     control,
-    name: ["station", "category_id", "image_url"],
+    name: ["station", "categoryId", "imageUrl"],
   });
 
   useEffect(() => {
@@ -68,11 +68,11 @@ export function MenuFormDialog({
           name: "",
           code: "",
           description: "",
-          image_url: "",
-          dine_in_price: 0,
-          cost_price: 0,
+          imageUrl: "",
+          priceDineIn: 0,
+          cost: 0,
           station: Station.BAR,
-          category_id: categories[0]?.category_id || "",
+          categoryId: categories[0]?.categoryId || "",
         });
       }
     }
@@ -82,7 +82,7 @@ export function MenuFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[600px] p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="bg-white p-6 border-b">
-          <DialogTitle className="flex items-center gap-3 text-2xl font-extrabold text-slate-900">
+          <DialogTitle className="flex items-center gap-3 text-2xl font-semibold text-slate-900">
             <div className="p-2.5 bg-red-50 rounded-xl text-[#cc0000]">
               <Utensils size={24} strokeWidth={2.5} />
             </div>
@@ -96,7 +96,7 @@ export function MenuFormDialog({
         >
           <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <div className="col-span-2 flex items-center gap-4 p-4 bg-red-50/30 rounded-xl border border-dashed border-red-200">
-              <div className="h-20 w-20 rounded-lg overflow-hidden border border-red-100 bg-white flex-shrink-0">
+              <div className="h-20 w-20 rounded-lg overflow-hidden border border-red-100 bg-white shrink-0">
                 <img
                   src={imageUrl || "https://placehold.co/100x100?text=FoodHub"}
                   alt="Preview"
@@ -105,16 +105,16 @@ export function MenuFormDialog({
               </div>
               <div className="flex-1 space-y-1.5">
                 <Label
-                  htmlFor="image_url"
-                  className="text-[10px] font-bold uppercase tracking-wider text-red-600 flex items-center gap-2"
+                  htmlFor="imageUrl"
+                  className="text-[10px] font-semibold uppercase tracking-wider text-red-600 flex items-center gap-2"
                 >
                   <ImageIcon size={14} /> Đường dẫn ảnh món ăn
                 </Label>
                 <Input
-                  id="image_url"
-                  {...register("image_url")}
+                  id="imageUrl"
+                  {...register("imageUrl")}
                   placeholder="Dán link ảnh tại đây..."
-                  className="h-9 bg-white border-red-100 focus-visible:ring-[#cc0000]"
+                  className="h-9 bg-white border-red-100 focus-visible:ring-[#cc0000] text-sm"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ export function MenuFormDialog({
             <div className="space-y-1.5 col-span-2">
               <Label
                 htmlFor="name"
-                className="text-sm font-bold flex items-center gap-2 text-slate-700"
+                className="text-sm font-medium flex items-center gap-2 text-slate-700"
               >
                 <Tag size={14} className="text-[#cc0000]" /> Tên món ăn
               </Label>
@@ -137,7 +137,7 @@ export function MenuFormDialog({
             <div className="space-y-1.5 col-span-2">
               <Label
                 htmlFor="description"
-                className="text-sm font-bold flex items-center gap-2 text-slate-700"
+                className="text-sm font-medium flex items-center gap-2 text-slate-700"
               >
                 <FileText size={14} className="text-[#cc0000]" /> Mô tả chi tiết
               </Label>
@@ -145,35 +145,35 @@ export function MenuFormDialog({
                 id="description"
                 {...register("description")}
                 placeholder="Mô tả hương vị, nguyên liệu..."
-                className="resize-none h-20 focus-visible:ring-[#cc0000]"
+                className="resize-none h-20 focus-visible:ring-[#cc0000] font-medium"
               />
             </div>
 
             <div className="space-y-1.5">
               <Label
                 htmlFor="code"
-                className="text-sm font-bold flex items-center gap-2 text-slate-700"
+                className="text-sm font-medium flex items-center gap-2 text-slate-700"
               >
                 <LayoutGrid size={14} className="text-[#cc0000]" /> Mã SKU
               </Label>
               <Input
                 id="code"
                 {...register("code", { required: true })}
-                className="h-11 uppercase focus-visible:ring-[#cc0000]"
+                className="h-11 uppercase font-medium focus-visible:ring-[#cc0000]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold flex items-center gap-2 text-slate-700">
+              <Label className="text-sm font-medium flex items-center gap-2 text-slate-700">
                 <LayoutGrid size={14} className="text-[#cc0000]" /> Danh mục
               </Label>
-              <Select value={currentCategory} onValueChange={(val) => setValue("category_id", val)}>
-                <SelectTrigger className="h-11 focus:ring-[#cc0000]">
+              <Select value={currentCategory} onValueChange={(val) => setValue("categoryId", val)}>
+                <SelectTrigger className="h-11 focus:ring-[#cc0000] font-medium">
                   <SelectValue placeholder="Chọn nhóm" />
                 </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.category_id} value={cat.category_id}>
+                <SelectContent className="rounded-xl">
+                  {categories?.map((cat) => (
+                    <SelectItem key={cat.categoryId} value={cat.categoryId} className="rounded-lg">
                       {cat.name}
                     </SelectItem>
                   ))}
@@ -183,49 +183,55 @@ export function MenuFormDialog({
 
             <div className="space-y-1.5">
               <Label
-                htmlFor="price"
-                className="text-sm font-bold flex items-center gap-2 text-[#cc0000]"
+                htmlFor="priceDineIn"
+                className="text-sm font-medium flex items-center gap-2 text-[#cc0000]"
               >
                 <DollarSign size={14} /> Giá bán (VNĐ)
               </Label>
               <Input
-                id="price"
+                id="priceDineIn"
                 type="number"
-                {...register("dine_in_price")}
-                className="h-11 font-black text-[#cc0000] border-red-100 bg-red-50/30 focus-visible:ring-[#cc0000]"
+                {...register("priceDineIn")}
+                className="h-11 font-semibold text-[#cc0000] border-red-100 bg-red-50/30 focus-visible:ring-[#cc0000]"
               />
             </div>
 
             <div className="space-y-1.5">
               <Label
-                htmlFor="cost_price"
-                className="text-sm font-bold flex items-center gap-2 text-slate-500"
+                htmlFor="cost"
+                className="text-sm font-medium flex items-center gap-2 text-slate-500"
               >
                 <Wallet size={14} /> Giá vốn (VNĐ)
               </Label>
               <Input
-                id="cost_price"
+                id="cost"
                 type="number"
-                {...register("cost_price")}
-                className="h-11 font-bold text-slate-600 focus-visible:ring-slate-400"
+                {...register("cost")}
+                className="h-11 font-medium text-slate-600 focus-visible:ring-slate-400"
               />
             </div>
 
             <div className="space-y-1.5 col-span-2">
-              <Label className="text-sm font-bold flex items-center gap-2 text-slate-700">
+              <Label className="text-sm font-medium flex items-center gap-2 text-slate-700">
                 <Store size={14} className="text-[#cc0000]" /> Trạm thực hiện
               </Label>
               <Select
-                value={currentStation || Station.BAR}
-                onValueChange={(val) => setValue("station", val as Station)}
+                value={currentStation?.toString() || Station.BAR.toString()}
+                onValueChange={(val) => setValue("station", parseInt(val) as Station)}
               >
-                <SelectTrigger className="h-11 focus:ring-[#cc0000]">
+                <SelectTrigger className="h-11 focus:ring-[#cc0000] font-medium">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={Station.BAR}>Quầy Bar (Đồ uống)</SelectItem>
-                  <SelectItem value={Station.KITCHEN_HOT}>Bếp Nóng (Món chính)</SelectItem>
-                  <SelectItem value={Station.KITCHEN_COLD}>Bếp Lạnh (Salad/Tráng miệng)</SelectItem>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value={Station.BAR.toString()} className="rounded-lg">
+                    Quầy Bar (Đồ uống)
+                  </SelectItem>
+                  <SelectItem value={Station.HOT_KITCHEN.toString()} className="rounded-lg">
+                    Bếp Nóng (Món chính)
+                  </SelectItem>
+                  <SelectItem value={Station.COLD_KITCHEN.toString()} className="rounded-lg">
+                    Bếp Lạnh (Salad/Tráng miệng)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -236,13 +242,13 @@ export function MenuFormDialog({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="flex-1 border-slate-200 text-slate-500 hover:bg-slate-50 font-bold"
+              className="flex-1 border-slate-200 text-slate-500 hover:bg-slate-50 font-semibold rounded-xl"
             >
               HỦY BỎ
             </Button>
             <Button
               type="submit"
-              className="flex-[2] bg-[#cc0000] hover:bg-[#aa0000] text-white shadow-lg shadow-red-100 font-bold uppercase tracking-wider"
+              className="flex-2 bg-[#cc0000] hover:bg-[#aa0000] text-white shadow-lg shadow-red-100 font-semibold uppercase tracking-wider rounded-xl"
             >
               {initialData ? "Lưu thay đổi" : "Xác nhận thêm món"}
             </Button>

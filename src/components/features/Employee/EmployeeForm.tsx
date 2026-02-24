@@ -48,7 +48,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     setLoading(false);
     incrementRefreshCount();
     onSuccess();
-    toast.success(UI_TEXT.EMPLOYEE.ADD_SUSCESS); // ehehe :P
+    toast.success(UI_TEXT.EMPLOYEE.ADD_SUSCESS);
   };
 
   return (

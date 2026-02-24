@@ -18,28 +18,27 @@ const LoginForm = () => {
   const [error, setError] = useState("");
 
   const setEmployee = useAuthStore((state) => state.setEmployee);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const data = await login({
+      const res = await login({
         employeeCode: formData.get("employeeCode") as string,
         password: formData.get("password") as string,
       });
-      setEmployee({
-        email: data.email,
-        username: data.employeeCode,
-        fullName: data.fullName,
-        role: data.role,
-      });
 
-      setAccessToken(data.accessToken);
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      console.log(data);
-      router.push("/dashboard");
-    } catch {
+      if (res.data) {
+        const { employeeCode, role, email } = res.data;
+
+        setEmployee({
+          email: email || "",
+          username: employeeCode,
+          role: role,
+        });
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      console.error("Login handleLogin error:", err);
       setError(UI_TEXT.AUTH.ERROR_INVALID_CREDENTIALS);
     }
   };

@@ -1,44 +1,53 @@
+import { ApiResponse, PaginationResult } from "@/types/Api";
 import { Employee } from "@/types/Employee";
 
 import { apiFetch } from "./api";
 
-export async function getEmployees() {
-  const res = await apiFetch("/employees");
-  return {
-    employees: res.items.map((emp: Employee) => ({
-      ...emp,
-      dateOfBirth: emp.dateOfBirth ? new Date(emp.dateOfBirth) : null,
-      createdAt: new Date(emp.createdAt),
-      updatedAt: emp.updatedAt ? new Date(emp.updatedAt) : null,
-    })),
-  };
+export async function getEmployees(params?: {
+  search?: string;
+  filters?: string;
+  pageSize?: number;
+}): Promise<ApiResponse<PaginationResult<Employee>>> {
+  let url = "/v1/employees";
+  const queryParams = new URLSearchParams();
+  if (params?.search) queryParams.append("search", params.search);
+  if (params?.filters) queryParams.append("filters", params.filters);
+  if (params?.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+
+  const queryString = queryParams.toString();
+  if (queryString) url += `?${queryString}`;
+
+  const res = await apiFetch<PaginationResult<Employee>>(url);
+  return res;
 }
 
-export async function addEmployee(employee: Partial<Employee>) {
-  return apiFetch("/employees", {
+export async function addEmployee(employee: Partial<Employee>): Promise<ApiResponse<Employee>> {
+  return apiFetch<Employee>("/v1/employees", {
     method: "POST",
-    body: JSON.stringify(employee),
+    body: employee,
     cache: "no-store",
   });
 }
 
-export async function updateEmployee(employee: Partial<Employee>) {
-  return apiFetch(`/employees/${employee.employeeId}`, {
+export async function updateEmployee(employee: Partial<Employee>): Promise<ApiResponse<Employee>> {
+  return apiFetch<Employee>(`/v1/employees/${employee.employeeId}`, {
     method: "PUT",
-    body: JSON.stringify(employee),
+    body: employee,
     cache: "no-store",
   });
 }
 
-export async function deleteEmployee(employeeId: string) {
-  return apiFetch(`/employees/${employeeId}`, {
+export async function deleteEmployee(employeeId: string): Promise<ApiResponse<void>> {
+  return apiFetch<void>(`/v1/employees/${employeeId}`, {
     method: "DELETE",
     cache: "no-store",
   });
 }
 
-export async function filterEmployee(role: number) {
-  return apiFetch(`/employees?filters=role:${role}`, {
+export async function filterEmployee(
+  role: number
+): Promise<ApiResponse<PaginationResult<Employee>>> {
+  return apiFetch<PaginationResult<Employee>>(`/v1/employees?filters=role:${role}`, {
     method: "GET",
     cache: "no-store",
   });
@@ -48,10 +57,10 @@ export async function changeEmployeePassword(
   employeeId: string,
   reason: string,
   newPassword?: string
-) {
-  return apiFetch(`/employees/reset-password`, {
+): Promise<ApiResponse<void>> {
+  return apiFetch<void>(`/v1/employees/reset-password`, {
     method: "POST",
-    body: JSON.stringify({ employeeId, reason, newPassword }),
+    body: { employeeId, reason, newPassword },
     cache: "no-store",
   });
 }
@@ -60,10 +69,17 @@ export async function changeEmployeeRole(
   employeeCode: string,
   currentRole: number,
   newRole: number
-) {
-  return apiFetch(`/employees/change-role`, {
+): Promise<ApiResponse<void>> {
+  return apiFetch<void>(`/v1/employees/change-role`, {
     method: "POST",
-    body: JSON.stringify({ employeeCode, currentRole, newRole }),
+    body: { employeeCode, currentRole, newRole },
+    cache: "no-store",
+  });
+}
+
+export async function getEmployeeById(employeeId: string): Promise<ApiResponse<Employee>> {
+  return apiFetch<Employee>(`/v1/employees/${employeeId}`, {
+    method: "GET",
     cache: "no-store",
   });
 }

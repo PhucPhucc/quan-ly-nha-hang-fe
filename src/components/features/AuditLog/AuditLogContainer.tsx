@@ -21,8 +21,10 @@ const AuditLogContainer = ({ employeeId }: AuditLogContainerProps) => {
     const fetchLogs = async () => {
       try {
         setLoading(true);
-        const data = await getAuditLogs(employeeId);
-        setLogs(data.items || data);
+        const res = await getAuditLogs(employeeId);
+        if (res.data) {
+          setLogs(res.data.items || []);
+        }
       } catch (err) {
         setError(getErrorMessage(err));
       } finally {
