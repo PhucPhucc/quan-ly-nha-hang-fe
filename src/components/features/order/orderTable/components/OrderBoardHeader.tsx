@@ -1,0 +1,255 @@
+import { format } from "date-fns";
+import {
+  Armchair,
+  Calendar as CalendarIcon,
+  LayoutGrid,
+  Search,
+  ShoppingCart,
+  SlidersHorizontal,
+} from "lucide-react";
+import React from "react";
+import { DateRange } from "react-day-picker";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UI_TEXT } from "@/lib/UI_Text";
+import { cn } from "@/lib/utils";
+
+import { DINE_IN_STATUSES, TAKEAWAY_STATUSES } from "../constants";
+import { ActiveTab } from "../OrderBoard";
+
+interface OrderBoardHeaderProps {
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  selectedStatuses: string[];
+  setSelectedStatuses: React.Dispatch<React.SetStateAction<string[]>>;
+  activeTab: ActiveTab;
+  setActiveTab: (value: ActiveTab) => void;
+  dateRange: DateRange | undefined;
+  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
+  sortOrder: string;
+  setSortOrder: (value: string) => void;
+  stats: { total: number; dineIn: number; takeaway: number };
+  resetFilters: () => void;
+}
+
+const OrderBoardHeader: React.FC<OrderBoardHeaderProps> = ({
+  searchQuery,
+  setSearchQuery,
+  selectedStatuses,
+  setSelectedStatuses,
+  activeTab,
+  setActiveTab,
+  dateRange,
+  setDateRange,
+  sortOrder,
+  setSortOrder,
+  stats,
+  resetFilters,
+}) => {
+  const toggleStatus = (status: string) => {
+    setSelectedStatuses((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+    );
+  };
+
+  return (
+    <div className="px-5 py-4 border-b space-y-4 bg-muted/5">
+      <div className="flex items-center gap-3">
+        {/* Search Bar */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <Input
+            placeholder="Tìm kiếm mã đơn, số bàn..."
+            className="pl-10 h-11 bg-background border-muted-foreground/20 rounded-2xl shadow-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        {/* Filter Popover */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="h-11 rounded-2xl px-4 gap-2 border-muted-foreground/20 shadow-sm"
+            >
+              <SlidersHorizontal className="size-4" />
+              <span className="hidden sm:inline font-bold text-xs uppercase">Bộ lọc</span>
+              {selectedStatuses.length > 0 && (
+                <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
+                  {selectedStatuses.length}
+                </Badge>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-120 p-0 rounded-2xl shadow-2xl overflow-hidden" align="end">
+            <div className="bg-primary/5 px-4 py-3 border-b flex items-center justify-between">
+              <p className="font-black text-[11px] text-primary uppercase">Bộ lọc nâng cao</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetFilters}
+                className="h-6 text-[9px] font-black uppercase"
+              >
+                {UI_TEXT.BUTTON.RESET}
+              </Button>
+            </div>
+
+            <div className="p-4 space-y-6">
+              <div className="flex gap-6">
+                {(activeTab === "all" || activeTab === "dine_in") && (
+                  <div className="space-y-3 flex-1">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
+                      Tại bàn
+                    </label>
+                    <div className="grid grid-cols-1 gap-1">
+                      {DINE_IN_STATUSES.map((s) => (
+                        <div
+                          key={s.value}
+                          onClick={() => toggleStatus(s.value)}
+                          className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-muted/50 transition-colors"
+                        >
+                          <Checkbox checked={selectedStatuses.includes(s.value)} />
+                          <div className="flex items-center gap-2">
+                            <div className={cn("size-2 rounded-full", s.color)} />
+                            <span className="text-xs font-bold whitespace-nowrap">{s.label}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(activeTab === "all" || activeTab === "takeaway") && (
+                  <div className="space-y-3 flex-1">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
+                      Trạng Thái
+                    </label>
+                    <div className="grid grid-cols-1 gap-1">
+                      {TAKEAWAY_STATUSES.map((s) => (
+                        <div
+                          key={s.value}
+                          onClick={() => toggleStatus(s.value)}
+                          className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-muted/50 transition-colors"
+                        >
+                          <Checkbox checked={selectedStatuses.includes(s.value)} />
+                          <div className="flex items-center gap-2">
+                            <div className={cn("size-2 rounded-full", s.color)} />
+                            <span className="text-xs font-bold whitespace-nowrap">{s.label}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2 border-t pt-4">
+                <label className="text-[10px] font-black text-muted-foreground uppercase">
+                  Sắp xếp theo
+                </label>
+                <Select value={sortOrder} onValueChange={setSortOrder}>
+                  <SelectTrigger className="w-full h-10 rounded-xl bg-muted/20 text-xs font-bold">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Cập nhật mới nhất</SelectItem>
+                    <SelectItem value="oldest">Cập nhật cũ nhất</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {/* Date Range Popover */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="h-11 rounded-2xl px-4 gap-2 border-muted-foreground/20 shadow-sm font-bold"
+            >
+              <CalendarIcon className="size-4" />
+              <span className="text-[11px] uppercase">
+                {dateRange?.from ? (
+                  dateRange.to ? (
+                    <>
+                      {format(dateRange.from, "dd/MM")} - {format(dateRange.to, "dd/MM/yyyy")}
+                    </>
+                  ) : (
+                    format(dateRange.from, "dd/MM/yyyy")
+                  )
+                ) : (
+                  "Chọn ngày"
+                )}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 rounded-2xl shadow-2xl" align="end">
+            <Calendar
+              mode="range"
+              selected={dateRange}
+              onSelect={setDateRange}
+              className="rounded-2xl"
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      {/* Tabs */}
+      <Tabs
+        value={activeTab}
+        className="w-full"
+        onValueChange={(value) => setActiveTab(value as ActiveTab)}
+      >
+        <TabsList className="flex items-center w-full bg-muted/40 rounded-2xl border border-muted-foreground/10 font-sans">
+          <TabsTrigger
+            value="all"
+            className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 flex justify-center items-center py-1 rounded-xl gap-2 font-semibold text-xs uppercase"
+          >
+            <LayoutGrid className="size-4" />
+            <span>Tổng quan</span>
+            <Badge variant="secondary" className="ml-1 scale-90">
+              {stats.total}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger
+            value="dine_in"
+            className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 rounded-xl gap-2 font-semibold text-xs uppercase"
+          >
+            <Armchair className="size-4" />
+            <span>Tại bàn</span>
+            <Badge variant="secondary" className="ml-1 scale-90">
+              {stats.dineIn}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger
+            value="takeaway"
+            className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 rounded-xl gap-2 font-semibold text-xs uppercase"
+          >
+            <ShoppingCart className="size-4" />
+            <span>Mang đi</span>
+            <Badge variant="secondary" className="ml-1 scale-90">
+              {stats.takeaway}
+            </Badge>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+    </div>
+  );
+};
+
+export default OrderBoardHeader;

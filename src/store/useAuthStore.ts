@@ -1,21 +1,32 @@
-import { create } from 'zustand'
+// store/authStore.ts
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-type User = {
-  username: string
-  role: string
-  permissions: string[]
-}
+import { Employee } from "@/types/Employee";
 
-type AuthState = {
-  user: User | null
-  isAuthenticated: boolean
-  setUser: (user: User) => void
-  clearAuth: () => void
-}
+export type AuthState = {
+  employee: Partial<Employee> | null;
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  setUser: (user) => set({ user, isAuthenticated: true }),
-  clearAuth: () => set({ user: null, isAuthenticated: false }),
-}))
+  setEmployee: (employee: Partial<Employee> | null) => void;
+  logout: () => void;
+};
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      employee: null,
+
+      setEmployee: (employee) => set({ employee }),
+
+      logout: () => {
+        set({ employee: null });
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      },
+    }),
+    {
+      name: "auth-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
