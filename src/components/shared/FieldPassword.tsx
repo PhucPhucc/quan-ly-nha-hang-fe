@@ -1,3 +1,5 @@
+"use client";
+
 import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
 import { InputHTMLAttributes } from "react";
