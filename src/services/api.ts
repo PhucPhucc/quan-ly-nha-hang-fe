@@ -1,11 +1,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { ApiResponse } from "@/types/Api";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!BASE_URL) {
-  throw new Error("Missing NEXT_PUBLIC_API_URL");
-}
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 let isRefreshing = false;
 let refreshQueue: (() => void)[] = [];
