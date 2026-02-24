@@ -1,3 +1,4 @@
+"use client";
 import { Loader2, Minus, Plus, ReceiptText, Trash2 } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
