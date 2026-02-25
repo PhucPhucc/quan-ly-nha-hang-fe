@@ -112,6 +112,17 @@ const EmployeeChangeRole = ({
               />
             </Field>
 
+            <div className="bg-blue-50 border border-blue-100 p-3 rounded-lg text-xs text-blue-700">
+              <p className="font-medium mb-1">💡 Thông tin:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Tài khoản cũ sẽ bị vô hiệu hóa.</li>
+                <li>Hệ thống tự động tạo mã nhân viên mới.</li>
+                <li>
+                  Thông tin đăng nhập mới đã được gửi tới <strong>Email nhân viên</strong>.
+                </li>
+              </ul>
+            </div>
+
             <Field orientation="horizontal" className="gap-2">
               <Checkbox id="confirm_change" name="confirm_change" />
               <FieldContent>
