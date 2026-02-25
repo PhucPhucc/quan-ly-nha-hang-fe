@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { changeEmployeeRole } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
@@ -45,11 +46,18 @@ const EmployeeChangeRole = ({
     const formData = new FormData(e.currentTarget);
     const newRole = formData.get("role");
     const confirmChange = formData.get("confirm_change");
+    const reason = formData.get("reason") as string;
 
     if (confirmChange !== "on" || !newRole) {
       toast.error("Vui lòng xác nhận thay đổi vai trò");
       return;
     }
+
+    if (!reason) {
+      toast.error("Vui lòng nhập lý do thay đổi vai trò");
+      return;
+    }
+
     if (Number(newRole) === ROLEMAP[role as keyof typeof ROLEMAP]) {
       toast.error("Vai trò mới phải khác vai trò hiện tại");
       return;
@@ -63,7 +71,8 @@ const EmployeeChangeRole = ({
       const data = await changeEmployeeRole(
         employeeCode,
         ROLEMAP[role as keyof typeof ROLEMAP],
-        Number(newRole)
+        Number(newRole),
+        reason
       );
       toast.success("Thay đổi vai trò thành công");
       increment();
@@ -92,6 +101,16 @@ const EmployeeChangeRole = ({
             </Field>
 
             <EmployeeSelectRole />
+
+            <Field>
+              <Label htmlFor="reason">Lý do thay đổi</Label>
+              <Textarea
+                id="reason"
+                name="reason"
+                required
+                placeholder="Nhập lý do thăng chức, chuyển bộ phận..."
+              />
+            </Field>
 
             <Field orientation="horizontal" className="gap-2">
               <Checkbox id="confirm_change" name="confirm_change" />
