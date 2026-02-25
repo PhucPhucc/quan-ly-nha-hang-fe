@@ -43,7 +43,7 @@ jobs:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           build-args: |
-            NEXT_PUBLIC_API_URL=http://${{ secrets.SERVER_IP }}:5000
+            NEXT_PUBLIC_API_URL=https://foodhub-v1.duckdns.org
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/foodhub-fe:latest
             ${{ secrets.DOCKER_USERNAME }}/foodhub-fe:${{ github.sha }}
