@@ -83,7 +83,7 @@ export async function apiFetch<T>(
     let message = "API Error";
     try {
       const data = (await res.json()) as ApiResponse<T>;
-      message = data.error || data.message || message;
+      message = data.message || message;
     } catch {
       /* ignore */
     }
