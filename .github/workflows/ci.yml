@@ -29,6 +29,9 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://${{ secrets.SERVER_IP }}:5000
+          NODE_ENV: production
 
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
