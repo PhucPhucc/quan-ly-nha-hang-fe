@@ -51,7 +51,11 @@ export default function LandingPage() {
             {employee ? (
               <>
                 <Link
-                  href="/dashboard"
+                  href={
+                    employee.role === "ChefBar" || employee.role === "Bartender"
+                      ? "/kds/station"
+                      : "/dashboard"
+                  }
                   className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
                 >
                   {t.DASHBOARD}
@@ -118,7 +122,11 @@ export default function LandingPage() {
           >
             {employee ? (
               <Link
-                href="/dashboard"
+                href={
+                  employee.role === "ChefBar" || employee.role === "Bartender"
+                    ? "/kds/station"
+                    : "/dashboard"
+                }
                 className="group flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
               >
                 {t.DASHBOARD}

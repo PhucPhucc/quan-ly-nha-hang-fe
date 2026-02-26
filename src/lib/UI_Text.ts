@@ -298,4 +298,34 @@ export const UI_TEXT = {
       ORDERS_COUNT: (count: number) => `${count} đơn trong tuần`,
     },
   },
+
+  KDS: {
+    NAV: {
+      STATION: "Vào Trạm",
+      AUDIT_LOG: "Nhật ký",
+      EXPAND: "Mở rộng menu",
+      COLLAPSE: "Thu gọn menu",
+    },
+    AUDIT: {
+      TIME: "Thời gian",
+      ACTOR: "Người thực hiện",
+      ACTION: "Hành động",
+      ORDER_DETAILS: "Chi tiết đơn hàng",
+      REASON: "Lý do / Ghi chú",
+      ACTIONS: "Thao tác",
+      EMPTY: "Chưa có lịch sử nào",
+      UNDO: "Hoàn tác",
+    },
+    ORDER: {
+      STATUS_SERVING: "SERVING",
+      STATUS_COOKING: "COOKING",
+      COMPLETE_BTN: "HOÀN TẤT ĐƠN",
+      EMPTY: "Không có món trong đơn",
+    },
+    ITEM: {
+      DONE: "Done",
+      RETURN: "Return",
+      TIME_ICON: "schedule",
+    },
+  },
 };

@@ -35,7 +35,12 @@ const LoginForm = () => {
           username: employeeCode,
           role: role,
         });
-        router.push("/dashboard");
+
+        if (role === "ChefBar" || role === "Bartender") {
+          router.push("/kds/station");
+        } else {
+          router.push("/dashboard");
+        }
       }
     } catch (err) {
       console.error("Login handleLogin error:", err);
