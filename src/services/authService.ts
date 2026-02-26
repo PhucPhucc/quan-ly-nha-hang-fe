@@ -32,16 +32,17 @@ export async function logout(): Promise<ApiResponse<void>> {
   });
 }
 
-export async function requestPasswordReset(email: string): Promise<ApiResponse<string>> {
+export async function requestPasswordReset(employeeCode: string): Promise<ApiResponse<string>> {
   return apiFetch<string>("/auth/request-password-reset", {
     method: "POST",
-    body: { email },
+    body: { employeeCode },
   });
 }
 
 export async function resetPassword(data: {
   token: string;
   newPassword: string;
+  confirmPassword: string;
 }): Promise<ApiResponse<string>> {
   return apiFetch<string>("/auth/reset-password", {
     method: "POST",

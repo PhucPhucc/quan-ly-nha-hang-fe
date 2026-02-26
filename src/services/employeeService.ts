@@ -68,11 +68,12 @@ export async function changeEmployeePassword(
 export async function changeEmployeeRole(
   employeeCode: string,
   currentRole: string,
-  newRole: string
+  newRole: string,
+  reason: string
 ): Promise<ApiResponse<void>> {
   return apiFetch<void>(`/employees/change-role`, {
     method: "POST",
-    body: { employeeCode, currentRole, newRole },
+    body: { employeeCode, currentRole, newRole, reason },
     cache: "no-store",
   });
 }
