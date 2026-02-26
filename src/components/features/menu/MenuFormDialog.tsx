@@ -10,6 +10,7 @@ import {
   Utensils,
   Wallet,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect } from "react";
 // 1. Import thêm useWatch từ react-hook-form
 import { useForm, useWatch } from "react-hook-form";
@@ -96,11 +97,13 @@ export function MenuFormDialog({
         >
           <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <div className="col-span-2 flex items-center gap-4 p-4 bg-red-50/30 rounded-xl border border-dashed border-red-200">
-              <div className="h-20 w-20 rounded-lg overflow-hidden border border-red-100 bg-white shrink-0">
-                <img
+              <div className="h-20 w-20 rounded-lg overflow-hidden border border-red-100 bg-white shrink-0 relative">
+                <Image
                   src={imageUrl || "https://placehold.co/100x100?text=FoodHub"}
                   alt="Preview"
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="80px"
+                  className="object-cover"
                 />
               </div>
               <div className="flex-1 space-y-1.5">

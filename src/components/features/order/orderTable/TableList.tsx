@@ -1,43 +1,118 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { UI_TEXT } from "@/lib/UI_Text";
+import { orderService } from "@/services/orderService";
+import { useOrderBoardStore } from "@/store/useOrderStore";
+import { OrderStatus, OrderType } from "@/types/enums";
+import { Order } from "@/types/Order";
 
-import { mockTables } from "./mockData";
-import TableItem from "./TableItem";
-import TableLegend from "./TableLegend";
+import TableItem, { Table } from "./TableItem";
 
-interface TableListProps {
-  statusFilter?: string;
-}
+const TableList = () => {
+  const orders = useOrderBoardStore((s) => s.orders);
+  const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
+  const setActiveView = useOrderBoardStore((s) => s.setActiveView);
+  const setSelectedOrderId = useOrderBoardStore((s) => s.setSelectedOrderId);
+  const [loadingTable, setLoadingTable] = useState<number | null>(null);
 
-const TableList = ({ statusFilter = "all" }: TableListProps) => {
-  const filteredTables =
-    statusFilter === "all"
-      ? mockTables
-      : mockTables.filter((t) => t.status.toLowerCase() === statusFilter.toLowerCase());
+  const handleTableClick = async (tableNumber: number, status: OrderStatus, orderId?: string) => {
+    if (status === OrderStatus.Serving && orderId) {
+      setSelectedOrderId(orderId);
+      setActiveView("menu");
+      return;
+    }
+
+    if (status === OrderStatus.Ready) {
+      if (loadingTable !== null) return;
+      const tableId = "00000000-0000-0000-0000-00000000000" + tableNumber.toString();
+      console.log(tableId);
+      setLoadingTable(tableNumber);
+      try {
+        const res = await orderService.createOrder({
+          tableId,
+          orderType: OrderType.DineIn,
+        });
+
+        if (res.isSuccess) {
+          await fetchOrders();
+          const newOrder = useOrderBoardStore
+            .getState()
+            .orders.find((o) => o.tableId?.endsWith(tableId) && o.status !== OrderStatus.Completed);
+          if (newOrder) {
+            setSelectedOrderId(newOrder.orderId);
+          }
+          setActiveView("menu");
+        }
+      } catch (e: unknown) {
+        toast.error("Tạo order thất bại");
+        console.error(e);
+      } finally {
+        setLoadingTable(null);
+      }
+    }
+  };
 
   return (
-    <div className="flex flex-col h-full min-h-0">
-      <TableLegend />
+    <>
+      {Array.from({ length: 12 }, (_, i) => {
+        const tableNumber = i + 1;
+        const tableId = tableNumber.toString().padStart(2, "0");
 
-      <ScrollArea className="flex-1 overflow-auto" type="always">
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 pt-4 pb-10 px-2">
-          {filteredTables.map((table) => (
-            <TableItem key={table.tableNumber} table={table} />
-          ))}
-        </div>
+        const currentOrder = orders.find(
+          (o) => o.tableId?.endsWith(tableId) && o.status !== OrderStatus.Completed
+        );
 
-        {filteredTables.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-            <p className="text-sm">{UI_TEXT.TABLE.NO_TABLES_FOUND}</p>
-          </div>
-        )}
-      </ScrollArea>
-    </div>
+        const tableData: Table = {
+          tableNumber,
+          label: `Bàn ${tableId}`,
+          ...getTableInfo(currentOrder),
+        } as Table;
+
+        const isClickable =
+          tableData.status === OrderStatus.Ready || tableData.status === OrderStatus.Serving;
+
+        return (
+          <TableItem
+            key={tableNumber}
+            table={tableData}
+            onTableClick={
+              isClickable
+                ? () => handleTableClick(tableNumber, tableData.status, currentOrder?.orderId)
+                : undefined
+            }
+            isLoading={loadingTable === tableNumber}
+          />
+        );
+      })}
+    </>
   );
 };
 
 export default TableList;
+
+const getTableInfo = (order?: Order) => {
+  if (!order) {
+    return { status: OrderStatus.Ready, people: 0 };
+  }
+
+  switch (order.status) {
+    case OrderStatus.Serving:
+      return {
+        status: OrderStatus.Serving,
+        people: 4,
+        price: order.totalAmount
+          ? new Intl.NumberFormat("vi-VN").format(order.totalAmount) + "đ"
+          : "0đ",
+        createdAt: order.createdAt,
+      };
+    case OrderStatus.Reserved:
+      return { status: OrderStatus.Reserved, people: 0 };
+    case OrderStatus.Cleaning:
+      return { status: OrderStatus.Cleaning, people: 0 };
+    case OrderStatus.Ready:
+    default:
+      return { status: OrderStatus.Ready, people: 0 };
+  }
+};

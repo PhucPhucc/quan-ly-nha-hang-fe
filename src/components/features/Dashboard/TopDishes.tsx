@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 
@@ -32,13 +34,14 @@ export function TopDishes() {
         <CardTitle className="text-lg font-bold">{t.TITLE}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        {dishes.map((dish, index) => (
-          <div key={index} className="flex items-center gap-4 group cursor-pointer">
-            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-muted">
-              <img
+        {dishes.map((dish) => (
+          <div key={dish.name} className="flex items-center gap-4 group cursor-pointer">
+            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-muted relative">
+              <Image
                 src={dish.image}
                 alt={dish.name}
-                className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                fill
+                className="object-cover transition-transform group-hover:scale-110"
               />
             </div>
             <div className="flex flex-1 flex-col">

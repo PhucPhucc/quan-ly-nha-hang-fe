@@ -33,9 +33,9 @@ export function SharedResources() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-3">
-          {resources.map((res, i) => (
+          {resources.map((res) => (
             <button
-              key={i}
+              key={res.title}
               className="group flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-border bg-background hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95"
             >
               <div

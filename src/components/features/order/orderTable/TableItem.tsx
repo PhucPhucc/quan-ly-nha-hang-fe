@@ -1,61 +1,46 @@
-"use client";
+import { Loader2, Plus, Users } from "lucide-react";
 
-import { UtensilsCrossed } from "lucide-react";
-import React from "react";
-
+import { useElapsedTime } from "@/hooks/useElapsedTime";
 import { cn } from "@/lib/utils";
-
-export type TableStatus = "INPROCESS" | "READY" | "CLEANING" | "RESERVED";
+import { OrderStatus } from "@/types/enums";
 
 export type Table = {
   tableNumber: number;
-  status: TableStatus;
+  status: OrderStatus;
   label: string;
   people: number;
   elapsedTime?: string;
   price?: string;
+  createdAt?: string;
 };
 
-export interface TableItemProps {
+type TableItemProps = {
   table: Table;
-  onClick?: (table: Table) => void;
-}
+  onTableClick?: () => void;
+  isLoading?: boolean;
+};
+const TableItem = ({ table, onTableClick, isLoading }: TableItemProps) => {
+  const timeRunning = useElapsedTime(table.createdAt);
 
-const TableItem = ({ table, onClick }: TableItemProps) => {
-  const getStatusColor = (status: TableStatus) => {
-    switch (status) {
-      case "READY":
-        return "border-table-empty/60 bg-table-empty/20";
-      case "INPROCESS":
-        return "border-table-inprocess/60 bg-table-inprocess/20";
-      case "RESERVED":
-        return "border-table-reserved/60 bg-table-reserved/20";
-      case "CLEANING":
-        return "border-table-cleaning/60 bg-table-cleaning/20";
-      default:
-        return "border-secondary-foreground/30";
-    }
-  };
-
-  const getFootColor = (status: TableStatus) => {
-    switch (status) {
-      case "READY":
-        return "bg-table-empty/50";
-      case "INPROCESS":
-        return "bg-table-inprocess/50";
-      case "RESERVED":
-        return "bg-table-reserved/50";
-      case "CLEANING":
-        return "bg-table-cleaning/50";
-      default:
-        return "bg-secondary-foreground/40";
-    }
-  };
+  const isReady = table.status === OrderStatus.Ready;
+  const isServing = table.status === OrderStatus.Serving;
+  const isClickable = (isReady || isServing) && !!onTableClick;
 
   return (
     <li
-      onClick={() => onClick?.(table)}
-      className="flex flex-col items-center justify-center cursor-pointer transition-all active:scale-90 group px-1"
+      onClick={isClickable ? onTableClick : undefined}
+      onKeyDown={(e) => {
+        if (isClickable && onTableClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onTableClick();
+        }
+      }}
+      role={isClickable ? "button" : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      className={cn(
+        "flex flex-col items-center justify-center transition-all active:scale-9 group px-1 focus:outline-none",
+        isClickable ? "cursor-pointer" : "cursor-default"
+      )}
     >
       <div
         className={cn(
@@ -70,35 +55,45 @@ const TableItem = ({ table, onClick }: TableItemProps) => {
 
         <div className="p-1.5 h-full flex flex-col justify-between overflow-hidden">
           <div className="flex justify-between items-start">
-            <p className="text-[10px] font-black font-mono">
+            <p className="text-[12px] font-semibold font-mono tracking-wider">
               #{table.tableNumber.toString().padStart(2, "0")}
             </p>
-            {table.status === "INPROCESS" && (
-              <div className="flex items-center gap-0.5 bg-background/90 px-0.5 rounded border border-table-inprocess/50">
-                <span className="text-[7px] font-black text-table-inprocess leading-none">
-                  {table.elapsedTime || "25m"}
+            {table.status === OrderStatus.Serving && timeRunning && (
+              <div className="flex items-center bg-background/90 p-1 rounded-full border border-table-inprocess/50">
+                <span className="text-[8px] font-black text-table-inprocess leading-none">
+                  {timeRunning}
                 </span>
               </div>
             )}
           </div>
 
-          <div className="flex justify-between items-center gap-0.5">
-            <p className="flex items-center gap-0.5 text-[8px] font-bold text-foreground/70 truncate">
-              <UtensilsCrossed className="size-2 shrink-0" />
-              <span>{table.people} Khách</span>
-            </p>
-            {table.status === "INPROCESS" && (
-              <p className="font-black text-xs text-primary truncate leading-none">
-                {table.price || "0"}
+          {isReady ? (
+            <div className="flex items-center justify-center flex-1">
+              {isLoading ? (
+                <Loader2 className="size-5 text-muted-foreground/50 animate-spin" />
+              ) : (
+                <Plus className="size-5 text-muted-foreground/40 group-hover:text-muted-foreground/70 transition-colors" />
+              )}
+            </div>
+          ) : (
+            <div className="flex justify-between items-center gap-0.5">
+              <p className="flex gap-1 text-xs font-bold text-foreground/70 truncate">
+                <Users className="size-3 shrink-0" />
+                <span>{table.people}</span>
               </p>
-            )}
-          </div>
+              {table.status === OrderStatus.Serving && (
+                <p className="font-black text-xs text-primary truncate leading-none">
+                  {table.price || "0"}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <p
         className={cn(
           "mt-3 text-[10px] font-black uppercase tracking-tighter transition-colors text-center w-full",
-          table.status === "READY" ? "text-muted-foreground" : "text-foreground"
+          table.status === OrderStatus.Ready ? "text-muted-foreground" : "text-foreground"
         )}
       >
         {table.label}
@@ -142,3 +137,33 @@ const FootTableItem = ({ position, color }: { position: string; color: string })
 };
 
 export default TableItem;
+
+const getStatusColor = (status: OrderStatus) => {
+  switch (status) {
+    case OrderStatus.Ready:
+      return "border-table-empty/60 bg-table-empty/20";
+    case OrderStatus.Serving:
+      return "border-table-inprocess/60 bg-table-inprocess/20";
+    case OrderStatus.Reserved:
+      return "border-table-reserved/60 bg-table-reserved/20";
+    case OrderStatus.Cleaning:
+      return "border-table-cleaning/60 bg-table-cleaning/20";
+    default:
+      return "border-secondary-foreground/30";
+  }
+};
+
+const getFootColor = (status: OrderStatus) => {
+  switch (status) {
+    case OrderStatus.Ready:
+      return "bg-table-empty/50";
+    case OrderStatus.Serving:
+      return "bg-table-inprocess/50";
+    case OrderStatus.Reserved:
+      return "bg-table-reserved/50";
+    case OrderStatus.Cleaning:
+      return "bg-table-cleaning/50";
+    default:
+      return "bg-secondary-foreground/40";
+  }
+};

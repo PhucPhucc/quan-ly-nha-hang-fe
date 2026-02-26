@@ -104,8 +104,8 @@ export function StatsCards() {
   if (loading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {[...Array(4)].map((_, i) => (
-          <Card key={i} className="h-32 flex items-center justify-center border-none shadow-md">
+        {["l1", "l2", "l3", "l4"].map((key) => (
+          <Card key={key} className="h-32 flex items-center justify-center border-none shadow-md">
             <Loader2 className="animate-spin text-primary opacity-20" />
           </Card>
         ))}
@@ -115,9 +115,9 @@ export function StatsCards() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat, index) => (
+      {stats.map((stat) => (
         <Card
-          key={index}
+          key={stat.title}
           className="overflow-hidden border-none shadow-md transition-all hover:shadow-lg"
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

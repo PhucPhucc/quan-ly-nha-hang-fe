@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, Minus, Plus } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,9 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { optionService } from "@/services/optionService";
-import { CartItemOptionGroup, useOrderStore } from "@/store/useOrderStore";
+import { useCartStore } from "@/store/useCartStore";
+import { useOrderBoardStore } from "@/store/useOrderStore";
+import { CartItemOptionGroup } from "@/types/Cart";
 import { MenuItem, OptionGroup, OptionItem } from "@/types/Menu";
 
 interface MenuOptionSelectionDialogProps {
@@ -29,135 +31,173 @@ interface MenuOptionSelectionDialogProps {
   menuItem: MenuItem | null;
 }
 
+type State = {
+  optionGroups: OptionGroup[];
+  loading: boolean;
+  quantity: number;
+  note: string;
+  selectedOptions: Record<string, OptionItem[]>;
+};
+
+type Action =
+  | { type: "SET_GROUPS"; payload: OptionGroup[] }
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "SET_QUANTITY"; payload: number | ((prev: number) => number) }
+  | { type: "SET_NOTE"; payload: string }
+  | { type: "SET_OPTIONS"; payload: Record<string, OptionItem[]> }
+  | { type: "RESET" };
+
+const initialState: State = {
+  optionGroups: [],
+  loading: false,
+  quantity: 1,
+  note: "",
+  selectedOptions: {},
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SET_GROUPS":
+      return { ...state, optionGroups: action.payload };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+    case "SET_QUANTITY":
+      const newQuantity =
+        typeof action.payload === "function" ? action.payload(state.quantity) : action.payload;
+      return { ...state, quantity: newQuantity };
+    case "SET_NOTE":
+      return { ...state, note: action.payload };
+    case "SET_OPTIONS":
+      return { ...state, selectedOptions: action.payload };
+    case "RESET":
+      return initialState;
+    default:
+      return state;
+  }
+}
+
 export function MenuOptionSelectionDialog({
   open,
   onOpenChange,
   menuItem,
 }: MenuOptionSelectionDialogProps) {
-  const [optionGroups, setOptionGroups] = useState<OptionGroup[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [note, setNote] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { optionGroups, loading, quantity, note, selectedOptions } = state;
 
-  // Selection State: Record<OptionGroupId, OptionItem[]>
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, OptionItem[]>>({});
+  const addItem = useCartStore((state) => state.addItem);
 
-  const addItemToCart = useOrderStore((state) => state.addItem);
+  // -- Helpers --
+  const resetLocalState = useCallback(() => {
+    dispatch({ type: "RESET" });
+  }, []);
 
+  // -- Data Fetching --
   useEffect(() => {
     if (open && menuItem) {
       const fetchData = async () => {
         try {
-          setLoading(true);
+          dispatch({ type: "SET_LOADING", payload: true });
           const res = await optionService.getOptionGroupsByMenuItem(menuItem.menuItemId);
-          if (res.isSuccess && res.data) {
-            setOptionGroups(res.data);
-            // Reset selection
-            setSelectedOptions({});
-            // Auto select default for single select required?
-            // Logic: process if needed. For now, empty.
-          }
+          if (res.isSuccess && res.data) dispatch({ type: "SET_GROUPS", payload: res.data });
         } catch {
           toast.error("Không thể tải tùy chọn món ăn");
         } finally {
-          setLoading(false);
+          dispatch({ type: "SET_LOADING", payload: false });
         }
       };
-
       fetchData();
-      setQuantity(1);
-      setNote("");
     } else {
-      setOptionGroups([]);
-      setSelectedOptions({});
-      setNote("");
+      resetLocalState();
     }
-  }, [open, menuItem]);
+  }, [open, menuItem, resetLocalState]);
 
-  // Calculate Total Price
-  const totalPrice = useMemo(() => {
-    if (!menuItem) return 0;
+  // -- Calculations --
+  const extraPrice = useMemo(
+    () =>
+      Object.values(selectedOptions)
+        .flat()
+        .reduce((acc, item) => acc + item.extraPrice, 0),
+    [selectedOptions]
+  );
 
-    let base = menuItem.priceDineIn; // Default to DineIn for now
+  const totalPrice = menuItem ? (menuItem.priceDineIn + extraPrice) * quantity : 0;
 
-    // Add extra price from options
-    Object.values(selectedOptions)
-      .flat()
-      .forEach((item) => {
-        base += item.extraPrice;
-      });
-
-    return base * quantity;
-  }, [menuItem, selectedOptions, quantity]);
-
-  // Handle Option Toggle
+  // -- Handlers --
   const handleToggleOption = (group: OptionGroup, item: OptionItem, isChecked: boolean) => {
-    setSelectedOptions((prev) => {
-      const currentSelection = prev[group.optionGroupId] || [];
+    const currentSelection = selectedOptions[group.optionGroupId] || [];
 
-      if (group.optionType === 1) {
-        // Single Select
-        // Replace with new selection
-        return {
-          ...prev,
-          [group.optionGroupId]: [item],
-        };
-      } else {
-        // Multi Select
-        if (isChecked) {
-          // Check Max Limit
-          if (currentSelection.length >= group.maxSelect) {
-            toast.warning(`Chỉ được chọn tối đa ${group.maxSelect} tùy chọn`);
-            return prev;
-          }
-          return {
-            ...prev,
-            [group.optionGroupId]: [...currentSelection, item],
-          };
-        } else {
-          return {
-            ...prev,
-            [group.optionGroupId]: currentSelection.filter(
-              (i) => i.optionItemId !== item.optionItemId
-            ),
-          };
-        }
+    if (group.optionType === 1) {
+      // Single Select
+      dispatch({
+        type: "SET_OPTIONS",
+        payload: { ...selectedOptions, [group.optionGroupId]: [item] },
+      });
+      return;
+    }
+
+    // Multi Select
+    if (isChecked) {
+      if (currentSelection.length >= group.maxSelect) {
+        toast.warning(`Chỉ được chọn tối đa ${group.maxSelect} tùy chọn`);
+        return;
       }
+      dispatch({
+        type: "SET_OPTIONS",
+        payload: { ...selectedOptions, [group.optionGroupId]: [...currentSelection, item] },
+      });
+      return;
+    }
+
+    dispatch({
+      type: "SET_OPTIONS",
+      payload: {
+        ...selectedOptions,
+        [group.optionGroupId]: currentSelection.filter((i) => i.optionItemId !== item.optionItemId),
+      },
     });
   };
 
-  const handleAddToCart = () => {
-    if (!menuItem) return;
-
-    // Validate Required Groups
+  const validateSelection = () => {
     for (const group of optionGroups) {
       const selection = selectedOptions[group.optionGroupId] || [];
       if (group.isRequired && selection.length < group.minSelect) {
-        // MinSelect usually 1 for required
         toast.error(`Vui lòng chọn "${group.name}"`);
-        return;
-      }
-      if (selection.length < group.minSelect) {
-        toast.error(`"${group.name}" cần chọn tối thiểu ${group.minSelect} tùy chọn`);
-        return;
+        return false;
       }
     }
+    return true;
+  };
 
-    // Transform to Cart Structure
-    const finalOptions: CartItemOptionGroup[] = Object.entries(selectedOptions).map(
+  const handleAddToCart = () => {
+    if (!validateSelection()) return;
+
+    const { selectedOrderId } = useOrderBoardStore.getState();
+
+    if (!selectedOrderId) {
+      toast.error("Vui lòng chọn bàn trước khi thêm món");
+      return;
+    }
+
+    if (!menuItem) {
+      toast.error("Không thể thêm món - dữ liệu không hợp lệ");
+      return;
+    }
+
+    const optionGroups: CartItemOptionGroup[] = Object.entries(selectedOptions).map(
       ([groupId, items]) => ({
         optionGroupId: groupId,
-        selectedValues: items.map((i) => ({
-          optionItemId: i.optionItemId,
-          quantity: 1, // Default quantity 1 for each option value for now
-          label: i.label,
-          extraPrice: i.extraPrice,
+        selectedValues: items.map((item) => ({
+          optionItemId: item.optionItemId,
+          quantity: 1,
+          label: item.label,
+          extraPrice: item.extraPrice,
         })),
       })
     );
 
-    addItemToCart(menuItem, quantity, finalOptions, note);
-    toast.success("Đã thêm vào giỏ hàng");
+    addItem(selectedOrderId, menuItem, quantity, optionGroups, note, menuItem.priceDineIn);
+    toast.success("Đã thêm vào đơn hàng");
+    resetLocalState();
     onOpenChange(false);
   };
 
@@ -184,8 +224,7 @@ export function MenuOptionSelectionDialog({
                     <div className="flex justify-between items-center">
                       <div>
                         <h4 className="font-bold text-sm text-slate-800">
-                          {group.name}
-                          {group.isRequired && <span className="text-red-500 ml-1">*</span>}
+                          {group.name} {group.isRequired && <span className="text-red-500">*</span>}
                         </h4>
                         <p className="text-[10px] text-slate-400">
                           {group.optionType === 1 ? "Chọn 1" : `Chọn tối đa ${group.maxSelect}`}
@@ -210,23 +249,26 @@ export function MenuOptionSelectionDialog({
                         return (
                           <div
                             key={item.optionItemId}
-                            className={`
-                                                    flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all
-                                                    ${isSelected ? "border-primary bg-primary/5 shadow-sm" : "border-slate-100 hover:border-slate-300"}
-                                                `}
                             onClick={() => handleToggleOption(group, item, !isSelected)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                handleToggleOption(group, item, !isSelected);
+                              }
+                            }}
+                            role="button"
+                            tabIndex={0}
+                            className={`
+                              flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary/50
+                              ${isSelected ? "border-primary bg-primary/5 shadow-sm" : "border-slate-100 hover:border-slate-300"}
+                            `}
                           >
                             <div className="flex items-center gap-3">
                               {group.optionType === 1 ? (
                                 <div
-                                  className={`
-                                                             w-4 h-4 rounded-full border flex items-center justify-center
-                                                             ${isSelected ? "border-primary" : "border-slate-300"}
-                                                         `}
+                                  className={`size-4 rounded-full border flex items-center justify-center ${isSelected ? "border-primary" : "border-slate-300"}`}
                                 >
-                                  {isSelected && (
-                                    <div className="w-2 h-2 rounded-full bg-primary" />
-                                  )}
+                                  {isSelected && <div className="size-2 rounded-full bg-primary" />}
                                 </div>
                               ) : (
                                 <Checkbox checked={isSelected} className="pointer-events-none" />
@@ -256,7 +298,7 @@ export function MenuOptionSelectionDialog({
                 <Input
                   placeholder="Ví dụ: Ít cay, không hành..."
                   value={note}
-                  onChange={(e) => setNote(e.target.value)}
+                  onChange={(e) => dispatch({ type: "SET_NOTE", payload: e.target.value })}
                 />
               </div>
             </div>
@@ -269,7 +311,9 @@ export function MenuOptionSelectionDialog({
               variant="ghost"
               size="icon"
               className="h-8 w-8 rounded-md bg-white shadow-sm hover:bg-white/80"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              onClick={() =>
+                dispatch({ type: "SET_QUANTITY", payload: (prev) => Math.max(1, prev - 1) })
+              }
               disabled={quantity <= 1}
             >
               <Minus className="h-4 w-4" />
@@ -279,7 +323,7 @@ export function MenuOptionSelectionDialog({
               variant="ghost"
               size="icon"
               className="h-8 w-8 rounded-md bg-white shadow-sm hover:bg-white/80"
-              onClick={() => setQuantity(quantity + 1)}
+              onClick={() => dispatch({ type: "SET_QUANTITY", payload: (prev) => prev + 1 })}
             >
               <Plus className="h-4 w-4" />
             </Button>

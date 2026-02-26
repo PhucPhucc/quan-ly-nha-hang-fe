@@ -1,52 +1,32 @@
 "use client";
 
-import { Loader2, UtensilsCrossed } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { UtensilsCrossed } from "lucide-react";
+import React, { useEffect, useMemo } from "react";
 
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { categoryService } from "@/services/categoryService";
-import { menuService } from "@/services/menuService";
-import { Category, MenuItem } from "@/types/Menu";
+import { useMenuStore } from "@/store/useMenuStore";
+import { MenuItem } from "@/types/Menu";
 
 import { MenuOptionSelectionDialog } from "./MenuOptionSelectionDialog";
 import OrderList from "./OrderList";
 
 const CardMenu = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("all");
-
-  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
-  const [isOptionDialogOpen, setIsOptionDialogOpen] = useState(false);
-
+  const categories = useMenuStore((state) => state.categories);
+  const menuItems = useMenuStore((state) => state.menuItems);
+  const loading = useMenuStore((state) => state.loading);
+  const activeTab = useMenuStore((state) => state.activeTab);
+  const isOptionDialogOpen = useMenuStore((state) => state.isOptionDialogOpen);
+  const selectedItem = useMenuStore((state) => state.selectedItem);
+  const setActiveTab = useMenuStore((state) => state.setActiveTab);
+  const setIsOptionDialogOpen = useMenuStore((state) => state.closeOptionDialog);
+  const setSelectedItem = useMenuStore((state) => state.openOptionDialog);
+  const fetchData = useMenuStore((state) => state.fetchData);
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [catRes, menuRes] = await Promise.all([
-          categoryService.getAll(),
-          menuService.getAll({ pageSize: 1000 }),
-        ]);
-
-        if (catRes.isSuccess && catRes.data) {
-          setCategories(catRes.data.items || []);
-        }
-        if (menuRes.isSuccess && menuRes.data) {
-          setMenuItems(menuRes.data.items || []);
-        }
-      } catch (error) {
-        toast.error("Không thể tải thực đơn: " + (error instanceof Error ? error.message : ""));
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const filteredItems = useMemo(() => {
     if (activeTab === "all") return menuItems;
@@ -54,17 +34,12 @@ const CardMenu = () => {
   }, [menuItems, activeTab]);
 
   const handleItemClick = (item: MenuItem) => {
+    console.log(item);
     setSelectedItem(item);
-    setIsOptionDialogOpen(true);
   };
 
   if (loading) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <Loader2 className="size-8 animate-spin text-primary" />
-        <span className="ml-2 text-muted-foreground font-medium">Đang tải thực đơn...</span>
-      </div>
-    );
+    return <LoadingSpinner label={UI_TEXT.ORDER.FETCH_MENU} />;
   }
 
   return (

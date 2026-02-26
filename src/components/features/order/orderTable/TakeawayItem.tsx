@@ -56,7 +56,15 @@ const TakeawayItem = ({ order, onClick }: TakeawayItemProps) => {
   return (
     <div
       onClick={() => onClick?.(order)}
-      className="flex flex-col items-center justify-center cursor-pointer transition-all active:scale-90 group px-1 relative"
+      onKeyDown={(e) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick(order);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      className="flex flex-col items-center justify-center cursor-pointer transition-all active:scale-90 group px-1 relative focus:outline-none"
     >
       {/* Container for Info Overlays */}
       <div className="relative w-28 h-20 sm:w-32 sm:h-24 flex items-center justify-center">

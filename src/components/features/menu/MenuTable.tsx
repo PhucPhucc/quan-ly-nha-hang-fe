@@ -1,6 +1,5 @@
-"use client";
-
 import { Beer, Coffee, Edit, MoreVertical, Trash2, UtensilsCrossed } from "lucide-react";
+import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -99,11 +98,13 @@ export function MenuTable({
             >
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shrink-0">
-                    <img
+                  <div className="h-12 w-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shrink-0 relative">
+                    <Image
                       src={item.imageUrl || "https://placehold.co/100x100?text=No+Image"}
                       alt={item.name}
-                      className="h-full w-full object-cover"
+                      fill
+                      sizes="48px"
+                      className="object-cover"
                     />
                   </div>
                   <div className="flex flex-col">

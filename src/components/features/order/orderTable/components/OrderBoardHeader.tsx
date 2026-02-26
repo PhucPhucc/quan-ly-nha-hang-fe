@@ -7,8 +7,7 @@ import {
   ShoppingCart,
   SlidersHorizontal,
 } from "lucide-react";
-import React from "react";
-import { DateRange } from "react-day-picker";
+import { shallow } from "zustand/shallow";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,44 +25,36 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
+import { ActiveTab, useOrderBoardStore } from "@/store/useOrderStore";
+import { OrderType } from "@/types/enums";
 
 import { DINE_IN_STATUSES, TAKEAWAY_STATUSES } from "../constants";
-import { ActiveTab } from "../OrderBoard";
 
-interface OrderBoardHeaderProps {
-  searchQuery: string;
-  setSearchQuery: (value: string) => void;
-  selectedStatuses: string[];
-  setSelectedStatuses: React.Dispatch<React.SetStateAction<string[]>>;
-  activeTab: ActiveTab;
-  setActiveTab: (value: ActiveTab) => void;
-  dateRange: DateRange | undefined;
-  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
-  sortOrder: string;
-  setSortOrder: (value: string) => void;
-  stats: { total: number; dineIn: number; takeaway: number };
-  resetFilters: () => void;
-}
+const OrderBoardHeader = () => {
+  const searchQuery = useOrderBoardStore((s) => s.searchQuery);
+  const setSearchQuery = useOrderBoardStore((s) => s.setSearchQuery);
 
-const OrderBoardHeader: React.FC<OrderBoardHeaderProps> = ({
-  searchQuery,
-  setSearchQuery,
-  selectedStatuses,
-  setSelectedStatuses,
-  activeTab,
-  setActiveTab,
-  dateRange,
-  setDateRange,
-  sortOrder,
-  setSortOrder,
-  stats,
-  resetFilters,
-}) => {
-  const toggleStatus = (status: string) => {
-    setSelectedStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
-    );
-  };
+  const selectedStatuses = useOrderBoardStore((s) => s.selectedStatuses);
+  const toggleStatus = useOrderBoardStore((s) => s.toggleStatus);
+
+  const activeTab = useOrderBoardStore((s) => s.activeTab);
+  const setActiveTab = useOrderBoardStore((s) => s.setActiveTab);
+
+  const dateRange = useOrderBoardStore((s) => s.dateRange);
+  const setDateRange = useOrderBoardStore((s) => s.setDateRange);
+
+  const sortOrder = useOrderBoardStore((s) => s.sortOrder);
+  const setSortOrder = useOrderBoardStore((s) => s.setSortOrder);
+
+  const stats = useOrderBoardStore(
+    (s) => ({
+      total: s.orders.length,
+      dineIn: s.orders.filter((o) => o.orderType === OrderType.DineIn).length,
+      takeaway: s.orders.filter((o) => o.orderType === OrderType.Takeaway).length,
+    }),
+    shallow
+  );
+  const resetFilters = useOrderBoardStore((s) => s.resetFilters);
 
   return (
     <div className="px-5 py-4 border-b space-y-4 bg-muted/5">
@@ -112,15 +103,23 @@ const OrderBoardHeader: React.FC<OrderBoardHeaderProps> = ({
               <div className="flex gap-6">
                 {(activeTab === "all" || activeTab === "dine_in") && (
                   <div className="space-y-3 flex-1">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
+                    <span className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
                       Tại bàn
-                    </label>
+                    </span>
                     <div className="grid grid-cols-1 gap-1">
                       {DINE_IN_STATUSES.map((s) => (
                         <div
                           key={s.value}
                           onClick={() => toggleStatus(s.value)}
-                          className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-muted/50 transition-colors"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              toggleStatus(s.value);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-muted/50 transition-colors focus:bg-muted/50 focus:outline-none"
                         >
                           <Checkbox checked={selectedStatuses.includes(s.value)} />
                           <div className="flex items-center gap-2">
@@ -135,15 +134,23 @@ const OrderBoardHeader: React.FC<OrderBoardHeaderProps> = ({
 
                 {(activeTab === "all" || activeTab === "takeaway") && (
                   <div className="space-y-3 flex-1">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
+                    <span className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
                       Trạng Thái
-                    </label>
+                    </span>
                     <div className="grid grid-cols-1 gap-1">
                       {TAKEAWAY_STATUSES.map((s) => (
                         <div
                           key={s.value}
                           onClick={() => toggleStatus(s.value)}
-                          className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-muted/50 transition-colors"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              toggleStatus(s.value);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          className="flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-muted/50 transition-colors focus:bg-muted/50 focus:outline-none"
                         >
                           <Checkbox checked={selectedStatuses.includes(s.value)} />
                           <div className="flex items-center gap-2">
@@ -158,9 +165,9 @@ const OrderBoardHeader: React.FC<OrderBoardHeaderProps> = ({
               </div>
 
               <div className="space-y-2 border-t pt-4">
-                <label className="text-[10px] font-black text-muted-foreground uppercase">
+                <span className="text-[10px] font-black text-muted-foreground uppercase">
                   Sắp xếp theo
-                </label>
+                </span>
                 <Select value={sortOrder} onValueChange={setSortOrder}>
                   <SelectTrigger className="w-full h-10 rounded-xl bg-muted/20 text-xs font-bold">
                     <SelectValue />
@@ -215,7 +222,7 @@ const OrderBoardHeader: React.FC<OrderBoardHeaderProps> = ({
         className="w-full"
         onValueChange={(value) => setActiveTab(value as ActiveTab)}
       >
-        <TabsList className="flex items-center w-full bg-muted/40 rounded-2xl border border-muted-foreground/10 font-sans">
+        <TabsList className="flex items-center w-full bg-muted/40 rounded-2xl border border-muted-foreground/10">
           <TabsTrigger
             value="all"
             className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 flex justify-center items-center py-1 rounded-xl gap-2 font-semibold text-xs uppercase"

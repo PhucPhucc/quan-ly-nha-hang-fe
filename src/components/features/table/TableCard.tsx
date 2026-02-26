@@ -13,8 +13,17 @@ interface TableCardProps {
 function TableCard({ table, onClick }: TableCardProps) {
   return (
     <li
-      className={clsx(baseStyle, statusStyle[table.status])}
+      className={clsx(baseStyle, statusStyle[table.status], "focus:outline-none focus:ring-4")}
       onClick={() => onClick(table.tableNumber)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick(table.tableNumber);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Bàn số ${table.tableNumber}, trạng thái ${table.status}`}
     >
       <p className="text-2xl font-semibold">{table.tableNumber}</p>
 

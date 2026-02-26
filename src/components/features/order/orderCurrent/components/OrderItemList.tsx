@@ -4,81 +4,169 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
-
-interface OrderItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  status: string;
-}
+import { CartItem, CartItemOptionGroup, CartItemOptionValue } from "@/types/Cart";
+import { OrderItemStatus } from "@/types/enums";
+import { OrderItem } from "@/types/Order";
 
 interface OrderItemListProps {
-  items: OrderItem[];
-  // Add handlers here later, e.g., onUpdateQuantity, onRemoveItem
+  items: CartItem[];
+  remoteItems?: OrderItem[];
+  onUpdateQuantity: (cartItemKey: string, delta: number) => void;
+  onRemoveItem: (cartItemKey: string) => void;
 }
 
-const OrderItemList: React.FC<OrderItemListProps> = ({ items }) => {
+const OrderItemList: React.FC<OrderItemListProps> = ({
+  items,
+  remoteItems = [],
+  onUpdateQuantity,
+  onRemoveItem,
+}) => {
+  const getStatusBadge = (status: OrderItemStatus) => {
+    switch (status) {
+      case OrderItemStatus.Preparing:
+        return (
+          <Badge className="bg-orange-500 hover:bg-orange-600 text-[10px] py-0">
+            Đang chuẩn bị
+          </Badge>
+        );
+      case OrderItemStatus.Cooking:
+        return <Badge className="bg-blue-500 hover:bg-blue-600 text-[10px] py-0">Đang nấu</Badge>;
+      case OrderItemStatus.Ready:
+        return (
+          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-[10px] py-0">
+            Chờ cung ứng
+          </Badge>
+        );
+      case OrderItemStatus.Completed:
+        return <Badge className="bg-slate-500 hover:bg-slate-600 text-[10px] py-0">Hoàn tất</Badge>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <ScrollArea className="flex-1 overflow-auto" type="always">
       <div className="py-4 space-y-4 px-2">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="group relative flex flex-col gap-2 p-3 rounded-xl border border-border/50 bg-secondary/20 hover:bg-secondary/40 transition-all"
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <h4 className="font-semibold text-sm leading-tight">{item.name}</h4>
-                <p className="text-xs text-primary font-bold mt-1">
-                  {item.price.toLocaleString()}đ
-                </p>
-              </div>
-              <button className="opacity-0 group-hover:opacity-100 p-1.5 text-muted-foreground hover:text-danger hover:bg-danger/10 rounded-lg transition-all">
-                <Trash2 className="size-4" />
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between mt-1">
-              <div className="flex items-center gap-1.5">
-                <Badge
-                  variant="secondary"
-                  className={cn(
-                    "text-[10px] px-1.5 py-0 border-none",
-                    item.status === "COOKING" && "bg-orange-500/10 text-orange-600",
-                    item.status === "PENDING" && "bg-slate-500/10 text-slate-600",
-                    item.status === "SERVED" && "bg-green-500/10 text-green-600"
-                  )}
-                >
-                  {item.status === "COOKING"
-                    ? "Đang làm"
-                    : item.status === "PENDING"
-                      ? "Chờ"
-                      : "Đã lên"}
-                </Badge>
-              </div>
-
-              <div className="flex items-center bg-background rounded-lg border border-border shadow-sm">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-7 rounded-none rounded-l-lg hover:bg-secondary"
-                >
-                  <Minus className="size-3" />
-                </Button>
-                <span className="w-8 text-center text-xs font-bold">{item.quantity}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-7 rounded-none rounded-r-lg hover:bg-secondary"
-                >
-                  <Plus className="size-3" />
-                </Button>
-              </div>
-            </div>
+        {items.length === 0 && remoteItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground italic text-sm text-center">
+            Chưa có món nào trong đơn hàng
           </div>
-        ))}
+        ) : (
+          <>
+            {/* New Items (Cart) */}
+            {items.map((item) => (
+              <div
+                key={item.cartItemKey}
+                className="group relative flex flex-col gap-2 p-3 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm leading-tight">{item.menuItem.name}</h4>
+                    <p className="text-xs text-primary font-bold mt-1">
+                      {item.unitPrice.toLocaleString()}đ x {item.quantity} ={" "}
+                      {(item.unitPrice * item.quantity).toLocaleString()}đ
+                    </p>
+                    {/* Options */}
+                    {item.selectedOptions.flatMap((g: CartItemOptionGroup) => g.selectedValues)
+                      .length > 0 && (
+                      <div className="mt-1 space-y-0.5">
+                        {item.selectedOptions
+                          .flatMap((g: CartItemOptionGroup) => g.selectedValues)
+                          .map((val: CartItemOptionValue) => (
+                            <p
+                              key={val.optionItemId}
+                              className="text-[10px] text-slate-500 flex justify-between"
+                            >
+                              <span>• {val.label}</span>
+                              {val.extraPrice > 0 && (
+                                <span>+{val.extraPrice.toLocaleString()}đ</span>
+                              )}
+                            </p>
+                          ))}
+                      </div>
+                    )}
+                    {/* Note */}
+                    {item.note && (
+                      <p className="text-[10px] text-orange-600 italic mt-1">
+                        Ghi chú: {item.note}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => onRemoveItem(item.cartItemKey)}
+                    className="p-1.5 text-muted-foreground hover:text-danger hover:bg-danger/10 rounded-lg transition-all"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between mt-1">
+                  <Badge
+                    variant="secondary"
+                    className="text-[10px] px-1.5 py-0 border-none bg-emerald-500/10 text-emerald-600"
+                  >
+                    Mới
+                  </Badge>
+
+                  <div className="flex items-center bg-background rounded-lg border border-border shadow-sm">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 rounded-none rounded-l-lg hover:bg-secondary"
+                      onClick={() => onUpdateQuantity(item.cartItemKey, -1)}
+                    >
+                      <Minus className="size-3" />
+                    </Button>
+                    <span className="w-8 text-center text-xs font-bold">{item.quantity}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 rounded-none rounded-r-lg hover:bg-secondary"
+                      onClick={() => onUpdateQuantity(item.cartItemKey, 1)}
+                    >
+                      <Plus className="size-3" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Remote Items (Ordered) */}
+            {remoteItems.map((item) => (
+              <div
+                key={item.orderItemId}
+                className="group relative flex flex-col gap-2 p-3 rounded-xl border border-border/50 bg-secondary/20 transition-all"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm leading-tight text-slate-700">
+                      {item.itemNameSnapshot}
+                    </h4>
+                    <p className="text-xs text-slate-500 font-medium mt-1">
+                      {item.unitPriceSnapshot.toLocaleString()}đ x {item.quantity} ={" "}
+                      {(item.unitPriceSnapshot * item.quantity).toLocaleString()}đ
+                    </p>
+                    {item.itemNote && (
+                      <p className="text-[10px] text-slate-400 italic mt-1">
+                        Ghi chú: {item.itemNote}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mt-1">
+                  {getStatusBadge(item.status)}
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {new Date(item.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </ScrollArea>
   );

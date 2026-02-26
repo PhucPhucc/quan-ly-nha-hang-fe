@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 
 import { MenuItem } from "@/types/Menu";
@@ -16,19 +14,29 @@ const OrderList = ({
       {menuList.map((item) => (
         <li
           key={item.code}
+          onClick={() => onItemClick(item)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onItemClick(item);
+            }
+          }}
+          role="button"
+          tabIndex={0}
           className={`
             flex flex-col justify-between aspect-3/4 bg-white border border-slate-100 shadow-sm p-3 rounded-2xl 
-            hover:shadow-md hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer
+            hover:shadow-md hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50
             ${item.isOutOfStock ? "opacity-60 grayscale pointer-events-none" : ""}
           `}
-          onClick={() => onItemClick(item)}
         >
           <div className="flex-1 mb-2 rounded-xl overflow-hidden bg-slate-50 relative group">
-            <img
-              src={item.imageUrl || "https://placehold.co/200x200?text=No+Image"}
+            {/* <Image
+              src={"https://placehold.co/200x200?text=No+Image"}
               alt={item.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            />
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
+            /> */}
+            <img src="https://placehold.co/200x200?text=No+Image" alt={item.name} />
             {item.isOutOfStock && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <span className="text-white font-black uppercase text-xs tracking-widest border border-white px-2 py-1">

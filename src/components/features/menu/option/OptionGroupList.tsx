@@ -47,8 +47,16 @@ export function OptionGroupList({
             <div
               key={group.optionGroupId}
               onClick={() => onSelectGroup(group)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelectGroup(group);
+                }
+              }}
+              role="button"
+              tabIndex={0}
               className={`
-                p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md
+                p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/50
                 ${
                   selectedGroup?.optionGroupId === group.optionGroupId
                     ? "bg-white border-primary shadow-sm ring-1 ring-primary/20"

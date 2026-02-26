@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { toast } from "sonner";
 
 import {
@@ -24,35 +24,87 @@ interface OptionManagementDialogProps {
   menuItem: MenuItem | null;
 }
 
+type State = {
+  optionGroups: OptionGroup[];
+  selectedGroup: OptionGroup | null;
+  loading: boolean;
+  isGroupFormOpen: boolean;
+  editingGroup: OptionGroup | null;
+  isItemFormOpen: boolean;
+  editingItem: OptionItem | null;
+};
+
+type Action =
+  | { type: "SET_GROUPS"; payload: OptionGroup[] }
+  | { type: "SET_SELECTED_GROUP"; payload: OptionGroup | null }
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "OPEN_GROUP_FORM"; payload: OptionGroup | null }
+  | { type: "CLOSE_GROUP_FORM" }
+  | { type: "OPEN_ITEM_FORM"; payload: OptionItem | null }
+  | { type: "CLOSE_ITEM_FORM" }
+  | { type: "RESET" };
+
+const initialState: State = {
+  optionGroups: [],
+  selectedGroup: null,
+  loading: false,
+  isGroupFormOpen: false,
+  editingGroup: null,
+  isItemFormOpen: false,
+  editingItem: null,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SET_GROUPS":
+      return { ...state, optionGroups: action.payload };
+    case "SET_SELECTED_GROUP":
+      return { ...state, selectedGroup: action.payload };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+    case "OPEN_GROUP_FORM":
+      return { ...state, isGroupFormOpen: true, editingGroup: action.payload };
+    case "CLOSE_GROUP_FORM":
+      return { ...state, isGroupFormOpen: false, editingGroup: null };
+    case "OPEN_ITEM_FORM":
+      return { ...state, isItemFormOpen: true, editingItem: action.payload };
+    case "CLOSE_ITEM_FORM":
+      return { ...state, isItemFormOpen: false, editingItem: null };
+    case "RESET":
+      return initialState;
+    default:
+      return state;
+  }
+}
+
 export function OptionManagementDialog({
   open,
   onOpenChange,
   menuItem,
 }: OptionManagementDialogProps) {
-  const [optionGroups, setOptionGroups] = useState<OptionGroup[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<OptionGroup | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  // Form states for Group
-  const [isGroupFormOpen, setIsGroupFormOpen] = useState(false);
-  const [editingGroup, setEditingGroup] = useState<OptionGroup | null>(null);
-
-  // Form states for Item
-  const [isItemFormOpen, setIsItemFormOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<OptionItem | null>(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const {
+    optionGroups,
+    selectedGroup,
+    loading,
+    isGroupFormOpen,
+    editingGroup,
+    isItemFormOpen,
+    editingItem,
+  } = state;
 
   const fetchData = useCallback(async () => {
     if (!menuItem) return;
     try {
-      setLoading(true);
+      dispatch({ type: "SET_LOADING", payload: true });
       const res = await optionService.getOptionGroupsByMenuItem(menuItem.menuItemId);
       if (res.isSuccess && res.data) {
-        setOptionGroups(res.data);
+        dispatch({ type: "SET_GROUPS", payload: res.data });
       }
     } catch {
       toast.error("Không thể tải danh sách tùy chọn");
     } finally {
-      setLoading(false);
+      dispatch({ type: "SET_LOADING", payload: false });
     }
   }, [menuItem]);
 
@@ -63,34 +115,27 @@ export function OptionManagementDialog({
         const updatedGroup = optionGroups.find(
           (g) => g.optionGroupId === selectedGroup.optionGroupId
         );
-        if (updatedGroup) {
-          setSelectedGroup(updatedGroup);
-        } else {
-          setSelectedGroup(optionGroups[0]);
-        }
+        dispatch({ type: "SET_SELECTED_GROUP", payload: updatedGroup || optionGroups[0] });
       } else {
-        setSelectedGroup(optionGroups[0]);
+        dispatch({ type: "SET_SELECTED_GROUP", payload: optionGroups[0] });
       }
     } else {
-      setSelectedGroup(null);
+      dispatch({ type: "SET_SELECTED_GROUP", payload: null });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [optionGroups]);
+  }, [optionGroups, selectedGroup?.optionGroupId]);
 
   useEffect(() => {
     if (open && menuItem) {
       fetchData();
     } else {
-      setOptionGroups([]);
-      setSelectedGroup(null);
+      dispatch({ type: "RESET" });
     }
   }, [open, menuItem, fetchData]);
 
   // --- Group Handlers ---
 
   const handleOpenGroupForm = (group?: OptionGroup) => {
-    setEditingGroup(group || null);
-    setIsGroupFormOpen(true);
+    dispatch({ type: "OPEN_GROUP_FORM", payload: group || null });
   };
 
   const handleSaveGroup = async (data: Partial<OptionGroup>) => {
@@ -124,7 +169,7 @@ export function OptionManagementDialog({
       await optionService.deleteOptionGroup(group.optionGroupId);
       toast.success("Đã xóa nhóm tùy chọn");
       if (selectedGroup?.optionGroupId === group.optionGroupId) {
-        setSelectedGroup(null);
+        dispatch({ type: "SET_SELECTED_GROUP", payload: null });
       }
       fetchData();
     } catch {
@@ -135,8 +180,7 @@ export function OptionManagementDialog({
   // --- Item Handlers ---
 
   const handleOpenItemForm = (item?: OptionItem) => {
-    setEditingItem(item || null);
-    setIsItemFormOpen(true);
+    dispatch({ type: "OPEN_ITEM_FORM", payload: item || null });
   };
 
   const handleSaveItem = async (data: Partial<OptionItem>) => {
@@ -194,7 +238,7 @@ export function OptionManagementDialog({
             optionGroups={optionGroups}
             selectedGroup={selectedGroup}
             loading={loading}
-            onSelectGroup={setSelectedGroup}
+            onSelectGroup={(group) => dispatch({ type: "SET_SELECTED_GROUP", payload: group })}
             onOpenGroupForm={handleOpenGroupForm}
             onDeleteGroup={handleDeleteGroup}
           />
@@ -212,7 +256,7 @@ export function OptionManagementDialog({
       <OptionGroupForm
         key={editingGroup?.optionGroupId || "new-group"}
         open={isGroupFormOpen}
-        onOpenChange={setIsGroupFormOpen}
+        onOpenChange={(isOpen) => !isOpen && dispatch({ type: "CLOSE_GROUP_FORM" })}
         initialData={editingGroup}
         onSubmit={handleSaveGroup}
       />
@@ -221,7 +265,7 @@ export function OptionManagementDialog({
       <OptionItemForm
         key={editingItem?.optionItemId || "new-item"}
         open={isItemFormOpen}
-        onOpenChange={setIsItemFormOpen}
+        onOpenChange={(isOpen) => !isOpen && dispatch({ type: "CLOSE_ITEM_FORM" })}
         initialData={editingItem}
         onSubmit={handleSaveItem}
       />
