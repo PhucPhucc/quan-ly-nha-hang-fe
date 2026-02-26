@@ -26,7 +26,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
     const verify = async () => {
       try {
-        const res = await apiFetch<Employee>("/v1/auth/me");
+        const res = await apiFetch<Employee>("/auth/me");
 
         if (res.isSuccess && res.data) {
           if (!cancelled) {

@@ -17,7 +17,6 @@ export async function refreshToken() {
   });
 
   if (!res.ok) {
-    console.log(res);
     throw new Error("Refresh token failed");
   }
 
@@ -46,7 +45,6 @@ export async function apiFetch<T>(
   if (options.body && !(options.body instanceof FormData) && typeof options.body === "object") {
     fetchOptions.body = JSON.stringify(options.body);
   }
-  console.log(path);
   let res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
 
   if (res.status === 401) {
