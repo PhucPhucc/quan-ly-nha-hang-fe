@@ -24,7 +24,6 @@ import { Label } from "@/components/ui/label";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { changeEmployeeRole } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
-import { ROLEMAP } from "@/types/Employee";
 
 import EmployeeSelectRole from "../EmployeeSelectRole";
 const EmployeeChangeRole = ({
@@ -50,7 +49,7 @@ const EmployeeChangeRole = ({
       toast.error("Vui lòng xác nhận thay đổi vai trò");
       return;
     }
-    if (Number(newRole) === ROLEMAP[role as keyof typeof ROLEMAP]) {
+    if (newRole === role) {
       toast.error("Vai trò mới phải khác vai trò hiện tại");
       return;
     }
@@ -60,11 +59,7 @@ const EmployeeChangeRole = ({
       return;
     }
     try {
-      const data = await changeEmployeeRole(
-        employeeCode,
-        ROLEMAP[role as keyof typeof ROLEMAP],
-        Number(newRole)
-      );
+      const data = await changeEmployeeRole(employeeCode, role as string, newRole as string);
       toast.success("Thay đổi vai trò thành công");
       increment();
       onToggle(false);

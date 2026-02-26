@@ -19,16 +19,16 @@ const EmployeeSelectRole = () => {
           <SelectValue />
         </SelectTrigger>
         <SelectContent position="popper">
-          <SelectItem className="hover:bg-secondary-foreground/20" value="1">
+          <SelectItem className="hover:bg-secondary-foreground/20" value="manager">
             {UI_TEXT.ROLE.MANAGER}
           </SelectItem>
-          <SelectItem className="hover:bg-secondary-foreground/20" value="2">
+          <SelectItem className="hover:bg-secondary-foreground/20" value="cashier">
             {UI_TEXT.ROLE.CASHIER}
           </SelectItem>
-          <SelectItem className="hover:bg-secondary-foreground/20" value="3">
+          <SelectItem className="hover:bg-secondary-foreground/20" value="waiter">
             {UI_TEXT.ROLE.WAITER}
           </SelectItem>
-          <SelectItem className="hover:bg-secondary-foreground/20" value="4">
+          <SelectItem className="hover:bg-secondary-foreground/20" value="chefbar">
             {UI_TEXT.ROLE.CHEF}
           </SelectItem>
         </SelectContent>

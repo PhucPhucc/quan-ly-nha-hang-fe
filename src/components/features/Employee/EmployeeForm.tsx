@@ -11,7 +11,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { addEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
-import { Employee } from "@/types/Employee";
 
 import EmployeeSelectRole from "./EmployeeSelectRole";
 
@@ -29,11 +28,11 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     const role = formData.get("role") as string;
     const employeeCode = formData.get("employeeCode") as string;
 
-    const employee: Partial<Employee> = {
+    const employee = {
       employeeCode,
       fullName,
       email,
-      role: Number(role),
+      role: role,
     };
 
     try {

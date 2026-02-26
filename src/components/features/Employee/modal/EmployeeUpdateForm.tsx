@@ -31,14 +31,13 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     const status = formData.get("status") as string;
     const role = formData.get("role") as string;
 
-    const employeeUpdate: Partial<Employee> = {
-      ...employee,
+    const employeeUpdate = {
       fullName,
       email,
       phone,
       dateOfBirth,
       status,
-      role: Number(role),
+      role: role,
     };
     console.log(employeeUpdate);
     try {

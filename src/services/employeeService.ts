@@ -45,7 +45,7 @@ export async function deleteEmployee(employeeId: string): Promise<ApiResponse<vo
 }
 
 export async function filterEmployee(
-  role: number
+  role: string
 ): Promise<ApiResponse<PaginationResult<Employee>>> {
   return apiFetch<PaginationResult<Employee>>(`/employees?filters=role:${role}`, {
     method: "GET",
@@ -67,8 +67,8 @@ export async function changeEmployeePassword(
 
 export async function changeEmployeeRole(
   employeeCode: string,
-  currentRole: number,
-  newRole: number
+  currentRole: string,
+  newRole: string
 ): Promise<ApiResponse<void>> {
   return apiFetch<void>(`/employees/change-role`, {
     method: "POST",

@@ -4,6 +4,7 @@ export enum EmployeeRole {
   MANAGER = "manager",
   CASHIER = "cashier",
   WAITER = "waiter",
+  CHEFBAR = "chefbar",
 }
 
 export enum EmployeeStatus {
@@ -11,11 +12,11 @@ export enum EmployeeStatus {
   INACTIVE = "inactive",
 }
 
-export const ROLEMAP = {
-  manager: 1,
-  cashier: 2,
-  waiter: 3,
-  chefbar: 4,
+export const ROLEMAP: Record<string, string> = {
+  manager: "manager",
+  cashier: "cashier",
+  waiter: "waiter",
+  chefbar: "chefbar",
 };
 
 export interface Employee {
