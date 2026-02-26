@@ -38,7 +38,7 @@ const TableItem = ({ table, onTableClick, isLoading }: TableItemProps) => {
       role={isClickable ? "button" : undefined}
       tabIndex={isClickable ? 0 : undefined}
       className={cn(
-        "flex flex-col items-center justify-center transition-all active:scale-9 group px-1 focus:outline-none",
+        "flex flex-col items-center justify-center transition-all active:scale-90 group px-1 focus:outline-none",
         isClickable ? "cursor-pointer" : "cursor-default"
       )}
     >

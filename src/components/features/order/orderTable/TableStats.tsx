@@ -3,6 +3,7 @@
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
+import { OrderStatus } from "@/types/enums";
 
 import { Table } from "./TableItem";
 
@@ -13,10 +14,10 @@ interface TableStatsProps {
 const TableStats = ({ tables }: TableStatsProps) => {
   const stats = {
     total: tables.length,
-    available: tables.filter((t) => t.status === "READY").length,
-    occupied: tables.filter((t) => t.status === "INPROCESS").length,
-    reserved: tables.filter((t) => t.status === "RESERVED").length,
-    cleaning: tables.filter((t) => t.status === "CLEANING").length,
+    available: tables.filter((t) => t.status === OrderStatus.Ready).length,
+    occupied: tables.filter((t) => t.status === OrderStatus.Serving).length,
+    reserved: tables.filter((t) => t.status === OrderStatus.Reserved).length,
+    cleaning: tables.filter((t) => t.status === OrderStatus.Cleaning).length,
   };
 
   return (
