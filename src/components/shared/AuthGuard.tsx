@@ -7,49 +7,56 @@ import { apiFetch } from "@/services/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Employee } from "@/types/Employee";
 
+import LoadingSpinner from "./LoadingSpinner";
+
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { employee, setEmployee } = useAuthStore();
-  const [isChecking, setIsChecking] = useState(true);
+  const employee = useAuthStore((s) => s.employee);
+  const setEmployee = useAuthStore((s) => s.setEmployee);
+
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    // Cleanup old tokens from localStorage if any (stale data from previous versions)
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    if (employee) {
+      setChecking(false);
+      return;
+    }
 
-    const checkAuth = async () => {
-      if (!employee) {
-        try {
-          // Attempt to get user info - this will auto-refresh tokens if needed via apiFetch interceptor
-          const res = await apiFetch<Employee>("/v1/auth/me");
-          if (res.isSuccess && res.data) {
-            setEmployee({
-              email: res.data.email || "",
-              username: res.data.employeeCode,
-              role: res.data.role,
-            });
-          } else {
-            router.push("/login");
-          }
-        } catch {
-          router.push("/login");
+    let cancelled = false;
+
+    const verify = async () => {
+      try {
+        const res = await apiFetch<Employee>("/auth/me");
+
+        if (!res.isSuccess || !res.data) {
+          router.replace("/login");
+          return;
         }
+
+        if (!cancelled) {
+          setEmployee({
+            email: res.data.email ?? "",
+            username: res.data.employeeCode,
+            role: res.data.role,
+          });
+        }
+      } catch {
+        router.replace("/login");
+      } finally {
+        if (!cancelled) setChecking(false);
       }
-      setIsChecking(false);
     };
 
-    checkAuth();
+    verify();
+
+    return () => {
+      cancelled = true;
+    };
   }, [employee, router, setEmployee]);
 
-  if (isChecking) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+  if (checking) {
+    return <LoadingSpinner />;
   }
 
-  if (!employee) return null;
-
-  return <>{children}</>;
+  return employee ? <>{children}</> : null;
 }
