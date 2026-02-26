@@ -1,86 +1,178 @@
-import { create } from "zustand";
+import { DateRange } from "react-day-picker";
+import { shallow } from "zustand/shallow";
+import { createWithEqualityFn } from "zustand/traditional";
 
-import { MenuItem } from "@/types/Menu";
+import { orderService } from "@/services/orderService";
+import { OrderStatus, OrderType } from "@/types/enums";
+import { Order } from "@/types/Order";
 
-export interface CartItemOptionValue {
-  optionItemId: string;
-  quantity: number;
-  label: string;
-  extraPrice: number;
+export type ActiveTab = "all" | "dine_in" | "takeaway";
+
+export type OrderActiveView = "order" | "menu";
+
+interface OrderBoardState {
+  // data
+  orders: Order[];
+  activeOrderDetails: Order | null;
+  loading: boolean;
+  orderDetailsLoading: boolean;
+
+  // ui state
+  activeTab: ActiveTab;
+  activeView: OrderActiveView;
+  selectedOrderId: string | null;
+  searchQuery: string;
+  selectedStatuses: string[];
+  dateRange?: DateRange;
+  sortOrder: string;
+
+  // actions
+  fetchOrders: (option?: { pageNumber?: number; pageSize?: number }) => Promise<void>;
+  fetchOrderDetails: (id: string) => Promise<void>;
+  clearOrderDetails: () => void;
+  setActiveTab: (tab: ActiveTab) => void;
+  setActiveView: (view: OrderActiveView) => void;
+  setSelectedOrderId: (id: string | null) => void;
+  setSearchQuery: (q: string) => void;
+  setSelectedStatuses: (s: string[]) => void;
+  setDateRange: (d?: DateRange) => void;
+  setSortOrder: (s: string) => void;
+  resetFilters: () => void;
+
+  // order mutations ✅
+  addOrder: (order: Order) => void;
+  removeOrder: (orderId: string) => void;
+  updateOrder: (order: Order) => void;
+
+  // selectors (derived)
+  dineInOrders: () => Order[];
+  takeawayOrders: () => Order[];
+  filteredTakeaways: () => Order[];
+  toggleStatus: (status: string) => void;
+  stats: () => {
+    total: number;
+    dineIn: number;
+    takeaway: number;
+  };
 }
 
-export interface CartItemOptionGroup {
-  optionGroupId: string;
-  selectedValues: CartItemOptionValue[];
-}
+export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
+  (set, get) => ({
+    // ---------- state ----------
+    orders: [],
+    activeOrderDetails: null,
+    loading: true,
+    orderDetailsLoading: false,
 
-export interface CartItem extends MenuItem {
-  quantity: number;
-  selectedOptions?: CartItemOptionGroup[];
-  note?: string;
-  uniqueId?: string; // To distinguish items with different options
-}
+    activeTab: "all",
+    activeView: "order",
+    selectedOrderId: null,
+    searchQuery: "",
+    selectedStatuses: [],
+    dateRange: undefined,
+    sortOrder: "newest",
 
-interface OrderState {
-  items: CartItem[];
-  addItem: (
-    item: MenuItem,
-    quantity: number,
-    options?: CartItemOptionGroup[],
-    note?: string
-  ) => void;
-  removeItem: (uniqueId: string) => void;
-  updateQuantity: (uniqueId: string, quantity: number) => void;
-  clearOrder: () => void;
-}
-
-const generateUniqueId = (item: MenuItem, options?: CartItemOptionGroup[], note?: string) => {
-  const optionsSignature = options
-    ? options
-        .map((g) =>
-          g.selectedValues
-            .map((v) => `${v.optionItemId}x${v.quantity}`)
-            .sort()
-            .join("-")
-        )
-        .sort()
-        .join("|")
-    : "";
-  return `${item.menuItemId}-${optionsSignature}-${note || ""}`;
-};
-
-export const useOrderStore = create<OrderState>((set) => ({
-  items: [],
-  addItem: (item, quantity, options, note) =>
-    set((state) => {
-      const uniqueId = generateUniqueId(item, options, note);
-      const existingItem = state.items.find((i) => i.uniqueId === uniqueId);
-
-      if (existingItem) {
-        return {
-          items: state.items.map((i) =>
-            i.uniqueId === uniqueId ? { ...i, quantity: i.quantity + quantity } : i
-          ),
-        };
+    // ---------- actions ----------
+    fetchOrders: async (option = {}) => {
+      try {
+        set({ loading: true });
+        const res = await orderService.getOrders(option);
+        if (res.isSuccess && res.data) {
+          set({ orders: res.data.items || [] });
+        }
+      } catch (e) {
+        console.error("Fetch orders failed", e);
+      } finally {
+        set({ loading: false });
       }
+    },
 
-      const newItem: CartItem = {
-        ...item,
-        quantity,
-        selectedOptions: options,
-        note,
-        uniqueId,
-      };
+    fetchOrderDetails: async (id: string) => {
+      try {
+        set({ orderDetailsLoading: true });
+        const res = await orderService.getOrderById(id);
+        if (res.isSuccess && res.data) {
+          set({ activeOrderDetails: res.data });
+        }
+      } catch (e) {
+        console.error("Fetch order details failed", e);
+      } finally {
+        set({ orderDetailsLoading: false });
+      }
+    },
 
-      return { items: [...state.items, newItem] };
+    clearOrderDetails: () => set({ activeOrderDetails: null }),
+
+    setActiveTab: (activeTab) => set({ activeTab }),
+    setActiveView: (activeView) => set({ activeView }),
+    setSelectedOrderId: (selectedOrderId) => set({ selectedOrderId }),
+    setSearchQuery: (searchQuery) => set({ searchQuery }),
+    setSelectedStatuses: (selectedStatuses) => set({ selectedStatuses }),
+    setDateRange: (dateRange) => set({ dateRange }),
+    setSortOrder: (sortOrder) => set({ sortOrder }),
+
+    addOrder: (order: Order) =>
+      set((state) => {
+        const exists = state.orders.some((o) => o.orderId === order.orderId);
+        if (exists) return state;
+
+        return {
+          orders: [order, ...state.orders],
+        };
+      }),
+
+    removeOrder: (orderId) =>
+      set((state) => ({
+        orders: state.orders.filter((o) => o.orderId !== orderId),
+      })),
+
+    updateOrder: (order) =>
+      set((state) => ({
+        orders: state.orders.map((o) => (o.orderId === order.orderId ? order : o)),
+      })),
+
+    resetFilters: () =>
+      set({
+        searchQuery: "",
+        selectedStatuses: [],
+      }),
+
+    // ---------- derived ----------
+    dineInOrders: () => get().orders.filter((o) => o.orderType === OrderType.DineIn),
+
+    takeawayOrders: () => get().orders.filter((o) => o.orderType === OrderType.Takeaway),
+
+    filteredTakeaways: () => {
+      const { activeTab, searchQuery, selectedStatuses } = get();
+      if (activeTab === "dine_in") return [];
+
+      return get()
+        .takeawayOrders()
+        .filter((o) => {
+          const statusString = o.status === OrderStatus.Serving ? "tk_inprocess" : "tk_ready";
+
+          const matchesStatus =
+            selectedStatuses.length === 0 || selectedStatuses.includes(statusString);
+
+          const matchesSearch =
+            !searchQuery || o.orderCode.toLowerCase().includes(searchQuery.toLowerCase());
+
+          return matchesStatus && matchesSearch;
+        });
+    },
+
+    toggleStatus: (status: string) =>
+      set((state) => ({
+        selectedStatuses: state.selectedStatuses.includes(status)
+          ? state.selectedStatuses.filter((s) => s !== status)
+          : [...state.selectedStatuses, status],
+      })),
+
+    stats: () => ({
+      total: get().orders.length,
+      dineIn: get().dineInOrders().length,
+      takeaway: get().takeawayOrders().length,
     }),
-  removeItem: (uniqueId) =>
-    set((state) => ({
-      items: state.items.filter((i) => i.uniqueId !== uniqueId),
-    })),
-  updateQuantity: (uniqueId, quantity) =>
-    set((state) => ({
-      items: state.items.map((i) => (i.uniqueId === uniqueId ? { ...i, quantity } : i)),
-    })),
-  clearOrder: () => set({ items: [] }),
-}));
+  }),
+  shallow
+);
