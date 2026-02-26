@@ -27,7 +27,7 @@ export interface Employee {
   email: string;
   address?: string;
   dateOfBirth?: string;
-  role: string | number;
+  role: string;
   status: string;
   createdAt: string;
   updatedAt: string;

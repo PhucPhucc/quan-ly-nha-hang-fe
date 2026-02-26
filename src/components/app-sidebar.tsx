@@ -21,7 +21,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useAuthStore } from "@/store/useAuthStore";
 
 const data = {
   team: {
@@ -32,18 +31,18 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: "/manager/dashboard",
       icon: LayoutDashboard,
       isActive: true,
     },
     {
       title: "Menu",
-      url: "/menu",
+      url: "/manager/menu",
       icon: SquareMenu,
     },
     {
       title: "Tables",
-      url: "/table",
+      url: "/manager/table",
       icon: Table,
     },
     {
@@ -53,31 +52,23 @@ const data = {
     },
     {
       title: "Employee",
-      url: "/employee",
+      url: "/manager/employee",
       icon: Users,
     },
     {
       title: "Audit Logs",
-      url: "/audit-log",
+      url: "/manager/audit-log",
       icon: ChartColumn,
     },
     {
       title: "Inventory",
-      url: "/inventory",
+      url: "/manager/inventory",
       icon: Package,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { employee } = useAuthStore();
-
-  const user = {
-    name: employee?.fullName || employee?.username || "User",
-    email: employee?.email || "user@foodhub.com",
-    avtHoder: employee?.fullName ? employee.fullName.charAt(0).toUpperCase() : "U",
-  };
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

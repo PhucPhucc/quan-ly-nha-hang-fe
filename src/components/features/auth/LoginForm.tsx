@@ -35,7 +35,22 @@ const LoginForm = () => {
           username: employeeCode,
           role: role,
         });
-        router.push("/dashboard");
+        switch (role) {
+          case "Manager":
+            router.push("/manager/dashboard");
+            break;
+          case "Cashier":
+            router.push("/order");
+            break;
+          // case "Waiter":
+          //   router.push("/waiter/orders");
+          //   break;
+          // case "Chef":
+          //   router.push("/chef/orders");
+          //   break;
+          default:
+            router.push("/dashboard");
+        }
       }
     } catch (err) {
       console.error("Login handleLogin error:", err);

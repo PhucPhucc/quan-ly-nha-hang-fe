@@ -102,6 +102,10 @@ export const UI_TEXT = {
   ORDER: {
     TITLE: "Đơn hàng",
     EMPTY: "Chưa có đơn hàng nào",
+    TAB_ORDER: "Đơn hàng",
+    TAB_MENU: "Thực đơn",
+    FETCH_ORDERING: "Đang tải đơn hàng...",
+    FETCH_MENU: "Đang tải thực đơn...",
     FETCH_ERROR: "Không thể tải danh sách đơn hàng",
   },
 

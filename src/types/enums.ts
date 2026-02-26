@@ -5,9 +5,12 @@ export enum OrderType {
 }
 
 export enum OrderStatus {
-  Serving = 1,
-  Completed = 2,
-  Cancelled = 3,
+  Serving = "Serving",
+  Completed = "Completed",
+  Cancelled = "Cancelled",
+  Ready = "Ready",
+  Reserved = "Reserved",
+  Cleaning = "Cleaning",
 }
 
 export enum OrderItemStatus {

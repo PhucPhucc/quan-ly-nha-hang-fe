@@ -38,3 +38,31 @@ export function validateNewPassword(newPassword: string, confirmPassword: string
 
   return "";
 }
+
+export const getElapsedTime = (createdAt: string): string => {
+  const createdTime = new Date(createdAt).getTime();
+  const currentTime = Date.now();
+
+  // Tính khoảng cách thời gian bằng giây
+  const diffInSeconds = Math.floor((currentTime - createdTime) / 1000);
+
+  if (diffInSeconds < 0) return "0s"; // Xử lý nếu thời gian client chạy trước server
+
+  // Dưới 1 phút: trả về giây (VD: "10s")
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds}s`;
+  }
+
+  // Dưới 1 giờ: trả về phút (VD: "36m")
+  if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes}m`;
+  }
+
+  // Từ 1 giờ trở lên: trả về giờ + phút (VD: "1h32m", "2h45m")
+  const hours = Math.floor(diffInSeconds / 3600);
+  const remainingMinutes = Math.floor((diffInSeconds % 3600) / 60);
+
+  // Nếu số phút lẻ > 0 thì ghép vào, nếu không thì chỉ hiện giờ (VD: "2h0m" -> "2h")
+  return remainingMinutes > 0 ? `${hours}h${remainingMinutes}m` : `${hours}h`;
+};
