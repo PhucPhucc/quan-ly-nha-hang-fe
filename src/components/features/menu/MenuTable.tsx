@@ -75,7 +75,7 @@ export function MenuTable({
       <Table>
         <TableHeader>
           <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-            <TableHead className="w-[350px] font-bold text-slate-700 text-sm">
+            <TableHead className="w-86 font-bold text-slate-700 text-sm">
               Thông tin món ăn
             </TableHead>
             <TableHead className="font-bold text-slate-700 text-sm">Mã SKU</TableHead>
