@@ -13,8 +13,6 @@ import { menuService } from "@/services/menuService";
 import { Category, MenuItem } from "@/types/Menu";
 
 export default function MenuManagementPage() {
-  console.log(123);
-  // State quản lý dữ liệu và lọc
   const [menuData, setMenuData] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);

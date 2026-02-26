@@ -100,7 +100,7 @@ export function MenuTable({
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shrink-0 relative">
                     <Image
-                      src={item.imageUrl || "https://placehold.co/100x100?text=No+Image"}
+                      src={"https://placehold.co/100x100?text=No+Image"}
                       alt={item.name}
                       fill
                       sizes="48px"
