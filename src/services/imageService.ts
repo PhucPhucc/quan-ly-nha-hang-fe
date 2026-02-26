@@ -9,14 +9,14 @@ export async function uploadImage(
   const formData = new FormData();
   formData.append("file", file);
 
-  return apiFetch<string>(`/v1/image/upload?folder=${folder}`, {
+  return apiFetch<string>(`/image/upload?folder=${folder}`, {
     method: "POST",
     body: formData,
   });
 }
 
 export async function deleteImage(publicId: string): Promise<ApiResponse<void>> {
-  return apiFetch<void>(`/v1/image/delete?publicId=${publicId}`, {
+  return apiFetch<void>(`/image/delete?publicId=${publicId}`, {
     method: "DELETE",
   });
 }

@@ -9,11 +9,6 @@ export interface CreateOrderRequest {
   tableId?: string;
   orderType: OrderType;
   note?: string;
-  items: {
-    menuItemId: string;
-    quantity: number;
-    note?: string;
-  }[];
 }
 
 export interface UpdateOrderItemRequest {
@@ -53,10 +48,12 @@ export interface PaginationParams {
 
 export const orderService = {
   createOrder: (data: CreateOrderRequest): Promise<ApiResponse<Order>> =>
-    apiFetch<Order>("/v1/orders", {
+    apiFetch<Order>("/orders", {
       method: "POST",
       body: data,
     }),
+
+  getOrderById: (id: string): Promise<ApiResponse<Order>> => apiFetch<Order>(`/orders/${id}`),
 
   getOrders: (params: PaginationParams): Promise<ApiResponse<PaginationResult<Order>>> => {
     const queryParams = new URLSearchParams();
@@ -67,41 +64,41 @@ export const orderService = {
     if (params.fromDate) queryParams.append("fromDate", params.fromDate);
     if (params.toDate) queryParams.append("toDate", params.toDate);
 
-    return apiFetch<PaginationResult<Order>>(`/v1/orders?${queryParams.toString()}`);
+    return apiFetch<PaginationResult<Order>>(`/orders?${queryParams.toString()}`);
   },
 
   submitToKitchen: (data: SubmitOrderToKitchenRequest): Promise<ApiResponse<string>> =>
-    apiFetch<string>("/v1/orders/submit-to-kitchen", {
+    apiFetch<string>("/orders/submit-to-kitchen", {
       method: "POST",
       body: data,
     }),
 
   updateOrderItem: (id: string, data: UpdateOrderItemRequest): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/v1/orders/${id}/items`, {
+    apiFetch<string>(`/orders/${id}/items`, {
       method: "PATCH",
       body: data,
     }),
 
   addOrderItem: (id: string, data: AddOrderItemRequest): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/v1/orders/${id}/items`, {
+    apiFetch<string>(`/orders/${id}/items`, {
       method: "POST",
       body: data,
     }),
 
   cancelOrder: (id: string, reason: string): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/v1/orders/${id}/cancel`, {
+    apiFetch<string>(`/orders/${id}/cancel`, {
       method: "PATCH",
       body: { orderId: id, reason },
     }),
 
   cancelOrderItem: (id: string, itemId: string, reason: string): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/v1/orders/${id}/items/${itemId}/cancel`, {
+    apiFetch<string>(`/orders/${id}/items/${itemId}/cancel`, {
       method: "PATCH",
       body: { orderId: id, orderItemId: itemId, reason },
     }),
 
   completeOrder: (id: string): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/v1/orders/${id}/complete`, {
+    apiFetch<string>(`/orders/${id}/complete`, {
       method: "PATCH",
       body: { orderId: id },
     }),

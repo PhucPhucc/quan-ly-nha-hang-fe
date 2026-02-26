@@ -51,43 +51,43 @@ export async function apiFetch<T>(
     fetchOptions.body = JSON.stringify(options.body);
   }
   console.log(path);
-  let res = await fetch(BASE_URL + "/api" + path, fetchOptions);
+  let res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
 
   if (res.status === 401) {
     if (!isRefreshing) {
       isRefreshing = true;
-      console.log("[API] 401 Unauthorized - Attempting refresh...");
 
       try {
         await refreshToken();
         isRefreshing = false;
-        console.log("[API] Refresh successful, retrying original request.");
         refreshQueue.forEach((cb) => cb());
         refreshQueue = [];
       } catch (err) {
         isRefreshing = false;
-        console.error("[API] Refresh failed:", err);
+        refreshQueue = [];
         useAuthStore.getState().logout();
-        window.location.href = "/login";
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+        console.error("Token refresh failed:", err);
         throw new Error("Session expired");
       }
+    } else {
+      await new Promise<void>((resolve) => {
+        refreshQueue.push(resolve);
+      });
     }
 
-    await new Promise<void>((resolve) => {
-      refreshQueue.push(resolve);
-    });
-
-    // Short delay to ensure browser processed cookies
     await new Promise((r) => setTimeout(r, 100));
 
-    res = await fetch(BASE_URL + "/api" + path, fetchOptions);
+    res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
   }
 
   if (!res.ok) {
     let message = "API Error";
     try {
       const data = (await res.json()) as ApiResponse<T>;
-      message = data.error || data.message || message;
+      message = data.message || data.error || message;
     } catch {
       /* ignore */
     }
@@ -95,7 +95,8 @@ export async function apiFetch<T>(
     throw new Error(message);
   }
 
-  const json = (await res.json()) as unknown;
+  const text = await res.text();
+  const json = text ? JSON.parse(text) : {};
 
   if (json && typeof json === "object" && "data" in (json as Record<string, unknown>)) {
     return {

@@ -5,14 +5,14 @@ import { apiFetch } from "./api";
 
 // GET profile
 export async function getMyProfile(): Promise<ApiResponse<Employee>> {
-  return apiFetch<Employee>("/v1/profile", {
+  return apiFetch<Employee>("/profile", {
     method: "GET",
   });
 }
 
 // UPDATE profile
 export const updateMyProfile = async (data: Partial<Employee>): Promise<ApiResponse<void>> => {
-  return apiFetch<void>("/v1/profile", {
+  return apiFetch<void>("/profile", {
     method: "PUT",
     body: data,
   });
@@ -25,7 +25,7 @@ export type ChangePasswordPayload = {
 };
 
 export const changePassword = async (data: ChangePasswordPayload): Promise<ApiResponse<void>> => {
-  return apiFetch<void>("/v1/auth/change-password", {
+  return apiFetch<void>("/auth/change-password", {
     method: "POST",
     body: data,
   });

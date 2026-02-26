@@ -17,14 +17,14 @@ type LoginPayload = {
 };
 
 export async function login(payload: LoginPayload): Promise<ApiResponse<AuthResponse>> {
-  return apiFetch<AuthResponse>("/v1/auth/login", {
+  return apiFetch<AuthResponse>("/auth/login", {
     method: "POST",
     body: payload,
   });
 }
 
 export async function logout(): Promise<ApiResponse<void>> {
-  return apiFetch<void>("/v1/auth/logout", {
+  return apiFetch<void>("/auth/logout", {
     method: "POST",
     body: {
       refreshToken: localStorage.getItem("refreshToken"),
@@ -33,7 +33,7 @@ export async function logout(): Promise<ApiResponse<void>> {
 }
 
 export async function requestPasswordReset(email: string): Promise<ApiResponse<string>> {
-  return apiFetch<string>("/v1/auth/request-password-reset", {
+  return apiFetch<string>("/auth/request-password-reset", {
     method: "POST",
     body: { email },
   });
@@ -43,14 +43,20 @@ export async function resetPassword(data: {
   token: string;
   newPassword: string;
 }): Promise<ApiResponse<string>> {
-  return apiFetch<string>("/v1/auth/reset-password", {
+  return apiFetch<string>("/auth/reset-password", {
     method: "POST",
     body: data,
   });
 }
 
 export async function getCurrentUserInfo(): Promise<ApiResponse<AuthResponse>> {
-  return apiFetch<AuthResponse>("/v1/auth/me", {
+  return apiFetch<AuthResponse>("/auth/me", {
+    method: "GET",
+  });
+}
+
+export async function verify(): Promise<ApiResponse<AuthResponse>> {
+  return apiFetch<AuthResponse>("/auth/me", {
     method: "GET",
   });
 }

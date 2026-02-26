@@ -8,7 +8,7 @@ export async function getEmployees(params?: {
   filters?: string;
   pageSize?: number;
 }): Promise<ApiResponse<PaginationResult<Employee>>> {
-  let url = "/v1/employees";
+  let url = "/employees";
   const queryParams = new URLSearchParams();
   if (params?.search) queryParams.append("search", params.search);
   if (params?.filters) queryParams.append("filters", params.filters);
@@ -22,7 +22,7 @@ export async function getEmployees(params?: {
 }
 
 export async function addEmployee(employee: Partial<Employee>): Promise<ApiResponse<Employee>> {
-  return apiFetch<Employee>("/v1/employees", {
+  return apiFetch<Employee>("/employees", {
     method: "POST",
     body: employee,
     cache: "no-store",
@@ -30,7 +30,7 @@ export async function addEmployee(employee: Partial<Employee>): Promise<ApiRespo
 }
 
 export async function updateEmployee(employee: Partial<Employee>): Promise<ApiResponse<Employee>> {
-  return apiFetch<Employee>(`/v1/employees/${employee.employeeId}`, {
+  return apiFetch<Employee>(`/employees/${employee.employeeId}`, {
     method: "PUT",
     body: employee,
     cache: "no-store",
@@ -38,7 +38,7 @@ export async function updateEmployee(employee: Partial<Employee>): Promise<ApiRe
 }
 
 export async function deleteEmployee(employeeId: string): Promise<ApiResponse<void>> {
-  return apiFetch<void>(`/v1/employees/${employeeId}`, {
+  return apiFetch<void>(`/employees/${employeeId}`, {
     method: "DELETE",
     cache: "no-store",
   });
@@ -47,7 +47,7 @@ export async function deleteEmployee(employeeId: string): Promise<ApiResponse<vo
 export async function filterEmployee(
   role: number
 ): Promise<ApiResponse<PaginationResult<Employee>>> {
-  return apiFetch<PaginationResult<Employee>>(`/v1/employees?filters=role:${role}`, {
+  return apiFetch<PaginationResult<Employee>>(`/employees?filters=role:${role}`, {
     method: "GET",
     cache: "no-store",
   });
@@ -58,7 +58,7 @@ export async function changeEmployeePassword(
   reason: string,
   newPassword?: string
 ): Promise<ApiResponse<void>> {
-  return apiFetch<void>(`/v1/employees/reset-password`, {
+  return apiFetch<void>(`/employees/reset-password`, {
     method: "POST",
     body: { employeeId, reason, newPassword },
     cache: "no-store",
@@ -70,7 +70,7 @@ export async function changeEmployeeRole(
   currentRole: number,
   newRole: number
 ): Promise<ApiResponse<void>> {
-  return apiFetch<void>(`/v1/employees/change-role`, {
+  return apiFetch<void>(`/employees/change-role`, {
     method: "POST",
     body: { employeeCode, currentRole, newRole },
     cache: "no-store",
@@ -78,7 +78,7 @@ export async function changeEmployeeRole(
 }
 
 export async function getEmployeeById(employeeId: string): Promise<ApiResponse<Employee>> {
-  return apiFetch<Employee>(`/v1/employees/${employeeId}`, {
+  return apiFetch<Employee>(`/employees/${employeeId}`, {
     method: "GET",
     cache: "no-store",
   });

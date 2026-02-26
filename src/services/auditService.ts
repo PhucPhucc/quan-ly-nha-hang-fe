@@ -18,7 +18,7 @@ export async function getAuditLogs(
       },
     };
   }
-  return apiFetch<PaginationResult<EmployeeAuditLog>>(`/v1/employees/${employeeId}/audit-logs`, {
+  return apiFetch<PaginationResult<EmployeeAuditLog>>(`/employees/${employeeId}/audit-logs`, {
     cache: "no-store",
   });
 }
