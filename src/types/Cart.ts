@@ -5,6 +5,7 @@ export interface CartItemOptionValue {
   quantity: number;
   label: string;
   extraPrice: number;
+  note?: string;
 }
 
 export interface CartItemOptionGroup {

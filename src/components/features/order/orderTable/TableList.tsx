@@ -27,7 +27,6 @@ const TableList = () => {
     if (status === OrderStatus.Ready) {
       if (loadingTable !== null) return;
       const tableId = "00000000-0000-0000-0000-00000000000" + tableNumber.toString();
-      console.log(tableId);
       setLoadingTable(tableNumber);
       try {
         const res = await orderService.createOrder({

@@ -34,7 +34,6 @@ const CardMenu = () => {
   }, [menuItems, activeTab]);
 
   const handleItemClick = (item: MenuItem) => {
-    console.log(item);
     setSelectedItem(item);
   };
 
