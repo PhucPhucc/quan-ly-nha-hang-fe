@@ -46,6 +46,8 @@ export interface OptionGroup {
 }
 
 export interface OptionItem {
+  menuItemId: string;
+  isCombo?: boolean;
   option_item_id: string;
   option_group_id: string;
   label: string;

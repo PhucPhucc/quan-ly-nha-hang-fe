@@ -1,9 +1,8 @@
 "use client";
 
-import { RotateCcw, Search } from "lucide-react";
-
+import { RotateCcw, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
@@ -12,8 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Category } from "@/types/Menu";
+import { UI_TEXT } from "@/lib/UI_Text";
 
-// Định nghĩa lại Interface chuẩn để hết đỏ
 interface MenuFiltersProps {
   searchQuery: string;
   setSearchQuery: (val: string) => void;
@@ -40,70 +39,80 @@ export default function MenuFilters({
   onReset,
 }: MenuFiltersProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-      {/* Search */}
-      <InputGroup className="relative flex-1 min-w-50 ">
-        <InputGroupAddon>
-          <Search />
-        </InputGroupAddon>
-        <InputGroupInput
-          placeholder="Tìm tên / mã món..."
-          className="pl-10"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </InputGroup>
+    <div className="flex flex-wrap items-center gap-4 bg-card p-5 rounded-2xl shadow-sm border border-border transition-all">
+      {/* Search - Ưu tiên khoảng không gian rộng hơn */}
+      <div className="relative flex-[2] min-w-[280px]">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+        <InputGroup className="w-full">
+          <InputGroupInput
+            placeholder={UI_TEXT.COMMON.SEARCH + "..."} // Dùng UI_TEXT
+            className="pl-11 h-11 bg-muted/30 border-border focus:bg-background transition-all rounded-xl"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </InputGroup>
+      </div>
 
-      {/* Loại món */}
-      <Select value={filterCategory} onValueChange={setFilterCategory}>
-        <SelectTrigger className="w-40">
-          <SelectValue placeholder="Tất cả loại" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Tất cả loại</SelectItem>
-          {categories.map((cat) => (
-            <SelectItem key={cat.category_id} value={cat.category_id}>
-              {cat.name}
+      <div className="flex flex-wrap items-center gap-3">
+        {/* Loại món */}
+        <Select value={filterCategory} onValueChange={setFilterCategory}>
+          <SelectTrigger className="w-44 h-11 border-border bg-background rounded-xl focus:ring-primary/20">
+            <div className="flex items-center gap-2">
+              <Filter size={14} className="text-muted-foreground" />
+              <SelectValue placeholder={UI_TEXT.FORM.CATEGORY} />
+            </div>
+          </SelectTrigger>
+          <SelectContent className="rounded-xl shadow-lg border-border">
+            <SelectItem value="all">
+              {UI_TEXT.COMMON.ALL} {UI_TEXT.FORM.CATEGORY.toLowerCase()}
             </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+            {categories?.map((cat) => {
+              const catId = cat.category_id || (cat as any).categoryId;
+              return (
+                <SelectItem key={catId} value={catId} className="cursor-pointer">
+                  {cat.name}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
 
-      {/* Trạm */}
-      <Select value={filterStation} onValueChange={setFilterStation}>
-        <SelectTrigger className="w-[140px] border-slate-200 focus:ring-[#cc0000]">
-          <SelectValue placeholder="Tất cả trạm" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Tất cả trạm</SelectItem>
-          <SelectItem value="BAR">Quầy Bar</SelectItem>
-          <SelectItem value="KITCHEN_HOT">Bếp Nóng</SelectItem>
-          <SelectItem value="KITCHEN_COLD">Bếp Lạnh</SelectItem>
-        </SelectContent>
-      </Select>
+        {/* Trạm */}
+        <Select value={filterStation} onValueChange={setFilterStation}>
+          <SelectTrigger className="w-40 h-11 border-border bg-background rounded-xl focus:ring-primary/20">
+            <SelectValue placeholder={UI_TEXT.FORM.STATION} />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl shadow-lg border-border">
+            <SelectItem value="all">
+              {UI_TEXT.COMMON.ALL} {UI_TEXT.FORM.STATION.toLowerCase()}
+            </SelectItem>
+            <SelectItem value="BAR">Quầy Bar</SelectItem>
+            <SelectItem value="KITCHEN_HOT">Bếp Nóng</SelectItem>
+            <SelectItem value="KITCHEN_COLD">Bếp Lạnh</SelectItem>
+          </SelectContent>
+        </Select>
 
-      {/* Giá */}
-      <Select value={filterPrice} onValueChange={setFilterPrice}>
-        <SelectTrigger className="w-[140px] border-slate-200 focus:ring-[#cc0000]">
-          <SelectValue placeholder="Mức giá" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Mọi mức giá</SelectItem>
-          <SelectItem value="low">Dưới 30k</SelectItem>
-          <SelectItem value="mid">30k - 60k</SelectItem>
-          <SelectItem value="high">Trên 60k</SelectItem>
-        </SelectContent>
-      </Select>
-
-      {/* Reset */}
-      <Button
-        variant="ghost"
-        onClick={onReset}
-        className="text-slate-500 hover:text-[#cc0000] hover:bg-red-50 gap-2"
-      >
-        <RotateCcw size={16} />
-        <span className="hidden lg:inline">Làm mới</span>
-      </Button>
+        {/* Giá */}
+        <Select value={filterPrice} onValueChange={setFilterPrice}>
+          <SelectTrigger className="w-40 h-11 border-border bg-background rounded-xl focus:ring-primary/20">
+            <SelectValue placeholder={UI_TEXT.FORM.PRICE_CONFIG} />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl shadow-lg border-border">
+            <SelectItem value="all">{UI_TEXT.COMMON.ALL} mức giá</SelectItem>
+            <SelectItem value="low">Dưới 30.000đ</SelectItem>
+            <SelectItem value="mid">30.000đ - 60.000đ</SelectItem>
+            <SelectItem value="high">Trên 60.000đ</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          variant="outline"
+          onClick={onReset}
+          className="h-11 px-4 border-dashed border-muted-foreground/30 text-muted-foreground hover:text-danger hover:bg-danger/5 hover:border-danger/30 transition-all rounded-xl gap-2 ml-auto"
+        >
+          <RotateCcw size={16} />
+          <span className="font-semibold text-sm">{UI_TEXT.COMMON.RESET}</span>
+        </Button>
+      </div>
     </div>
   );
 }
