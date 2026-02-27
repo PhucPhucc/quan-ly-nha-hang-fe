@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -56,16 +58,16 @@ export function NavUser() {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight ml-1">
-                <span className="truncate font-semibold text-slate-700">{name}</span>
+                <span className="truncate font-semibold text-foreground">{name}</span>
                 <span className="truncate text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                  {employee?.role === 1 ? "Quản lý" : "Nhân viên"}
+                  {employee?.role === EmployeeRole.MANAGER ? "Quản lý" : "Nhân viên"}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4 opacity-50" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[240px] rounded-2xl p-2 shadow-2xl"
+            className="w-60 rounded-2xl p-2 shadow-2xl"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={12}
@@ -79,7 +81,7 @@ export function NavUser() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold text-slate-800">{name}</span>
+                  <span className="truncate font-semibold text-foreground">{name}</span>
                   <span className="truncate text-[11px] text-muted-foreground">
                     {employee?.email || employee?.employeeCode}
                   </span>
@@ -88,17 +90,16 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuGroup className="space-y-1">
-              <DropdownMenuItem
-                className="rounded-xl p-2.5 gap-3 cursor-pointer"
-                onClick={() => router.push("/profile")}
-              >
-                <div className="bg-primary/10 p-2 rounded-lg">
-                  <User className="size-4 text-primary" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-sm">Hồ sơ cá nhân</span>
-                  <span className="text-[10px] text-muted-foreground">Thông tin & Bảo mật</span>
-                </div>
+              <DropdownMenuItem className="rounded-xl p-2.5 gap-3 cursor-pointer">
+                <Link href="/manager/profile" className="flex items-center gap-3">
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <User className="size-4 text-primary" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-sm">Hồ sơ cá nhân</span>
+                    <span className="text-[10px] text-muted-foreground">Thông tin & Bảo mật</span>
+                  </div>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="rounded-xl p-2.5 gap-3 cursor-pointer">
                 <div className="bg-blue-50 p-2 rounded-lg">
@@ -112,11 +113,11 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuItem
-              className="rounded-xl p-2.5 gap-3 text-rose-500 focus:bg-rose-50 focus:text-rose-600 cursor-pointer"
+              className="rounded-xl p-2.5 gap-3 text-primary focus:bg-rose-50 focus:text-primary-hover cursor-pointer"
               onClick={handleLogout}
             >
-              <div className="bg-rose-50 p-2 rounded-lg">
-                <LogOut className="size-4 text-rose-500" />
+              <div className="bg-primary/10 p-2 rounded-lg">
+                <LogOut className="size-4 text-primary" />
               </div>
               <span className="font-bold text-sm uppercase tracking-wider">
                 {UI_TEXT.AUTH.LOGOUT}
