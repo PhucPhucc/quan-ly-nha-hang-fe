@@ -18,11 +18,17 @@ interface OrderSummaryFooterProps {
 const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, total }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { items: cartData, clearCart } = useCartStore();
-  const { selectedOrderId, fetchOrders, fetchOrderDetails } = useOrderBoardStore();
+  const { selectedOrderId, fetchOrders, fetchOrderDetails, orders } = useOrderBoardStore();
 
   const handleSendRequest = async () => {
     if (!selectedOrderId) {
       toast.error("Vui lòng chọn bàn trước khi gửi yêu cầu");
+      return;
+    }
+
+    const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
+    if (!activeOrder) {
+      toast.error("Không tìm thấy thông tin đơn hàng");
       return;
     }
 
@@ -35,10 +41,11 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
     try {
       setIsSubmitting(true);
 
-      // 1. Thêm từng sản phẩm vào Order
-      const promises = items.map((item) =>
-        orderService.addOrderItem(selectedOrderId, {
-          orderId: selectedOrderId,
+      const submitData = {
+        tableId: activeOrder.tableId || "",
+        orderType: activeOrder.orderType,
+        note: activeOrder.note || "",
+        items: items.map((item) => ({
           menuItemId: item.menuItem.menuItemId,
           quantity: item.quantity,
           note: item.note,
@@ -47,21 +54,13 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
             selectedValues: g.selectedValues.map((v) => ({
               optionItemId: v.optionItemId,
               quantity: v.quantity,
+              note: v.note,
             })),
           })),
-        })
-      );
+        })),
+      };
 
-      const results = await Promise.all(promises);
-      const allSuccess = results.every((res) => res.isSuccess);
-
-      if (!allSuccess) {
-        toast.error("Một số món ăn không thể thêm vào đơn hàng");
-        return;
-      }
-
-      // 2. Gửi yêu cầu vào bếp (nếu cần - tùy logic backend, thường add xong là submit)
-      const submitRes = await orderService.submitToKitchen({ orderId: selectedOrderId });
+      const submitRes = await orderService.submitToKitchen(submitData);
       if (submitRes.isSuccess) {
         toast.success("Đã gửi yêu cầu vào bếp thành công!");
         clearCart(selectedOrderId);

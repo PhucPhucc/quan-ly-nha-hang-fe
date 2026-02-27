@@ -23,6 +23,7 @@ export interface AddOrderItemRequest {
   menuItemId: string;
   quantity: number;
   note?: string;
+  reason?: string;
   selectedOptions?: {
     optionGroupId: string;
     selectedValues: {
@@ -34,7 +35,22 @@ export interface AddOrderItemRequest {
 }
 
 export interface SubmitOrderToKitchenRequest {
-  orderId: string;
+  tableId: string;
+  orderType: OrderType;
+  note?: string;
+  items: {
+    menuItemId: string;
+    quantity: number;
+    note?: string;
+    selectedOptions?: {
+      optionGroupId: string;
+      selectedValues: {
+        optionItemId: string;
+        quantity: number;
+        note?: string;
+      }[];
+    }[];
+  }[];
 }
 
 export interface PaginationParams {

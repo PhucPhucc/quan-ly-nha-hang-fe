@@ -21,6 +21,7 @@ export const UI_TEXT = {
     RESET: "Đặt lại",
     UPDATE_SUCCESS: "Cập nhật thông tin thành công",
     UPDATE_ERROR: "Cập nhật thông tin thất bại",
+    COPYRIGHT: "Hệ thống quản lý FoodHub &copy; 2026",
   },
 
   AUTH: {
@@ -163,6 +164,14 @@ export const UI_TEXT = {
     OLD_VALUE: "Giá trị cũ",
     NEW_VALUE: "Giá trị mới",
     CREATED_AT: "Thời gian",
+  },
+
+  UNAUTHORIZED: {
+    TITLE: "Truy cập bị từ chối",
+    DESCRIPTION:
+      "Bạn không có quyền truy cập vào trang này. Vui lòng kiểm tra lại tài khoản hoặc liên hệ quản trị viên.",
+    GO_BACK: "Quay lại trang trước",
+    LOGIN_OTHER: "Đăng nhập tài khoản khác",
   },
 
   LANDING: {

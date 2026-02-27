@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 import { MenuItem } from "@/types/Menu";
@@ -30,13 +31,12 @@ const OrderList = ({
           `}
         >
           <div className="flex-1 mb-2 rounded-xl overflow-hidden bg-slate-50 relative group">
-            {/* <Image
+            <Image
               src={"https://placehold.co/200x200?text=No+Image"}
               alt={item.name}
               fill
               className="object-cover group-hover:scale-110 transition-transform duration-500"
-            /> */}
-            <img src="https://placehold.co/200x200?text=No+Image" alt={item.name} />
+            />
             {item.isOutOfStock && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <span className="text-white font-black uppercase text-xs tracking-widest border border-white px-2 py-1">
