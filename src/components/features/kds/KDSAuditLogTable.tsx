@@ -18,7 +18,7 @@ interface KDSAuditLogData {
   time: string;
   actorName: string;
   actorRole: "ChefBar" | "Barista";
-  actionType: "Hoàn tác" | "Bắt đầu nấu" | "Hoàn thành" | "Từ chối món";
+  actionType: string;
   orderCode: string;
   orderItems: string;
   reason: string;
@@ -34,16 +34,12 @@ interface KDSAuditLogTableProps {
 /* --- Internal Helpers --- */
 
 const getActionBadgeVariant = (action: string) => {
-  switch (action) {
-    case "Bắt đầu nấu":
-      return "default";
-    case "Hoàn thành":
-      return "secondary";
-    case "Từ chối món":
-      return "destructive";
-    default:
-      return "outline";
-  }
+  // Normalize comparison to uppercase to match UI_TEXT constants
+  const a = action.toUpperCase();
+  if (a === UI_TEXT.KDS.AUDIT.ACTION_START) return "default";
+  if (a === UI_TEXT.KDS.AUDIT.ACTION_DONE) return "secondary"; // Fixed from "badge"
+  if (a === UI_TEXT.KDS.AUDIT.ACTION_REJECT) return "destructive";
+  return "outline";
 };
 
 const getRoleInitialColor = (role: string) => {
@@ -62,12 +58,12 @@ const getRoleInitialColor = (role: string) => {
 const KDSAuditLogTableHeader = () => (
   <TableHeader className="bg-muted/50 sticky top-0 z-10 backdrop-blur-sm">
     <TableRow>
-      <TableHead className="w-[15%]">Thời gian</TableHead>
-      <TableHead className="w-[20%]">Người thực hiện</TableHead>
-      <TableHead className="w-[15%]">Hành động</TableHead>
-      <TableHead className="w-[25%]">Chi tiết đơn hàng</TableHead>
-      <TableHead className="w-[15%]">Lý do / Ghi chú</TableHead>
-      <TableHead className="w-[10%] text-right">Thao tác</TableHead>
+      <TableHead className="w-[15%]">{UI_TEXT.KDS.AUDIT.TIME}</TableHead>
+      <TableHead className="w-[20%]">{UI_TEXT.KDS.AUDIT.ACTOR}</TableHead>
+      <TableHead className="w-[15%]">{UI_TEXT.KDS.AUDIT.ACTION}</TableHead>
+      <TableHead className="w-[25%]">{UI_TEXT.KDS.AUDIT.ORDER_DETAILS}</TableHead>
+      <TableHead className="w-[15%]">{UI_TEXT.KDS.AUDIT.REASON}</TableHead>
+      <TableHead className="w-[10%] text-right">{UI_TEXT.KDS.AUDIT.ACTIONS}</TableHead>
     </TableRow>
   </TableHeader>
 );
@@ -90,6 +86,7 @@ interface KDSAuditLogRowProps {
 
 const KDSAuditLogRow = ({ log, onUndo }: KDSAuditLogRowProps) => {
   const [time, date] = log.time.split(" ");
+  const actionUpped = log.actionType.toUpperCase();
 
   return (
     <TableRow className="group hover:bg-muted/30 transition-colors">
@@ -107,24 +104,29 @@ const KDSAuditLogRow = ({ log, onUndo }: KDSAuditLogRowProps) => {
         </div>
       </TableCell>
       <TableCell>
-        <Badge variant={getActionBadgeVariant(log.actionType)} className="capitalize font-medium">
-          {log.actionType}
+        <Badge
+          variant={getActionBadgeVariant(log.actionType)}
+          className="uppercase font-bold text-[10px]"
+        >
+          {actionUpped}
         </Badge>
       </TableCell>
       <TableCell>
         <div className="flex flex-col">
           <span className="text-foreground text-sm font-semibold">{log.orderCode}</span>
-          <span className="text-muted-foreground text-xs">{log.orderItems}</span>
+          <span className="text-muted-foreground text-xs uppercase">{log.orderItems}</span>
         </div>
       </TableCell>
-      <TableCell className="text-muted-foreground text-sm italic">{log.reason || "-"}</TableCell>
+      <TableCell className="text-muted-foreground text-sm italic uppercase">
+        {log.reason || "-"}
+      </TableCell>
       <TableCell className="text-right">
-        {log.actionType === "Từ chối món" ? (
+        {actionUpped === UI_TEXT.KDS.AUDIT.ACTION_REJECT ? (
           <button
             onClick={() => onUndo?.(log.logId)}
-            className="text-primary hover:text-primary-hover text-xs font-semibold hover:underline cursor-pointer"
+            className="text-primary hover:text-primary-hover text-xs font-bold hover:underline cursor-pointer uppercase"
           >
-            Hoàn tác
+            {UI_TEXT.KDS.AUDIT.UNDO}
           </button>
         ) : (
           <span className="text-muted-foreground text-xs font-medium">-</span>
@@ -147,7 +149,7 @@ const KDSAuditLogTable = ({ logs, loading, error, onUndo }: KDSAuditLogTableProp
             {error && <KDSAuditLogStatusRow message={error} className="text-destructive" />}
             {!loading && logs.length === 0 && !error && (
               <KDSAuditLogStatusRow
-                message={UI_TEXT.AUDIT_LOG.EMPTY}
+                message={UI_TEXT.KDS.AUDIT.EMPTY}
                 className="text-muted-foreground"
               />
             )}

@@ -56,7 +56,7 @@ describe("KDSOrderBox", () => {
     const handleComplete = vi.fn();
     render(<KDSOrderBox order={mockOrder} onCompleteOrder={handleComplete} />);
 
-    const labelStr = `Hoàn tất đơn ORD-098`;
+    const labelStr = `${UI_TEXT.KDS.ORDER.COMPLETE_BTN} ORD-098`;
     const btn = screen.getByRole("button", { name: labelStr });
     fireEvent.click(btn);
 

@@ -3,6 +3,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { Order } from "@/types/Order";
 
 import { KDSQueueHeader } from "../KDSQueueHeader";
@@ -21,12 +22,12 @@ describe("KDSQueueHeader", () => {
 
     // Checks that orders appear in the queue with hash prefixes
     expect(screen.getByText("#105")).toBeInTheDocument();
-    expect(screen.getByText("#110")).toBeInTheDocument(); // because the component splits by '-'
+    expect(screen.getByText("#110")).toBeInTheDocument();
   });
 
   it("renders an empty state text when there are no queue orders", () => {
     render(<KDSQueueHeader queueOrders={[]} currentTime="12:00" />);
 
-    expect(screen.getByText("Không có đơn hàng chờ")).toBeInTheDocument();
+    expect(screen.getByText(UI_TEXT.KDS.ORDER.EMPTY_QUEUE)).toBeInTheDocument();
   });
 });

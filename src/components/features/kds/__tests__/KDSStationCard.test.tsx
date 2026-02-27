@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Flame } from "lucide-react";
+import React from "react";
 import { describe, expect, it, vi } from "vitest";
+
+import { UI_TEXT } from "@/lib/UI_Text";
 
 import { KDSStationCard } from "../KDSStationCard";
 
@@ -20,7 +23,7 @@ describe("KDSStationCard", () => {
 
     expect(screen.getByText("TRẠM BẾP (KITCHEN)")).toBeInTheDocument();
     expect(screen.getByText("High Activity")).toBeInTheDocument();
-    expect(screen.getByText("12 món đang đợi")).toBeInTheDocument();
+    expect(screen.getByText(`12 ${UI_TEXT.KDS.ITEM.WAITING_SUFFIX}`)).toBeInTheDocument();
     expect(screen.getByTestId("flame-icon")).toBeInTheDocument();
   });
 

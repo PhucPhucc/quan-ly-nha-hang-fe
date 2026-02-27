@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FoodHub KDS Audit Log Light Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ea5d2e",
+                        "background-light": "#fdfaf9", 
+                        "sidebar-light": "#f7f5f4",
+                        "surface-light": "#ffffff",
+                        "border-light": "#e5e0df",
+                        "text-dark": "#2d2a29",
+                        "text-muted": "#6b6665",
+                        "background-dark": "#211511",
+                        "surface-dark": "#2c1e1a",
+                        "surface-darker": "#1a0f0c",
+                        "border-dark": "#4a352f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light text-text-dark antialiased overflow-hidden">
+<div class="flex h-screen w-full bg-background-light overflow-hidden">
+<div class="w-64 flex-shrink-0 flex flex-col justify-between bg-sidebar-light border-r border-border-light p-4">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-12 w-12 border-2 border-primary/20" data-alt="Restaurant logo abstract food pattern" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBE47W6CYxlnJsgQiaoQEDoJgCTQXPfimlUIQEt8kiFDCTC_5eN4TIoLIwYH1eiGz4I37eS1FPDsoNk83y9dXCdeRwi7OtAux4oO3L1Z7NgkgIhyO_Xvag4BdYLBAImxYWbzHdARv3pz19pcgRQyu83qBJ_W0rYOqLC2f2cC0aH_gnTMDrex0EM01mopX_U9_TfxdXnXJY2rJVdw8Iosc1rEbFBIa4rbvM2f5NoCnhB7FcZIZibdwYIx0XZbQod9GboCqKQ0w9jB-JC");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-dark text-base font-bold leading-tight">FoodHub KDS</h1>
+<p class="text-text-muted text-xs font-normal">Quản lý bếp</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-black/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-text-dark transition-colors">dashboard</span>
+<p class="text-text-muted group-hover:text-text-dark text-sm font-medium transition-colors">Tổng quan</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-black/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-text-dark transition-colors">skillet</span>
+<p class="text-text-muted group-hover:text-text-dark text-sm font-medium transition-colors">Bếp</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-black/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-text-dark transition-colors">local_bar</span>
+<p class="text-text-muted group-hover:text-text-dark text-sm font-medium transition-colors">Bar</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20" href="#">
+<span class="material-symbols-outlined fill-1">history</span>
+<p class="text-white text-sm font-bold">Nhật Ký Hệ Thống</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-black/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-text-dark transition-colors">settings</span>
+<p class="text-text-muted group-hover:text-text-dark text-sm font-medium transition-colors">Cài đặt</p>
+</a>
+</nav>
+</div>
+<div class="px-2">
+<button class="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-black/5 text-text-muted hover:text-red-600 transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Đăng xuất</span>
+</button>
+</div>
+</div>
+<main class="flex-1 flex flex-col h-full overflow-hidden relative bg-background-light">
+<header class="flex flex-col gap-6 px-8 pt-8 pb-6 bg-background-light z-10 shrink-0 border-b border-transparent">
+<div class="flex justify-between items-end">
+<div class="flex flex-col gap-1">
+<h2 class="text-3xl font-bold text-text-dark tracking-tight">NHẬT KÝ HOẠT ĐỘNG</h2>
+<p class="text-text-muted text-sm">Theo dõi chi tiết lịch sử thao tác của nhân viên bếp và bar</p>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[20px]">search</span>
+<input class="pl-10 pr-4 py-2.5 bg-surface-light border border-border-light rounded-xl text-sm text-text-dark placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-64 transition-all shadow-sm" placeholder="Tìm theo mã đơn..." type="text"/>
+</div>
+</div>
+<div class="flex gap-3 flex-wrap">
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface-light border border-border-light hover:border-primary/50 rounded-xl transition-all shadow-sm">
+<span class="text-text-muted text-sm font-medium">Trạm: <span class="text-text-dark font-semibold">Tất cả</span></span>
+<span class="material-symbols-outlined text-text-muted text-[20px]">keyboard_arrow_down</span>
+</button>
+</div>
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface-light border border-border-light hover:border-primary/50 rounded-xl transition-all shadow-sm">
+<span class="text-text-muted text-sm font-medium">Hành động: <span class="text-text-dark font-semibold">Tất cả</span></span>
+<span class="material-symbols-outlined text-text-muted text-[20px]">keyboard_arrow_down</span>
+</button>
+</div>
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface-light border border-border-light hover:border-primary/50 rounded-xl transition-all shadow-sm">
+<span class="text-text-muted text-sm font-medium">Thời gian: <span class="text-text-dark font-semibold">Hôm nay</span></span>
+<span class="material-symbols-outlined text-text-muted text-[20px]">calendar_today</span>
+</button>
+</div>
+<div class="ml-auto flex items-center gap-2">
+<button class="p-2.5 text-text-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-colors" title="Export CSV">
+<span class="material-symbols-outlined">download</span>
+</button>
+<button class="p-2.5 text-text-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-colors" title="Reload">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex-1 px-8 pb-8 overflow-hidden flex flex-col">
+<div class="bg-surface-light rounded-xl border border-border-light flex flex-col flex-1 overflow-hidden shadow-sm">
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light bg-gray-50/80 text-xs font-semibold text-text-muted uppercase tracking-wider sticky top-0 z-10 backdrop-blur-sm">
+<div class="col-span-2">Thời gian</div>
+<div class="col-span-2">Người thực hiện</div>
+<div class="col-span-2">Hành động</div>
+<div class="col-span-3">Chi tiết đơn hàng</div>
+<div class="col-span-2">Lý do / Ghi chú</div>
+<div class="col-span-1 text-right">Thao tác</div>
+</div>
+<div class="overflow-y-auto flex-1 custom-scrollbar">
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light items-center bg-white hover:bg-gray-50 transition-colors group">
+<div class="col-span-2 text-text-dark text-sm font-medium">22:10 <span class="text-slate-400 text-xs ml-1">25/02</span></div>
+<div class="col-span-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[10px] font-bold border border-orange-200">T</div>
+<span class="text-text-dark text-sm">Chef Toàn</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 border border-red-200">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
+                                    Từ chối món
+                                </span>
+</div>
+<div class="col-span-3">
+<div class="flex flex-col">
+<span class="text-text-dark text-sm font-semibold">ORD-102</span>
+<span class="text-text-muted text-xs">Phở Bò Tái Lăn (x2)</span>
+</div>
+</div>
+<div class="col-span-2 text-text-muted text-sm italic">Hết nguyên liệu bò</div>
+<div class="col-span-1 text-right">
+<button class="text-primary hover:text-primary/80 text-xs font-semibold hover:underline">
+                                    Hoàn tác
+                                </button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light items-center bg-gray-50/50 hover:bg-gray-100 transition-colors">
+<div class="col-span-2 text-text-dark text-sm font-medium">22:05 <span class="text-slate-400 text-xs ml-1">25/02</span></div>
+<div class="col-span-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px] font-bold border border-blue-200">T</div>
+<span class="text-text-dark text-sm">Chef Toàn</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-orange-50 text-orange-600 border border-orange-200">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mr-1.5"></span>
+                                    Bắt đầu nấu
+                                </span>
+</div>
+<div class="col-span-3">
+<div class="flex flex-col">
+<span class="text-text-dark text-sm font-semibold">ORD-102</span>
+<span class="text-text-muted text-xs">Phở Bò Tái Lăn (x2)</span>
+</div>
+</div>
+<div class="col-span-2 text-slate-400 text-sm">-</div>
+<div class="col-span-1 text-right text-slate-400 text-xs font-medium">-</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light items-center bg-white hover:bg-gray-50 transition-colors">
+<div class="col-span-2 text-text-dark text-sm font-medium">22:00 <span class="text-slate-400 text-xs ml-1">25/02</span></div>
+<div class="col-span-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-[10px] font-bold border border-purple-200">L</div>
+<span class="text-text-dark text-sm">Barista Linh</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-200">
+<span class="material-symbols-outlined text-[14px] mr-1">check</span>
+                                    Hoàn thành
+                                </span>
+</div>
+<div class="col-span-3">
+<div class="flex flex-col">
+<span class="text-text-dark text-sm font-semibold">ORD-101</span>
+<span class="text-text-muted text-xs">Cafe Sữa Đá (x1)</span>
+</div>
+</div>
+<div class="col-span-2 text-slate-400 text-sm">-</div>
+<div class="col-span-1 text-right text-slate-400 text-xs font-medium">-</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light items-center bg-gray-50/50 hover:bg-gray-100 transition-colors">
+<div class="col-span-2 text-text-dark text-sm font-medium">21:55 <span class="text-slate-400 text-xs ml-1">25/02</span></div>
+<div class="col-span-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 text-[10px] font-bold border border-teal-200">H</div>
+<span class="text-text-dark text-sm">Chef Hùng</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-orange-50 text-orange-600 border border-orange-200">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mr-1.5"></span>
+                                    Bắt đầu nấu
+                                </span>
+</div>
+<div class="col-span-3">
+<div class="flex flex-col">
+<span class="text-text-dark text-sm font-semibold">ORD-100</span>
+<span class="text-text-muted text-xs">Bún Chả Hà Nội (x3)</span>
+</div>
+</div>
+<div class="col-span-2 text-slate-400 text-sm">-</div>
+<div class="col-span-1 text-right text-slate-400 text-xs font-medium">-</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light items-center bg-white hover:bg-gray-50 transition-colors">
+<div class="col-span-2 text-text-dark text-sm font-medium">21:50 <span class="text-slate-400 text-xs ml-1">25/02</span></div>
+<div class="col-span-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 text-[10px] font-bold border border-teal-200">H</div>
+<span class="text-text-dark text-sm">Chef Hùng</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-200">
+<span class="material-symbols-outlined text-[14px] mr-1">check</span>
+                                    Hoàn thành
+                                </span>
+</div>
+<div class="col-span-3">
+<div class="flex flex-col">
+<span class="text-text-dark text-sm font-semibold">ORD-099</span>
+<span class="text-text-muted text-xs">Nem Rán (x5)</span>
+</div>
+</div>
+<div class="col-span-2 text-slate-400 text-sm">-</div>
+<div class="col-span-1 text-right text-slate-400 text-xs font-medium">-</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light items-center bg-gray-50/50 hover:bg-gray-100 transition-colors group">
+<div class="col-span-2 text-text-dark text-sm font-medium">21:45 <span class="text-slate-400 text-xs ml-1">25/02</span></div>
+<div class="col-span-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-[10px] font-bold border border-purple-200">L</div>
+<span class="text-text-dark text-sm">Barista Linh</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600 border border-red-200">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>
+                                    Từ chối món
+                                </span>
+</div>
+<div class="col-span-3">
+<div class="flex flex-col">
+<span class="text-text-dark text-sm font-semibold">ORD-098</span>
+<span class="text-text-muted text-xs">Sinh Tố Bơ (x1)</span>
+</div>
+</div>
+<div class="col-span-2 text-text-muted text-sm italic">Máy xay hỏng</div>
+<div class="col-span-1 text-right">
+<button class="text-primary hover:text-primary/80 text-xs font-semibold hover:underline">
+                                    Hoàn tác
+                                </button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-border-light items-center bg-white hover:bg-gray-50 transition-colors">
+<div class="col-span-2 text-text-dark text-sm font-medium">21:30 <span class="text-slate-400 text-xs ml-1">25/02</span></div>
+<div class="col-span-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 text-[10px] font-bold border border-teal-200">H</div>
+<span class="text-text-dark text-sm">Chef Hùng</span>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-200">
+<span class="material-symbols-outlined text-[14px] mr-1">check</span>
+                                    Hoàn thành
+                                </span>
+</div>
+<div class="col-span-3">
+<div class="flex flex-col">
+<span class="text-text-dark text-sm font-semibold">ORD-095</span>
+<span class="text-text-muted text-xs">Cơm Rang Dưa Bò (x2)</span>
+</div>
+</div>
+<div class="col-span-2 text-slate-400 text-sm">-</div>
+<div class="col-span-1 text-right text-slate-400 text-xs font-medium">-</div>
+</div>
+</div>
+<div class="px-6 py-4 bg-gray-50 border-t border-border-light flex items-center justify-between rounded-b-xl">
+<div class="text-sm text-text-muted">
+                            Hiển thị <span class="font-medium text-text-dark">1</span> đến <span class="font-medium text-text-dark">7</span> trong tổng <span class="font-medium text-text-dark">1,240</span> bản ghi
+                        </div>
+<div class="flex items-center gap-1">
+<button class="p-2 text-text-muted hover:text-text-dark hover:bg-black/5 rounded-lg disabled:opacity-50 transition-all">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-medium rounded-lg bg-primary text-white shadow-md shadow-primary/20">1</button>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-medium rounded-lg text-text-muted hover:bg-black/5 hover:text-text-dark transition-all">2</button>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-medium rounded-lg text-text-muted hover:bg-black/5 hover:text-text-dark transition-all">3</button>
+<span class="text-slate-400 px-2">...</span>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-medium rounded-lg text-text-muted hover:bg-black/5 hover:text-text-dark transition-all">10</button>
+<button class="p-2 text-text-muted hover:text-text-dark hover:bg-black/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

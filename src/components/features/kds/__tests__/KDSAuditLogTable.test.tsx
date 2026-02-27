@@ -12,7 +12,7 @@ describe("KDSAuditLogTable", () => {
       time: "22:10 25/02",
       actorName: "Chef Toàn",
       actorRole: "ChefBar" as const,
-      actionType: "Từ chối món" as const,
+      actionType: UI_TEXT.KDS.AUDIT.ACTION_REJECT,
       orderCode: "ORD-102",
       orderItems: "Phở Bò Tái Lăn (x2)",
       reason: "Hết nguyên liệu bò",
@@ -22,7 +22,7 @@ describe("KDSAuditLogTable", () => {
       time: "22:05 25/02",
       actorName: "Chef Toàn",
       actorRole: "ChefBar" as const,
-      actionType: "Bắt đầu nấu" as const,
+      actionType: UI_TEXT.KDS.AUDIT.ACTION_START,
       orderCode: "ORD-102",
       orderItems: "Phở Bò Tái Lăn (x2)",
       reason: "",
@@ -54,9 +54,10 @@ describe("KDSAuditLogTable", () => {
     // Check if data is rendered correctly
     expect(screen.getAllByText("22:10")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Chef Toàn")[0]).toBeInTheDocument();
-    expect(screen.getByText("Từ chối món")).toBeInTheDocument();
+    // screen.debug(); // Debugging the failure
+    expect(screen.getByText(/TỪ CHỐI MÓN/i)).toBeInTheDocument();
     expect(screen.getAllByText("ORD-102")[0]).toBeInTheDocument();
-    expect(screen.getByText("Hết nguyên liệu bò")).toBeInTheDocument();
+    expect(screen.getByText(/HẾT NGUYÊN LIỆU BÒ/i)).toBeInTheDocument();
   });
 
   it("calls onUndo when undo button is clicked", () => {

@@ -3,6 +3,7 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { OrderItemStatus } from "@/types/enums";
 import { OrderItem } from "@/types/Order";
 
@@ -23,20 +24,27 @@ describe("KDSOrderItem", () => {
     createdAt: new Date().toISOString(),
   };
 
-  it("displays order item information correctly including quantity and item name", () => {
+  it("displays order item information correctly including quantity, name, and note", () => {
     render(<KDSOrderItem item={mockItem} />);
 
-    expect(screen.getByText("Gà Nướng Mật Ong")).toBeInTheDocument();
+    expect(screen.getByText(/Gà Nướng Mật Ong/i)).toBeInTheDocument();
     expect(screen.getByText("x2")).toBeInTheDocument();
-    expect(screen.getByText("DA GIÒN")).toBeInTheDocument(); // Tag based on note
+    expect(screen.getByText("Da giòn")).toBeInTheDocument(); // Note text under name
+    expect(screen.getByText("DA GIÒN")).toBeInTheDocument(); // Tag at bottom
+    expect(screen.getByText(UI_TEXT.KDS.ITEM.STATUS_COOKING)).toBeInTheDocument();
+  });
+
+  it("displays Preparing status when item is in Preparing state", () => {
+    const preparingItem = { ...mockItem, status: OrderItemStatus.Preparing };
+    render(<KDSOrderItem item={preparingItem} />);
+    expect(screen.getByText(UI_TEXT.KDS.ITEM.STATUS_PREPARING)).toBeInTheDocument();
   });
 
   it("calls onDone when button is clicked for an active item", () => {
     const handleDone = vi.fn();
     render(<KDSOrderItem item={mockItem} onDone={handleDone} />);
 
-    // The aria-label is "Hoàn thành món Gà Nướng Mật Ong" locally or we can use the exact message from failure log
-    const labelStr = `Hoàn thành món Gà Nướng Mật Ong`;
+    const labelStr = `${UI_TEXT.KDS.ITEM.DONE} Gà Nướng Mật Ong`;
     const button = screen.getByRole("button", { name: labelStr });
     fireEvent.click(button);
 
@@ -47,17 +55,18 @@ describe("KDSOrderItem", () => {
     const readyItem = { ...mockItem, status: OrderItemStatus.Ready };
     render(<KDSOrderItem item={readyItem} />);
 
-    const labelStr = `Hoàn thành món Gà Nướng Mật Ong`;
+    const labelStr = `${UI_TEXT.KDS.ITEM.DONE} Gà Nướng Mật Ong`;
     const button = screen.queryByRole("button", { name: labelStr });
     expect(button).not.toBeInTheDocument();
   });
 
-  it("shows Return button if note contains return string", () => {
-    const returnItem = { ...mockItem, itemNote: "return món này" };
-    render(<KDSOrderItem item={returnItem} />);
+  it("opens Reject Modal when return button is clicked", () => {
+    render(<KDSOrderItem item={mockItem} />);
 
-    const labelStr = `Trả món Gà Nướng Mật Ong`;
+    const labelStr = `${UI_TEXT.KDS.ITEM.RETURN} Gà Nướng Mật Ong`;
     const returnBtn = screen.getByRole("button", { name: labelStr });
-    expect(returnBtn).toBeInTheDocument();
+    fireEvent.click(returnBtn);
+
+    expect(screen.getByText(UI_TEXT.KDS.AUDIT.REJECT_MODAL.TITLE)).toBeInTheDocument();
   });
 });

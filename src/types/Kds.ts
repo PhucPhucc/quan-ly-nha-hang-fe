@@ -8,14 +8,14 @@ export interface KDSQueueHeaderProps {
 export interface KDSOrderItemProps {
   item: OrderItem;
   onDone?: (orderItemId: string) => void;
-  onReturn?: (orderItemId: string) => void;
+  onReturn?: (orderItemId: string, reason: string) => void;
 }
 
 export interface KDSOrderBoxProps {
   order: Order;
   onCompleteOrder?: (orderId: string) => void;
   onItemDone?: (orderItemId: string) => void;
-  onItemReturn?: (orderItemId: string) => void;
+  onItemReturn?: (orderItemId: string, reason: string) => void;
 }
 
 export interface KDSOrderGridProps {

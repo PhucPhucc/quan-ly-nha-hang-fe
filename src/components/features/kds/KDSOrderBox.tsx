@@ -1,7 +1,9 @@
 "use client";
 
+import { Check } from "lucide-react";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { KDSOrderBoxProps } from "@/types/Kds";
 
 import { KDSOrderItem } from "./KDSOrderItem";
@@ -15,20 +17,22 @@ interface KDSOrderBoxHeaderProps {
 }
 
 const KDSOrderBoxHeader = ({ orderCode, status, onComplete }: KDSOrderBoxHeaderProps) => (
-  <div className="flex items-center justify-between px-4 py-2 border-b border-border-subtle bg-white shrink-0">
-    <div className="flex items-center gap-3">
-      <span className="bg-primary text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
-        {status === 1 ? "SERVING" : "COOKING"}
+  <div className="flex items-center justify-between px-3 py-1.5 border-b border-border-subtle bg-white shrink-0">
+    <div className="flex items-center gap-2 overflow-hidden">
+      <span className="bg-primary text-white px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-tight shrink-0">
+        {status === 1 ? UI_TEXT.KDS.ORDER.STATUS_SERVING : UI_TEXT.KDS.ORDER.STATUS_COOKING}
       </span>
-      <h2 className="text-text-main font-mono font-black text-2xl">{orderCode}</h2>
+      <h2 className="text-text-main font-mono font-black text-lg truncate whitespace-nowrap">
+        {orderCode}
+      </h2>
     </div>
     <button
       onClick={onComplete}
-      aria-label={`Hoàn tất đơn ${orderCode}`}
-      className="bg-accent-green hover:bg-green-600 text-white px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+      aria-label={`${UI_TEXT.KDS.ORDER.COMPLETE_BTN} ${orderCode}`}
+      className="bg-accent-green hover:bg-green-600 text-white p-1 rounded transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 flex items-center justify-center"
+      title={UI_TEXT.KDS.ORDER.COMPLETE_BTN}
     >
-      <span className="material-symbols-outlined font-bold text-lg">done_all</span>
-      <span className="text-xs font-black uppercase tracking-tight">HOÀN TẤT ĐƠN</span>
+      <Check size={20} strokeWidth={3} />
     </button>
   </div>
 );
@@ -46,14 +50,14 @@ export function KDSOrderBox({
   };
 
   return (
-    <section className="bg-background-main flex flex-col overflow-hidden min-h-0">
+    <section className="bg-white flex flex-col overflow-hidden h-fit border-b border-border-subtle last:border-b-0">
       <KDSOrderBoxHeader
         orderCode={order.orderCode}
         status={order.status}
         onComplete={handleComplete}
       />
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-3 grid grid-cols-2 gap-2 content-start">
+      <div className="flex flex-col gap-2 p-3">
         {order.orderItems && order.orderItems.length > 0 ? (
           order.orderItems.map((item) => (
             <KDSOrderItem
@@ -61,11 +65,12 @@ export function KDSOrderBox({
               item={item}
               onDone={onItemDone}
               onReturn={onItemReturn}
+              isPriority={order.isPriority}
             />
           ))
         ) : (
-          <div className="col-span-2 text-center text-text-secondary py-8 italic text-sm">
-            Không có món trong đơn
+          <div className="text-center text-text-secondary py-8 italic text-sm">
+            {UI_TEXT.KDS.ORDER.EMPTY}
           </div>
         )}
       </div>

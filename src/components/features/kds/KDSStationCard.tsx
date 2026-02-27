@@ -1,5 +1,7 @@
 import { ArrowRight } from "lucide-react";
+import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
 interface KDSStationCardProps {
@@ -53,14 +55,16 @@ export const KDSStationCard = ({
       <div className="space-y-2 z-10">
         <h3 className="text-xl font-bold text-foreground font-display">{title}</h3>
         <div className="flex items-center gap-2 text-muted-foreground">
-          <span className="material-symbols-outlined text-lg">receipt_long</span>
-          <p className="text-sm font-medium">{waitingItems} món đang đợi</p>
+          <span className="material-symbols-outlined text-lg">{UI_TEXT.KDS.AUDIT.ICON}</span>
+          <p className="text-sm font-medium">
+            {waitingItems} {UI_TEXT.KDS.ITEM.WAITING_SUFFIX}
+          </p>
         </div>
       </div>
 
       <div className="mt-auto pt-4 z-10 pointer-events-none">
         <div className="w-full flex items-center justify-center gap-2 rounded-lg h-12 bg-primary group-hover:bg-primary-hover text-white text-sm font-bold tracking-wide transition-all duration-200 shadow-sm group-hover:shadow-md">
-          <span>VÀO TRẠM</span>
+          <span>{UI_TEXT.KDS.NAV.STATION}</span>
           <ArrowRight className="h-5 w-5" />
         </div>
       </div>

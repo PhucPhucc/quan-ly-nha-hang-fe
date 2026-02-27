@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Compact Multi-Order KDS Dashboard Light Mode</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "oklch(0.58 0.22 35)",
+                        "background-main": "oklch(0.99 0.005 50)",
+                        "text-main": "oklch(0.18 0.02 50)",
+                        "text-secondary": "oklch(0.55 0.02 50)",
+                        "surface-card": "oklch(1 0 0)",
+                        "border-subtle": "oklch(0.92 0.01 50)",
+                        "accent-yellow": "#eab308",
+                        "accent-green": "#22c55e",
+                        "accent-red": "#ef4444",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        '12px': '12px',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-background-main text-text-main antialiased overflow-hidden h-screen flex flex-col;
+            }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: oklch(0.85 0.02 50);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-display">
+<header class="h-16 w-full bg-white border-b border-border-subtle flex items-center shrink-0 z-10">
+<div class="px-6 border-r border-border-subtle h-full flex items-center bg-gray-50/50">
+<h2 class="text-[10px] font-black uppercase tracking-tighter text-text-secondary leading-tight w-16">HÀNG ĐỢI<br/>(PREPARING)</h2>
+</div>
+<div class="flex-1 overflow-x-auto flex items-center gap-3 px-6 no-scrollbar">
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#105</div>
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#108</div>
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#110</div>
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#112</div>
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#115</div>
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#118</div>
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#120</div>
+<div class="flex-shrink-0 bg-white text-text-secondary px-4 py-1 rounded-full border border-border-subtle font-bold text-lg">#125</div>
+</div>
+<div class="px-6 border-l border-border-subtle h-full flex items-center gap-3">
+<span class="material-symbols-outlined text-text-secondary text-base">timer</span>
+<span class="font-mono font-bold text-lg text-text-secondary">11:45</span>
+</div>
+</header>
+<main class="flex-1 w-full grid grid-cols-2 grid-rows-2 gap-px bg-border-subtle overflow-hidden">
+<section class="bg-background-main flex flex-col overflow-hidden">
+<div class="flex items-center justify-between px-4 py-2 border-b border-border-subtle bg-white shrink-0">
+<div class="flex items-center gap-3">
+<span class="bg-primary text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">COOKING</span>
+<h2 class="text-text-main font-mono font-black text-2xl">ORD-098</h2>
+</div>
+<button class="bg-[#22c55e] hover:bg-[#16a34a] text-white px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-transform active:scale-95">
+<span class="material-symbols-outlined font-bold text-lg">done_all</span>
+<span class="text-xs font-black uppercase tracking-tight">HOÀN TẤT ĐƠN</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 grid grid-cols-2 gap-2 content-start">
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px] relative group">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Gà Nướng Mật Ong</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x2</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="bg-yellow-50 text-yellow-700 border border-yellow-100 px-1.5 py-0.5 rounded text-[10px] font-bold">DA GIÒN</span>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">08:45</span>
+</div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Cơm Tấm Sườn Bì</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x1</span>
+<button class="bg-accent-red text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-red-600 transition-colors">Return</button>
+</div>
+</div>
+<div class="mt-1 text-[10px] text-orange-700 italic font-medium leading-tight">"Thêm kim chi"</div>
+<div class="mt-1 flex items-center justify-between">
+<span class="bg-red-50 text-red-700 border border-red-100 px-1.5 py-0.5 rounded text-[10px] font-bold">THÊM SƯỜN</span>
+<div class="flex items-center gap-1 text-red-600">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">15:20</span>
+</div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Canh Khổ Qua</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x1</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<div></div>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">04:15</span>
+</div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Trà Đá</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x3</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded text-[10px] font-bold">NHIỀU ĐÁ</span>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">02:10</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-background-main flex flex-col overflow-hidden">
+<div class="flex items-center justify-between px-4 py-2 border-b border-border-subtle bg-white shrink-0">
+<div class="flex items-center gap-3">
+<span class="bg-primary text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">COOKING</span>
+<h2 class="text-text-main font-mono font-black text-2xl">ORD-102</h2>
+</div>
+<button class="bg-[#22c55e] hover:bg-[#16a34a] text-white px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-transform active:scale-95">
+<span class="material-symbols-outlined font-bold text-lg">done_all</span>
+<span class="text-xs font-black uppercase tracking-tight">HOÀN TẤT ĐƠN</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 grid grid-cols-2 gap-2 content-start">
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Trà Chanh Giã Tay</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x4</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded text-[10px] font-bold">ÍT ĐÁ</span>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">03:10</span>
+</div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Salad Ức Gà</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x1</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="bg-green-50 text-green-700 border border-green-100 px-1.5 py-0.5 rounded text-[10px] font-bold">HEALTHY</span>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">05:50</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-background-main flex flex-col overflow-hidden">
+<div class="flex items-center justify-between px-4 py-2 border-b border-border-subtle bg-white shrink-0">
+<div class="flex items-center gap-3">
+<span class="bg-primary text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">COOKING</span>
+<h2 class="text-text-main font-mono font-black text-2xl">ORD-105</h2>
+</div>
+<button class="bg-[#22c55e] hover:bg-[#16a34a] text-white px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-transform active:scale-95">
+<span class="material-symbols-outlined font-bold text-lg">done_all</span>
+<span class="text-xs font-black uppercase tracking-tight">HOÀN TẤT ĐƠN</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 grid grid-cols-2 gap-2 content-start">
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Bánh Mì Chảo Đặc Biệt</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x3</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded text-[10px] font-bold">PATE THÊM</span>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">12:15</span>
+</div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Sữa Đậu Nành</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x3</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="bg-gray-100 text-gray-700 border border-gray-200 px-1.5 py-0.5 rounded text-[10px] font-bold">ÍT ĐƯỜNG</span>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">06:20</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-background-main flex flex-col overflow-hidden">
+<div class="flex items-center justify-between px-4 py-2 border-b border-border-subtle bg-white shrink-0">
+<div class="flex items-center gap-3">
+<span class="bg-primary text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">COOKING</span>
+<h2 class="text-text-main font-mono font-black text-2xl">ORD-108</h2>
+</div>
+<button class="bg-[#22c55e] hover:bg-[#16a34a] text-white px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-transform active:scale-95">
+<span class="material-symbols-outlined font-bold text-lg">done_all</span>
+<span class="text-xs font-black uppercase tracking-tight">HOÀN TẤT ĐƠN</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 grid grid-cols-2 gap-2 content-start">
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Phở Bò Tái Lăn</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x2</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<span class="bg-red-50 text-red-700 border border-red-100 px-1.5 py-0.5 rounded text-[10px] font-bold">NHIỀU HÀNH</span>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">02:40</span>
+</div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Quẩy Giòn</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x1</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<div></div>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">01:20</span>
+</div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px]">
+<div class="flex justify-between items-start gap-2">
+<h3 class="text-text-main text-sm font-bold uppercase leading-tight line-clamp-2">Nước Cam</h3>
+<div class="flex flex-col items-end gap-1">
+<span class="text-primary text-lg font-black shrink-0">x1</span>
+<button class="bg-[#22c55e] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase hover:bg-green-600 transition-colors">Done</button>
+</div>
+</div>
+<div class="mt-2 flex items-center justify-between">
+<div></div>
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-xs font-bold font-mono">05:10</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+</body></html>

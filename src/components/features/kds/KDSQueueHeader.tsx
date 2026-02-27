@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { KDSQueueHeaderProps } from "@/types/Kds";
 
 export function KDSQueueHeader({ queueOrders, currentTime }: KDSQueueHeaderProps) {
@@ -30,8 +31,7 @@ export function KDSQueueHeader({ queueOrders, currentTime }: KDSQueueHeaderProps
       <div className="px-6 border-r border-border-subtle h-full flex items-center bg-gray-50/50">
         <h2 className="text-[10px] font-black uppercase tracking-tighter text-text-secondary leading-tight w-16">
           HÀNG ĐỢI
-          <br />
-          (PREPARING)
+          <br />({UI_TEXT.KDS.ORDER.PREPARING})
         </h2>
       </div>
       <div
@@ -39,7 +39,7 @@ export function KDSQueueHeader({ queueOrders, currentTime }: KDSQueueHeaderProps
         className="flex-1 overflow-x-auto flex items-center gap-3 px-6 no-scrollbar cursor-pointer"
       >
         {queueOrders.length === 0 && (
-          <div className="text-sm text-text-secondary italic">Không có đơn hàng chờ</div>
+          <div className="text-sm text-text-secondary italic">{UI_TEXT.KDS.ORDER.EMPTY_QUEUE}</div>
         )}
         {queueOrders.map((order) => {
           const orderNumber = order.orderCode.split("-").pop() || order.orderCode;
