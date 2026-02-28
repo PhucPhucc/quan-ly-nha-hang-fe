@@ -32,7 +32,9 @@ const KDSOrderBoxHeader = ({ orderCode, status, onComplete }: KDSOrderBoxHeaderP
       className="bg-accent-green hover:bg-green-600 text-white p-1 rounded transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 flex items-center justify-center"
       title={UI_TEXT.KDS.ORDER.COMPLETE_BTN}
     >
-      <Check size={20} strokeWidth={3} />
+      <span className="material-symbols-outlined font-bold text-base leading-none">
+        <Check />
+      </span>
     </button>
   </div>
 );
@@ -50,14 +52,14 @@ export function KDSOrderBox({
   };
 
   return (
-    <section className="bg-white flex flex-col overflow-hidden h-fit border-b border-border-subtle last:border-b-0">
+    <section className="bg-white flex flex-col overflow-hidden h-full">
       <KDSOrderBoxHeader
         orderCode={order.orderCode}
         status={order.status}
         onComplete={handleComplete}
       />
 
-      <div className="flex flex-col gap-2 p-3">
+      <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-2 p-3">
         {order.orderItems && order.orderItems.length > 0 ? (
           order.orderItems.map((item) => (
             <KDSOrderItem

@@ -36,18 +36,6 @@ const KDSOrderItemHeader = ({
             {UI_TEXT.KDS.ITEM.VIP_LABEL}
           </span>
         )}
-        <span
-          className={cn(
-            "px-1 py-0.5 rounded text-[8px] font-black uppercase border",
-            status === OrderItemStatus.Preparing
-              ? "bg-slate-100 text-slate-600 border-slate-200"
-              : "bg-blue-100 text-blue-700 border-blue-200"
-          )}
-        >
-          {status === OrderItemStatus.Preparing
-            ? UI_TEXT.KDS.ITEM.STATUS_PREPARING
-            : UI_TEXT.KDS.ITEM.STATUS_COOKING}
-        </span>
       </div>
       {note && (
         <p className="text-muted-foreground text-[11px] italic font-medium leading-tight line-clamp-2">
@@ -127,7 +115,12 @@ export function KDSOrderItem({
   };
 
   return (
-    <div className="bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between min-h-[90px] relative group">
+    <div
+      className={cn(
+        "bg-white border border-border-subtle p-2.5 rounded-lg flex flex-col justify-between relative group",
+        hasTag ? "min-h-[140px]" : "min-h-[100px]"
+      )}
+    >
       <div className="flex flex-col min-w-0">
         <KDSOrderItemHeader
           name={item.itemNameSnapshot}

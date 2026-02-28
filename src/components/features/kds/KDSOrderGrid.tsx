@@ -39,52 +39,44 @@ export function KDSOrderGrid({ orders }: KDSOrderGridProps) {
     );
   }
 
-  // Distribute orders into 4 columns
-  const columns: (typeof orders)[] = [[], [], [], []];
-  orders.forEach((order, index) => {
-    columns[index % 4].push(order);
-  });
-
   return (
     <main className="flex-1 w-full bg-white flex flex-col overflow-hidden">
       {/* WIP Information Bar - Simplified */}
       <div className="px-6 py-2.5 flex items-center justify-between border-b border-border-subtle bg-white shadow-sm z-10">
-        {/* <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-text-secondary font-black text-xs uppercase tracking-widest">
-            <span className="material-symbols-outlined text-sm">precision_manufacturing</span>
-            <span>
-              {UI_TEXT.KDS.NAV.WIP_LABEL}: {cookingItemsCount}/{WIP_LIMIT}
-            </span>
-          </div>
-        </div> */}
-
         <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest opacity-60">
           Khu vực chế biến • Station 1
         </div>
       </div>
 
       <div className="flex-1 w-full overflow-hidden flex custom-scrollbar overflow-x-auto">
-        {columns.map((colOrders, colIdx) => (
+        {orders.map((order, colIdx) => (
           <div
-            key={`col-${colIdx}`}
+            key={order.orderId}
             className={cn(
-              "flex-1 min-w-[300px] flex flex-col bg-white overflow-y-auto custom-scrollbar",
-              colIdx < 3 && "border-r border-border-subtle"
+              "shrink-0 w-1/4 min-w-[300px] flex flex-col bg-white",
+              colIdx < orders.length - 1 && "border-r border-border-subtle"
             )}
           >
-            <div className="flex flex-col gap-0.5">
-              {colOrders.map((order) => (
-                <KDSOrderBox
-                  key={order.orderId}
-                  order={order}
-                  onCompleteOrder={handleCompleteOrder}
-                  onItemDone={handleItemDone}
-                  onItemReturn={handleItemReturn}
-                />
-              ))}
-            </div>
+            <KDSOrderBox
+              order={order}
+              onCompleteOrder={handleCompleteOrder}
+              onItemDone={handleItemDone}
+              onItemReturn={handleItemReturn}
+            />
           </div>
         ))}
+
+        {/* Fill empty columns to maintain the 4-column look if there are fewer than 4 orders */}
+        {orders.length < 4 &&
+          Array.from({ length: 4 - orders.length }).map((_, idx) => (
+            <div
+              key={`empty-col-${idx}`}
+              className={cn(
+                "shrink-0 w-1/4 min-w-[300px] flex flex-col bg-gray-50/50",
+                idx < 3 - orders.length && "border-r border-border-subtle"
+              )}
+            ></div>
+          ))}
       </div>
     </main>
   );

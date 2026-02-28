@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
 
 interface KDSRejectModalProps {
   isOpen: boolean;
@@ -61,50 +60,53 @@ export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSReje
         <div className="p-6 flex flex-col gap-6 bg-white">
           {/* Design: Context Line */}
           <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-            <Receipt className="text-gray-400" size={18} />
+            <span className="material-symbols-outlined text-gray-400 text-lg">
+              <Receipt />
+            </span>
             <p className="text-gray-700 text-xs font-bold uppercase tracking-tight">
               Bạn đang thực hiện từ chối món:{" "}
               <span className="text-primary font-black">{itemName}</span>
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label className="text-[11px] font-black uppercase text-gray-500 tracking-wider">
-              Tại sao bạn lại từ chối món này?
+          <div className="flex flex-col gap-2.5">
+            <label
+              className="text-gray-900 text-xs font-black uppercase tracking-wider"
+              htmlFor="reject-reason"
+            >
+              Lý do từ chối <span className="text-primary">*</span>
             </label>
             <div className="relative">
               <Textarea
+                id="reject-reason"
+                placeholder={UI_TEXT.KDS.AUDIT.REJECT_MODAL.PLACEHOLDER}
                 value={reason}
                 onChange={(e) => {
-                  setReason(e.target.value);
-                  if (e.target.value.trim()) setError(null);
+                  if (e.target.value.length <= MAX_CHARS) {
+                    setReason(e.target.value);
+                    if (e.target.value.trim()) setError(null);
+                  }
                 }}
-                placeholder={UI_TEXT.KDS.AUDIT.REJECT_MODAL.PLACEHOLDER}
-                className="min-h-[120px] resize-none border-gray-200 focus:border-primary focus:ring-primary rounded-xl text-sm p-4 bg-gray-50/50"
-                maxLength={200}
+                className="w-full min-h-[140px] bg-white border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus-visible:ring-primary p-4 text-sm font-medium resize-none transition-all"
               />
-              <span className="absolute bottom-3 right-3 text-[10px] font-bold text-gray-400">
-                {reason.length}/200
-              </span>
+              <div className="absolute bottom-3 right-3 text-[10px] font-black text-gray-400 tabular-nums">
+                {reason.length}/{MAX_CHARS}
+              </div>
             </div>
 
-            {/* Quick Reason Buttons for speed */}
-            <div className="flex flex-wrap gap-2 mt-1">
+            {/* Design: Quick Selection Buttons */}
+            <div className="flex flex-wrap gap-2">
               {QUICK_REASONS.map((r) => (
                 <button
                   key={r}
                   onClick={() => handleQuickReason(r)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-[10px] font-black uppercase transition-all border",
-                    reason === r
-                      ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-                      : "bg-white text-gray-500 border-gray-200 hover:border-primary hover:text-primary"
-                  )}
+                  className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-[10px] font-bold text-gray-600 uppercase transition-all shadow-sm active:scale-95"
                 >
                   {r}
                 </button>
               ))}
             </div>
+
             {error && (
               <p className="text-[10px] font-black text-accent-red uppercase italic mt-1">
                 {error}
@@ -113,25 +115,23 @@ export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSReje
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="px-6 py-5 bg-gray-50 flex justify-end gap-3 rounded-b-[16px]">
+        {/* Design: Red Shadowed Footer Buttons */}
+        <div className="p-6 pt-2 flex items-center justify-end gap-3 bg-white">
           <Button
             variant="outline"
             onClick={handleCancel}
-            className="border-none bg-transparent hover:bg-gray-200 text-gray-500 text-xs font-black uppercase rounded-lg"
+            className="px-6 py-2.5 h-auto rounded-xl border border-gray-200 text-gray-600 font-black text-xs hover:bg-gray-50 hover:text-gray-900 transition-all uppercase tracking-tight"
           >
             {UI_TEXT.COMMON.CANCEL}
           </Button>
           <Button
             onClick={handleConfirm}
-            disabled={!reason.trim()}
-            className="bg-primary hover:bg-orange-600 text-white px-6 py-5 rounded-xl text-xs font-black uppercase flex items-center gap-2 group shadow-lg shadow-primary/25 disabled:opacity-50 disabled:shadow-none transition-all"
+            className="px-6 py-2.5 h-auto rounded-xl bg-primary hover:bg-primary-dark text-white font-black text-xs shadow-lg shadow-red-500/30 transition-all flex items-center gap-2 group uppercase tracking-tight"
           >
             <span>{UI_TEXT.KDS.AUDIT.REJECT_MODAL.CONFIRM}</span>
-            <ArrowBigRightDash
-              className="group-hover:translate-x-1 transition-transform"
-              size={18}
-            />
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">
+              <ArrowBigRightDash />
+            </span>
           </Button>
         </div>
       </DialogContent>

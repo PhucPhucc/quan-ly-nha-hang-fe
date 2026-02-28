@@ -1,5 +1,6 @@
 "use client";
 
+import { Timer } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -54,7 +55,9 @@ export function KDSQueueHeader({ queueOrders, currentTime }: KDSQueueHeaderProps
         })}
       </div>
       <div className="px-6 border-l border-border-subtle h-full flex items-center gap-3">
-        <span className="material-symbols-outlined text-text-secondary text-base">timer</span>
+        <span className="material-symbols-outlined text-text-secondary text-base">
+          <Timer />
+        </span>
         <span className="font-mono font-bold text-lg text-text-secondary">{currentTime}</span>
       </div>
     </header>
