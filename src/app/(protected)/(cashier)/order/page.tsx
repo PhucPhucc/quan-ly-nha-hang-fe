@@ -1,5 +1,5 @@
-import OrderDetailsSidebar from "@/components/features/menu/order/OrderDetailsSidebar";
-import OrderViewSelector from "@/components/features/menu/order/OrderViewSelector";
+import OrderDetailsSidebar from "@/components/features/order/OrderDetailsSidebar";
+import OrderViewSelector from "@/components/features/order/OrderViewSelector";
 
 const OrderPage = () => {
   return (
