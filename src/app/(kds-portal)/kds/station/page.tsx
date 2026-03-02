@@ -13,7 +13,7 @@ export default function StationSelectionPage() {
   // Mock data matching the design, ideally fetched from an API
   const stations = [
     {
-      id: "kitchen",
+      id: "HotKitchen",
       title: UI_TEXT.KDS.STATIONS.KITCHEN,
       icon: <Flame className="h-8 w-8" />,
       waitingItems: 12,
@@ -22,7 +22,7 @@ export default function StationSelectionPage() {
       gradientClass: "bg-gradient-to-br from-orange-50/80 dark:from-orange-500/10 to-transparent",
     },
     {
-      id: "bar",
+      id: "Bar",
       title: UI_TEXT.KDS.STATIONS.BAR,
       icon: <Wine className="h-8 w-8" />,
       waitingItems: 5,
@@ -33,9 +33,7 @@ export default function StationSelectionPage() {
   ];
 
   const handleStationSelect = (stationId: string) => {
-    // We could store the selected station in Zustand or URL params here.
-    // For now, redirecting to the main KDS Dashboard which will likely adapt.
-    router.push("/kds");
+    router.push(`/kds?station=${stationId}`);
   };
 
   return (

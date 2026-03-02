@@ -3,33 +3,32 @@
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
 import { KDSOrderGridProps } from "@/types/Kds";
 
-import { KDSOrderBox } from "./KDSOrderBox";
+import { KDSItemCard } from "./KDSItemCard";
 
-export function KDSOrderGrid({ orders }: KDSOrderGridProps) {
-  // WIP calculation logic
-  const cookingItemsCount = orders.reduce((acc, order) => {
-    return acc + (order.orderItems?.filter((item) => item.status === 2).length || 0); // OrderItemStatus.Cooking is 2
-  }, 0);
-  const WIP_LIMIT = 4;
-  const isWipLimitReached = cookingItemsCount >= WIP_LIMIT;
+export function KDSOrderGrid({ orders, onItemDone, onItemReturn }: KDSOrderGridProps) {
+  // Flatten order items to get a list of items to display
+  const allOrderItems = orders.flatMap((order) =>
+    (order.orderItems || []).map((item) => ({
+      ...order,
+      orderItems: [item],
+    }))
+  );
 
-  // Mock action handlers for the KDS (UI demo purposes)
-  const handleCompleteOrder = (orderId: string) => {
-    console.log("Complete order", orderId);
-  };
+  // We only display the first 4 items in the grid columns based on the requirement
+  const itemsToDisplay = allOrderItems.slice(0, 4);
 
+  // Action handlers
   const handleItemDone = (orderItemId: string) => {
-    console.log("Item done", orderItemId);
+    onItemDone?.(orderItemId);
   };
 
   const handleItemReturn = (orderItemId: string, reason: string) => {
-    console.log("Returning item:", orderItemId, "with reason:", reason);
+    onItemReturn?.(orderItemId, reason);
   };
 
-  if (orders.length === 0) {
+  if (allOrderItems.length === 0) {
     return (
       <main className="flex-1 w-full bg-border-subtle overflow-hidden flex items-center justify-center">
         <div className="text-text-secondary text-2xl font-black font-display opacity-50 uppercase tracking-tighter">
@@ -42,39 +41,37 @@ export function KDSOrderGrid({ orders }: KDSOrderGridProps) {
   return (
     <main className="flex-1 w-full bg-white flex flex-col overflow-hidden">
       {/* WIP Information Bar - Simplified */}
-      <div className="px-6 py-2.5 flex items-center justify-between border-b border-border-subtle bg-white shadow-sm z-10">
+      <div className="px-10 py-4 flex items-center justify-between border-b border-border-subtle bg-white shadow-sm z-10">
         <div className="text-[10px] font-bold text-text-secondary uppercase tracking-widest opacity-60">
           Khu vực chế biến • Station 1
         </div>
       </div>
 
-      <div className="flex-1 w-full overflow-hidden flex custom-scrollbar overflow-x-auto">
-        {orders.map((order, colIdx) => (
-          <div
-            key={order.orderId}
-            className={cn(
-              "shrink-0 w-1/4 min-w-[300px] flex flex-col bg-white",
-              colIdx < orders.length - 1 && "border-r border-border-subtle"
-            )}
-          >
-            <KDSOrderBox
-              order={order}
-              onCompleteOrder={handleCompleteOrder}
-              onItemDone={handleItemDone}
-              onItemReturn={handleItemReturn}
-            />
-          </div>
-        ))}
+      <div className="flex-1 w-full overflow-hidden flex flex-col custom-scrollbar overflow-y-auto bg-slate-100 p-4 gap-4">
+        {itemsToDisplay.map((virtualOrder) => {
+          const item = virtualOrder.orderItems[0];
+          return (
+            <div
+              key={`${virtualOrder.orderId}-${item.orderItemId}`}
+              className="shrink-0 flex flex-col bg-white rounded-xl shadow-sm border border-border-subtle overflow-hidden"
+            >
+              <KDSItemCard
+                item={item}
+                orderCode={virtualOrder.orderCode}
+                orderType={virtualOrder.orderType}
+                onDone={handleItemDone}
+                onReturn={handleItemReturn}
+              />
+            </div>
+          );
+        })}
 
-        {/* Fill empty columns to maintain the 4-column look if there are fewer than 4 orders */}
-        {orders.length < 4 &&
-          Array.from({ length: 4 - orders.length }).map((_, idx) => (
+        {/* Fill empty rows to maintain the 4-row look if there are fewer than 4 items */}
+        {itemsToDisplay.length < 4 &&
+          Array.from({ length: 4 - itemsToDisplay.length }).map((_, idx) => (
             <div
               key={`empty-col-${idx}`}
-              className={cn(
-                "shrink-0 w-1/4 min-w-[300px] flex flex-col bg-gray-50/50",
-                idx < 3 - orders.length && "border-r border-border-subtle"
-              )}
+              className="shrink-0 flex flex-col bg-gray-50/50 rounded-xl border border-dashed border-border-subtle min-h-[140px]"
             ></div>
           ))}
       </div>

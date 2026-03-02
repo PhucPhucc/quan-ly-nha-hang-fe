@@ -50,7 +50,11 @@ const ResetPasswordForm = () => {
         toast.error(response.message || "Đặt lại mật khẩu thất bại.");
       }
     } catch (error) {
-      toast.error(error.message);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Có lỗi xảy ra.");
+      }
       console.error(error);
     } finally {
       setIsLoading(false);

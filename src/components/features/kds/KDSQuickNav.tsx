@@ -74,13 +74,13 @@ export function KDSQuickNav() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50">
       <div
         className={cn(
-          "flex flex-col items-center bg-secondary/95 backdrop-blur-md border border-muted-foreground/30 shadow-2xl overflow-hidden",
+          "flex flex-col items-center bg-secondary/95 backdrop-blur-md shadow-2xl overflow-hidden transition-all duration-300",
           isExpanded
-            ? "rounded-3xl p-2 gap-2 w-auto max-w-[400px]"
-            : "rounded-xl p-0 w-28 h-8 justify-center"
+            ? "rounded-t-3xl p-3 pb-6 gap-3 w-auto max-w-[400px] border border-b-0 border-muted-foreground/30"
+            : "rounded-t-2xl p-0 w-32 h-6 justify-center border border-b-0 border-muted-foreground/20 hover:bg-secondary"
         )}
       >
         {/* Toggle Area / Notch */}
@@ -89,9 +89,9 @@ export function KDSQuickNav() {
         {/* Dynamic content */}
         <div
           className={cn(
-            "flex items-center gap-1",
+            "flex items-center gap-1 transition-all duration-300",
             isExpanded
-              ? "opacity-100 scale-100 h-auto pb-1"
+              ? "opacity-100 scale-100 h-auto"
               : "opacity-0 scale-95 pointer-events-none absolute h-0"
           )}
         >
