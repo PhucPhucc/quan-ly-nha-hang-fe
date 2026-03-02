@@ -20,8 +20,6 @@ export const useAuthStore = create<AuthState>()(
 
       logout: () => {
         set({ employee: null });
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
       },
     }),
     {
