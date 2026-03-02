@@ -28,6 +28,16 @@ export const UI_TEXT = {
     ERROR_UNKNOWN: "Có lỗi xảy ra, vui lòng thử lại.",
   },
 
+  SIDE_BAR: {
+    DASHBOARD: "Trang chủ",
+    MENU: "Thực đơn",
+    TABLE: "Sơ đồ bàn",
+    ORDER: "Đơn hàng",
+    EMPLOYEE: "Nhân viên",
+    AUDIT_LOG: "Lịch sử",
+    INVENTORY: "Kho hàng",
+  },
+
   AUTH: {
     LOGIN: "Đăng nhập",
     LOGOUT: "Đăng xuất",
@@ -115,6 +125,8 @@ export const UI_TEXT = {
     DELETE: "Xóa",
     ADD: "Thêm",
     SAVE_CHANGES: "Lưu thay đổi",
+    DETAIL: "Chi tiết",
+    HISTORY: "Lịch sử",
   },
 
   API: {
