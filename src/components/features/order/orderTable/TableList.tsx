@@ -20,7 +20,6 @@ const TableList = () => {
   const handleTableClick = async (tableNumber: number, status: OrderStatus, orderId?: string) => {
     if (status === OrderStatus.Serving && orderId) {
       setSelectedOrderId(orderId);
-      setActiveView("menu");
       return;
     }
 
