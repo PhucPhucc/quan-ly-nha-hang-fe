@@ -54,7 +54,7 @@ export default function KDSAuditLogPage() {
       if (result.isSuccess && result.data) {
         setLogs(result.data);
       } else {
-        setError(result.error?.message || "Failed to fetch audit logs");
+        setError(result.error || result.message || "Failed to fetch audit logs");
       }
     } catch (err) {
       setError("An error occurred while fetching audit logs");
