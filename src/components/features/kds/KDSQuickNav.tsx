@@ -79,7 +79,7 @@ export function KDSQuickNav() {
         className={cn(
           "flex flex-col items-center bg-secondary/95 backdrop-blur-md shadow-2xl overflow-hidden transition-all duration-300",
           isExpanded
-            ? "rounded-t-3xl p-3 pb-6 gap-3 w-auto max-w-[400px] border border-b-0 border-muted-foreground/30"
+            ? "rounded-t-3xl p-3 pb-6 gap-3 w-auto max-w-100  border border-b-0 border-muted-foreground/30"
             : "rounded-t-2xl p-0 w-32 h-6 justify-center border border-b-0 border-muted-foreground/20 hover:bg-secondary"
         )}
       >

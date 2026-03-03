@@ -3,11 +3,13 @@
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
-import { KDSOrderGridProps } from "@/types/Kds";
+import { useKdsStore } from "@/store/useKdsStore";
 
 import { KDSItemCard } from "./KDSItemCard";
 
-export function KDSOrderGrid({ orders, onItemDone, onItemReturn }: KDSOrderGridProps) {
+export function KDSOrderGrid() {
+  const orders = useKdsStore((s) => s.activeOrders);
+
   // Flatten order items to get a list of items to display
   const allOrderItems = orders.flatMap((order) =>
     (order.orderItems || []).map((item) => ({
@@ -18,15 +20,6 @@ export function KDSOrderGrid({ orders, onItemDone, onItemReturn }: KDSOrderGridP
 
   // We only display the first 4 items in the grid columns based on the requirement
   const itemsToDisplay = allOrderItems.slice(0, 4);
-
-  // Action handlers
-  const handleItemDone = (orderItemId: string) => {
-    onItemDone?.(orderItemId);
-  };
-
-  const handleItemReturn = (orderItemId: string, reason: string) => {
-    onItemReturn?.(orderItemId, reason);
-  };
 
   if (allOrderItems.length === 0) {
     return (
@@ -59,8 +52,6 @@ export function KDSOrderGrid({ orders, onItemDone, onItemReturn }: KDSOrderGridP
                 item={item}
                 orderCode={virtualOrder.orderCode}
                 orderType={virtualOrder.orderType}
-                onDone={handleItemDone}
-                onReturn={handleItemReturn}
               />
             </div>
           );

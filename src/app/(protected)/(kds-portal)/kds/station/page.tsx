@@ -19,7 +19,7 @@ export default function StationSelectionPage() {
       waitingItems: 12,
       statusText: UI_TEXT.KDS.STATIONS.STATUS_HIGH,
       statusVariant: "critical" as const,
-      gradientClass: "bg-gradient-to-br from-orange-50/80 dark:from-orange-500/10 to-transparent",
+      // gradientClass: "bg-gradient-to-br from-primary dark:from-orange-500/10 to-transparent",
     },
     {
       id: "Bar",
@@ -28,7 +28,7 @@ export default function StationSelectionPage() {
       waitingItems: 5,
       statusText: UI_TEXT.KDS.STATIONS.STATUS_NORMAL,
       statusVariant: "normal" as const,
-      gradientClass: "bg-gradient-to-br from-blue-50/80 dark:from-blue-500/10 to-transparent",
+      // gradientClass: "bg-gradient-to-br from-blue-50/80 dark:from-blue-500/10 to-transparent",
     },
   ];
 
@@ -52,7 +52,6 @@ export default function StationSelectionPage() {
               waitingItems={station.waitingItems}
               statusText={station.statusText}
               statusVariant={station.statusVariant}
-              gradientClass={station.gradientClass}
               onClick={() => handleStationSelect(station.id)}
             />
           ))}

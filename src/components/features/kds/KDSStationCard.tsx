@@ -10,7 +10,6 @@ interface KDSStationCardProps {
   waitingItems: number;
   statusText: string;
   statusVariant: "critical" | "normal";
-  gradientClass: string;
   onClick: () => void;
 }
 
@@ -20,7 +19,6 @@ export const KDSStationCard = ({
   waitingItems,
   statusText,
   statusVariant,
-  gradientClass,
   onClick,
 }: KDSStationCardProps) => {
   return (
@@ -44,8 +42,8 @@ export const KDSStationCard = ({
           className={cn(
             "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border",
             statusVariant === "critical"
-              ? "bg-red-50 text-red-700 border-red-100 animate-pulse"
-              : "bg-green-50 text-green-700 border-green-100"
+              ? "bg-red-50 text-danger border-danger-100 animate-pulse"
+              : "bg-success-50 text-success border-success-100"
           )}
         >
           {statusText}
@@ -70,10 +68,9 @@ export const KDSStationCard = ({
       </div>
 
       <div
-        className={cn(
-          "absolute top-0 right-0 w-32 h-32 rounded-bl-full pointer-events-none opacity-50 transition-opacity duration-300 group-hover:opacity-100",
-          gradientClass
-        )}
+        className={
+          "absolute top-0 right-0 w-32 h-32 rounded-bl-full pointer-events-none opacity-50 transition-opacity duration-300 group-hover:opacity-100"
+        }
       ></div>
     </div>
   );

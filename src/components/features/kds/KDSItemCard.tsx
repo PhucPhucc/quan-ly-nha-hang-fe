@@ -5,17 +5,21 @@ import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
+import { useKdsStore } from "@/store/useKdsStore";
 import { OrderItemStatus } from "@/types/enums";
 import { KDSItemCardProps } from "@/types/Kds";
 
 import { KDSRejectModal } from "./KDSRejectModal";
 
-export function KDSItemCard({ item, orderCode, orderType, onDone, onReturn }: KDSItemCardProps) {
+export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
   const [isRejectModalOpen, setIsRejectModalOpen] = React.useState(false);
+  const markItemReady = useKdsStore((s) => s.markItemReady);
+  const rejectItem = useKdsStore((s) => s.rejectItem);
+
   const isReady = item.status === OrderItemStatus.Ready;
 
-  const handleDone = () => onDone?.(item.orderItemId);
-  const handleReturnConfirm = (reason: string) => onReturn?.(item.orderItemId, reason);
+  const handleDone = () => markItemReady(item.orderItemId);
+  const handleReturnConfirm = (reason: string) => rejectItem(item.orderItemId, reason);
 
   const getStationColor = (stationName?: string) => {
     const name = (stationName || "STATION").toLowerCase();

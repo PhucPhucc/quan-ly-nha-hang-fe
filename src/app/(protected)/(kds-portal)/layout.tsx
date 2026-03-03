@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import React from "react";
 
 import { KDSQuickNav } from "@/components/features/kds/KDSQuickNav";
-import AuthGuard from "@/components/shared/AuthGuard";
+import RoleGuard from "@/components/shared/RoleGuard";
+import { EmployeeRole } from "@/types/Employee";
 
 export const metadata: Metadata = {
   title: "FoodHub KDS Dashboard",
@@ -11,11 +12,11 @@ export const metadata: Metadata = {
 
 export default function KdsPortalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthGuard>
+    <RoleGuard allowedRoles={[EmployeeRole.CHEFBAR]}>
       <div className="h-screen w-screen overflow-hidden bg-background text-foreground flex flex-col font-display relative">
         {children}
         <KDSQuickNav />
       </div>
-    </AuthGuard>
+    </RoleGuard>
   );
 }

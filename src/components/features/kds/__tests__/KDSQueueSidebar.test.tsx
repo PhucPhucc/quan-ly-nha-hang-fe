@@ -4,10 +4,12 @@ import { render, screen } from "@testing-library/react";
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useKdsStore } from "@/store/useKdsStore";
 import { OrderItemStatus, OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 
-import { KDSQueueSidebar } from "../KDSQueueSidebar";
+// Mock the store
+vi.mock("@/store/useKdsStore");
 
 const MOCK_QUEUE_ORDERS: Order[] = [
   {
@@ -58,21 +60,46 @@ const MOCK_QUEUE_ORDERS: Order[] = [
   },
 ];
 
+const mockStartCooking = vi.fn();
+
+function setupStoreMock(queueOrders: Order[] = []) {
+  vi.mocked(useKdsStore).mockImplementation((selector: unknown) => {
+    const state = {
+      queueOrders: queueOrders,
+      startCooking: mockStartCooking,
+    };
+    return typeof selector === "function"
+      ? (selector as (s: typeof state) => unknown)(state)
+      : state;
+  });
+}
+
+// We need to import the component after the mock is set up
+import { KDSQueueSidebar } from "../KDSQueueSidebar";
+
 describe("KDSQueueSidebar", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("renders queue title and current time", () => {
-    render(<KDSQueueSidebar queueOrders={[]} currentTime="10:30" />);
+    setupStoreMock([]);
+    render(<KDSQueueSidebar />);
 
     expect(screen.getByText(/Hàng Đợi/i)).toBeInTheDocument();
-    expect(screen.getByText("10:30")).toBeInTheDocument();
+    // currentTime is now managed internally, just check the time container exists
+    expect(screen.getByText(/\d{2}:\d{2}/)).toBeInTheDocument();
   });
 
   it("renders empty message when no orders", () => {
-    render(<KDSQueueSidebar queueOrders={[]} currentTime="10:30" />);
+    setupStoreMock([]);
+    render(<KDSQueueSidebar />);
     expect(screen.getByText(UI_TEXT.KDS.ORDER.EMPTY_QUEUE)).toBeInTheDocument();
   });
 
   it("renders queue orders correctly", () => {
-    render(<KDSQueueSidebar queueOrders={MOCK_QUEUE_ORDERS} currentTime="10:30" />);
+    setupStoreMock(MOCK_QUEUE_ORDERS);
+    render(<KDSQueueSidebar />);
 
     // Check if the order numbers (last part of ORD-XXX) are displayed
     expect(screen.getByText("#001")).toBeInTheDocument();

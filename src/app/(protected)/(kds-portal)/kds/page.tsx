@@ -1,14 +1,12 @@
 import React, { Suspense } from "react";
 
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
+
 import { KDSDashboardClient } from "./KDSDashboardClient";
 
 export default function KDSDashboardPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex w-full h-full items-center justify-center">Đang tải KDS...</div>
-      }
-    >
+    <Suspense fallback={<LoadingSpinner label="Dang tai KDS..." />}>
       <KDSDashboardClient />
     </Suspense>
   );

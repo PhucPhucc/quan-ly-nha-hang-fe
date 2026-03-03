@@ -4,8 +4,27 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useKdsStore } from "@/store/useKdsStore";
 import { OrderItemStatus, OrderType } from "@/types/enums";
 import { OrderItem } from "@/types/Order";
+
+// Mock the store
+vi.mock("@/store/useKdsStore");
+
+const mockMarkItemReady = vi.fn();
+const mockRejectItem = vi.fn();
+
+function setupStoreMock() {
+  vi.mocked(useKdsStore).mockImplementation((selector: unknown) => {
+    const state = {
+      markItemReady: mockMarkItemReady,
+      rejectItem: mockRejectItem,
+    };
+    return typeof selector === "function"
+      ? (selector as (s: typeof state) => unknown)(state)
+      : state;
+  });
+}
 
 import { KDSItemCard } from "../KDSItemCard";
 
@@ -28,9 +47,12 @@ describe("KDSItemCard", () => {
     item: mockItem,
     orderCode: "ORD-098",
     orderType: OrderType.DineIn,
-    onDone: vi.fn(),
-    onReturn: vi.fn(),
   };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    setupStoreMock();
+  });
 
   it("renders item and order information correctly", () => {
     render(<KDSItemCard {...defaultProps} />);
@@ -42,14 +64,13 @@ describe("KDSItemCard", () => {
     expect(screen.getByText("HOT")).toBeInTheDocument(); // Station info
   });
 
-  it("calls onDone when the complete button is clicked", () => {
-    const handleDone = vi.fn();
-    render(<KDSItemCard {...defaultProps} onDone={handleDone} />);
+  it("calls markItemReady when the complete button is clicked", () => {
+    render(<KDSItemCard {...defaultProps} />);
 
     const doneBtn = screen.getByRole("button", { name: new RegExp(UI_TEXT.KDS.ITEM.DONE, "i") });
     fireEvent.click(doneBtn);
 
-    expect(handleDone).toHaveBeenCalledWith("oi1");
+    expect(mockMarkItemReady).toHaveBeenCalledWith("oi1");
   });
 
   it("opens reject modal when the return button is clicked", () => {
