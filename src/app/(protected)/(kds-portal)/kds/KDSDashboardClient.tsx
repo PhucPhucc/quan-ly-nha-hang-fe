@@ -6,10 +6,11 @@ import React, { useEffect } from "react";
 import { KDSOrderGrid } from "@/components/features/kds/KDSOrderGrid";
 import { KDSQueueSidebar } from "@/components/features/kds/KDSQueueSidebar";
 import { useKdsStore } from "@/store/useKdsStore";
+import { KDSStation } from "@/types/enums";
 
 export function KDSDashboardClient() {
   const searchParams = useSearchParams();
-  const station = searchParams.get("station") || "Kitchen";
+  const station = searchParams.get("station") || KDSStation.Kitchen;
 
   const setStation = useKdsStore((s) => s.setStation);
   const fetchKdsData = useKdsStore((s) => s.fetchKdsData);

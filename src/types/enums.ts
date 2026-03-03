@@ -53,3 +53,10 @@ export enum SetMenuType {
   SET_MORNING = 2,
   SET_LUNCH = 3,
 }
+
+export enum KDSStation {
+  Kitchen = "Kitchen",
+  Bar = "Bar",
+  ColdKitchen = "ColdKitchen",
+  HotKitchen = "HotKitchen",
+}

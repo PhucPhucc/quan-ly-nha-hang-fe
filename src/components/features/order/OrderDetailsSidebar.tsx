@@ -18,7 +18,6 @@ const OrderDetailsSidebar = () => {
       ? "Mang đi"
       : `Bàn ${order.tableId?.slice(-2) || "--"}`
     : "Chưa chọn bàn";
-  console.log(order);
   return (
     <div className="flex-1 flex flex-col h-full min-h-0 w-full">
       <Tabs

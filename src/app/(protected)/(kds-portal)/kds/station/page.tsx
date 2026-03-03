@@ -6,6 +6,7 @@ import React from "react";
 
 import { KDSStationCard } from "@/components/features/kds/KDSStationCard";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { KDSStation } from "@/types/enums";
 
 export default function StationSelectionPage() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function StationSelectionPage() {
   // Mock data matching the design, ideally fetched from an API
   const stations = [
     {
-      id: "HotKitchen",
+      id: KDSStation.Kitchen,
       title: UI_TEXT.KDS.STATIONS.KITCHEN,
       icon: <Flame className="h-8 w-8" />,
       waitingItems: 12,
@@ -22,7 +23,7 @@ export default function StationSelectionPage() {
       // gradientClass: "bg-gradient-to-br from-primary dark:from-orange-500/10 to-transparent",
     },
     {
-      id: "Bar",
+      id: KDSStation.Bar,
       title: UI_TEXT.KDS.STATIONS.BAR,
       icon: <Wine className="h-8 w-8" />,
       waitingItems: 5,

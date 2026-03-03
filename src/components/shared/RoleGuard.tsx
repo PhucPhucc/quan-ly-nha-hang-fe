@@ -20,7 +20,6 @@ export default function RoleGuard({
 }: RoleGuardProps) {
   const router = useRouter();
   const { employee } = useAuthStore();
-  console.log(employee?.role);
   const isAuthorized = Boolean(employee?.role && allowedRoles.includes(employee.role));
 
   useEffect(() => {

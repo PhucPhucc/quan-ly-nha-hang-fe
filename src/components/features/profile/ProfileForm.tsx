@@ -42,7 +42,6 @@ const ProfileForm = () => {
       address: formData.get("address") as string,
     };
 
-    console.log(updatedProfile);
     try {
       await updateMyProfile(updatedProfile);
       toast.success(UI_TEXT.COMMON.UPDATE_SUCCESS);

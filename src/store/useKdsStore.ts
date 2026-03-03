@@ -3,7 +3,7 @@ import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
 import { KdsItemResponse, KdsQueueResponse, kdsService } from "@/services/kdsService";
-import { OrderItemStatus } from "@/types/enums";
+import { KDSStation, OrderItemStatus } from "@/types/enums";
 import { Order, OrderItem } from "@/types/Order";
 
 /* ---------- helpers ---------- */
@@ -53,10 +53,10 @@ interface KdsState {
   queueItems: KdsQueueResponse[];
   activeOrders: Order[];
   queueOrders: Order[];
-  station: string;
+  station: KDSStation;
 
   // actions
-  setStation: (station: string) => void;
+  setStation: (station: KDSStation) => void;
   fetchKdsData: () => Promise<void>;
   startCooking: (orderItemId: string) => Promise<void>;
   markItemReady: (orderItemId: string) => Promise<void>;
@@ -70,7 +70,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
     queueItems: [],
     activeOrders: [],
     queueOrders: [],
-    station: "Kitchen",
+    station: KDSStation.Kitchen,
 
     // ---------- actions ----------
     setStation: (station) => set({ station }),
