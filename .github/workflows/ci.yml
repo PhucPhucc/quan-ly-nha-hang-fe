@@ -7,7 +7,7 @@ on:
     branches: [main, develop]
 
 jobs:
-  build-and-push:
+  quality-gate:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,8 +27,25 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Dependency Audit
+        run: npm audit --audit-level=high || true
+
+  docker-build-and-deploy:
+    needs: quality-gate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Log in to Docker Hub
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -41,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           build-args: |
             NEXT_PUBLIC_API_URL=https://foodhub-v1.duckdns.org
           tags: |
@@ -51,7 +68,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    needs: build-and-push
+    needs: docker-build-and-deploy
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:

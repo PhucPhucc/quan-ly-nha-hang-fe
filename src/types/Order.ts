@@ -13,6 +13,7 @@ export interface OrderItem {
   quantity: number;
   unitPriceSnapshot: number;
   itemNote?: string;
+  itemOptions?: string;
 
   createdAt: string;
   updatedAt?: string;
