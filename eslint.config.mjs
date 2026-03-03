@@ -40,6 +40,10 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "node_modules/**",
+
+    // Ignore menu module
+    "src/app/(protected)/manager/menu/**",
+    "src/components/features/menu/**",
   ]),
 ]);
 
