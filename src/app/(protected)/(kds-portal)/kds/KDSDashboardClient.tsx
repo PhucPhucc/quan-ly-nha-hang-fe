@@ -10,7 +10,7 @@ import { KDSStation } from "@/types/enums";
 
 export function KDSDashboardClient() {
   const searchParams = useSearchParams();
-  const station = searchParams.get("station") || KDSStation.Kitchen;
+  const station = (searchParams.get("station") || KDSStation.Kitchen) as KDSStation;
 
   const setStation = useKdsStore((s) => s.setStation);
   const fetchKdsData = useKdsStore((s) => s.fetchKdsData);
