@@ -8,7 +8,6 @@ import {
   menuOptionReducer,
 } from "@/hooks/useMenuOptionReducer";
 import { optionService } from "@/services/optionService";
-import { orderService } from "@/services/orderService";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { CartItemOptionGroup } from "@/types/Cart";
@@ -125,7 +124,7 @@ export function MenuOptionSelectionDialog({
     }));
   };
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (!validateSelection()) return;
 
     const { selectedOrderId } = useOrderBoardStore.getState();
@@ -141,37 +140,12 @@ export function MenuOptionSelectionDialog({
 
     const cartOptionGroups = buildCartOptionGroups();
 
-    try {
-      dispatch({ type: "SET_LOADING", payload: true });
-
-      const res = await orderService.addOrderItem(selectedOrderId, {
-        orderId: selectedOrderId,
-        menuItemId: menuItem.menuItemId,
-        quantity: quantity,
-        note: note,
-        selectedOptions: cartOptionGroups.map((g) => ({
-          optionGroupId: g.optionGroupId,
-          selectedValues: g.selectedValues.map((v) => ({
-            optionItemId: v.optionItemId,
-            quantity: v.quantity,
-          })),
-        })),
-      });
-
-      if (res.isSuccess) {
-        addItem(selectedOrderId, menuItem, quantity, cartOptionGroups, note, menuItem.priceDineIn);
-        toast.success("Đã thêm vào đơn hàng");
-        resetLocalState();
-        onOpenChange(false);
-      } else {
-        toast.error(ERROR_MESSAGES.addItemError + res.message);
-      }
-    } catch (error) {
-      console.error("Add item failed:", error);
-      toast.error(ERROR_MESSAGES.generalError);
-    } finally {
-      dispatch({ type: "SET_LOADING", payload: false });
-    }
+    // Chỉ lưu vào CartStore local, không gọi API
+    // API sẽ được gọi khi nhấn "Gửi yêu cầu" (submitToKitchen)
+    addItem(selectedOrderId, menuItem, quantity, cartOptionGroups, note, menuItem.priceDineIn);
+    toast.success("Đã thêm vào đơn hàng");
+    resetLocalState();
+    onOpenChange(false);
   };
 
   const handleQuantityChange = (delta: number) => {

@@ -12,6 +12,7 @@ import { TeamAnnouncements } from "@/components/features/Dashboard/TeamAnnouncem
 import { TopDishes } from "@/components/features/Dashboard/TopDishes";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
 export default function DashboardPage() {
   const { employee } = useAuthStore();
@@ -26,14 +27,9 @@ export default function DashboardPage() {
   }, []);
 
   const role = employee?.role;
-  const isManager =
-    role === 1 ||
-    role === "1" ||
-    role === "manager" ||
-    role === "Manager" ||
-    role === "Admin Manager"; // Based on subagent finding "Admin Manager" in token
-  const isChef = role === 4 || role === "4" || role === "chefbar" || role === "Chef";
-  const isCashier = role === 2 || role === "2" || role === "cashier" || role === "Cashier";
+  const isManager = role === EmployeeRole.MANAGER; // Based on subagent finding "Admin Manager" in token
+  const isChef = role === EmployeeRole.CHEFBAR;
+  const isCashier = role === EmployeeRole.CASHIER;
 
   const getRoleName = () => {
     if (isManager) return UI_TEXT.ROLE.MANAGER;

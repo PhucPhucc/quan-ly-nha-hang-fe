@@ -4,10 +4,11 @@ import { AppSidebar } from "@/components/app-sidebar";
 import HeaderBar from "@/components/shared/HeaderBar";
 import RoleGuard from "@/components/shared/RoleGuard";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { EmployeeRole } from "@/types/Employee";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <RoleGuard allowedRoles={["Manager"]}>
+    <RoleGuard allowedRoles={[EmployeeRole.MANAGER]}>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="">

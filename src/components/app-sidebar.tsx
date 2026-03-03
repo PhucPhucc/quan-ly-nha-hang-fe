@@ -21,6 +21,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 const data = {
   team: {
@@ -30,38 +31,38 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: UI_TEXT.SIDE_BAR.DASHBOARD,
       url: "/manager/dashboard",
       icon: LayoutDashboard,
       isActive: true,
     },
     {
-      title: "Menu",
+      title: UI_TEXT.SIDE_BAR.MENU,
       url: "/manager/menu",
       icon: SquareMenu,
     },
     {
-      title: "Tables",
+      title: UI_TEXT.SIDE_BAR.TABLE,
       url: "/manager/table",
       icon: Table,
     },
     {
-      title: "Orders",
+      title: UI_TEXT.SIDE_BAR.ORDER,
       url: "/order",
       icon: UtensilsCrossed,
     },
     {
-      title: "Employee",
+      title: UI_TEXT.SIDE_BAR.EMPLOYEE,
       url: "/manager/employee",
       icon: Users,
     },
     {
-      title: "Audit Logs",
+      title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
       url: "/manager/audit-log",
       icon: ChartColumn,
     },
     {
-      title: "Inventory",
+      title: UI_TEXT.SIDE_BAR.INVENTORY,
       url: "/manager/inventory",
       icon: Package,
     },

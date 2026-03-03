@@ -8,7 +8,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 interface OrderCurrentHeaderProps {
   tableName: string;
   itemCount: number;
-  status: string; // e.g., "INPROCESS"
+  status: string;
 }
 
 const OrderCurrentHeader: React.FC<OrderCurrentHeaderProps> = ({
@@ -24,12 +24,12 @@ const OrderCurrentHeader: React.FC<OrderCurrentHeaderProps> = ({
           {UI_TEXT.DASHBOARD.RECENT_ORDERS.TITLE}
         </CardTitle>
         <p className="text-[10px] text-muted-foreground mt-0.5">
-          {tableName} • {itemCount} món
+          {UI_TEXT.ORDER.DESCRIPTION_DETAIL(tableName, itemCount)}
         </p>
       </div>
       <Badge
         variant="outline"
-        className="bg-table-inprocess text-white border-none py-0 text-[10px]"
+        className="bg-table-inprocess text-white border-none py-0.5 text-[10px]"
       >
         {status}
       </Badge>

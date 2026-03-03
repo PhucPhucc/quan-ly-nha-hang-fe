@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { login } from "@/services/authService";
 import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 const LoginForm = () => {
   const router = useRouter();
   const [error, setError] = useState("");
@@ -36,10 +37,10 @@ const LoginForm = () => {
           role: role,
         });
         switch (role) {
-          case "Manager":
+          case EmployeeRole.MANAGER:
             router.push("/manager/dashboard");
             break;
-          case "Cashier":
+          case EmployeeRole.CASHIER:
             router.push("/order");
             break;
           // case "Waiter":

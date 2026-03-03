@@ -22,6 +22,20 @@ export const UI_TEXT = {
     UPDATE_SUCCESS: "Cập nhật thông tin thành công",
     UPDATE_ERROR: "Cập nhật thông tin thất bại",
     COPYRIGHT: "Hệ thống quản lý FoodHub &copy; 2026",
+    SUCCESS: "Thành công!",
+    SAVE_SUCCESS: "Lưu dữ liệu thành công!",
+    DELETE_CONFIRM: "Bạn có chắc chắn muốn xóa không?",
+    ERROR_UNKNOWN: "Có lỗi xảy ra, vui lòng thử lại.",
+  },
+
+  SIDE_BAR: {
+    DASHBOARD: "Trang chủ",
+    MENU: "Thực đơn",
+    TABLE: "Sơ đồ bàn",
+    ORDER: "Đơn hàng",
+    EMPLOYEE: "Nhân viên",
+    AUDIT_LOG: "Lịch sử",
+    INVENTORY: "Kho hàng",
   },
 
   AUTH: {
@@ -72,6 +86,25 @@ export const UI_TEXT = {
     REQUIRED: "Trường này là bắt buộc",
     INVALID_EMAIL: "Email không hợp lệ",
     MIN_LENGTH: (min: number) => `Tối thiểu ${min} ký tự`,
+    EDIT_COMBO: "Chỉnh sửa Combo",
+    ADD_COMBO: "Thêm mới Combo",
+    EDIT_ITEM: "Chỉnh sửa món lẻ",
+    ADD_ITEM: "Thêm mới món lẻ",
+    IMAGE_LABEL: "Hình ảnh",
+    ITEM_NAME: "Tên món ăn",
+    SKU_CODE: "Mã SKU",
+    CATEGORY: "Danh mục",
+    DESCRIPTION: "Mô tả",
+    COMBO_COMPONENTS: "Thành phần Combo",
+    SELECT_ITEM_FALLBACK: "Chọn món lẻ thêm vào...",
+    PRICE_CONFIG: "Cấu hình giá bán",
+    PRICE_DINE_IN: "GIÁ TẠI CHỖ",
+    PRICE_TAKE_AWAY: "MANG VỀ",
+    COST_PRICE: "Giá vốn",
+    PREP_TIME: "Chuẩn bị (phút)",
+    STATION: "Trạm",
+    CANCEL: "HỦY",
+    CONFIRM_SAVE: "Xác nhận lưu",
   },
 
   ROLE: {
@@ -92,6 +125,8 @@ export const UI_TEXT = {
     DELETE: "Xóa",
     ADD: "Thêm",
     SAVE_CHANGES: "Lưu thay đổi",
+    DETAIL: "Chi tiết",
+    HISTORY: "Lịch sử",
   },
 
   API: {
@@ -108,6 +143,8 @@ export const UI_TEXT = {
     FETCH_ORDERING: "Đang tải đơn hàng...",
     FETCH_MENU: "Đang tải thực đơn...",
     FETCH_ERROR: "Không thể tải danh sách đơn hàng",
+    DESCRIPTION_DETAIL: (tableNumber: string, total: number) =>
+      `${tableNumber} • Tổng ${total} món`,
   },
 
   TABLE: {
@@ -310,5 +347,22 @@ export const UI_TEXT = {
       TITLE: "Món ăn bán chạy",
       ORDERS_COUNT: (count: number) => `${count} đơn trong tuần`,
     },
+  },
+  MENU: {
+    TITLE: "Quản lý Thực đơn",
+    SUBTITLE: "Hệ thống quản lý món ăn, giá bán và điều phối trạm tập trung.",
+    ADD_NEW_ITEM: "THÊM MÓN MỚI",
+    TAB_ITEM: "Món lẻ",
+    TAB_COMBO: "Combo / Set Menu",
+    ADD_ITEM: "+ Thêm món lẻ",
+    ADD_COMBO: "+ Thêm Combo",
+    EMPTY_COMBO: "Chưa có dữ liệu Combo...",
+    ID_NOT_FOUND: "Lỗi: Không tìm thấy ID món ăn!",
+    DELETE_SUCCESS: "Xóa thành công!",
+    DELETE_CONFIRM: (name: string) => `Bạn có chắc chắn muốn xóa món "${name}" không?`,
+    UPDATE_STOCK_ERROR: "Không thể cập nhật trạng thái hàng hóa!",
+    SAVE_SUCCESS: "Lưu dữ liệu thành công!",
+    DELETE_DEFAULT_ERROR:
+      "Món ăn này đã có trong hóa đơn, không thể xóa. Hãy tắt trạng thái bán thay vì xóa!",
   },
 };

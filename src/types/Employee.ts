@@ -1,10 +1,10 @@
 // types/employee.ts
 
 export enum EmployeeRole {
-  MANAGER = "manager",
-  CASHIER = "cashier",
-  WAITER = "waiter",
-  CHEFBAR = "chefbar",
+  MANAGER = "Manager",
+  CASHIER = "Cashier",
+  WAITER = "Waiter",
+  CHEFBAR = "ChefBar",
 }
 
 export enum EmployeeStatus {

@@ -27,8 +27,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { ActiveTab, useOrderBoardStore } from "@/store/useOrderStore";
 import { OrderType } from "@/types/enums";
-
-import { DINE_IN_STATUSES, TAKEAWAY_STATUSES } from "../constants";
+import { DINE_IN_STATUSES, TAKEAWAY_STATUSES } from "@/types/Order";
 
 const OrderBoardHeader = () => {
   const searchQuery = useOrderBoardStore((s) => s.searchQuery);
