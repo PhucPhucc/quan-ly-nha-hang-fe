@@ -76,6 +76,12 @@
   --color-table-inprocess: var(--table-inprocess);
   --color-table-cleaning: var(--table-cleaning);
 
+  --color-table-available: var(--table-available);
+  --color-table-reserved: var(--table-reserved);
+  --color-table-occupied: var(--table-occupied);
+  --color-table-out-of-service: var(--table-out-of-service);
+
+
   --color-role-manager: var(--role-manager);
   --color-role-chef: var(--role-chef);
   --color-role-waiter: var(--role-waiter);
@@ -138,38 +144,46 @@
   --animate-shimmer: shimmer 2s linear infinite;
 
   @keyframes float {
+
     0%,
     100% {
       transform: translateY(0);
     }
+
     50% {
       transform: translateY(-10px);
     }
   }
+
   @keyframes fade-in-up {
     0% {
       opacity: 0;
       transform: translateY(20px);
     }
+
     100% {
       opacity: 1;
       transform: translateY(0);
     }
   }
+
   @keyframes scale-in {
     0% {
       opacity: 0;
       transform: scale(0.95);
     }
+
     100% {
       opacity: 1;
       transform: scale(1);
     }
   }
+
   @keyframes shimmer {
     from {
       background-position: 0 0;
     }
+
     to {
       background-position: -200% 0;
     }
@@ -244,23 +258,39 @@
   --input: oklch(0.8 0.008 48.204);
   --ring: oklch(0.58 0.22 35);
 
-  --radius: 0.75rem; /* Bo góc tròn hơn (12px) hiện đại hơn */
+  --radius: 0.75rem;
+  /* Bo góc tròn hơn (12px) hiện đại hơn */
 
   /* ===============================
        Order Status (Giữ nguyên logic semantic)
        =============================== */
   --order-pending: oklch(0.65 0.02 270);
   --order-ready: oklch(0.72 0.16 145);
-  --order-cooking: oklch(0.65 0.2 45); /* Cam đậm hơn */
+  --order-cooking: oklch(0.65 0.2 45);
+  /* Cam đậm hơn */
   --order-completed: oklch(0.65 0.16 150);
   --order-served: oklch(0.7 0.1 240);
 
   /* Table Status */
   /* Table Status - Darker for better contrast */
-  --table-empty: oklch(0.92 0.05 90); /* Màu kem đậm hơn */
-  --table-reserved: oklch(0.75 0.15 85); /* Vàng sậm hơn */
-  --table-inprocess: oklch(0.6 0.18 145); /* Xanh lá đậm hơn */
-  --table-cleaning: oklch(0.55 0.15 40); /* Đỏ nâu/Cam thay vì đỏ rực để đỡ chói */
+  --table-empty: oklch(0.92 0.05 90);
+  /* Màu kem đậm hơn */
+  --table-reserved: oklch(0.75 0.15 85);
+  /* Vàng sậm hơn */
+  --table-inprocess: oklch(0.6 0.18 145);
+  /* Xanh lá đậm hơn */
+  --table-cleaning: oklch(0.55 0.15 40);
+  /* Đỏ nâu/Cam thay vì đỏ rực để đỡ chói */
+  /* Table status colors (5 trạng thái) */
+  --table-available: oklch(0.75 0.15 145);
+  /* Xanh lá — trống */
+  --table-reserved: oklch(0.78 0.13 85);
+  /* Vàng — đặt trước */
+  --table-occupied: oklch(0.6 0.18 35);
+  /* Cam đỏ — đang dùng */
+  --table-cleaning: oklch(0.7 0.1 240);
+  /* Xanh dương — dọn dẹp */
+  --table-out-of-service: oklch(0.6 0.01 260);
 
   --role-manager: oklch(0.5 0.2 10);
   --role-chef: oklch(0.65 0.2 50);
@@ -271,7 +301,8 @@
        Shadows
        =============================== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08); /* Đậm hơn xíu */
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  /* Đậm hơn xíu */
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08);
 
@@ -290,7 +321,8 @@
 
 .dark {
   /* Dark Mode: Deep Charcoal (Warm) */
-  --background: oklch(0.14 0.01 40); /* Hơi nâu/ấm rất nhẹ thay vì xanh */
+  --background: oklch(0.14 0.01 40);
+  /* Hơi nâu/ấm rất nhẹ thay vì xanh */
   --foreground: oklch(0.98 0.005 50);
 
   --card: oklch(0.18 0.015 40);
@@ -299,7 +331,8 @@
   --popover: oklch(0.18 0.015 40);
   --popover-foreground: oklch(0.98 0.005 50);
 
-  --primary: oklch(0.65 0.2 35); /* Sáng hơn trong dark mode */
+  --primary: oklch(0.65 0.2 35);
+  /* Sáng hơn trong dark mode */
   --primary-foreground: oklch(1 0 0);
 
   --secondary: oklch(0.22 0.02 40);
@@ -327,6 +360,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

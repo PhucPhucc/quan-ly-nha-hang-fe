@@ -111,18 +111,49 @@ export const UI_TEXT = {
 
   TABLE: {
     TITLE: "Sơ đồ bàn",
-    INPROCESS: "Đang sử dụng",
-    READY: "Bàn trống",
-    CLEANING: "Đang dọn dẹp",
-    RESERVED: "Đã đặt trước",
-    EMPTY: "Chưa có bàn nào",
-    FETCH_ERROR: "Không thể tải danh sách bàn",
-    RESERVATION_BTN: "Đặt bàn",
-    PEOPLE: "Khách",
-    NO_TABLES_FOUND: "Không tìm thấy bàn nào phù hợp.",
-    TABLE_NUMBER(num: number) {
-      return `Bàn ${num}`;
-    },
+    //Status
+    STATUS_AVAILABLE: "Trống",
+    STATUS_RESERVED: "Đặt trước",
+    STATUS_OCCUPIED: "Đang dùng",
+    STATUS_CLEANING: "Đang dọn",
+    STATUS_OUT_OF_SERVICE: "Tạm ngưng",
+    //Summary bar
+    TABLES: "bàn",
+    SEATS: "ghế",
+    AVAILABLE_COUNT: "hoạt động",
+    INACTIVE_COUNT: "tạm ngưng",
+    // Actions
+    EDIT_MODE: "Chế độ chỉnh sửa",
+    ADD_TABLE: "Thêm bàn",
+    SAVE_CHANGES: "Lưu thay đổi",
+    CREATE_ORDER: "Tạo Order",
+    // Table info
+    TABLE_CODE: "Mã bàn",
+    TABLE_CODE_PLACEHOLDER: "VD: T1-16",
+    SEAT_COUNT: "Số ghế",
+    SHAPE: "Hình dạng",
+    // Edit
+    EDIT_TABLE: "Chỉnh sửa bàn",
+    DEACTIVATE: "Dừng hoạt động",
+    ACTIVATE: "Kích hoạt",
+    STATUS_ACTIVE: "Hoạt động",
+    STATUS_INACTIVE: "Tạm ngưng",
+    // Area management
+    MANAGE_AREAS: "Quản lý khu vực",
+    ADD_AREA: "Thêm khu vực",
+    AREA_NAME: "Tên khu vực",
+    AREA_CODE: "Mã khu vực",
+    AREA_TYPE: "Loại",
+    AREA_DESCRIPTION: "Chú giải",
+    AREA_CODE_UNIQUE: "Mã khu vực phải unique",
+    AREA_CODE_PLACEHOLDER: "VD: TANG4",
+    AREA_NAME_PLACEHOLDER: "Nhập tên khu vực",
+    AREA_DESC_PLACEHOLDER: "Mô tả ngắn",
+    TYPE_NORMAL: "NORMAL",
+    TYPE_VIP: "VIP",
+    // Errors
+    TABLE_CODE_EXISTS: "Mã bàn đã tồn tại",
+    CANNOT_ORDER_INACTIVE: "Không thể tạo Order cho bàn tạm ngưng",
   },
 
   CHANGE_PASSWORD: {
