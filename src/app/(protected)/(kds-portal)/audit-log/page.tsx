@@ -1,67 +1,86 @@
 "use client";
 
 import { Calendar, ChevronDown, Download, RefreshCw, Search } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import KDSAuditLogTable from "@/components/features/kds/KDSAuditLogTable";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { KdsAuditLogResponse, kdsService } from "@/services/kdsService";
+
+interface KDSAuditLogData {
+  logId: string;
+  time: string;
+  actorName: string;
+  actorRole: "ChefBar" | "Barista";
+  actionType: string;
+  orderCode: string;
+  orderItems: string;
+  reason: string;
+}
 
 export default function KDSAuditLogPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [logs, setLogs] = useState<KdsAuditLogResponse[]>([]);
+  const [station, setStation] = useState<string>("all");
+  const [action, setAction] = useState<string>("all");
 
-  const mockLogs = [
-    {
-      logId: "l1",
-      time: "22:10 25/02",
-      actorName: "Chef Toàn",
-      actorRole: "ChefBar" as const,
-      actionType: UI_TEXT.KDS.AUDIT.ACTION_REJECT,
-      orderCode: "ORD-102",
-      orderItems: "Phở Bò Tái Lăn (x2)",
-      reason: "Hết nguyên liệu bò",
-    },
-    {
-      logId: "l2",
-      time: "22:05 25/02",
-      actorName: "Chef Toàn",
-      actorRole: "ChefBar" as const,
-      actionType: UI_TEXT.KDS.AUDIT.ACTION_START,
-      orderCode: "ORD-102",
-      orderItems: "Phở Bò Tái Lăn (x2)",
-      reason: "",
-    },
-    {
-      logId: "l3",
-      time: "22:00 25/02",
-      actorName: "Barista Linh",
-      actorRole: "Barista" as const,
-      actionType: UI_TEXT.KDS.AUDIT.ACTION_DONE,
-      orderCode: "ORD-101",
-      orderItems: "Cafe Sữa Đá (x1)",
-      reason: "",
-    },
-    {
-      logId: "l4",
-      time: "21:55 25/02",
-      actorName: "Chef Hùng",
-      actorRole: "ChefBar" as const,
-      actionType: UI_TEXT.KDS.AUDIT.ACTION_START,
-      orderCode: "ORD-100",
-      orderItems: "Bún Chả Hà Nội (x3)",
-      reason: "",
-    },
-    {
-      logId: "l5",
-      time: "21:50 25/02",
-      actorName: "Chef Hùng",
-      actorRole: "ChefBar" as const,
-      actionType: UI_TEXT.KDS.AUDIT.ACTION_DONE,
-      orderCode: "ORD-099",
-      orderItems: "Nem Rán (x5)",
-      reason: "",
-    },
-  ];
+  const mapToTableData = (apiLogs: KdsAuditLogResponse[]): KDSAuditLogData[] => {
+    return apiLogs.map((log) => ({
+      logId: log.logId,
+      time: log.formattedTime,
+      actorName: log.actorName,
+      actorRole: (log.actorRole === "ChefBar" || log.actorRole === "Barista"
+        ? log.actorRole
+        : "ChefBar") as "ChefBar" | "Barista",
+      actionType: log.action,
+      orderCode: log.orderCode,
+      orderItems: log.orderItems,
+      reason: log.reason || "",
+    }));
+  };
+
+  const fetchAuditLogs = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await kdsService.getAuditLogs({
+        station: station === "all" ? undefined : station,
+        action: action === "all" ? undefined : action,
+      });
+
+      if (result.isSuccess && result.data) {
+        setLogs(result.data);
+      } else {
+        setError(result.error?.message || "Failed to fetch audit logs");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching audit logs");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAuditLogs();
+  }, [station, action]);
+
+  const handleRefresh = () => {
+    fetchAuditLogs();
+  };
+
+  const tableData = mapToTableData(logs);
+  const filteredLogs = searchQuery
+    ? tableData.filter(
+        (log) =>
+          log.orderCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          log.actorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          log.orderItems.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : tableData;
 
   return (
     <div className="flex-1 flex flex-col h-full bg-background overflow-hidden relative">
@@ -92,10 +111,18 @@ export default function KDSAuditLogPage() {
             <Button
               variant="outline"
               className="flex items-center gap-2 px-4 h-[42px] bg-card hover:border-primary/50 rounded-xl transition-all shadow-sm font-bold"
+              onClick={() => {
+                const stations = ["all", "HotKitchen", "ColdKitchen", "Bar"];
+                const currentIndex = stations.indexOf(station);
+                const nextStation = stations[(currentIndex + 1) % stations.length];
+                setStation(nextStation);
+              }}
             >
               <span className="text-muted-foreground text-[10px] font-black uppercase tracking-tight">
                 {UI_TEXT.KDS.NAV.FILTER_STATION}{" "}
-                <span className="text-foreground">{UI_TEXT.KDS.NAV.STATION_ALL}</span>
+                <span className="text-foreground">
+                  {station === "all" ? UI_TEXT.KDS.NAV.STATION_ALL : station}
+                </span>
               </span>
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </Button>
@@ -104,10 +131,24 @@ export default function KDSAuditLogPage() {
             <Button
               variant="outline"
               className="flex items-center gap-2 px-4 h-[42px] bg-card hover:border-primary/50 rounded-xl transition-all shadow-sm font-bold"
+              onClick={() => {
+                const actions = [
+                  "all",
+                  "KDS_START_COOKING",
+                  "KDS_MARK_READY",
+                  "KDS_REJECT",
+                  "KDS_RETURN",
+                ];
+                const currentIndex = actions.indexOf(action);
+                const nextAction = actions[(currentIndex + 1) % actions.length];
+                setAction(nextAction);
+              }}
             >
               <span className="text-muted-foreground text-[10px] font-black uppercase tracking-tight">
                 {UI_TEXT.KDS.NAV.FILTER_ACTION}{" "}
-                <span className="text-foreground">{UI_TEXT.KDS.NAV.ACTION_ALL}</span>
+                <span className="text-foreground">
+                  {action === "all" ? UI_TEXT.KDS.NAV.ACTION_ALL : action.replace("KDS_", "")}
+                </span>
               </span>
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </Button>
@@ -139,6 +180,7 @@ export default function KDSAuditLogPage() {
               size="icon"
               className="rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/5"
               title="RELOAD"
+              onClick={handleRefresh}
             >
               <RefreshCw className="w-5 h-5" />
             </Button>
@@ -147,7 +189,7 @@ export default function KDSAuditLogPage() {
       </header>
 
       <div className="flex-1 px-4 md:px-8 pb-8 overflow-hidden flex flex-col">
-        <KDSAuditLogTable logs={mockLogs} loading={false} error={null} />
+        <KDSAuditLogTable logs={filteredLogs} loading={loading} error={error} />
       </div>
     </div>
   );

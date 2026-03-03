@@ -31,6 +31,30 @@ export interface KdsQueueResponse {
   queuePosition: number;
 }
 
+export interface KdsAuditLogResponse {
+  logId: string;
+  createdAt: string;
+  formattedTime: string;
+  orderId: string;
+  orderCode: string;
+  action: string;
+  actionName: string;
+  employeeId: string;
+  actorName: string;
+  actorRole: string;
+  reason?: string;
+  orderItems: string;
+}
+
+export interface KdsAuditLogsParams {
+  station?: string;
+  action?: string;
+  fromDate?: string;
+  toDate?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
 export const kdsService = {
   getKdsItems: async (station: string): Promise<ApiResponse<KdsItemResponse[]>> => {
     return apiFetch<KdsItemResponse[]>(`/Kds/items/${encodeURIComponent(station)}`);
@@ -38,6 +62,21 @@ export const kdsService = {
 
   getKdsQueue: async (station: string): Promise<ApiResponse<KdsQueueResponse[]>> => {
     return apiFetch<KdsQueueResponse[]>(`/Kds/queue/${encodeURIComponent(station)}`);
+  },
+
+  getAuditLogs: async (
+    params: KdsAuditLogsParams = {}
+  ): Promise<ApiResponse<KdsAuditLogResponse[]>> => {
+    const queryParams = new URLSearchParams();
+    if (params.station) queryParams.set("station", params.station);
+    if (params.action) queryParams.set("action", params.action);
+    if (params.fromDate) queryParams.set("fromDate", params.fromDate);
+    if (params.toDate) queryParams.set("toDate", params.toDate);
+    if (params.pageNumber) queryParams.set("pageNumber", params.pageNumber.toString());
+    if (params.pageSize) queryParams.set("pageSize", params.pageSize.toString());
+
+    const query = queryParams.toString();
+    return apiFetch<KdsAuditLogResponse[]>(`/Kds/audit-logs${query ? `?${query}` : ""}`);
   },
 
   startCooking: async (orderItemId: string): Promise<ApiResponse<string>> => {
