@@ -23,7 +23,7 @@ const EmployeeFilter = () => {
       }
       return;
     }
-    const res = await filterEmployee(Number(value));
+    const res = await filterEmployee(value);
     if (res.data) {
       setEmployees(res.data.items || []);
     }
