@@ -41,8 +41,13 @@ export default function TableLayoutGrid({ area, tables }: Props) {
   );
 
   const handleClick = (table: Table) => {
-    // Chỉ cho phép chỉnh sửa bàn có trạng thái AVAILABLE
-    if (isEditMode && table.status !== TableStatus.AVAILABLE) {
+    // Chỉ cho phép chỉnh sửa bàn có trạng thái ...AVAILABLE, OUT_OF_SERVICE, CLEANING trong edit mode
+    if (
+      isEditMode &&
+      table.status !== TableStatus.AVAILABLE &&
+      table.status !== TableStatus.OUT_OF_SERVICE &&
+      table.status !== TableStatus.CLEANING
+    ) {
       return;
     }
     setSelectedTable((prev) => (prev?.tableId === table.tableId ? null : table));
@@ -209,29 +214,18 @@ export default function TableLayoutGrid({ area, tables }: Props) {
                   />
                   {/* Edit panel khi selected */}
                   {selectedTable?.tableId === table.tableId && (
-                    <EditTablePanel table={table} onClose={() => setSelectedTable(null)} />
+                    <EditTablePanel
+                      table={table}
+                      onClose={() => setSelectedTable(null)}
+                      onStatusChange={(id, status) => {
+                        setLocalTables((prev) =>
+                          prev.map((t) => (t.tableId === id ? { ...t, status } : t))
+                        );
+                      }}
+                    />
                   )}
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Legend bottom-right */}
-          <div className="absolute bottom-6 right-6 flex flex-col gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
-            <h4 className="mb-1 text-[10px] font-bold uppercase text-gray-400">
-              {UI_TEXT.TABLE.AREA_DESCRIPTION}
-            </h4>
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-4 rounded-sm border border-[oklch(0.7_0.1_240)] bg-[oklch(0.92_0.04_240)]" />
-              <span className="text-xs font-semibold">Bàn hoạt động</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-4 rounded-sm border border-[oklch(0.85_0.005_240)] bg-[oklch(0.95_0.005_240)]" />
-              <span className="text-xs font-semibold text-gray-500">Bàn tạm ngưng</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-4 rounded-sm border border-dashed border-gray-400" />
-              <span className="text-xs font-semibold text-gray-400">Vị trí trống</span>
             </div>
           </div>
         </div>
@@ -257,7 +251,15 @@ export default function TableLayoutGrid({ area, tables }: Props) {
 }
 
 // ─── Edit panel (xuất hiện bên phải bàn đang chọn ở edit mode) ───
-function EditTablePanel({ table, onClose }: { table: Table; onClose: () => void }) {
+function EditTablePanel({
+  table,
+  onClose,
+  onStatusChange,
+}: {
+  table: Table;
+  onClose: () => void;
+  onStatusChange: (tableId: string, status: TableStatus) => void;
+}) {
   const [capacity, setCapacity] = useState(table.capacity);
   const [showBelow, setShowBelow] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -335,9 +337,19 @@ function EditTablePanel({ table, onClose }: { table: Table; onClose: () => void 
             <Save className="mr-1.5 inline h-4 w-4" />
             {UI_TEXT.COMMON.SAVE}
           </button>
-          <button className="flex w-full items-center justify-center gap-2 rounded border border-red-200 py-2 text-sm font-bold text-red-600 hover:bg-red-50">
-            {UI_TEXT.TABLE.DEACTIVATE}
-          </button>
+          {/* status-specific action */}
+          {table.status === TableStatus.CLEANING || table.status === TableStatus.OUT_OF_SERVICE ? (
+            <button
+              onClick={() => onStatusChange(table.tableId, TableStatus.AVAILABLE)}
+              className="flex w-full items-center justify-center gap-2 rounded border border-green-200 py-2 text-sm font-bold text-green-600 hover:bg-green-50"
+            >
+              {UI_TEXT.TABLE.ACTIVATE}
+            </button>
+          ) : (
+            <button className="flex w-full items-center justify-center gap-2 rounded border border-red-200 py-2 text-sm font-bold text-red-600 hover:bg-red-50">
+              {UI_TEXT.TABLE.DEACTIVATE}
+            </button>
+          )}
           <button
             onClick={onClose}
             className="w-full rounded border border-gray-300 bg-white py-2 text-sm font-bold text-gray-700 hover:bg-gray-50"

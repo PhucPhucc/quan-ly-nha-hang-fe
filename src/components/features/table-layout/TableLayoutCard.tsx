@@ -59,97 +59,29 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
   const active = isActive(table.status);
   const chairCount = getChairCount(table.capacity);
   const chairs = Array.from({ length: chairCount });
-  const isAvailable = table.status === TableStatus.AVAILABLE;
 
-  if (isEditMode) {
-    return (
-      <div className="relative flex justify-center">
-        <button
-          type="button"
-          disabled={!isAvailable}
-          onClick={() => isAvailable && onClick(table)}
-          className={clsx(
-            "relative flex h-28 w-48 flex-col items-center justify-center rounded-md border-2 transition-all",
-            isAvailable &&
-              !isSelected &&
-              "cursor-pointer hover:scale-105 hover:bg-[oklch(0.88_0.04_240)]",
-            !isAvailable && "cursor-not-allowed opacity-60",
-            isAvailable &&
-              !isSelected &&
-              "border-2 border-[oklch(0.7_0.1_240)] bg-[oklch(0.92_0.04_240)] shadow-sm",
-            !isAvailable && "border-2 border-[oklch(0.85_0.005_240)] bg-[oklch(0.95_0.005_240)]",
-            isSelected &&
-              "scale-105 border-4 border-primary bg-[oklch(0.92_0.04_240)] hover:bg-[oklch(0.88_0.04_240)] shadow-md"
-          )}
-        >
-          {/* Ghế trên */}
-          <div className="absolute -top-1.5 left-0 flex w-full justify-around px-4">
-            {chairs.map((_, i) => (
-              <div
-                key={`t${i}`}
-                className={clsx(
-                  "h-1 w-3 rounded-[1px]",
-                  isSelected ? "bg-primary" : statusChairStyle[table.status]
-                )}
-              />
-            ))}
-          </div>
+  // in edit mode we still want to be able to open the panel for out-of-service tables,
+  // so consider a table disabled only when it's inactive *and* we're not editing.
+  const disabled = !active && !isEditMode;
 
-          <span
-            className={clsx(
-              "text-lg font-black tracking-tight",
-              isSelected ? "text-primary" : statusTextStyle[table.status]
-            )}
-          >
-            {table.tableCode}
-          </span>
-          <span
-            className={clsx(
-              "mt-1 text-[10px] font-bold uppercase",
-              isSelected ? "text-gray-500" : statusTextStyle[table.status],
-              "opacity-60"
-            )}
-          >
-            {statusLabel[table.status]} · {table.capacity} ghế
-          </span>
+  const cardClasses = clsx(
+    "relative flex h-28 w-full flex-col items-center justify-center rounded-md border-2 transition-all",
+    disabled
+      ? "cursor-not-allowed opacity-60"
+      : isEditMode
+        ? "cursor-pointer hover:scale-105"
+        : "cursor-default",
+    statusCardStyle[table.status],
+    isSelected && !disabled && "scale-105 ring-2 ring-primary ring-offset-1"
+  );
 
-          {/* Ghế dưới */}
-          <div className="absolute -bottom-1.5 left-0 flex w-full justify-around px-4">
-            {chairs.map((_, i) => (
-              <div
-                key={`b${i}`}
-                className={clsx(
-                  "h-1 w-3 rounded-[1px]",
-                  isSelected ? "bg-primary" : statusChairStyle[table.status]
-                )}
-              />
-            ))}
-          </div>
-
-          {/* Corner dots khi selected */}
-          {isSelected && (
-            <>
-              <div className="absolute -left-2 -top-2 h-4 w-4 rounded-full border-2 border-white bg-primary shadow-sm" />
-              <div className="absolute -right-2 -top-2 h-4 w-4 rounded-full border-2 border-white bg-primary shadow-sm" />
-              <div className="absolute -bottom-2 -left-2 h-4 w-4 rounded-full border-2 border-white bg-primary shadow-sm" />
-              <div className="absolute -bottom-2 -right-2 h-4 w-4 rounded-full border-2 border-white bg-primary shadow-sm" />
-            </>
-          )}
-        </button>
-      </div>
-    );
-  }
-
-  // ─── View mode (same shape as edit mode, colored by status) ───
   return (
     <div className="relative flex justify-center">
-      <div
-        className={clsx(
-          "relative flex h-28 w-full flex-col items-center justify-center rounded-md border-2 transition-all",
-          active ? "cursor-default" : "cursor-not-allowed opacity-60",
-          statusCardStyle[table.status],
-          isSelected && active && "scale-105 ring-2 ring-primary ring-offset-1"
-        )}
+      <button
+        type="button"
+        onClick={() => onClick(table)}
+        disabled={disabled}
+        className={cardClasses}
       >
         {/* Ghế trên */}
         <div className="absolute -top-1.5 left-0 flex w-full justify-around px-4">
@@ -188,7 +120,7 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
 
         {/* Overlay inactive */}
         {!active && <div className="absolute inset-0 z-20 rounded-md bg-white/10" />}
-      </div>
+      </button>
     </div>
   );
 }
