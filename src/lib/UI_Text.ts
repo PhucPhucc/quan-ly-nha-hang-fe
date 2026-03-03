@@ -143,6 +143,8 @@ export const UI_TEXT = {
     FETCH_ORDERING: "Đang tải đơn hàng...",
     FETCH_MENU: "Đang tải thực đơn...",
     FETCH_ERROR: "Không thể tải danh sách đơn hàng",
+    DESCRIPTION_DETAIL: (tableNumber: string, total: number) =>
+      `${tableNumber} • Tổng ${total} món`,
   },
 
   TABLE: {

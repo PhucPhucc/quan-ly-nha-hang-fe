@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
 export function Navbar() {
   const { employee } = useAuthStore();
@@ -14,7 +15,7 @@ export function Navbar() {
     <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl rounded-2xl border border-white/20 glass shadow-2xl transition-all duration-300">
       <div className="flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-orange-600 text-primary-foreground shadow-lg shadow-primary/25">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl from-primary to-orange-600 text-primary-foreground shadow-lg shadow-primary/25">
             <Utensils className="h-5 w-5" />
           </div>
           <span className="text-xl font-bold tracking-tight text-foreground">FoodHub</span>
@@ -35,7 +36,7 @@ export function Navbar() {
           {employee ? (
             <>
               <Link
-                href={`/${employee.role === "Manager" ? "manager/dashboard" : "order"}`}
+                href={`/${employee.role === EmployeeRole.MANAGER ? "manager/dashboard" : "order"}`}
                 className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
               >
                 {t.DASHBOARD}
