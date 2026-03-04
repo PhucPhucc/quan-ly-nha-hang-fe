@@ -80,7 +80,6 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         if (res.isSuccess && res.data) {
           set({ orders: res.data.items || [] });
         }
-        console.log(res.data.items);
       } catch (e) {
         console.error("Fetch orders failed", e);
       } finally {
