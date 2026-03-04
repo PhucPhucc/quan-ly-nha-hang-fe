@@ -32,6 +32,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     const role = formData.get("role") as string;
 
     const employeeUpdate = {
+      employeeId: employee?.employeeId,
       fullName,
       email,
       phone,
