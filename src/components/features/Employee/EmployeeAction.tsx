@@ -65,7 +65,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             <div className="flex flex-col">
               <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.EDIT}</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                Cập nhật hồ sơ
+                {UI_TEXT.EMPLOYEE.UPDATE_PROFILE}
               </span>
             </div>
           </DropdownMenuItem>
@@ -83,7 +83,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             <div className="flex flex-col">
               <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.CHANGE_ROLE}</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                Gán quyền hạn mới
+                {UI_TEXT.EMPLOYEE.CHANGE_ROLE_DESCRIPTION}
               </span>
             </div>
           </DropdownMenuItem>
@@ -98,7 +98,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             <div className="flex flex-col">
               <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD}</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                Bảo mật tài khoản
+                {UI_TEXT.EMPLOYEE.ACCOUNT_SECURITY}
               </span>
             </div>
           </DropdownMenuItem>
@@ -114,9 +114,9 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
               <Trash2 className="size-4 text-rose-600" />
             </div>
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.DELETE}</span>
+              <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.DELETE_TITLE}</span>
               <span className="text-[10px] text-rose-400 uppercase tracking-tight">
-                Gỡ khỏi hệ thống
+                {UI_TEXT.EMPLOYEE.REMOVE_FROM_SYSTEM}
               </span>
             </div>
           </DropdownMenuItem>

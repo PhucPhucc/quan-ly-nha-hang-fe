@@ -47,7 +47,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     setLoading(false);
     incrementRefreshCount();
     onSuccess();
-    toast.success(UI_TEXT.EMPLOYEE.ADD_SUSCESS);
+    toast.success(UI_TEXT.EMPLOYEE.ADD_SUCCESS);
   };
 
   return (
@@ -60,18 +60,18 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
             name="fullName"
             type="text"
             required
-            placeholder={`Enter ${UI_TEXT.EMPLOYEE.FULLNAME}`}
+            placeholder={`${UI_TEXT.EMPLOYEE.ENTER} ${UI_TEXT.EMPLOYEE.FULLNAME.toLocaleLowerCase()}`}
           />
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="email">{UI_TEXT.EMPLOYEE.EMAIL}</FieldLabel>
+          <FieldLabel htmlFor="email">{UI_TEXT.EMPLOYEE.EMAIL.toLocaleLowerCase()}</FieldLabel>
           <Input
             id="email"
             name="email"
             type="email"
             required
-            placeholder={`Enter ${UI_TEXT.EMPLOYEE.EMAIL}`}
+            placeholder={`${UI_TEXT.EMPLOYEE.ENTER} ${UI_TEXT.EMPLOYEE.EMAIL.toLocaleLowerCase()}`}
           />
         </Field>
 

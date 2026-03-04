@@ -35,14 +35,14 @@ const EmployeeDeleteModal = ({
     const reason = formData.get("confirm_delete") === "on";
 
     if (!reason) {
-      toast.error("Vui lòng xác nhận xóa nhân viên.");
+      toast.error(UI_TEXT.EMPLOYEE.DELETE_CONFIRM_FAIL);
       return;
     }
 
     try {
       await deleteEmployee(employeeId);
       increment();
-      toast.success(UI_TEXT.EMPLOYEE.DELETE_SUSCESS);
+      toast.success(UI_TEXT.EMPLOYEE.DELETE_SUCCESS);
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
@@ -54,18 +54,14 @@ const EmployeeDeleteModal = ({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Xóa nhân viên</DialogTitle>
-            <DialogDescription>
-              Việc xóa nhân viên sẽ không thể hoàn tác. Vui lòng xác nhận hành động này.
-            </DialogDescription>
+            <DialogTitle>{UI_TEXT.EMPLOYEE.DELETE_TITLE}</DialogTitle>
+            <DialogDescription>{UI_TEXT.EMPLOYEE.DELETE_DESCRIPTION}</DialogDescription>
           </DialogHeader>
           <Field orientation="horizontal" className="mt-4 gap-3">
             <Checkbox id="confirm_delete" name="confirm_delete" />
             <FieldContent>
-              <FieldLabel htmlFor="confirm_delete">Xac nhan xoa nhan vien</FieldLabel>
-              <FieldDescription>
-                Bang việc xóa nhân viên, họ sẽ mất quyền truy cập vào hệ thống.
-              </FieldDescription>
+              <FieldLabel htmlFor="confirm_delete">{UI_TEXT.EMPLOYEE.DELETE_CONFIRM}</FieldLabel>
+              <FieldDescription>{UI_TEXT.EMPLOYEE.DELETE_RULE}</FieldDescription>
             </FieldContent>
           </Field>
           <DialogFooter className="mt-4">

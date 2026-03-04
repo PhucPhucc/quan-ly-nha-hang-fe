@@ -36,21 +36,21 @@ const EmployeeChangePassword = ({
     const newPassword = formData.get("password") as string;
 
     if (!employeeId) {
-      toast.error("Ma nhan vien khong hop le");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_MODAL.ERROR_INVALID_EMPLOYEE_ID);
       return;
     }
 
     if (!reason) {
-      toast.error("Vui long dien ly do thay doi mat khau");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_MODAL.ERROR_REQUIRE_REASON);
       return;
     }
     console.log(employeeId);
     try {
       await changeEmployeePassword(employeeId, reason, newPassword);
-      toast.success("Thay doi mat khau thanh cong");
+      toast.success(UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_MODAL.SUCCESS);
       onToggle(false);
     } catch (error) {
-      toast.error("Thay doi mat khau that bai");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_MODAL.ERROR);
     }
   };
 
@@ -59,14 +59,14 @@ const EmployeeChangePassword = ({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Thay doi mat khau</DialogTitle>
+            <DialogTitle>{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_MODAL.TITLE}</DialogTitle>
             <DialogDescription>
-              Viet thay doi mat khau se tu dong gui den mail cua nhan vien.
+              {UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_MODAL.DESCRIPTION}
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="mt-4 gap-4">
             <Field>
-              <Label htmlFor="reason">ly do chia tay la gi?</Label>
+              <Label htmlFor="reason">{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_MODAL.REASON_LABEL}</Label>
               <Textarea id="reason" name="reason" />
             </Field>
             <SwitchChangePassword />

@@ -48,21 +48,21 @@ const EmployeeChangeRole = ({
     const reason = formData.get("reason") as string;
 
     if (confirmChange !== "on" || !newRole) {
-      toast.error("Vui lòng xác nhận thay đổi vai trò");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.ERROR_CONFIRM_REQUIRED);
       return;
     }
     if (!reason) {
-      toast.error("Vui lòng nhập lý do thay đổi vai trò");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.ERROR_REASON_REQUIRED);
       return;
     }
 
     if (newRole === role) {
-      toast.error("Vai trò mới phải khác vai trò hiện tại");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.ERROR_ROLE_NOT_CHANGED);
       return;
     }
 
     if (!employeeCode) {
-      toast.error("Mã nhân viên không hợp lệ hoac không tồn tại");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.ERROR_INVALID_EMPLOYEE_CODE);
       return;
     }
     try {
@@ -72,11 +72,11 @@ const EmployeeChangeRole = ({
         newRole as string,
         reason
       );
-      toast.success("Thay đổi vai trò thành công");
+      toast.success(UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.SUCCESS);
       increment();
       onToggle(false);
     } catch (error) {
-      toast.error("Thay đổi vai trò thất bại");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.ERROR);
       console.log(error);
     }
   };
@@ -86,11 +86,8 @@ const EmployeeChangeRole = ({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Change Role</DialogTitle>
-            <DialogDescription>
-              Viec thay doi role cua nhan vien se cap cho nhan vien mot tai khoan moi va tai khoan
-              cu se bi vo hieu hoa.
-            </DialogDescription>
+            <DialogTitle>{UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.TITLE}</DialogTitle>
+            <DialogDescription>{UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.DESCRIPTION}</DialogDescription>
           </DialogHeader>
           <FieldGroup className="mt-4 gap-4">
             <Field>
@@ -101,32 +98,32 @@ const EmployeeChangeRole = ({
             <EmployeeSelectRole />
 
             <Field>
-              <Label htmlFor="reason">Lý do thay đổi</Label>
+              <Label htmlFor="reason">{UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.REASON_LABEL}</Label>
               <Textarea
                 id="reason"
                 name="reason"
                 required
-                placeholder="Nhập lý do thăng chức, chuyển bộ phận..."
+                placeholder={UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.REASON_PLACEHOLDER}
               />
             </Field>
 
             <div className="bg-blue-50 border border-blue-100 p-3 rounded-lg text-xs text-blue-700">
-              <p className="font-medium mb-1">💡 Thông tin:</p>
+              <p className="font-medium mb-1">{UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.INFO_TITLE}</p>
               <ul className="list-disc list-inside space-y-1">
-                <li>Tài khoản cũ sẽ bị vô hiệu hóa.</li>
-                <li>Hệ thống tự động tạo mã nhân viên mới.</li>
-                <li>
-                  Thông tin đăng nhập mới đã được gửi tới <strong>Email nhân viên</strong>.
-                </li>
+                <li>{UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.INFO_ITEM_1}</li>
+                <li>{UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.INFO_ITEM_2}</li>
+                <li>{UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.INFO_ITEM_3}</li>
               </ul>
             </div>
 
             <Field orientation="horizontal" className="gap-2">
               <Checkbox id="confirm_change" name="confirm_change" />
               <FieldContent>
-                <FieldLabel htmlFor="confirm_change">Xác nhận thay đổi vai trò</FieldLabel>
+                <FieldLabel htmlFor="confirm_change">
+                  {UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.CONFIRM_CHECKBOX_LABEL}
+                </FieldLabel>
                 <FieldDescription>
-                  Bằng cách nhấp vào hộp kiểm này, tai khoản cũ sẽ bị vô hiệu hóa.
+                  {UI_TEXT.EMPLOYEE.CHANGE_ROLE_MODAL.CONFIRM_CHECKBOX_DESCRIPTION}
                 </FieldDescription>
               </FieldContent>
             </Field>

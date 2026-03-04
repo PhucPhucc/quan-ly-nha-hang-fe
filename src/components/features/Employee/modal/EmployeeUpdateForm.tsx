@@ -28,14 +28,17 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string;
     const dateOfBirth = formData.get("dateOfBirth") as string;
+    const address = formData.get("address") as string;
     const status = formData.get("status") as string;
     const role = formData.get("role") as string;
 
     const employeeUpdate = {
+      employeeId: employee?.employeeId,
       fullName,
       email,
       phone,
       dateOfBirth,
+      address,
       status,
       role: role,
     };
@@ -55,7 +58,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     <form onSubmit={handleSubmit}>
       <FieldGroup className="grid grid-cols-2 gap-x-2 gap-y-4 px-0.5">
         <Field>
-          <Label>{UI_TEXT.EMPLOYEE.EMPLOYEECODE}</Label>
+          <Label>{UI_TEXT.EMPLOYEE.EMPLOYEE_CODE}</Label>
           <Input
             disabled
             defaultValue={employee?.employeeCode || ""}
@@ -114,7 +117,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
           </Button>
           <SheetClose asChild className="flex-1/2">
             <Button variant="outline" className="">
-              Cancel
+              {UI_TEXT.COMMON.CANCEL}
             </Button>
           </SheetClose>
         </Field>

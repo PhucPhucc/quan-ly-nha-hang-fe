@@ -15,6 +15,7 @@ import {
 import { UI_TEXT } from "@/lib/UI_Text";
 import { getEmployees } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
+import { fi } from "date-fns/locale";
 
 const EmployeeActionBar = () => {
   const setEmployees = useEmployeeStore((state) => state.setEmployees);
@@ -28,6 +29,9 @@ const EmployeeActionBar = () => {
       if (res.isSuccess && res.data) {
         setEmployees(res.data.items || []);
       }
+      console.log("search:", search);
+      console.log("role:", role);
+      console.log("filters:", filters);
     },
     [setEmployees]
   );
@@ -58,7 +62,7 @@ const EmployeeActionBar = () => {
       <div className="relative flex-1 w-full">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
         <Input
-          placeholder="Tìm nhân viên theo tên, email, mã số..."
+          placeholder={UI_TEXT.EMPLOYEE.SEARCH}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-11 h-11 bg-slate-50/80 border-slate-100 rounded-2xl focus-visible:ring-primary/20 focus-visible:bg-white transition-all font-medium text-sm"
