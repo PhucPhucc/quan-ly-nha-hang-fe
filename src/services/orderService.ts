@@ -35,6 +35,7 @@ export interface AddOrderItemRequest {
 }
 
 export interface SubmitOrderToKitchenRequest {
+  orderId: string;
   tableId: string;
   orderType: OrderType;
   note?: string;
@@ -84,7 +85,7 @@ export const orderService = {
   },
 
   submitToKitchen: (data: SubmitOrderToKitchenRequest): Promise<ApiResponse<string>> =>
-    apiFetch<string>("/orders/submit-to-kitchen", {
+    apiFetch<string>(`/orders/${data.orderId}/submit-to-kitchen`, {
       method: "POST",
       body: data,
     }),
