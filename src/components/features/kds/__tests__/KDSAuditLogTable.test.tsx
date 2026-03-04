@@ -30,22 +30,58 @@ describe("KDSAuditLogTable", () => {
   ];
 
   it("renders loading state correctly", () => {
-    render(<KDSAuditLogTable logs={[]} loading={true} error={null} />);
+    render(
+      <KDSAuditLogTable
+        logs={[]}
+        loading={true}
+        error={null}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+      />
+    );
     expect(screen.getByText(UI_TEXT.COMMON.LOADING)).toBeInTheDocument();
   });
 
   it("renders error state correctly", () => {
-    render(<KDSAuditLogTable logs={[]} loading={false} error="Failed to fetch logs" />);
+    render(
+      <KDSAuditLogTable
+        logs={[]}
+        loading={false}
+        error="Failed to fetch logs"
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+      />
+    );
     expect(screen.getByText("Failed to fetch logs")).toBeInTheDocument();
   });
 
   it("renders empty state correctly", () => {
-    render(<KDSAuditLogTable logs={[]} loading={false} error={null} />);
+    render(
+      <KDSAuditLogTable
+        logs={[]}
+        loading={false}
+        error={null}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+      />
+    );
     expect(screen.getByText(UI_TEXT.KDS.AUDIT.EMPTY)).toBeInTheDocument();
   });
 
   it("renders logs correctly", () => {
-    render(<KDSAuditLogTable logs={mockLogs} loading={false} error={null} />);
+    render(
+      <KDSAuditLogTable
+        logs={mockLogs}
+        loading={false}
+        error={null}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+      />
+    );
 
     // Check if table headers exist
     expect(screen.getByText(UI_TEXT.KDS.AUDIT.TIME)).toBeInTheDocument();
@@ -62,7 +98,17 @@ describe("KDSAuditLogTable", () => {
 
   it("calls onUndo when undo button is clicked", () => {
     const handleUndo = vi.fn();
-    render(<KDSAuditLogTable logs={mockLogs} loading={false} error={null} onUndo={handleUndo} />);
+    render(
+      <KDSAuditLogTable
+        logs={mockLogs}
+        loading={false}
+        error={null}
+        currentPage={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        onUndo={handleUndo}
+      />
+    );
 
     const undoButton = screen.getByText(UI_TEXT.KDS.AUDIT.UNDO);
     fireEvent.click(undoButton);
