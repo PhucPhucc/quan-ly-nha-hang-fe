@@ -28,6 +28,12 @@ export const useKdsSignalR = () => {
 
         await connection.invoke("JoinStationGroup", station);
 
+        // If 'Kitchen' is selected, also join sub-kitchens to receive their events
+        if (station === "Kitchen") {
+          await connection.invoke("JoinStationGroup", "HotKitchen");
+          await connection.invoke("JoinStationGroup", "ColdKitchen");
+        }
+
         // Set up event listeners
         connection.on("NewOrderItemReceived", (data) => {
           console.log("SignalR: New order item received", data);
@@ -56,6 +62,10 @@ export const useKdsSignalR = () => {
         try {
           if (connection.state === signalR.HubConnectionState.Connected) {
             await connection.invoke("LeaveStationGroup", station);
+            if (station === "Kitchen") {
+              await connection.invoke("LeaveStationGroup", "HotKitchen");
+              await connection.invoke("LeaveStationGroup", "ColdKitchen");
+            }
             await connection.stop();
             console.log(`SignalR: Left station ${station} and disconnected.`);
           }
