@@ -28,6 +28,9 @@ interface KDSAuditLogTableProps {
   logs: KDSAuditLogData[];
   loading: boolean;
   error: string | null;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
   onUndo?: (logId: string) => void;
 }
 
@@ -138,7 +141,15 @@ const KDSAuditLogRow = ({ log, onUndo }: KDSAuditLogRowProps) => {
 
 /* --- Main Component --- */
 
-const KDSAuditLogTable = ({ logs, loading, error, onUndo }: KDSAuditLogTableProps) => {
+const KDSAuditLogTable = ({
+  logs,
+  loading,
+  error,
+  currentPage,
+  totalPages,
+  onPageChange,
+  onUndo,
+}: KDSAuditLogTableProps) => {
   return (
     <div className="rounded-xl border border-border bg-card flex flex-col flex-1 overflow-hidden shadow-sm">
       <div className="overflow-y-auto flex-1 custom-scrollbar">
@@ -159,6 +170,31 @@ const KDSAuditLogTable = ({ logs, loading, error, onUndo }: KDSAuditLogTableProp
           </TableBody>
         </Table>
       </div>
+
+      {/* Pagination Footer */}
+      {!loading && !error && totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
+          <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+            TRANG <span className="text-foreground">{currentPage}</span> / {totalPages}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="px-4 py-2 bg-card border border-border rounded-xl text-[10px] font-black uppercase tracking-tight hover:border-primary/50 disabled:opacity-30 disabled:hover:border-border transition-all shadow-sm"
+            >
+              TRƯỚC
+            </button>
+            <button
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="px-4 py-2 bg-card border border-border rounded-xl text-[10px] font-black uppercase tracking-tight hover:border-primary/50 disabled:opacity-30 disabled:hover:border-border transition-all shadow-sm"
+            >
+              TIẾP
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

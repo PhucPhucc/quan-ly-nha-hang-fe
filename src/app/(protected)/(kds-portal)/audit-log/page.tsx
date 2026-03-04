@@ -1,7 +1,7 @@
 "use client";
 
 import { Calendar, ChevronDown, Download, RefreshCw, Search } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import KDSAuditLogTable from "@/components/features/kds/KDSAuditLogTable";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,11 @@ export default function KDSAuditLogPage() {
   const [logs, setLogs] = useState<KdsAuditLogResponse[]>([]);
   const [station, setStation] = useState<string>("all");
   const [action, setAction] = useState<string>("all");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const mapToTableData = (apiLogs: KdsAuditLogResponse[]): KDSAuditLogData[] => {
+  const mapToTableData = (apiLogs: KdsAuditLogResponse[] | undefined | null): KDSAuditLogData[] => {
+    if (!apiLogs) return [];
     return apiLogs.map((log) => ({
       logId: log.logId,
       time: log.formattedTime,
@@ -42,17 +45,25 @@ export default function KDSAuditLogPage() {
     }));
   };
 
-  const fetchAuditLogs = async () => {
+  const fetchAuditLogs = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const result = await kdsService.getAuditLogs({
         station: station === "all" ? undefined : station,
         action: action === "all" ? undefined : action,
+        pageNumber: pageNumber,
+        pageSize: 50,
       });
 
       if (result.isSuccess && result.data) {
-        setLogs(result.data);
+        // Handle both PascalCase (from Backend) and camelCase (Standard)
+        const data = result.data as unknown as Record<string, unknown>;
+        const items = (data.items || data.Items || []) as KdsAuditLogResponse[];
+        const pages = (data.totalPages || data.TotalPages || 1) as number;
+
+        setLogs(items);
+        setTotalPages(pages);
       } else {
         setError(result.error || result.message || "Failed to fetch audit logs");
       }
@@ -62,11 +73,15 @@ export default function KDSAuditLogPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [station, action, pageNumber]);
+
+  useEffect(() => {
+    setPageNumber(1);
+  }, [station, action]);
 
   useEffect(() => {
     fetchAuditLogs();
-  }, [station, action]);
+  }, [fetchAuditLogs]);
 
   const handleRefresh = () => {
     fetchAuditLogs();
@@ -189,7 +204,14 @@ export default function KDSAuditLogPage() {
       </header>
 
       <div className="flex-1 px-4 md:px-8 pb-8 overflow-hidden flex flex-col">
-        <KDSAuditLogTable logs={filteredLogs} loading={loading} error={error} />
+        <KDSAuditLogTable
+          logs={filteredLogs}
+          loading={loading}
+          error={error}
+          currentPage={pageNumber}
+          totalPages={totalPages}
+          onPageChange={setPageNumber}
+        />
       </div>
     </div>
   );

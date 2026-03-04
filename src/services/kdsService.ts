@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/Api";
+import { ApiResponse, PaginationResult } from "@/types/Api";
 
 import { apiFetch } from "./api";
 
@@ -66,7 +66,7 @@ export const kdsService = {
 
   getAuditLogs: async (
     params: KdsAuditLogsParams = {}
-  ): Promise<ApiResponse<KdsAuditLogResponse[]>> => {
+  ): Promise<ApiResponse<PaginationResult<KdsAuditLogResponse>>> => {
     const queryParams = new URLSearchParams();
     if (params.station) queryParams.set("station", params.station);
     if (params.action) queryParams.set("action", params.action);
@@ -76,7 +76,9 @@ export const kdsService = {
     if (params.pageSize) queryParams.set("pageSize", params.pageSize.toString());
 
     const query = queryParams.toString();
-    return apiFetch<KdsAuditLogResponse[]>(`/Kds/audit-logs${query ? `?${query}` : ""}`);
+    return apiFetch<PaginationResult<KdsAuditLogResponse>>(
+      `/Kds/audit-logs${query ? `?${query}` : ""}`
+    );
   },
 
   startCooking: async (orderItemId: string): Promise<ApiResponse<string>> => {
