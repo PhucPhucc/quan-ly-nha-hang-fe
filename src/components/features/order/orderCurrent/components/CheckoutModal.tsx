@@ -154,11 +154,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                 ))}
               </div>
 
-              <div className="flex justify-between items-center p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
-                <span className="font-semibold text-sm text-orange-600 dark:text-orange-400">
-                  Tiền thối lại:
-                </span>
-                <span className="font-black text-lg text-orange-600 dark:text-orange-400">
+              <div className="flex justify-between items-center px-3 py-2 rounded-lg bg-muted border border-muted">
+                <span className="font-semibold text-sm text-muted-foreground">Tiền thối lại:</span>
+                <span className="font-black text-lg text-primary/90">
                   {calculateChange().toLocaleString()}đ
                 </span>
               </div>

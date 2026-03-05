@@ -110,7 +110,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
         <Button
           variant="outline"
           size="sm"
-          className="flex-1 font-bold text-xs h-9 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200"
+          className="flex-1 font-bold text-xs h-9 bg-success text-success-foreground hover:bg-success/80 border-success"
           onClick={() => setIsCheckoutOpen(true)}
           disabled={isSubmitting || !selectedOrderId}
         >
@@ -130,7 +130,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
               Đang gửi...
             </>
           ) : (
-            "Gửi yêu cầu"
+            "Gửi xuống bếp"
           )}
         </Button>
       </div>
