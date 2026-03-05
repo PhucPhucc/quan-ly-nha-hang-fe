@@ -14,14 +14,16 @@ import OrderSummaryFooter from "./components/OrderSummaryFooter";
 
 const OrderCurrent = () => {
   const { items: cartData, updateQuantity, removeItem } = useCartStore();
-  const { orders, selectedOrderId, activeOrderDetails, fetchOrderDetails, orderDetailsLoading } =
-    useOrderBoardStore();
+  const { orders, selectedOrderId, activeOrderDetails, orderDetailsLoading } = useOrderBoardStore();
+
+  const fetchOrderDetails = useOrderBoardStore((s) => s.fetchOrderDetails);
 
   React.useEffect(() => {
     if (selectedOrderId) {
       fetchOrderDetails(selectedOrderId);
     }
-  }, [selectedOrderId, fetchOrderDetails]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedOrderId]);
 
   const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
   const tableName = activeOrder

@@ -14,11 +14,14 @@ import TableList from "./TableList";
 import TakeawayItem from "./TakeawayItem";
 
 const OrderBoard = () => {
-  const { loading, activeTab, fetchOrders, filteredTakeaways } = useOrderBoardStore();
+  const { loading, activeTab, filteredTakeaways } = useOrderBoardStore();
+
+  const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
 
   useEffect(() => {
     fetchOrders({ pageSize: 12, pageNumber: 1 });
-  }, [fetchOrders]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <LoadingSpinner label={UI_TEXT.ORDER.FETCH_ORDERING} />;
