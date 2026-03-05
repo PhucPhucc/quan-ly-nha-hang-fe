@@ -76,7 +76,7 @@ export function TableStatusOverview() {
             <span className="text-muted-foreground">{t.FREE}</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-table-inprocess"></span>
+            <span className="h-2 w-2 rounded-full bg-table-serving"></span>
             <span className="text-muted-foreground">{t.OCCUPIED}</span>
           </div>
         </div>
@@ -93,7 +93,7 @@ export function TableStatusOverview() {
                 flex aspect-square flex-col items-center justify-center rounded-2xl border-2 transition-all hover:scale-105 shadow-sm
                 ${
                   isOccupied
-                    ? "border-table-inprocess bg-table-inprocess/5 text-table-inprocess"
+                    ? "border-table-serving bg-table-serving/5 text-table-serving"
                     : "border-slate-100 bg-slate-50/50 text-slate-300"
                 }
               `}

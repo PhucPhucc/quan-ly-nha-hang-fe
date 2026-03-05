@@ -4,13 +4,24 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { OrderStatus } from "@/types/enums";
 
 interface OrderCurrentHeaderProps {
   tableName: string;
   itemCount: number;
-  status: string;
+  status?: OrderStatus;
 }
 
+const StatusMap: Record<OrderStatus, { label: string; color: string }> = {
+  Ready: { label: UI_TEXT.TABLE.READY, color: "bg-table-empty text-muted-foreground" },
+  Serving: { label: UI_TEXT.TABLE.SERVING, color: "bg-table-serving text-muted " },
+  Reserved: { label: UI_TEXT.TABLE.RESERVED, color: "bg-table-reserved text-muted " },
+  Cleaning: { label: UI_TEXT.TABLE.CLEANING, color: "bg-table-cleaning text-muted " },
+  Cancelled: { label: UI_TEXT.TABLE.CANCELLED, color: "bg-orange-500 text-muted " },
+  Completed: { label: UI_TEXT.TABLE.COMPLETED, color: "bg-emerald-500 text-muted " },
+};
+
+//  : UI_TEXT.TABLE.SERVING
 const OrderCurrentHeader: React.FC<OrderCurrentHeaderProps> = ({
   tableName,
   itemCount,
@@ -29,9 +40,9 @@ const OrderCurrentHeader: React.FC<OrderCurrentHeaderProps> = ({
       </div>
       <Badge
         variant="outline"
-        className="bg-table-inprocess text-white border-none py-0.5 text-[10px]"
+        className={`${StatusMap[status || OrderStatus.Ready]?.color || "bg-muted-foreground"} border-none py-0.5 text-[10px]`}
       >
-        {status}
+        {StatusMap[status || OrderStatus.Ready]?.label || status}
       </Badge>
     </CardHeader>
   );

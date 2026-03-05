@@ -5,7 +5,7 @@ import React from "react";
 
 import { cn } from "@/lib/utils";
 
-export type TakeawayStatus = "INPROCESS" | "READY" | "COMPLETED" | "CANCELLED";
+export type TakeawayStatus = "SERVING" | "READY" | "COMPLETED" | "CANCELLED";
 
 export type TakeawayOrder = {
   id: string;
@@ -27,7 +27,7 @@ const TakeawayItem = ({ order, onClick }: TakeawayItemProps) => {
     switch (status) {
       case "READY":
         return "text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]";
-      case "INPROCESS":
+      case "SERVING":
         return "text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.3)]";
       case "COMPLETED":
         return "text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]";
@@ -42,7 +42,7 @@ const TakeawayItem = ({ order, onClick }: TakeawayItemProps) => {
     switch (status) {
       case "READY":
         return "bg-emerald-500/10";
-      case "INPROCESS":
+      case "SERVING":
         return "bg-orange-500/10";
       case "COMPLETED":
         return "bg-blue-500/10";
@@ -85,7 +85,7 @@ const TakeawayItem = ({ order, onClick }: TakeawayItemProps) => {
 
         {/* Floating Badges */}
         <div className="absolute top-0 right-0">
-          {order.status === "INPROCESS" && (
+          {order.status === "SERVING" && (
             <div className="bg-orange-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-sm animate-pulse">
               {order.elapsedTime || "5m"}
             </div>

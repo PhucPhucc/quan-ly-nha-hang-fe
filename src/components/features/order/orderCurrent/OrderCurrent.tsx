@@ -3,7 +3,6 @@
 import { Loader2 } from "lucide-react";
 import React from "react";
 
-import { UI_TEXT } from "@/lib/UI_Text";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { OrderType } from "@/types/enums";
@@ -62,7 +61,7 @@ const OrderCurrent = () => {
         <OrderCurrentHeader
           tableName={tableName}
           itemCount={cartItems.length + remoteItems.length}
-          status={activeOrder ? activeOrder.status : UI_TEXT.TABLE.INPROCESS}
+          status={activeOrder?.status}
         />
         <OrderItemList
           items={cartItems}

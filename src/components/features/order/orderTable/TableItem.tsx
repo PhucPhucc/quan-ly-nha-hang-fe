@@ -59,8 +59,8 @@ const TableItem = ({ table, onTableClick, isLoading }: TableItemProps) => {
               #{table.tableNumber.toString().padStart(2, "0")}
             </p>
             {table.status === OrderStatus.Serving && timeRunning && (
-              <div className="flex items-center bg-background/90 p-1 rounded-full border border-table-inprocess/50">
-                <span className="text-[8px] font-black text-table-inprocess leading-none">
+              <div className="flex items-center bg-background/90 p-1 rounded-full border border-table-serving/50">
+                <span className="text-[8px] font-black text-table-serving leading-none">
                   {timeRunning}
                 </span>
               </div>
@@ -143,7 +143,7 @@ const getStatusColor = (status: OrderStatus) => {
     case OrderStatus.Ready:
       return "border-table-empty/60 bg-table-empty/20";
     case OrderStatus.Serving:
-      return "border-table-inprocess/60 bg-table-inprocess/20";
+      return "border-table-serving/60 bg-table-serving/20";
     case OrderStatus.Reserved:
       return "border-table-reserved/60 bg-table-reserved/20";
     case OrderStatus.Cleaning:
@@ -158,7 +158,7 @@ const getFootColor = (status: OrderStatus) => {
     case OrderStatus.Ready:
       return "bg-table-empty/50";
     case OrderStatus.Serving:
-      return "bg-table-inprocess/50";
+      return "bg-table-serving/50";
     case OrderStatus.Reserved:
       return "bg-table-reserved/50";
     case OrderStatus.Cleaning:

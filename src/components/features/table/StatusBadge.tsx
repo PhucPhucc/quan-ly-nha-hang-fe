@@ -20,7 +20,7 @@ export function StatusBadge({ table }: { table: Table }) {
 
 const badgeStyle = {
   READY: "bg-table-empty/15 text-table-empty border-table-empty",
-  INPROCESS: "bg-table-inprocess/15 text-table-inprocess border-table-inprocess",
+  SERVING: "bg-table-serving/15 text-table-serving border-table-serving",
   CLEANING: "bg-table-cleaning/15 text-table-cleaning border-table-cleaning",
   RESERVED: "bg-table-reserved/15 text-table-reserved border-table-reserved",
 };

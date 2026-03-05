@@ -20,7 +20,7 @@ const page = () => {
           <div className="flex justify-between items-center mb-2">
             <TabsList>
               <TabsTrigger value="all">{UI_TEXT.COMMON.ALL}</TabsTrigger>
-              <TabsTrigger value="inprocess">{UI_TEXT.TABLE.INPROCESS}</TabsTrigger>
+              <TabsTrigger value="serving">{UI_TEXT.TABLE.SERVING}</TabsTrigger>
               <TabsTrigger value="ready">{UI_TEXT.TABLE.READY}</TabsTrigger>
               <TabsTrigger value="cleaning">{UI_TEXT.TABLE.CLEANING}</TabsTrigger>
             </TabsList>
@@ -30,8 +30,8 @@ const page = () => {
           <TabsContent value="all">
             <TablesList />
           </TabsContent>
-          <TabsContent value="inprocess">
-            <p>inprocess</p>
+          <TabsContent value="serving">
+            <p>serving</p>
           </TabsContent>
           <TabsContent value="ready">
             <p>ready</p>

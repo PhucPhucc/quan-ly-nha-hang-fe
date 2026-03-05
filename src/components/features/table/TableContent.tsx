@@ -12,7 +12,7 @@ export function TableContent({ table }: { table: Table }) {
         </p>
       );
 
-    case "INPROCESS":
+    case "SERVING":
       return (
         <div className="flex flex-col gap-1">
           <p className="flex justify-between text-sm border-b pb-1">

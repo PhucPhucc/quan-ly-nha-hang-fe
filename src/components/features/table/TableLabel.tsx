@@ -18,8 +18,8 @@ const label = [
   },
   {
     id: 4,
-    text: UI_TEXT.TABLE.INPROCESS,
-    css: "bg-table-inprocess",
+    text: UI_TEXT.TABLE.SERVING,
+    css: "bg-table-serving",
   },
 ];
 

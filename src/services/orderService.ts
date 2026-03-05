@@ -119,4 +119,14 @@ export const orderService = {
       method: "PATCH",
       body: { orderId: id },
     }),
+
+  checkoutOrder: (
+    orderId: string,
+    paymentMethod: string,
+    amountReceived?: number
+  ): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/orders/${orderId}/checkout`, {
+      method: "POST",
+      body: { orderId, paymentMethod, amountReceived },
+    }),
 };

@@ -22,7 +22,7 @@ const TableFilter = () => {
 
       <SelectContent position="popper">
         <SelectItem value="manager">{UI_TEXT.TABLE.READY}</SelectItem>
-        <SelectItem value="cashier">{UI_TEXT.TABLE.INPROCESS}</SelectItem>
+        <SelectItem value="cashier">{UI_TEXT.TABLE.SERVING}</SelectItem>
         <SelectItem value="waiter">{UI_TEXT.TABLE.RESERVED}</SelectItem>
         <SelectItem value="chef">{UI_TEXT.TABLE.CLEANING}</SelectItem>
       </SelectContent>

@@ -70,10 +70,11 @@
   --color-order-completed: var(--order-completed);
   --color-order-served: var(--order-served);
   --color-order-ready: var(--order-ready);
+  --color-order-new: var(--order-new);
 
   --color-table-empty: var(--table-empty);
   --color-table-reserved: var(--table-reserved);
-  --color-table-inprocess: var(--table-inprocess);
+  --color-table-serving: var(--table-serving);
   --color-table-cleaning: var(--table-cleaning);
 
   --color-role-manager: var(--role-manager);
@@ -254,12 +255,12 @@
   --order-cooking: oklch(0.65 0.2 45); /* Cam đậm hơn */
   --order-completed: oklch(0.65 0.16 150);
   --order-served: oklch(0.7 0.1 240);
-
+  --order-new: oklch(69.6% 0.17 162.48);
   /* Table Status */
   /* Table Status - Darker for better contrast */
   --table-empty: oklch(0.92 0.05 90); /* Màu kem đậm hơn */
   --table-reserved: oklch(0.75 0.15 85); /* Vàng sậm hơn */
-  --table-inprocess: oklch(0.6 0.18 145); /* Xanh lá đậm hơn */
+  --table-serving: oklch(0.6 0.18 145); /* Xanh lá đậm hơn */
   --table-cleaning: oklch(0.55 0.15 40); /* Đỏ nâu/Cam thay vì đỏ rực để đỡ chói */
 
   --role-manager: oklch(0.5 0.2 10);

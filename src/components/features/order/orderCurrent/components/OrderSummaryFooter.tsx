@@ -9,6 +9,8 @@ import { orderService } from "@/services/orderService";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 
+import { CheckoutModal } from "./CheckoutModal";
+
 interface OrderSummaryFooterProps {
   subtotal: number;
   tax: number;
@@ -17,6 +19,7 @@ interface OrderSummaryFooterProps {
 
 const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, total }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const { items: cartData, clearCart } = useCartStore();
   const { selectedOrderId, fetchOrders, fetchOrderDetails, orders } = useOrderBoardStore();
 
@@ -101,9 +104,15 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2 w-full">
-        <Button variant="outline" size="sm" className="font-bold text-xs h-9">
-          In tạm tính
+      <div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="font-bold text-xs h-9 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200"
+          onClick={() => setIsCheckoutOpen(true)}
+          disabled={isSubmitting || !selectedOrderId}
+        >
+          Thanh toán
         </Button>
         <Button
           size="sm"
@@ -123,6 +132,14 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           )}
         </Button>
       </div>
+
+      {isCheckoutOpen && (
+        <CheckoutModal
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          totalAmount={total}
+        />
+      )}
     </CardFooter>
   );
 };

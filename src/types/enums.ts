@@ -14,12 +14,12 @@ export enum OrderStatus {
 }
 
 export enum OrderItemStatus {
-  Preparing = 1,
-  Cooking = 2,
-  Ready = 3,
-  Completed = 4,
-  Cancelled = 5,
-  Rejected = 6,
+  Preparing = "Preparing",
+  Cooking = "Cooking",
+  Ready = "Ready",
+  Completed = "Completed",
+  Cancelled = "Cancelled",
+  Rejected = "Rejected",
 }
 
 export enum ActionType {
@@ -59,4 +59,10 @@ export enum KDSStation {
   Bar = "Bar",
   ColdKitchen = "ColdKitchen",
   HotKitchen = "HotKitchen",
+}
+
+export enum PaymentMethod {
+  Cash = "Cash",
+  CreditCard = "CreditCard",
+  BankTransfer = "BankTransfer",
 }

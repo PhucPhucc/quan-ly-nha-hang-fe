@@ -57,7 +57,7 @@ const OrderBoard = () => {
                     order={{
                       id: o.orderId,
                       orderCode: o.orderCode,
-                      status: o.status === OrderStatus.Serving ? "INPROCESS" : "READY",
+                      status: o.status === OrderStatus.Serving ? "SERVING" : "READY",
                       label: "Mang đi",
                       people: 1,
                       price: new Intl.NumberFormat("vi-VN").format(o.totalAmount) + "đ",

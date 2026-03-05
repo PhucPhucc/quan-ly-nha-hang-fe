@@ -46,7 +46,7 @@ const baseStyle = `
 
 const statusStyle = {
   READY: "bg-table-empty/5 ring-table-empty",
-  INPROCESS: "bg-table-inprocess/5 ring-table-inprocess",
+  SERVING: "bg-table-serving/5 ring-table-serving",
   CLEANING: "bg-table-cleaning ring-table-cleaning text-white",
   RESERVED: "bg-table-reserved/5 ring-table-reserved",
 };

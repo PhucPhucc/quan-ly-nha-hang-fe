@@ -33,9 +33,9 @@ const TableStats = ({ tables }: TableStatsProps) => {
         color="bg-table-empty/30 text-table-empty-dark border-table-empty/50"
       />
       <StatCard
-        label={UI_TEXT.TABLE.INPROCESS}
+        label={UI_TEXT.TABLE.SERVING}
         value={stats.occupied}
-        color="bg-table-inprocess/30 text-table-inprocess border-table-inprocess/50"
+        color="bg-table-serving/30 text-table-serving border-table-serving/50"
       />
       <StatCard
         label={UI_TEXT.TABLE.RESERVED}

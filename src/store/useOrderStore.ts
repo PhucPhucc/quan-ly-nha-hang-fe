@@ -43,6 +43,11 @@ interface OrderBoardState {
   addOrder: (order: Order) => void;
   removeOrder: (orderId: string) => void;
   updateOrder: (order: Order) => void;
+  checkoutOrder: (
+    orderId: string,
+    paymentMethod: string,
+    amountReceived?: number
+  ) => Promise<boolean>;
 
   // selectors (derived)
   dineInOrders: () => Order[];
@@ -131,6 +136,20 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         orders: state.orders.map((o) => (o.orderId === order.orderId ? order : o)),
       })),
 
+    checkoutOrder: async (orderId: string, paymentMethod: string, amountReceived?: number) => {
+      try {
+        const res = await orderService.checkoutOrder(orderId, paymentMethod, amountReceived);
+        if (res.isSuccess) {
+          await get().fetchOrders();
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error("Checkout failed:", error);
+        return false;
+      }
+    },
+
     resetFilters: () =>
       set({
         searchQuery: "",
@@ -149,7 +168,7 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
       return get()
         .takeawayOrders()
         .filter((o) => {
-          const statusString = o.status === OrderStatus.Serving ? "tk_inprocess" : "tk_ready";
+          const statusString = o.status === OrderStatus.Serving ? "tk_serving" : "tk_ready";
 
           const matchesStatus =
             selectedStatuses.length === 0 || selectedStatuses.includes(statusString);
