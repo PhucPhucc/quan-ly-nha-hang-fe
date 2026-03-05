@@ -22,6 +22,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const { items: cartData, clearCart } = useCartStore();
   const { selectedOrderId, fetchOrders, fetchOrderDetails, orders } = useOrderBoardStore();
+  const setActiveView = useOrderBoardStore((state) => state.setActiveView);
 
   const handleSendRequest = async () => {
     if (!selectedOrderId) {
@@ -70,6 +71,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
         clearCart(selectedOrderId);
         fetchOrders(); // Refresh order board
         fetchOrderDetails(selectedOrderId); // Refresh sidebar items
+        setActiveView("order"); // Switch to order view to show updated items
       } else {
         toast.error("Gửi vào bếp thất bại: " + submitRes.message);
       }
@@ -82,7 +84,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
   };
 
   return (
-    <CardFooter className="flex flex-col p-2 bg-secondary/40 border-t gap-2 shrink-0">
+    <CardFooter className="flex flex-col p-2 border-t gap-2 shrink-0">
       <div className="w-full space-y-1.5">
         <div className="flex justify-between items-center text-muted-foreground gap-2 px-1">
           <span className="text-[10px]">Tạm tính</span>
@@ -104,11 +106,11 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           </div>
         </div>
       </div>
-      <div>
+      <div className="w-full flex gap-2">
         <Button
           variant="outline"
           size="sm"
-          className="font-bold text-xs h-9 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200"
+          className="flex-1 font-bold text-xs h-9 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200"
           onClick={() => setIsCheckoutOpen(true)}
           disabled={isSubmitting || !selectedOrderId}
         >
@@ -116,7 +118,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
         </Button>
         <Button
           size="sm"
-          className="font-bold shadow-sm hover:bg-primary/90 transition-all text-xs h-9"
+          className="flex-1 font-bold shadow-sm hover:bg-primary/90 transition-all text-xs h-9"
           onClick={handleSendRequest}
           disabled={
             isSubmitting || !selectedOrderId || (cartData[selectedOrderId] || []).length === 0

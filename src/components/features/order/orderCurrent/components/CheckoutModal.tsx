@@ -85,7 +85,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-2xl font-bold">
             <DollarSign className="w-5 h-5 text-primary" />
             Thanh toán đơn hàng
           </DialogTitle>
@@ -93,8 +93,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div className="flex justify-between items-center p-3 bg-secondary/30 rounded-lg">
-            <span className="font-semibold text-muted-foreground">Tổng thanh toán:</span>
+          <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
+            <span className="font-semibold text-secondary-foreground">Tổng thanh toán:</span>
             <span className="text-2xl font-black text-primary">
               {totalAmount.toLocaleString()}đ
             </span>

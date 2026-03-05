@@ -10,7 +10,7 @@ export type ActiveTab = "all" | "dine_in" | "takeaway";
 
 export type OrderActiveView = "order" | "menu";
 
-interface OrderBoardState {
+export interface OrderBoardState {
   // data
   orders: Order[];
   activeOrderDetails: Order | null;
