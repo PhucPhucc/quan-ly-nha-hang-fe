@@ -79,6 +79,8 @@ export const UI_TEXT = {
     STATUS: "Trạng thái",
     CHANGE_PASSWORD: "Đổi mật khẩu",
     CHANGE_ROLE: "Thay đổi vai trò",
+    CHANGE_PASSWORD_DESC: "Việc thay đổi mật khẩu sẽ tự động gửi email thông báo đến nhân viên.",
+    CHANGE_PASSWORD_REASON: "Lý do thay đổi mật khẩu",
     DELETE_CONFIRM_NAME: (name: string) => `Bạn có chắc chắn muốn xóa "${name}" không?`,
   },
 

@@ -59,14 +59,12 @@ const EmployeeChangePassword = ({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Thay doi mat khau</DialogTitle>
-            <DialogDescription>
-              Viet thay doi mat khau se tu dong gui den mail cua nhan vien.
-            </DialogDescription>
+            <DialogTitle>{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD}</DialogTitle>
+            <DialogDescription>{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_DESC}</DialogDescription>
           </DialogHeader>
           <FieldGroup className="mt-4 gap-4">
             <Field>
-              <Label htmlFor="reason">ly do chia tay la gi?</Label>
+              <Label htmlFor="reason">{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD_REASON}</Label>
               <Textarea id="reason" name="reason" />
             </Field>
             <SwitchChangePassword />

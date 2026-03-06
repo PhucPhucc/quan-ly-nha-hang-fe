@@ -30,6 +30,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     const dateOfBirth = formData.get("dateOfBirth") as string;
     const status = formData.get("status") as string;
     const role = formData.get("role") as string;
+    const address = formData.get("address") as string;
 
     const employeeUpdate = {
       employeeId: employee?.employeeId,
@@ -38,11 +39,12 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
       phone,
       dateOfBirth,
       status,
+      address,
       role: role,
     };
-    console.log(employeeUpdate);
     try {
       await updateEmployee(employeeUpdate);
+      toast.success(UI_TEXT.EMPLOYEE.UPDATE_SUSCESS);
     } catch (err) {
       setLoading(false);
       toast.error("Update employee failed. " + (err as Error).message);
