@@ -162,9 +162,6 @@ export default function TableLayoutGrid({ area, tables }: Props) {
               >
                 {UI_TEXT.COMMON.CANCEL}
               </button>
-              <button className="rounded bg-primary px-5 py-2 text-sm font-bold text-white shadow-sm hover:opacity-90">
-                {UI_TEXT.TABLE.SAVE_CHANGES}
-              </button>
               <div className="mx-1 h-8 w-px bg-gray-200" />
               <button
                 onClick={() => setAddDialogOpen(true)}
@@ -293,8 +290,9 @@ function EditTablePanel({
   return (
     <div
       ref={panelRef}
-      className={`absolute z-50 w-72 rounded-lg border border-gray-200 bg-white shadow-2xl ${showBelow ? "top-full left-0 mt-4" : "left-full top-0 ml-10"
-        }`}
+      className={`absolute z-50 w-72 rounded-lg border border-gray-200 bg-white shadow-2xl ${
+        showBelow ? "top-full left-0 mt-4" : "left-full top-0 ml-10"
+      }`}
     >
       {/* Header */}
       <div className="flex items-center justify-between rounded-t-lg border-b border-gray-100 bg-gray-50 px-4 py-3">
@@ -357,8 +355,8 @@ function EditTablePanel({
                   onUpdate(response.data);
                   onClose();
                 }
-              } catch (error: any) {
-                toast.error(error.message || "Không thể cập nhật");
+              } catch (err) {
+                toast.error((err as Error).message || "Không thể cập nhật");
               }
             }}
             className="w-full rounded bg-primary py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90"
@@ -376,7 +374,7 @@ function EditTablePanel({
                     toast.success("Đã kích hoạt bàn");
                     onUpdate({ ...table, status: TableStatus.Available });
                   }
-                } catch (error) {
+                } catch (_error) {
                   toast.error("Thao tác thất bại");
                 }
               }}
@@ -393,7 +391,7 @@ function EditTablePanel({
                     toast.success("Đã ngưng hoạt động bàn");
                     onUpdate({ ...table, status: TableStatus.OutOfService });
                   }
-                } catch (error) {
+                } catch (_error) {
                   toast.error("Thao tác thất bại");
                 }
               }}
