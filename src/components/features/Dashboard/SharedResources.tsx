@@ -2,6 +2,7 @@
 
 import { BookOpen, CalendarRange, Clock, LifeBuoy, ShieldCheck, Soup } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 
@@ -34,7 +35,7 @@ export function SharedResources() {
       <CardContent>
         <div className="grid grid-cols-2 gap-3">
           {resources.map((res) => (
-            <button
+            <Button
               key={res.title}
               className="group flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-border bg-background hover:bg-slate-50 hover:border-primary/20 transition-all active:scale-95"
             >
@@ -46,7 +47,7 @@ export function SharedResources() {
               <span className="text-[10px] font-bold text-center text-muted-foreground group-hover:text-foreground uppercase tracking-tight">
                 {res.title}
               </span>
-            </button>
+            </Button>
           ))}
         </div>
       </CardContent>

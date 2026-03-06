@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,7 @@ interface KDSQuickNavToggleProps {
 }
 
 const KDSQuickNavToggle = ({ isExpanded, onToggle }: KDSQuickNavToggleProps) => (
-  <button
+  <Button
     onClick={onToggle}
     className={cn(
       "flex items-center justify-center transition-colors duration-200",
@@ -42,7 +43,7 @@ const KDSQuickNavToggle = ({ isExpanded, onToggle }: KDSQuickNavToggleProps) => 
     ) : (
       <ChevronUp className="h-4 w-4 text-muted-foreground" />
     )}
-  </button>
+  </Button>
 );
 
 interface KDSQuickNavItemProps {

@@ -3,6 +3,7 @@
 import { Check, RotateCcw } from "lucide-react";
 import React from "react";
 
+import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { useKdsStore } from "@/store/useKdsStore";
@@ -121,22 +122,22 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
       {/* Right Section: Actions */}
       <div className="p-4 flex flex-col justify-center gap-2 shrink-0 w-[180px] bg-slate-50/50 border-l border-border-subtle">
         {!isReady && (
-          <button
+          <Button
             onClick={handleDone}
             className="w-full bg-[#10b981] hover:bg-emerald-600 text-white py-3 rounded-xl font-black uppercase tracking-[0.2em] text-xs shadow-lg shadow-emerald-100 transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-2 group/btn"
           >
             <Check className="w-4 h-4 group-hover/btn:scale-110 transition-transform stroke-3" />
             {UI_TEXT.KDS.ITEM.DONE}
-          </button>
+          </Button>
         )}
 
-        <button
+        <Button
           onClick={() => setIsRejectModalOpen(true)}
           className="w-full bg-white hover:bg-rose-50 text-rose-500 border border-slate-200 hover:border-rose-200 py-3 rounded-xl font-black uppercase tracking-[0.15em] text-[10px] transition-all flex items-center justify-center gap-2"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           {UI_TEXT.KDS.ITEM.RETURN}
-        </button>
+        </Button>
       </div>
 
       <KDSRejectModal

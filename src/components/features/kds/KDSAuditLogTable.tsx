@@ -3,6 +3,7 @@
 import React from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -125,12 +126,12 @@ const KDSAuditLogRow = ({ log, onUndo }: KDSAuditLogRowProps) => {
       </TableCell>
       <TableCell className="text-right">
         {actionUpped === UI_TEXT.KDS.AUDIT.ACTION_REJECT ? (
-          <button
+          <Button
             onClick={() => onUndo?.(log.logId)}
             className="text-primary hover:text-primary-hover text-xs font-bold hover:underline cursor-pointer uppercase"
           >
             {UI_TEXT.KDS.AUDIT.UNDO}
-          </button>
+          </Button>
         ) : (
           <span className="text-muted-foreground text-xs font-medium">-</span>
         )}
@@ -178,20 +179,20 @@ const KDSAuditLogTable = ({
             TRANG <span className="text-foreground">{currentPage}</span> / {totalPages}
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage <= 1}
               className="px-4 py-2 bg-card border border-border rounded-xl text-[10px] font-black uppercase tracking-tight hover:border-primary/50 disabled:opacity-30 disabled:hover:border-border transition-all shadow-sm"
             >
               TRƯỚC
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage >= totalPages}
               className="px-4 py-2 bg-card border border-border rounded-xl text-[10px] font-black uppercase tracking-tight hover:border-primary/50 disabled:opacity-30 disabled:hover:border-border transition-all shadow-sm"
             >
               TIẾP
-            </button>
+            </Button>
           </div>
         </div>
       )}

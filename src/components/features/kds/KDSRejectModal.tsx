@@ -97,13 +97,13 @@ export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSReje
             {/* Design: Quick Selection Buttons */}
             <div className="flex flex-wrap gap-2">
               {QUICK_REASONS.map((r) => (
-                <button
+                <Button
                   key={r}
                   onClick={() => handleQuickReason(r)}
                   className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-[10px] font-bold text-gray-600 uppercase transition-all shadow-sm active:scale-95"
                 >
                   {r}
-                </button>
+                </Button>
               ))}
             </div>
 

@@ -93,12 +93,12 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                       </p>
                     )}
                   </div>
-                  <button
+                  <Button
                     onClick={() => onRemoveItem(item.cartItemKey)}
                     className="p-1.5 text-muted-foreground hover:text-danger hover:bg-danger/10 rounded-lg transition-all"
                   >
                     <Trash2 className="size-4" />
-                  </button>
+                  </Button>
                 </div>
 
                 <div className="flex items-center justify-between mt-1">

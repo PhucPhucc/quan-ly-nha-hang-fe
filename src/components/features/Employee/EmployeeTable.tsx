@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -115,14 +116,14 @@ const EmployeeTable = () => {
           {error && (
             <TableRow>
               <TableCell colSpan={7} className="text-center py-20">
-                <div className="flex flex-col items-center gap-2 text-rose-500">
+                <div className="flex flex-col items-center gap-2 text-danger">
                   <span className="font-semibold">{error}</span>
-                  <button
+                  <Button
                     onClick={() => window.location.reload()}
                     className="text-xs underline opacity-70 hover:opacity-100"
                   >
                     Thử lại
-                  </button>
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>

@@ -3,6 +3,7 @@
 import { ArrowRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 
+import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 export function BlogSection() {
@@ -36,10 +37,10 @@ export function BlogSection() {
             </div>
             <h2 className="text-4xl font-bold md:text-5xl">{t.BLOG_TITLE}</h2>
           </div>
-          <button className="flex items-center gap-2 text-foreground font-bold group hover:text-primary transition-colors">
+          <Button className="flex items-center gap-2 text-foreground font-bold group hover:text-primary transition-colors">
             {t.READ_MORE}
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </button>
+          </Button>
         </div>
 
         <div className="grid gap-10 md:grid-cols-3">
