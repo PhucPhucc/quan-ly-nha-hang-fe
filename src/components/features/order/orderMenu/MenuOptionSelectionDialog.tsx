@@ -67,7 +67,7 @@ export function MenuOptionSelectionDialog({
     [selectedOptions]
   );
 
-  const totalPrice = menuItem ? (menuItem.priceDineIn + extraPrice) * quantity : 0;
+  const totalPrice = menuItem ? (menuItem.price + extraPrice) * quantity : 0;
 
   const handleToggleOption = (group: OptionGroup, item: OptionItem, isChecked: boolean) => {
     const currentSelection = selectedOptions[group.optionGroupId] || [];
@@ -142,7 +142,7 @@ export function MenuOptionSelectionDialog({
 
     // Chỉ lưu vào CartStore local, không gọi API
     // API sẽ được gọi khi nhấn "Gửi yêu cầu" (submitToKitchen)
-    addItem(selectedOrderId, menuItem, quantity, cartOptionGroups, note, menuItem.priceDineIn);
+    addItem(selectedOrderId, menuItem, quantity, cartOptionGroups, note, menuItem.price);
     toast.success("Đã thêm vào đơn hàng");
     resetLocalState();
     onOpenChange(false);

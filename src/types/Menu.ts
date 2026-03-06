@@ -14,8 +14,7 @@ export interface MenuItem {
   description: string;
   categoryId: string;
   categoryName: string;
-  priceDineIn: number;
-  priceTakeAway: number | null;
+  price: number;
   cost: number | null;
   station: number;
   isOutOfStock: boolean;

@@ -49,9 +49,7 @@ const OrderList = ({
             <h3 className="font-bold text-sm text-slate-800 line-clamp-2 leading-tight mb-1">
               {item.name}
             </h3>
-            <p className="font-black text-primary text-base">
-              {item.priceDineIn.toLocaleString()}đ
-            </p>
+            <p className="font-black text-primary text-base">{item.price?.toLocaleString()}đ</p>
           </div>
         </li>
       ))}
