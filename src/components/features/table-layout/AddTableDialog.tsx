@@ -44,7 +44,7 @@ export default function AddTableDialog({ open, onOpenChange, onCreate }: AddTabl
                 {capacity}
               </div>
               <button
-                onClick={() => setCapacity((v) => v + 1)}
+                onClick={() => setCapacity((v) => Math.min(6, v + 1))}
                 className="flex h-10 w-10 items-center justify-center rounded-r border border-gray-300 hover:bg-gray-50"
               >
                 +

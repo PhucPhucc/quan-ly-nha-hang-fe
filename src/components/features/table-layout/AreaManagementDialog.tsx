@@ -66,9 +66,9 @@ export default function AreaManagementDialog({ open, onClose, areas, onUpdate }:
         setNewType(AreaType.Normal);
         setNewDesc("");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add area:", error);
-      toast.error(UI_TEXT.COMMON.UPDATE_ERROR);
+      toast.error(error.message || UI_TEXT.COMMON.UPDATE_ERROR);
     }
   };
 
@@ -168,7 +168,7 @@ export default function AreaManagementDialog({ open, onClose, areas, onUpdate }:
                         )}
                       </td>
                       <td className={`px-4 py-3 text-center ${!isActive ? "text-slate-500" : ""}`}>
-                        —
+                        {area.numberOfTables || 0}
                       </td>
                       <td className="px-4 py-3">
                         {isActive ? (

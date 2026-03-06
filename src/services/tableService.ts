@@ -11,7 +11,9 @@ export interface CreateTableRequest {
 }
 
 export interface UpdateTableRequest {
+  tableNumber: number;
   capacity: number;
+  areaId: string;
 }
 
 export interface CreateAreaRequest {

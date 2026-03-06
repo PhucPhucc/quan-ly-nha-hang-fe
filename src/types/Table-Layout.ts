@@ -19,6 +19,7 @@ export enum AreaType {
 export interface Table {
   tableId: string;
   tableCode: string;
+  tableNumber: number;
   capacity: number;
   status: TableStatus;
   areaId: string;
@@ -39,4 +40,5 @@ export interface Area {
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string | null;
+  numberOfTables?: number;
 }

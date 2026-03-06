@@ -15,8 +15,9 @@ interface Props {
 // Active = mọi trạng thái trừ OUT_OF_SERVICE
 const isActive = (status: TableStatus) => status !== TableStatus.OutOfService;
 
-// Số indicator ghế ở trên/dưới: 3 cho capacity ≥ 4, ngược lại 2
-const getChairCount = (capacity: number) => (capacity >= 4 ? 3 : 2);
+// Phân bổ ghế: ưu tiên hàng trên
+const getTopChairCount = (capacity: number) => Math.ceil(capacity / 2);
+const getBottomChairCount = (capacity: number) => Math.floor(capacity / 2);
 
 // Màu card theo status (view mode)
 const statusCardStyle: Record<TableStatus, string> = {
@@ -65,8 +66,8 @@ const DEFAULT_LABEL = "Không xác định";
 
 function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
   const active = isActive(table.status);
-  const chairCount = getChairCount(table.capacity);
-  const chairs = Array.from({ length: chairCount });
+  const topChairs = Array.from({ length: getTopChairCount(table.capacity) });
+  const bottomChairs = Array.from({ length: getBottomChairCount(table.capacity) });
 
   // in edit mode we still want to be able to open the panel for out-of-service tables,
   // so consider a table disabled only when it's inactive *and* we're not editing.
@@ -93,11 +94,11 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
       >
         {/* Ghế trên */}
         <div className="absolute -top-1.5 left-0 flex w-full justify-around px-4">
-          {chairs.map((_, i) => (
+          {topChairs.map((_, i) => (
             <div
               key={`t${i}`}
               className={clsx(
-                "h-1 w-3 rounded-[1px]",
+                "h-1.5 w-3.5 rounded-t-sm",
                 statusChairStyle[table.status] || DEFAULT_CHAIR_STYLE
               )}
             />
@@ -124,11 +125,11 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
 
         {/* Ghế dưới */}
         <div className="absolute -bottom-1.5 left-0 flex w-full justify-around px-4">
-          {chairs.map((_, i) => (
+          {bottomChairs.map((_, i) => (
             <div
               key={`b${i}`}
               className={clsx(
-                "h-1 w-3 rounded-[1px]",
+                "h-1.5 w-3.5 rounded-b-sm",
                 statusChairStyle[table.status] || DEFAULT_CHAIR_STYLE
               )}
             />

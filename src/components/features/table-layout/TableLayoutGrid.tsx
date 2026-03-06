@@ -229,9 +229,9 @@ export default function TableLayoutGrid({ area, tables }: Props) {
                     <EditTablePanel
                       table={table}
                       onClose={() => setSelectedTable(null)}
-                      onStatusChange={(id, status) => {
+                      onUpdate={(updatedTable) => {
                         setLocalTables((prev) =>
-                          prev.map((t) => (t.tableId === id ? { ...t, status } : t))
+                          prev.map((t) => (t.tableId === updatedTable.tableId ? updatedTable : t))
                         );
                       }}
                     />
@@ -266,11 +266,11 @@ export default function TableLayoutGrid({ area, tables }: Props) {
 function EditTablePanel({
   table,
   onClose,
-  onStatusChange,
+  onUpdate,
 }: {
   table: Table;
   onClose: () => void;
-  onStatusChange: (tableId: string, status: TableStatus) => void;
+  onUpdate: (table: Table) => void;
 }) {
   const [capacity, setCapacity] = useState(table.capacity);
   const [showBelow, setShowBelow] = useState(false);
@@ -293,9 +293,8 @@ function EditTablePanel({
   return (
     <div
       ref={panelRef}
-      className={`absolute z-50 w-72 rounded-lg border border-gray-200 bg-white shadow-2xl ${
-        showBelow ? "top-full left-0 mt-4" : "left-full top-0 ml-10"
-      }`}
+      className={`absolute z-50 w-72 rounded-lg border border-gray-200 bg-white shadow-2xl ${showBelow ? "top-full left-0 mt-4" : "left-full top-0 ml-10"
+        }`}
     >
       {/* Header */}
       <div className="flex items-center justify-between rounded-t-lg border-b border-gray-100 bg-gray-50 px-4 py-3">
@@ -334,7 +333,7 @@ function EditTablePanel({
               {capacity}
             </div>
             <button
-              onClick={() => setCapacity((v) => v + 1)}
+              onClick={() => setCapacity((v) => Math.min(6, v + 1))}
               className="flex h-10 w-10 items-center justify-center rounded-r border border-gray-300 hover:bg-gray-50"
             >
               +
@@ -348,14 +347,18 @@ function EditTablePanel({
           <button
             onClick={async () => {
               try {
-                const response = await tableService.updateTable(table.tableId, { capacity });
-                if (response.isSuccess) {
+                const response = await tableService.updateTable(table.tableId, {
+                  capacity,
+                  tableNumber: table.tableNumber,
+                  areaId: table.areaId,
+                });
+                if (response.isSuccess && response.data) {
                   toast.success("Cập nhật thành công");
+                  onUpdate(response.data);
                   onClose();
-                  // Note: Parent should refresh
                 }
-              } catch (error) {
-                toast.error("Không thể cập nhật");
+              } catch (error: any) {
+                toast.error(error.message || "Không thể cập nhật");
               }
             }}
             className="w-full rounded bg-primary py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90"
@@ -369,9 +372,9 @@ function EditTablePanel({
               onClick={async () => {
                 try {
                   const response = await tableService.updateTableStatus(table.tableId, true);
-                  if (response.isSuccess) {
+                  if (response.isSuccess && table.tableId) {
                     toast.success("Đã kích hoạt bàn");
-                    onStatusChange(table.tableId, TableStatus.Available);
+                    onUpdate({ ...table, status: TableStatus.Available });
                   }
                 } catch (error) {
                   toast.error("Thao tác thất bại");
@@ -386,9 +389,9 @@ function EditTablePanel({
               onClick={async () => {
                 try {
                   const response = await tableService.updateTableStatus(table.tableId, false);
-                  if (response.isSuccess) {
+                  if (response.isSuccess && table.tableId) {
                     toast.success("Đã ngưng hoạt động bàn");
-                    onStatusChange(table.tableId, TableStatus.OutOfService);
+                    onUpdate({ ...table, status: TableStatus.OutOfService });
                   }
                 } catch (error) {
                   toast.error("Thao tác thất bại");
