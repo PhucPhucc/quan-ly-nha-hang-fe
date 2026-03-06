@@ -1,12 +1,11 @@
 import { ApiResponse } from "@/types/Api";
-import { Area, Table } from "@/types/Table-Layout";
+import { Area, AreaType, Table } from "@/types/Table-Layout";
 
 import { apiFetch } from "./api";
 
 // === REQUEST TYPES ===
 
 export interface CreateTableRequest {
-  tableCode: string;
   capacity: number;
   areaId: string;
 }
@@ -18,10 +17,16 @@ export interface UpdateTableRequest {
 export interface CreateAreaRequest {
   name: string;
   codePrefix: string;
+  type: AreaType;
+  description?: string;
 }
 
 export interface UpdateAreaRequest {
+  areaId: string;
   name: string;
+  codePrefix: string;
+  type: AreaType;
+  description?: string;
 }
 
 // === SERVICE ===
@@ -36,12 +41,20 @@ export const tableService = {
   updateArea: (id: string, data: UpdateAreaRequest): Promise<ApiResponse<Area>> =>
     apiFetch<Area>(`/areas/${id}`, { method: "PUT", body: data }),
 
-  deactivateArea: (id: string): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/areas/${id}/deactivate`, { method: "PATCH" }),
+  updateAreaStatus: (id: string, isActive: boolean): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/areas/${id}/status`, {
+      method: "PATCH",
+      body: { isActive },
+    }),
 
   // --- TABLE ---
+  getTables: (areaId?: string): Promise<ApiResponse<Table[]>> => {
+    const url = areaId ? `/tables?areaId=${areaId}` : "/tables";
+    return apiFetch<Table[]>(url);
+  },
+
   getTablesByArea: (areaId: string): Promise<ApiResponse<Table[]>> =>
-    apiFetch<Table[]>(`/tables?areaId=${areaId}`),
+    apiFetch<Table[]>(`/tables/area/${areaId}`),
 
   createTable: (data: CreateTableRequest): Promise<ApiResponse<Table>> =>
     apiFetch<Table>("/tables", { method: "POST", body: data }),
@@ -49,6 +62,9 @@ export const tableService = {
   updateTable: (id: string, data: UpdateTableRequest): Promise<ApiResponse<Table>> =>
     apiFetch<Table>(`/tables/${id}`, { method: "PUT", body: data }),
 
-  deactivateTable: (id: string): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/tables/${id}/deactivate`, { method: "PATCH" }),
+  updateTableStatus: (id: string, isActive: boolean): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/tables/${id}/status`, {
+      method: "PATCH",
+      body: { isActive },
+    }),
 };

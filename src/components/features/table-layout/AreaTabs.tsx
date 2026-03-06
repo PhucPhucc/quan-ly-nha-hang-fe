@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function AreaTabs({ areas, selectedAreaId, onSelectArea, onManageAreas }: Props) {
-  const activeAreas = areas.filter((a) => a.status === AreaStatus.ACTIVE);
+  const activeAreas = areas.filter((a) => a.status === AreaStatus.Active);
 
   return (
     <div className="flex items-center justify-between">

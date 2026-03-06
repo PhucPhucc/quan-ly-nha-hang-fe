@@ -1,14 +1,19 @@
 export enum TableStatus {
-  AVAILABLE = 0,
-  RESERVED = 1,
-  OCCUPIED = 2,
-  CLEANING = 3,
-  OUT_OF_SERVICE = 4,
+  Available = 0,
+  Reserved = 1,
+  Occupied = 2,
+  Cleaning = 3,
+  OutOfService = 4,
 }
 
 export enum AreaStatus {
-  ACTIVE = 0,
-  INACTIVE = 1,
+  Inactive = "Inactive",
+  Active = "Active",
+}
+
+export enum AreaType {
+  Normal = "Normal",
+  VIP = "VIP",
 }
 
 export interface Table {
@@ -27,7 +32,10 @@ export interface Area {
   areaId: string; // uuid — Area_Id
   name: string; // string — VD: "Tầng 1", "Khu VIP"
   codePrefix: string; // string — VD: "T1", "T2", "VIP"
-  status: AreaStatus; // Active | Inactive (dùng chung enum)
+  description?: string;
+  status: AreaStatus; // Active | Inactive
+  type: AreaType;
+
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string | null;

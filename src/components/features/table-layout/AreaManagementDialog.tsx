@@ -2,29 +2,34 @@
 
 import { Plus, Save, Search } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { Area, AreaStatus } from "@/types/Table-Layout";
+import { tableService } from "@/services/tableService";
+import { Area, AreaStatus, AreaType } from "@/types/Table-Layout";
+
+import EditAreaDialog from "./EditAreaDialog";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   areas: Area[];
+  onUpdate: (areas: Area[]) => void;
 }
 
-type AreaType = "NORMAL" | "VIP" | "OUTDOOR";
-
-export default function AreaManagementDialog({ open, onClose, areas: initialAreas }: Props) {
-  const [areas, setAreas] = useState<Area[]>(initialAreas);
+export default function AreaManagementDialog({ open, onClose, areas, onUpdate }: Props) {
   const [search, setSearch] = useState("");
 
   // Add form
   const [newName, setNewName] = useState("");
   const [newCode, setNewCode] = useState("");
-  const [newType, setNewType] = useState<AreaType>("NORMAL");
+  const [newType, setNewType] = useState<AreaType>(AreaType.Normal);
   const [newDesc, setNewDesc] = useState("");
+
+  const [editingArea, setEditingArea] = useState<Area | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const filtered = areas.filter(
     (a) =>
@@ -32,34 +37,57 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
       a.codePrefix.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAdd = () => {
-    if (!newName.trim() || !newCode.trim()) return;
-    setAreas((prev) => [
-      ...prev,
-      {
-        areaId: Date.now().toString(),
-        name: newName.trim(),
-        codePrefix: newCode.trim().toUpperCase(),
-        status: AreaStatus.ACTIVE,
-      },
-    ]);
-    setNewName("");
-    setNewCode("");
-    setNewType("NORMAL");
-    setNewDesc("");
+  const refreshAreas = async () => {
+    try {
+      const response = await tableService.getAreas();
+      if (response.isSuccess && response.data) {
+        onUpdate(response.data);
+      }
+    } catch (error) {
+      console.error("Failed to refresh areas:", error);
+    }
   };
 
-  const handleToggle = (areaId: string) => {
-    setAreas((prev) =>
-      prev.map((a) =>
-        a.areaId === areaId
-          ? {
-              ...a,
-              status: a.status === AreaStatus.ACTIVE ? AreaStatus.INACTIVE : AreaStatus.ACTIVE,
-            }
-          : a
-      )
-    );
+  const handleAdd = async () => {
+    if (!newName.trim() || !newCode.trim()) return;
+    try {
+      const response = await tableService.createArea({
+        name: newName.trim(),
+        codePrefix: newCode.trim().toUpperCase(),
+        type: newType,
+        description: newDesc.trim() || undefined,
+      });
+
+      if (response.isSuccess) {
+        toast.success(UI_TEXT.COMMON.UPDATE_SUCCESS);
+        await refreshAreas();
+        setNewName("");
+        setNewCode("");
+        setNewType(AreaType.Normal);
+        setNewDesc("");
+      }
+    } catch (error) {
+      console.error("Failed to add area:", error);
+      toast.error(UI_TEXT.COMMON.UPDATE_ERROR);
+    }
+  };
+
+  const handleToggle = async (areaId: string, currentIsActive: boolean) => {
+    try {
+      const response = await tableService.updateAreaStatus(areaId, !currentIsActive);
+      if (response.isSuccess) {
+        toast.success(UI_TEXT.COMMON.UPDATE_SUCCESS);
+        await refreshAreas();
+      }
+    } catch (error) {
+      console.error("Failed to toggle area:", error);
+      toast.error(UI_TEXT.COMMON.UPDATE_ERROR);
+    }
+  };
+
+  const handleEditClick = (area: Area) => {
+    setEditingArea(area);
+    setEditDialogOpen(true);
   };
 
   return (
@@ -84,10 +112,6 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90">
-              <Plus className="h-4 w-4" />
-              {UI_TEXT.TABLE.ADD_AREA}
-            </button>
           </div>
 
           {/* Table */}
@@ -114,8 +138,8 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {filtered.map((area) => {
-                  const isActive = area.status === AreaStatus.ACTIVE;
-                  const isVip = area.codePrefix.toUpperCase() === "VIP";
+                  const isActive = area.status === AreaStatus.Active;
+                  const isVip = area.type === AreaType.VIP;
 
                   return (
                     <tr
@@ -133,13 +157,13 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                       <td className="px-4 py-3">
                         {isVip ? (
                           <span className="inline-flex items-center rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800">
-                            VIP
+                            {UI_TEXT.TABLE.TYPE_VIP}
                           </span>
                         ) : (
                           <span
                             className={`inline-flex items-center rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium ${isActive ? "text-slate-800" : "text-slate-600 opacity-70"}`}
                           >
-                            NORMAL
+                            {UI_TEXT.TABLE.TYPE_NORMAL}
                           </span>
                         )}
                       </td>
@@ -161,23 +185,26 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-3">
-                          <button className="text-xs font-medium uppercase tracking-wide text-slate-500 transition-colors hover:text-primary">
-                            SỬA
+                          <button
+                            onClick={() => handleEditClick(area)}
+                            className="text-xs font-medium uppercase tracking-wide text-slate-500 transition-colors hover:text-primary"
+                          >
+                            {UI_TEXT.BUTTON.EDIT.toUpperCase()}
                           </button>
                           <span className="text-slate-300">|</span>
                           {isActive ? (
                             <button
-                              onClick={() => handleToggle(area.areaId)}
+                              onClick={() => handleToggle(area.areaId, true)}
                               className="text-xs font-medium uppercase tracking-wide text-danger transition-colors hover:text-red-700"
                             >
-                              DỪNG
+                              {UI_TEXT.TABLE.DEACTIVATE.toUpperCase()}
                             </button>
                           ) : (
                             <button
-                              onClick={() => handleToggle(area.areaId)}
+                              onClick={() => handleToggle(area.areaId, false)}
                               className="text-xs font-medium uppercase tracking-wide text-blue-600 transition-colors hover:text-blue-800"
                             >
-                              KÍCH HOẠT
+                              {UI_TEXT.TABLE.ACTIVATE.toUpperCase()}
                             </button>
                           )}
                         </div>
@@ -194,7 +221,7 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
             <div className="mb-4 flex items-center gap-2">
               <Plus className="h-5 w-5 text-primary" />
               <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700">
-                Thêm khu vực mới
+                {UI_TEXT.TABLE.ADD_AREA}
               </h3>
             </div>
 
@@ -205,7 +232,7 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                 </label>
                 <input
                   type="text"
-                  placeholder="Ví dụ: Tầng 4"
+                  placeholder={UI_TEXT.TABLE.AREA_NAME_PLACEHOLDER}
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   className="block h-9 w-full rounded border border-slate-200 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -217,7 +244,7 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                 </label>
                 <input
                   type="text"
-                  placeholder="TANG4"
+                  placeholder={UI_TEXT.TABLE.AREA_CODE_PLACEHOLDER}
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value.toUpperCase())}
                   className="block h-9 w-full rounded border border-slate-200 px-3 text-sm uppercase shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -235,9 +262,8 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                   onChange={(e) => setNewType(e.target.value as AreaType)}
                   className="block h-9 w-full rounded border border-slate-200 px-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
-                  <option value="NORMAL">NORMAL</option>
-                  <option value="VIP">VIP</option>
-                  <option value="OUTDOOR">OUTDOOR</option>
+                  <option value={AreaType.Normal}>{UI_TEXT.TABLE.TYPE_NORMAL}</option>
+                  <option value={AreaType.VIP}>{UI_TEXT.TABLE.TYPE_VIP}</option>
                 </select>
               </div>
               <div className="space-y-1">
@@ -246,7 +272,7 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                 </label>
                 <input
                   type="text"
-                  placeholder="Mô tả ngắn..."
+                  placeholder={UI_TEXT.TABLE.AREA_DESC_PLACEHOLDER}
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                   className="block h-9 w-full rounded border border-slate-200 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -259,7 +285,7 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                 onClick={onClose}
                 className="rounded-lg border border-slate-200 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
               >
-                Hủy bỏ
+                {UI_TEXT.COMMON.CANCEL}
               </button>
               <button
                 onClick={handleAdd}
@@ -267,11 +293,22 @@ export default function AreaManagementDialog({ open, onClose, areas: initialArea
                 className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white shadow-md transition-all hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Save className="h-4 w-4" />
-                Lưu khu vực
+                {UI_TEXT.TABLE.SAVE_CHANGES}
               </button>
             </div>
           </div>
         </div>
+
+        {/* Edit Area Dialog */}
+        <EditAreaDialog
+          open={editDialogOpen}
+          onClose={() => {
+            setEditDialogOpen(false);
+            setEditingArea(null);
+          }}
+          area={editingArea}
+          onSuccess={refreshAreas}
+        />
       </DialogContent>
     </Dialog>
   );

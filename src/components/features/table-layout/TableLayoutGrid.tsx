@@ -2,10 +2,12 @@
 
 import { Plus, Save, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { tableService } from "@/services/tableService";
 import { Area, Table, TableStatus } from "@/types/Table-Layout";
 
 import AddTableDialog from "./AddTableDialog";
@@ -16,7 +18,7 @@ interface Props {
   tables: Table[];
 }
 
-const isActive = (s: TableStatus) => s !== TableStatus.OUT_OF_SERVICE;
+const isActive = (s: TableStatus) => s !== TableStatus.OutOfService;
 
 export default function TableLayoutGrid({ area, tables }: Props) {
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
@@ -44,9 +46,9 @@ export default function TableLayoutGrid({ area, tables }: Props) {
     // Chỉ cho phép chỉnh sửa bàn có trạng thái ...AVAILABLE, OUT_OF_SERVICE, CLEANING trong edit mode
     if (
       isEditMode &&
-      table.status !== TableStatus.AVAILABLE &&
-      table.status !== TableStatus.OUT_OF_SERVICE &&
-      table.status !== TableStatus.CLEANING
+      table.status !== TableStatus.Available &&
+      table.status !== TableStatus.OutOfService &&
+      table.status !== TableStatus.Cleaning
     ) {
       return;
     }
@@ -72,23 +74,23 @@ export default function TableLayoutGrid({ area, tables }: Props) {
         </div>
         <div className="flex items-center gap-6 text-xs font-medium text-slate-600">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm border border-(--color-table-available) bg-(--color-table-available)/60" />
+            <span className="h-2 w-3 rounded-sm border border-table-available bg-table-available/60" />
             {UI_TEXT.TABLE.STATUS_AVAILABLE}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm border border-(--color-table-reserved) bg-(--color-table-reserved)/60" />
+            <span className="h-2 w-3 rounded-sm border border-table-reserved bg-table-reserved/60" />
             {UI_TEXT.TABLE.STATUS_RESERVED}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm border border-(--color-table-occupied) bg-(--color-table-occupied)/60" />
+            <span className="h-2 w-3 rounded-sm border border-table-occupied bg-table-occupied/60" />
             {UI_TEXT.TABLE.STATUS_OCCUPIED}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm border border-(--color-table-cleaning) bg-(--color-table-cleaning)/60" />
+            <span className="h-2 w-3 rounded-sm border border-table-cleaning bg-table-cleaning/60" />
             {UI_TEXT.TABLE.STATUS_CLEANING}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-3 rounded-sm border border-(--color-table-out-of-service) bg-(--color-table-out-of-service)" />
+            <span className="h-2 w-3 rounded-sm border border-slate-300 bg-slate-100" />
             {UI_TEXT.TABLE.STATUS_OUT_OF_SERVICE}
           </span>
         </div>
@@ -184,15 +186,25 @@ export default function TableLayoutGrid({ area, tables }: Props) {
           <AddTableDialog
             open={addDialogOpen}
             onOpenChange={setAddDialogOpen}
-            onCreate={async ({ tableCode, capacity }) => {
-              const newTable: Table = {
-                tableId: Date.now().toString(),
-                tableCode,
-                capacity,
-                status: TableStatus.AVAILABLE,
-                areaId: area.areaId,
-              };
-              setLocalTables((prev) => [...prev, newTable]);
+            onCreate={async ({ capacity }) => {
+              try {
+                const response = await tableService.createTable({
+                  capacity,
+                  areaId: area.areaId,
+                });
+
+                if (response.isSuccess) {
+                  toast.success("Thêm bàn thành công");
+                  // Refresh tables
+                  const refreshRes = await tableService.getTablesByArea(area.areaId);
+                  if (refreshRes.isSuccess && refreshRes.data) {
+                    setLocalTables(refreshRes.data);
+                  }
+                }
+              } catch (error) {
+                console.error("Failed to create table:", error);
+                toast.error("Không thể thêm bàn");
+              }
             }}
           />
           <div
@@ -333,20 +345,57 @@ function EditTablePanel({
 
         {/* Buttons */}
         <div className="space-y-2 pt-2">
-          <button className="w-full rounded bg-primary py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90">
+          <button
+            onClick={async () => {
+              try {
+                const response = await tableService.updateTable(table.tableId, { capacity });
+                if (response.isSuccess) {
+                  toast.success("Cập nhật thành công");
+                  onClose();
+                  // Note: Parent should refresh
+                }
+              } catch (error) {
+                toast.error("Không thể cập nhật");
+              }
+            }}
+            className="w-full rounded bg-primary py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90"
+          >
             <Save className="mr-1.5 inline h-4 w-4" />
             {UI_TEXT.COMMON.SAVE}
           </button>
           {/* status-specific action */}
-          {table.status === TableStatus.CLEANING || table.status === TableStatus.OUT_OF_SERVICE ? (
+          {table.status === TableStatus.Cleaning || table.status === TableStatus.OutOfService ? (
             <button
-              onClick={() => onStatusChange(table.tableId, TableStatus.AVAILABLE)}
+              onClick={async () => {
+                try {
+                  const response = await tableService.updateTableStatus(table.tableId, true);
+                  if (response.isSuccess) {
+                    toast.success("Đã kích hoạt bàn");
+                    onStatusChange(table.tableId, TableStatus.Available);
+                  }
+                } catch (error) {
+                  toast.error("Thao tác thất bại");
+                }
+              }}
               className="flex w-full items-center justify-center gap-2 rounded border border-green-200 py-2 text-sm font-bold text-green-600 hover:bg-green-50"
             >
               {UI_TEXT.TABLE.ACTIVATE}
             </button>
           ) : (
-            <button className="flex w-full items-center justify-center gap-2 rounded border border-red-200 py-2 text-sm font-bold text-red-600 hover:bg-red-50">
+            <button
+              onClick={async () => {
+                try {
+                  const response = await tableService.updateTableStatus(table.tableId, false);
+                  if (response.isSuccess) {
+                    toast.success("Đã ngưng hoạt động bàn");
+                    onStatusChange(table.tableId, TableStatus.OutOfService);
+                  }
+                } catch (error) {
+                  toast.error("Thao tác thất bại");
+                }
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded border border-red-200 py-2 text-sm font-bold text-red-600 hover:bg-red-50"
+            >
               {UI_TEXT.TABLE.DEACTIVATE}
             </button>
           )}

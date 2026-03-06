@@ -11,18 +11,18 @@ interface Props {
 }
 
 const statusLabel: Record<TableStatus, string> = {
-  [TableStatus.AVAILABLE]: "Trống",
-  [TableStatus.RESERVED]: "Đặt trước",
-  [TableStatus.OCCUPIED]: "Đang dùng",
-  [TableStatus.CLEANING]: "Đang dọn",
-  [TableStatus.OUT_OF_SERVICE]: "Tạm ngưng",
+  [TableStatus.Available]: "Trống",
+  [TableStatus.Reserved]: "Đặt trước",
+  [TableStatus.Occupied]: "Đang dùng",
+  [TableStatus.Cleaning]: "Đang dọn",
+  [TableStatus.OutOfService]: "Tạm ngưng",
 };
 
-const canOrder = (s: TableStatus) => s === TableStatus.AVAILABLE;
+const canOrder = (s: TableStatus) => s === TableStatus.Available;
 
 export default function TableInfoPopover({ table, onClose }: Props) {
   const router = useRouter();
-  const isActive = table.status !== TableStatus.OUT_OF_SERVICE;
+  const isActive = table.status !== TableStatus.OutOfService;
 
   return (
     <div className="absolute left-full top-1/2 z-50 ml-4 w-64 -translate-y-1/2 rounded-lg border border-slate-200 bg-white p-4 shadow-xl">

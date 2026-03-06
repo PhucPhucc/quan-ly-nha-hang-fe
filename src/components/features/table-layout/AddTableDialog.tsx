@@ -4,24 +4,20 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 interface AddTableDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreate: (data: { tableCode: string; capacity: number }) => Promise<void>;
+  onCreate: (data: { capacity: number }) => Promise<void>;
 }
 
 export default function AddTableDialog({ open, onOpenChange, onCreate }: AddTableDialogProps) {
-  const [tableCode, setTableCode] = useState("");
   const [capacity, setCapacity] = useState(4);
 
   const handleSubmit = async () => {
-    if (!tableCode.trim()) return;
-    await onCreate({ tableCode: tableCode.trim(), capacity });
+    await onCreate({ capacity });
     onOpenChange(false);
-    setTableCode("");
     setCapacity(4);
   };
 
@@ -33,18 +29,6 @@ export default function AddTableDialog({ open, onOpenChange, onCreate }: AddTabl
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-600">
-              {UI_TEXT.TABLE.TABLE_CODE}
-            </label>
-            <Input
-              readOnly
-              value={tableCode}
-              onChange={(e) => setTableCode(e.target.value)}
-              placeholder="(Tự động)"
-            />
-          </div>
-
           <div className="space-y-2">
             <label className="block text-xs font-bold text-slate-600">
               {UI_TEXT.TABLE.SEAT_COUNT}

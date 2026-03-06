@@ -13,47 +13,55 @@ interface Props {
 }
 
 // Active = mọi trạng thái trừ OUT_OF_SERVICE
-const isActive = (status: TableStatus) => status !== TableStatus.OUT_OF_SERVICE;
+const isActive = (status: TableStatus) => status !== TableStatus.OutOfService;
 
 // Số indicator ghế ở trên/dưới: 3 cho capacity ≥ 4, ngược lại 2
 const getChairCount = (capacity: number) => (capacity >= 4 ? 3 : 2);
 
 // Màu card theo status (view mode)
 const statusCardStyle: Record<TableStatus, string> = {
-  [TableStatus.AVAILABLE]: "bg-table-available/15 border-table-available",
-  [TableStatus.RESERVED]: "bg-table-reserved/15 border-table-reserved",
-  [TableStatus.OCCUPIED]: "bg-table-occupied/15 border-table-occupied",
-  [TableStatus.CLEANING]: "bg-table-cleaning/15 border-table-cleaning",
-  [TableStatus.OUT_OF_SERVICE]:
+  [TableStatus.Available]: "bg-table-available/15 border-table-available",
+  [TableStatus.Reserved]: "bg-table-reserved/15 border-table-reserved",
+  [TableStatus.Occupied]: "bg-table-occupied/15 border-table-occupied",
+  [TableStatus.Cleaning]: "bg-table-cleaning/15 border-table-cleaning",
+  [TableStatus.OutOfService]:
     "bg-neutral-100 border-slate-200 cursor-not-allowed opacity-60 grayscale",
 };
 
+// Default fallback style
+const DEFAULT_CARD_STYLE = "bg-slate-50 border-slate-200";
+
 // Màu text mã bàn theo status
 const statusTextStyle: Record<TableStatus, string> = {
-  [TableStatus.AVAILABLE]: "text-[var(--color-table-available)]",
-  [TableStatus.RESERVED]: "text-[var(--color-table-reserved)]",
-  [TableStatus.OCCUPIED]: "text-[var(--color-table-occupied)]",
-  [TableStatus.CLEANING]: "text-[var(--color-table-cleaning)]",
-  [TableStatus.OUT_OF_SERVICE]: "text-slate-400",
+  [TableStatus.Available]: "text-table-available",
+  [TableStatus.Reserved]: "text-table-reserved",
+  [TableStatus.Occupied]: "text-table-occupied",
+  [TableStatus.Cleaning]: "text-table-cleaning",
+  [TableStatus.OutOfService]: "text-slate-400",
 };
+
+const DEFAULT_TEXT_STYLE = "text-slate-600";
 
 // Label trạng thái
 const statusLabel: Record<TableStatus, string> = {
-  [TableStatus.AVAILABLE]: "Trống",
-  [TableStatus.RESERVED]: "Đặt trước",
-  [TableStatus.OCCUPIED]: "Đang dùng",
-  [TableStatus.CLEANING]: "Đang dọn",
-  [TableStatus.OUT_OF_SERVICE]: "Tạm ngưng",
+  [TableStatus.Available]: "Trống",
+  [TableStatus.Reserved]: "Đặt trước",
+  [TableStatus.Occupied]: "Đang dùng",
+  [TableStatus.Cleaning]: "Đang dọn",
+  [TableStatus.OutOfService]: "Tạm ngưng",
 };
 
 // Màu ghế indicator theo status
 const statusChairStyle: Record<TableStatus, string> = {
-  [TableStatus.AVAILABLE]: "bg-[var(--color-table-available)]/60",
-  [TableStatus.RESERVED]: "bg-[var(--color-table-reserved)]/60",
-  [TableStatus.OCCUPIED]: "bg-[var(--color-table-occupied)]/60",
-  [TableStatus.CLEANING]: "bg-[var(--color-table-cleaning)]/60",
-  [TableStatus.OUT_OF_SERVICE]: "bg-slate-300",
+  [TableStatus.Available]: "bg-table-available/60",
+  [TableStatus.Reserved]: "bg-table-reserved/60",
+  [TableStatus.Occupied]: "bg-table-occupied/60",
+  [TableStatus.Cleaning]: "bg-table-cleaning/60",
+  [TableStatus.OutOfService]: "bg-slate-300",
 };
+
+const DEFAULT_CHAIR_STYLE = "bg-slate-300";
+const DEFAULT_LABEL = "Không xác định";
 
 function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
   const active = isActive(table.status);
@@ -71,7 +79,7 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
       : isEditMode
         ? "cursor-pointer hover:scale-105"
         : "cursor-default",
-    statusCardStyle[table.status],
+    statusCardStyle[table.status] || DEFAULT_CARD_STYLE,
     isSelected && !disabled && "scale-105 ring-2 ring-primary ring-offset-1"
   );
 
@@ -88,24 +96,30 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
           {chairs.map((_, i) => (
             <div
               key={`t${i}`}
-              className={clsx("h-1 w-3 rounded-[1px]", statusChairStyle[table.status])}
+              className={clsx(
+                "h-1 w-3 rounded-[1px]",
+                statusChairStyle[table.status] || DEFAULT_CHAIR_STYLE
+              )}
             />
           ))}
         </div>
 
         <span
-          className={clsx("text-base font-black tracking-tight", statusTextStyle[table.status])}
+          className={clsx(
+            "text-base font-black tracking-tight",
+            statusTextStyle[table.status] || DEFAULT_TEXT_STYLE
+          )}
         >
           {table.tableCode}
         </span>
         <span
           className={clsx(
             "mt-1 text-[10px] font-bold uppercase",
-            statusTextStyle[table.status],
+            statusTextStyle[table.status] || DEFAULT_TEXT_STYLE,
             "opacity-60"
           )}
         >
-          {statusLabel[table.status]} · {table.capacity} ghế
+          {statusLabel[table.status] || DEFAULT_LABEL} · {table.capacity} ghế
         </span>
 
         {/* Ghế dưới */}
@@ -113,7 +127,10 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
           {chairs.map((_, i) => (
             <div
               key={`b${i}`}
-              className={clsx("h-1 w-3 rounded-[1px]", statusChairStyle[table.status])}
+              className={clsx(
+                "h-1 w-3 rounded-[1px]",
+                statusChairStyle[table.status] || DEFAULT_CHAIR_STYLE
+              )}
             />
           ))}
         </div>
