@@ -13,9 +13,26 @@ export const AUTH = {
   FORGOT_PASSWORD_DESC: "Vui lòng nhập Mã nhân viên của bạn để khôi phục mật khẩu.",
   FORGOT_PASSWORD_PLACEHOLDER: "Ví dụ: WA001",
   SEND_REQUEST: "Gửi yêu cầu",
+  SENDING: "Đang gửi...",
   BACK_TO_LOGIN: "Quay lại đăng nhập",
   LOGGING_OUT: "Đang đăng xuất...",
   ERROR_INVALID_CREDENTIALS: "Sai mã nhân viên hoặc mật khẩu",
+  RESET_PASSWORD: {
+    TITLE: "Đặt lại mật khẩu",
+    DESC: "Vui lòng nhập mật khẩu mới cho tài khoản của bạn.",
+    INVALID_TOKEN: "Token không hợp lệ hoặc đã hết hạn.",
+    MISMATCH: "Mật khẩu xác nhận không khớp.",
+    SUCCESS: "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.",
+    FAILED: "Đặt lại mật khẩu thất bại.",
+    ERROR_TITLE: "Lỗi!",
+    TOKEN_MISSING: "Token khôi phục mật khẩu không tồn tại hoặc không hợp lệ.",
+    REQUEST_NEW: "Yêu cầu mã mới",
+    NEW_PASSWORD: "Mật khẩu mới",
+    NEW_PASSWORD_PLACEHOLDER: "Nhập mật khẩu mới",
+    CONFIRM_NEW_PASSWORD: "Xác nhận mật khẩu mới",
+    CONFIRM_NEW_PASSWORD_PLACEHOLDER: "Nhập lại mật khẩu mới",
+    UPDATE_BUTTON: "Cập nhật mật khẩu",
+  },
 };
 
 export const CHANGE_PASSWORD = {
