@@ -34,6 +34,7 @@ const HeaderBar = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((seg) => seg);
   const segment = pathSegments[pathSegments.length - 1];
+  const NOTIF_COUNT = "3";
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-md transition-all">
       <div className="flex items-center">
@@ -69,7 +70,7 @@ const HeaderBar = () => {
             className="absolute right-1 top-1 h-4 w-4 border-2 border-background p-0 flex items-center justify-center text-[8px]"
             variant="destructive"
           >
-            3
+            {NOTIF_COUNT}
           </Badge>
         </Button>
 

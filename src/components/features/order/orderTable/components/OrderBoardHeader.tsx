@@ -77,7 +77,9 @@ const OrderBoardHeader = () => {
               className="h-11 rounded-2xl px-4 gap-2 border-muted-foreground/20 shadow-sm"
             >
               <SlidersHorizontal className="size-4" />
-              <span className="hidden sm:inline font-bold text-xs uppercase">Bộ lọc</span>
+              <span className="hidden sm:inline font-bold text-xs uppercase">
+                {UI_TEXT.COMMON.FILTER}
+              </span>
               {selectedStatuses.length > 0 && (
                 <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center rounded-full">
                   {selectedStatuses.length}
@@ -87,7 +89,9 @@ const OrderBoardHeader = () => {
           </PopoverTrigger>
           <PopoverContent className="w-120 p-0 rounded-2xl shadow-2xl overflow-hidden" align="end">
             <div className="bg-primary/5 px-4 py-3 border-b flex items-center justify-between">
-              <p className="font-black text-[11px] text-primary uppercase">Bộ lọc nâng cao</p>
+              <p className="font-black text-[11px] text-primary uppercase">
+                {UI_TEXT.ORDER.BOARD.ADVANCED_FILTER}
+              </p>
               <Button
                 variant="outline"
                 size="sm"
@@ -103,7 +107,7 @@ const OrderBoardHeader = () => {
                 {(activeTab === "all" || activeTab === "dine_in") && (
                   <div className="space-y-3 flex-1">
                     <span className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
-                      Tại bàn
+                      {UI_TEXT.ORDER.BOARD.AT_TABLE}
                     </span>
                     <div className="grid grid-cols-1 gap-1">
                       {DINE_IN_STATUSES.map((s) => (
@@ -134,7 +138,7 @@ const OrderBoardHeader = () => {
                 {(activeTab === "all" || activeTab === "takeaway") && (
                   <div className="space-y-3 flex-1">
                     <span className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
-                      Trạng Thái
+                      {UI_TEXT.ORDER.BOARD.STATUS_LABEL}
                     </span>
                     <div className="grid grid-cols-1 gap-1">
                       {TAKEAWAY_STATUSES.map((s) => (
@@ -165,15 +169,15 @@ const OrderBoardHeader = () => {
 
               <div className="space-y-2 border-t pt-4">
                 <span className="text-[10px] font-black text-muted-foreground uppercase">
-                  Sắp xếp theo
+                  {UI_TEXT.ORDER.BOARD.SORT_BY}
                 </span>
                 <Select value={sortOrder} onValueChange={setSortOrder}>
                   <SelectTrigger className="w-full h-10 rounded-xl bg-muted/20 text-xs font-bold">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newest">Cập nhật mới nhất</SelectItem>
-                    <SelectItem value="oldest">Cập nhật cũ nhất</SelectItem>
+                    <SelectItem value="newest">{UI_TEXT.ORDER.BOARD.LATEST_UPDATE}</SelectItem>
+                    <SelectItem value="oldest">{UI_TEXT.ORDER.BOARD.OLDEST_UPDATE}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -193,7 +197,8 @@ const OrderBoardHeader = () => {
                 {dateRange?.from ? (
                   dateRange.to ? (
                     <>
-                      {format(dateRange.from, "dd/MM")} - {format(dateRange.to, "dd/MM/yyyy")}
+                      {format(dateRange.from, "dd/MM")} {UI_TEXT.COMMON.MINUS}{" "}
+                      {format(dateRange.to, "dd/MM/yyyy")}
                     </>
                   ) : (
                     format(dateRange.from, "dd/MM/yyyy")
@@ -227,7 +232,7 @@ const OrderBoardHeader = () => {
             className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 flex justify-center items-center py-1 rounded-xl gap-2 font-semibold text-xs uppercase"
           >
             <LayoutGrid className="size-4" />
-            <span>Tổng quan</span>
+            <span>{UI_TEXT.ORDER.BOARD.OVERVIEW}</span>
             <Badge variant="secondary" className="ml-1 scale-90">
               {stats.total}
             </Badge>
@@ -237,7 +242,7 @@ const OrderBoardHeader = () => {
             className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 rounded-xl gap-2 font-semibold text-xs uppercase"
           >
             <Armchair className="size-4" />
-            <span>Tại bàn</span>
+            <span>{UI_TEXT.ORDER.BOARD.AT_TABLE}</span>
             <Badge variant="secondary" className="ml-1 scale-90">
               {stats.dineIn}
             </Badge>
@@ -247,7 +252,7 @@ const OrderBoardHeader = () => {
             className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 rounded-xl gap-2 font-semibold text-xs uppercase"
           >
             <ShoppingCart className="size-4" />
-            <span>Mang đi</span>
+            <span>{UI_TEXT.ORDER.BOARD.TAKEAWAY}</span>
             <Badge variant="secondary" className="ml-1 scale-90">
               {stats.takeaway}
             </Badge>

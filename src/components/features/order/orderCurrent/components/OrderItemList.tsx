@@ -27,31 +27,43 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
       case OrderItemStatus.Preparing:
         return (
           <Badge className="bg-orange-500 hover:bg-orange-600 text-[10px] py-0">
-            Đang chuẩn bị
+            {UI_TEXT.ORDER.CURRENT.STATUS_PREP}
           </Badge>
         );
       case OrderItemStatus.Cooking:
-        return <Badge className="bg-blue-500 hover:bg-blue-600 text-[10px] py-0">Đang nấu</Badge>;
+        return (
+          <Badge className="bg-blue-500 hover:bg-blue-600 text-[10px] py-0">
+            {UI_TEXT.ORDER.CURRENT.STATUS_COOKING}
+          </Badge>
+        );
       case OrderItemStatus.Ready:
         return (
-          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-[10px] py-0">Sẵn sàng</Badge>
+          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-[10px] py-0">
+            {UI_TEXT.ORDER.CURRENT.STATUS_READY}
+          </Badge>
         );
       case OrderItemStatus.Completed:
-        return <Badge className="bg-slate-500 hover:bg-slate-600 text-[10px] py-0">Hoàn tất</Badge>;
+        return (
+          <Badge className="bg-slate-500 hover:bg-slate-600 text-[10px] py-0">
+            {UI_TEXT.ORDER.CURRENT.STATUS_DONE}
+          </Badge>
+        );
       default:
         return null;
     }
   };
 
   const nomalizedPrice = (price: number, quantity: number) => {
-    return `${price.toLocaleString()}đ x ${quantity} = ${(price * quantity).toLocaleString()}đ`;
+    return `${price.toLocaleString()}${UI_TEXT.COMMON.CURRENCY} x ${quantity} = ${(price * quantity).toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`;
   };
+  const BULLET = "• ";
+  const PLUS = "+";
   return (
     <ScrollArea className="flex-1 overflow-auto" type="always">
       <div className="py-4 space-y-4 px-2">
         {items.length === 0 && remoteItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground italic text-sm text-center">
-            Chưa có món nào trong đơn hàng
+            {UI_TEXT.ORDER.CURRENT.EMPTY}
           </div>
         ) : (
           <>
@@ -59,7 +71,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
             {items.map((item) => (
               <div
                 key={item.cartItemKey}
-                className="group relative flex flex-col gap-2 p-3 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all"
+                className="group relative flex flex-col gap-2 p-3 rounded-xl border border-primary/20 bg-primary/5 transition-all"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -78,9 +90,16 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                               key={val.optionItemId}
                               className="text-[10px] text-muted-foreground flex items-center justify-between"
                             >
-                              <span>• {val.label}</span>
+                              <span>
+                                {BULLET}
+                                {val.label}
+                              </span>
                               {val.extraPrice > 0 && (
-                                <span>+{val.extraPrice.toLocaleString()}đ</span>
+                                <span>
+                                  {PLUS}
+                                  {val.extraPrice.toLocaleString()}
+                                  {UI_TEXT.COMMON.CURRENCY}
+                                </span>
                               )}
                             </p>
                           ))}
@@ -94,8 +113,10 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                     )}
                   </div>
                   <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => onRemoveItem(item.cartItemKey)}
-                    className="p-1.5 text-muted-foreground hover:text-danger hover:bg-danger/10 rounded-lg transition-all"
+                    className="p-1.5 text-primary hover:text-danger hover:bg-danger/10 rounded-lg transition-all"
                   >
                     <Trash2 className="size-4" />
                   </Button>
@@ -106,7 +127,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                     variant="ghost"
                     className="text-[10px] font-bold px-2 py-0.5 border-none bg-order-new/15 text-order-new"
                   >
-                    Mới
+                    {UI_TEXT.ORDER.CURRENT.NEW}
                   </Badge>
 
                   <div className="flex items-center bg-background rounded-lg border border-border shadow-sm">

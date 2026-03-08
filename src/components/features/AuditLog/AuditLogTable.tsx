@@ -46,10 +46,10 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>{UI_TEXT.AUDIT_LOG.ACTION}</TableHead>
-            <TableHead>Actor (ActorID)</TableHead>
+            <TableHead>{UI_TEXT.AUDIT_LOG.ACTOR_LABEL}</TableHead>
             <TableHead>{UI_TEXT.AUDIT_LOG.CREATED_AT}</TableHead>
             <TableHead className="hidden md:table-cell">{UI_TEXT.AUDIT_LOG.REASON}</TableHead>
-            <TableHead className="text-right">Metadata</TableHead>
+            <TableHead className="text-right">{UI_TEXT.AUDIT_LOG.METADATA_LABEL}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -114,7 +114,7 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
                             <div className="bg-card text-card-foreground">
                               <div className="px-4 py-2 bg-muted/50 border-b flex items-center justify-between">
                                 <span className="text-xs font-semibold uppercase tracking-wider opacity-70">
-                                  Chi tiết thay đổi
+                                  {UI_TEXT.AUDIT_LOG.CHANGE_DETAILS}
                                 </span>
                               </div>
                               <div className="p-4 space-y-4 max-h-md overflow-auto">
@@ -132,7 +132,7 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
                                           {parsed.OldValue && (
                                             <div className="space-y-1">
                                               <p className="text-[10px] font-bold text-destructive uppercase">
-                                                Trước khi thay đổi
+                                                {UI_TEXT.AUDIT_LOG.BEFORE_CHANGE}
                                               </p>
                                               <pre className="text-xs bg-destructive/5 p-3 rounded-md border border-destructive/10 whitespace-pre-wrap font-mono text-destructive-foreground">
                                                 {typeof parsed.OldValue === "string"
@@ -144,7 +144,7 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
                                           {parsed.NewValue && (
                                             <div className="space-y-1">
                                               <p className="text-[10px] font-bold text-primary uppercase">
-                                                Sau khi thay đổi
+                                                {UI_TEXT.AUDIT_LOG.AFTER_CHANGE}
                                               </p>
                                               <pre className="text-xs bg-primary/5 p-3 rounded-md border border-primary/10 whitespace-pre-wrap font-mono text-primary-foreground">
                                                 {typeof parsed.NewValue === "string"
@@ -163,7 +163,7 @@ const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
                                         {JSON.stringify(parsed, null, 2)}
                                       </pre>
                                     );
-                                  } catch (e) {
+                                  } catch {
                                     return (
                                       <pre className="text-xs bg-muted p-3 rounded-md whitespace-pre-wrap font-mono">
                                         {String(metadata)}

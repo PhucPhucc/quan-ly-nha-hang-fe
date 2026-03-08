@@ -63,10 +63,8 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
               <UserPen className="size-4 text-blue-600" />
             </div>
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.EDIT}</span>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                Cập nhật hồ sơ
-              </span>
+              <span>{UI_TEXT.EMPLOYEE.UPDATE_PROFILE}</span>
+              <span className="text-xs text-muted-foreground">{UI_TEXT.EMPLOYEE.UPDATE_INFO}</span>
             </div>
           </DropdownMenuItem>
 
@@ -81,9 +79,9 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
               <Skull className="size-4 text-amber-600" />
             </div>
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.CHANGE_ROLE}</span>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                Gán quyền hạn mới
+              <span>{UI_TEXT.EMPLOYEE.CHANGE_ROLE}</span>
+              <span className="text-xs text-muted-foreground">
+                {UI_TEXT.EMPLOYEE.CHANGE_ROLE_DESC}
               </span>
             </div>
           </DropdownMenuItem>
@@ -98,7 +96,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             <div className="flex flex-col">
               <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD}</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                Bảo mật tài khoản
+                {UI_TEXT.EMPLOYEE.ACCOUNT_SECURITY}
               </span>
             </div>
           </DropdownMenuItem>
@@ -116,7 +114,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             <div className="flex flex-col">
               <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.DELETE}</span>
               <span className="text-[10px] text-rose-400 uppercase tracking-tight">
-                Gỡ khỏi hệ thống
+                {UI_TEXT.EMPLOYEE.REMOVE_FROM_SYSTEM}
               </span>
             </div>
           </DropdownMenuItem>

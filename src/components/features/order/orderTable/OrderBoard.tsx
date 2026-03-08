@@ -37,7 +37,7 @@ const OrderBoard = () => {
             <section>
               <div className="flex items-center gap-2 my-4 px-4 text-slate-500">
                 <Armchair className="size-4" />
-                <h3 className="text-xs font-black uppercase">Khu vực bàn</h3>
+                <h3 className="text-xs font-black uppercase">{UI_TEXT.ORDER.BOARD.TABLE_ZONE}</h3>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -50,7 +50,9 @@ const OrderBoard = () => {
             <section className="mt-8">
               <div className="flex items-center gap-2 mb-4 px-2 text-slate-500">
                 <ShoppingCart className="size-4" />
-                <h3 className="text-xs font-black uppercase">Đơn mang đi</h3>
+                <h3 className="text-xs font-black uppercase">
+                  {UI_TEXT.ORDER.BOARD.TAKEAWAY_ORDERS}
+                </h3>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -61,7 +63,7 @@ const OrderBoard = () => {
                       id: o.orderId,
                       orderCode: o.orderCode,
                       status: o.status === OrderStatus.Serving ? "SERVING" : "READY",
-                      label: "Mang đi",
+                      label: UI_TEXT.ORDER.BOARD.TAKEAWAY,
                       people: 1,
                       price: new Intl.NumberFormat("vi-VN").format(o.totalAmount) + "đ",
                       elapsedTime: "5m",

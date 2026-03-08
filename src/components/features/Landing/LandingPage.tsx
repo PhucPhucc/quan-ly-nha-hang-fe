@@ -10,7 +10,7 @@ import { SolutionsSection } from "./components/SolutionsSection";
 
 export function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
+    <div className="flex min-h-screen flex-col bg-background selection:bg-primary selection:text-primary-foreground overflow-x-hidden scroll-smooth">
       <Navbar />
       <HeroSection />
       <AboutSection />

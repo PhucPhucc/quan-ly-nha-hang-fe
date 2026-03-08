@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { requestPasswordReset } from "@/services/authService";
 
 const ForgotPasswordPage = () => {
@@ -22,12 +23,12 @@ const ForgotPasswordPage = () => {
     try {
       const response = await requestPasswordReset(employeeCode);
       if (response.isSuccess) {
-        toast.success(response.data || "Yêu cầu đã được gửi. Vui lòng kiểm tra email.");
+        toast.success(response.data || UI_TEXT.COMMON.REQUEST_SENT);
       } else {
-        toast.error(response.message || "Gửi yêu cầu thất bại.");
+        toast.error(response.message || UI_TEXT.COMMON.SEND_FAILED);
       }
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
+      toast.error(UI_TEXT.COMMON.SOMETHING_WENT_WRONG);
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -39,17 +40,19 @@ const ForgotPasswordPage = () => {
       onSubmit={handleSubmit}
       className="rounded-2xl border border-primary bg-card px-5 py-6 shadow-2xl"
     >
-      <h1 className="mb-2 text-center text-3xl font-semibold">Quên mật khẩu?</h1>
+      <h1 className="mb-2 text-center text-3xl font-semibold">
+        {UI_TEXT.AUTH.FORGOT_PASSWORD_TITLE}
+      </h1>
       <p className="mb-6 text-center text-sm text-muted-foreground">
-        Vui lòng nhập Mã nhân viên của bạn để khôi phục mật khẩu.
+        {UI_TEXT.AUTH.FORGOT_PASSWORD_DESC}
       </p>
       <FieldGroup>
         <Field className="gap-1">
-          <FieldLabel htmlFor="employeeCode">Mã nhân viên</FieldLabel>
+          <FieldLabel htmlFor="employeeCode">{UI_TEXT.AUTH.EMPLOYEE_CODE}</FieldLabel>
           <Input
             id="employeeCode"
             name="employeeCode"
-            placeholder="Ví dụ: WA001"
+            placeholder={UI_TEXT.AUTH.FORGOT_PASSWORD_PLACEHOLDER}
             required
             className="border-primary"
           />
@@ -61,11 +64,11 @@ const ForgotPasswordPage = () => {
         disabled={isLoading}
         className="mt-6 w-full hover:bg-primary-hover"
       >
-        {isLoading ? "Đang gửi..." : "Gửi yêu cầu"}
+        {isLoading ? UI_TEXT.COMMON.SENDING : UI_TEXT.AUTH.SEND_REQUEST}
       </Button>
       <div className="mt-4 text-center text-sm">
         <Link href="/login" className="underline hover:text-primary-hover">
-          Quay lại đăng nhập
+          {UI_TEXT.AUTH.BACK_TO_LOGIN}
         </Link>
       </div>
     </form>

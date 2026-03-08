@@ -58,7 +58,7 @@ export function SolutionsSection() {
               </div>
               <div className="mt-8 pt-8 border-t border-border/50">
                 <span className="text-sm font-semibold text-primary flex items-center gap-2 group-hover:gap-3 transition-all">
-                  Learn more <ArrowRight className="h-4 w-4" />
+                  {UI_TEXT.LANDING.LEARN_MORE} <ArrowRight className="h-4 w-4" />
                 </span>
               </div>
             </div>

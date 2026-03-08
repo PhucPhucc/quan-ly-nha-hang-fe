@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 interface ConfirmDeleteProps {
   open: boolean;
@@ -32,7 +33,7 @@ export function ConfirmDeleteDialog({
         <div className="py-4 text-sm text-gray-500">{description}</div>
         <DialogFooter className="gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Hủy
+            {UI_TEXT.COMMON.CANCEL}
           </Button>
           <Button
             className="bg-red-600 hover:bg-red-700 text-white"
@@ -41,7 +42,7 @@ export function ConfirmDeleteDialog({
               onOpenChange(false);
             }}
           >
-            Đồng ý xóa
+            {UI_TEXT.BUTTON.CONFIRM_DELETE}
           </Button>
         </DialogFooter>
       </DialogContent>

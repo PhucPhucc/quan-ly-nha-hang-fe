@@ -114,7 +114,7 @@ export default function ChangePasswordDialog() {
         <DialogFooter className="flex justify-between gap-2">
           <DialogClose asChild>
             <Button type="reset" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {UI_TEXT.COMMON.CANCEL_EN}
             </Button>
           </DialogClose>
 

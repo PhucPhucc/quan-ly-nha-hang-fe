@@ -31,7 +31,8 @@ export function RevenueChart() {
                 style={{ height: `${(data.value / maxValue) * 100}%` }}
               >
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-slate-800 px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                  ${data.value * 10}
+                  {(data.value * 10000).toLocaleString()}
+                  {UI_TEXT.COMMON.CURRENCY}
                 </div>
               </div>
               <span className="text-muted-foreground text-xs">{data.day}</span>
@@ -41,7 +42,10 @@ export function RevenueChart() {
         <div className="mt-6 flex items-center justify-between border-t pt-4">
           <div className="flex flex-col">
             <span className="text-muted-foreground text-[10px] uppercase">{t.AVG_DAILY}</span>
-            <span className="text-lg font-bold">$1,240.00</span>
+            <span className="text-lg font-bold">
+              {(1240000).toLocaleString()}
+              {UI_TEXT.COMMON.CURRENCY}
+            </span>
           </div>
           <div className="flex flex-col text-right">
             <span className="text-muted-foreground text-[10px] uppercase">{t.PEAK_DAY}</span>

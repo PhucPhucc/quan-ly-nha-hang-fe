@@ -62,8 +62,8 @@ export default function StationSelectionPage() {
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card shadow-sm border border-border text-[10px] text-muted-foreground font-black uppercase tracking-widest">
             <div className="w-2 h-2 rounded-full bg-green-500"></div>
             <span>{UI_TEXT.KDS.STATIONS.SYSTEM_ONLINE}</span>
-            <span className="mx-1 text-slate-300">•</span>
-            <span>V2.4.0</span>
+            <span className="mx-1 text-slate-300">{UI_TEXT.COMMON.BULLET}</span>
+            <span>{UI_TEXT.KDS.VERSION}</span>
           </div>
         </div>
       </div>

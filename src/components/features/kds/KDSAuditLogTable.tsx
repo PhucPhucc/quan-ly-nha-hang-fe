@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 
+const SLASH = "/";
+const HYPHEN = "-";
+
 interface KDSAuditLogData {
   logId: string;
   time: string;
@@ -23,6 +26,9 @@ interface KDSAuditLogData {
   orderCode: string;
   orderItems: string;
   reason: string;
+  // Assuming these new fields are part of the data structure for the diff
+  oldValue?: string;
+  newValue?: string;
 }
 
 interface KDSAuditLogTableProps {
@@ -122,7 +128,7 @@ const KDSAuditLogRow = ({ log, onUndo }: KDSAuditLogRowProps) => {
         </div>
       </TableCell>
       <TableCell className="text-muted-foreground text-sm italic uppercase">
-        {log.reason || "-"}
+        {log.reason || HYPHEN}
       </TableCell>
       <TableCell className="text-right">
         {actionUpped === UI_TEXT.KDS.AUDIT.ACTION_REJECT ? (
@@ -133,7 +139,7 @@ const KDSAuditLogRow = ({ log, onUndo }: KDSAuditLogRowProps) => {
             {UI_TEXT.KDS.AUDIT.UNDO}
           </Button>
         ) : (
-          <span className="text-muted-foreground text-xs font-medium">-</span>
+          <span className="text-muted-foreground text-xs font-medium">{HYPHEN}</span>
         )}
       </TableCell>
     </TableRow>
@@ -175,23 +181,28 @@ const KDSAuditLogTable = ({
       {/* Pagination Footer */}
       {!loading && !error && totalPages > 1 && (
         <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
-          <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-            TRANG <span className="text-foreground">{currentPage}</span> / {totalPages}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-slate-500 mr-2">{UI_TEXT.KDS.PAGE}</span>
+            <div className="flex items-center justify-center min-w-[3rem] px-2 py-1 rounded-md bg-white border border-slate-200 shadow-sm">
+              <span className="text-sm font-bold text-slate-700">{currentPage}</span>
+              <span className="text-slate-400 mx-1">{SLASH}</span>
+              <span className="text-sm font-medium text-slate-500">{totalPages}</span>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="px-4 py-2 bg-card border border-border rounded-xl text-[10px] font-black uppercase tracking-tight hover:border-primary/50 disabled:opacity-30 disabled:hover:border-border transition-all shadow-sm"
+              className="h-8 shadow-sm transition-all hover:shadow-md"
             >
-              TRƯỚC
+              {UI_TEXT.KDS.PREV}
             </Button>
             <Button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage >= totalPages}
-              className="px-4 py-2 bg-card border border-border rounded-xl text-[10px] font-black uppercase tracking-tight hover:border-primary/50 disabled:opacity-30 disabled:hover:border-border transition-all shadow-sm"
+              className="h-8 shadow-sm transition-all hover:shadow-md"
             >
-              TIẾP
+              {UI_TEXT.KDS.NEXT}
             </Button>
           </div>
         </div>

@@ -1,25 +1,22 @@
 import { Label } from "@radix-ui/react-label";
 import React, { useState } from "react";
 
-import { Field } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 const SwitchActive = ({ status }: { status?: string | number }) => {
-  const [isActive, setIsActive] = useState(status === "Active");
+  const [isActive, setIsActive] = useState(
+    String(status).toLowerCase() === "active" || status === 1
+  );
 
-  const text = isActive ? "Active" : "Inactive";
   return (
-    <Field>
-      <div className="flex items-center justify-between">
-        <Label htmlFor="employeeStatus">{UI_TEXT.EMPLOYEE.STATUS}:</Label>
-
-        <Switch id="employeeStatus" checked={isActive} onCheckedChange={setIsActive} />
-      </div>
-
-      <Input name="status" value={text} readOnly />
-    </Field>
+    <div className="flex items-center space-x-2">
+      <Label htmlFor="active-mode" className="flex items-center gap-1">
+        {UI_TEXT.EMPLOYEE.STATUS}
+        {UI_TEXT.COMMON.COLON}
+      </Label>
+      <Switch id="active-mode" checked={isActive} onCheckedChange={setIsActive} />
+    </div>
   );
 };
 

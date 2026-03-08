@@ -6,6 +6,7 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { OptionGroup, OptionItem } from "@/types/Menu";
 
 import OptionGroupSection from "./OptionGroupSection";
@@ -50,7 +51,11 @@ export const SelectionOptionsContent: React.FC<SelectionOptionsContentProps> = (
         ))}
 
         <div className="space-y-2">
-          <Label className="text-sm font-bold text-slate-700">Ghi chú món ({menuItemName})</Label>
+          <Label className="text-sm font-bold text-slate-700">
+            {UI_TEXT.MENU.OPTIONS.ITEM_NOTE} {UI_TEXT.COMMON.PAREN_LEFT}
+            {menuItemName}
+            {UI_TEXT.COMMON.PAREN_RIGHT}
+          </Label>
           <Input
             placeholder="Ví dụ: Ít cay, không hành..."
             value={note}

@@ -90,18 +90,6 @@ export function MenuTable({
             <Coffee size={13} /> Bếp Lạnh
           </Badge>
         );
-      case 2: // ColdKitchen
-        return (
-          <Badge variant="outline" className="text-muted-foreground font-normal">
-            {rawStation ?? UI_TEXT.COMMON.EMPTY}
-          </Badge>
-        );
-      case 3: // Bar
-        return (
-          <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none flex gap-1 items-center">
-            <Beer size={12} /> Quầy Bar
-          </Badge>
-        );
       default:
         return (
           <Badge variant="outline" className="flex gap-1 items-center">

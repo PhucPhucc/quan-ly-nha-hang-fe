@@ -27,7 +27,7 @@ const getStatusLabel = (status: OrderStatus) => {
     case OrderStatus.Completed:
       return t.STATUS_COMPLETED;
     case OrderStatus.Serving:
-      return "Đang phục vụ";
+      return UI_TEXT.TABLE.SERVING;
     case OrderStatus.Cancelled:
       return t.STATUS_CANCELLED;
     default:
@@ -106,11 +106,14 @@ export function RecentOrders() {
                   key={order.orderId}
                   className="cursor-pointer transition-colors hover:bg-muted/50"
                 >
-                  <TableCell className="font-medium text-xs">#{order.orderCode}</TableCell>
+                  <TableCell className="font-medium text-xs">
+                    {UI_TEXT.COMMON.HASH}
+                    {order.orderCode}
+                  </TableCell>
                   <TableCell className="text-xs">
                     {order.orderType === OrderType.Takeaway
-                      ? "Mang đi"
-                      : `Bàn ${order.tableId?.slice(0, 4) || "--"}`}
+                      ? UI_TEXT.ORDER.CURRENT.TAKEAWAY
+                      : UI_TEXT.TABLE.TABLE_NUMBER(parseInt(order.tableId?.slice(-2) || "0"))}
                   </TableCell>
                   <TableCell className="font-bold text-primary text-xs">
                     {new Intl.NumberFormat("vi-VN", {
@@ -136,8 +139,8 @@ export function RecentOrders() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground italic">
-                  Chưa có đơn hàng nào
+                <TableCell colSpan={5} className="h-24 text-center">
+                  {UI_TEXT.ORDER.CURRENT.EMPTY || "Chưa có đơn hàng nào"}
                 </TableCell>
               </TableRow>
             )}

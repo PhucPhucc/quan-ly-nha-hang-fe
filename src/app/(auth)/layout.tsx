@@ -1,6 +1,8 @@
 import { UtensilsCrossed } from "lucide-react";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
+
 const layout = ({
   children,
 }: Readonly<{
@@ -26,7 +28,7 @@ const layout = ({
         <div className="max-w-sm min-w-xs lg:w-sm">
           <div className="flex items-center justify-center gap-2 text-primary text-shadow-xl mb-2">
             <UtensilsCrossed />
-            <span className="font-serif font-bold text-4xl">FoodHub</span>
+            <span className="font-serif font-bold text-4xl">{UI_TEXT.COMMON.NAME_PROJECT}</span>
           </div>
           {children}
         </div>

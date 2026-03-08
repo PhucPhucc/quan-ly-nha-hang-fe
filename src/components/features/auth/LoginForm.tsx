@@ -46,9 +46,9 @@ const LoginForm = () => {
           // case "Waiter":
           //   router.push("/waiter/orders");
           //   break;
-          // case "Chef":
-          //   router.push("/chef/orders");
-          //   break;
+          case EmployeeRole.CHEFBAR:
+            router.push("/kds/station");
+            break;
           default:
             router.push("/dashboard");
         }

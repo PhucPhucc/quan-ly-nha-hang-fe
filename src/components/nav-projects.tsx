@@ -18,6 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 export function NavProjects({
   projects,
@@ -32,7 +33,7 @@ export function NavProjects({
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
+      <SidebarGroupLabel>{UI_TEXT.COMMON.PROJECTS}</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
@@ -46,7 +47,7 @@ export function NavProjects({
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction showOnHover>
                   <MoreHorizontal />
-                  <span className="sr-only">More</span>
+                  <span className="sr-only">{UI_TEXT.COMMON.MORE}</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -56,16 +57,16 @@ export function NavProjects({
               >
                 <DropdownMenuItem>
                   <Folder className="text-muted-foreground" />
-                  <span>View Project</span>
+                  <span>{UI_TEXT.COMMON.VIEW_PROJECT}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Forward className="text-muted-foreground" />
-                  <span>Share Project</span>
+                  <span>{UI_TEXT.COMMON.SHARE_PROJECT}</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Trash2 className="text-muted-foreground" />
-                  <span>Delete Project</span>
+                  <span>{UI_TEXT.COMMON.DELETE_PROJECT}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -74,7 +75,7 @@ export function NavProjects({
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
             <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>More</span>
+            <span>{UI_TEXT.COMMON.MORE}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

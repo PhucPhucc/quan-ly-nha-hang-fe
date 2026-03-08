@@ -60,7 +60,9 @@ export function NavUser() {
               <div className="grid flex-1 text-left text-sm leading-tight ml-1">
                 <span className="truncate font-semibold text-foreground">{name}</span>
                 <span className="truncate text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                  {employee?.role === EmployeeRole.MANAGER ? "Quản lý" : "Nhân viên"}
+                  {employee?.role === EmployeeRole.MANAGER
+                    ? UI_TEXT.ROLE.MANAGER
+                    : UI_TEXT.ROLE.WAITER}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4 opacity-50" />
@@ -96,8 +98,10 @@ export function NavUser() {
                     <User className="size-4 text-primary" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-semibold text-sm">Hồ sơ cá nhân</span>
-                    <span className="text-[10px] text-muted-foreground">Thông tin & Bảo mật</span>
+                    <span className="font-semibold text-sm">{UI_TEXT.PROFILE.PROFILE_TAB}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {UI_TEXT.PROFILE.PROFILE_DESC}
+                    </span>
                   </div>
                 </Link>
               </DropdownMenuItem>
@@ -106,8 +110,10 @@ export function NavUser() {
                   <Settings className="size-4 text-blue-600" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-semibold text-sm">Cài đặt</span>
-                  <span className="text-[10px] text-muted-foreground">Tùy chỉnh hệ thống</span>
+                  <span className="font-semibold text-sm">{UI_TEXT.PROFILE.SETTINGS_TAB}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {UI_TEXT.PROFILE.SETTINGS_DESC}
+                  </span>
                 </div>
               </DropdownMenuItem>
             </DropdownMenuGroup>

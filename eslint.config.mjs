@@ -2,6 +2,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettierRecommended from "eslint-plugin-prettier/recommended";
+import react from "eslint-plugin-react";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
 
@@ -13,13 +14,13 @@ const eslintConfig = defineConfig([
     plugins: {
       "simple-import-sort": simpleImportSort,
       "unused-imports": unusedImports,
+      react: react,
     },
     rules: {
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
 
       "unused-imports/no-unused-imports": "error",
-      "@next/next/no-img-element": "off",
       "unused-imports/no-unused-vars": [
         "warn",
         {
@@ -31,17 +32,27 @@ const eslintConfig = defineConfig([
       ],
 
       "no-unused-vars": "off",
+
+      "@next/next/no-img-element": "off",
+
+      // ❗ CẤM TEXT TRỰC TIẾP TRONG JSX
+      "react/jsx-no-literals": [
+        "error",
+        {
+          noStrings: true,
+          allowedStrings: [],
+          ignoreProps: true,
+        },
+      ],
     },
   },
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
     "node_modules/**",
 
-    // Ignore menu module
     "src/app/(protected)/manager/menu/**",
     "src/components/features/menu/**",
   ]),

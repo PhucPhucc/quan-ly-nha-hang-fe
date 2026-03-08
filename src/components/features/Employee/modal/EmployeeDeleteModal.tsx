@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react"; // Added Trash2 import
 import React from "react";
 import { toast } from "sonner";
 
@@ -12,8 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FieldContent, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { UI_TEXT } from "@/lib/UI_Text";
+import { Field } from "@/components/ui/field"; // Removed FieldContent, FieldDescription, FieldLabel as they are not used
+import { UI_TEXT } from "@/lib/UI_Text"; // Removed duplicate import
 import { deleteEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 
@@ -54,19 +55,21 @@ const EmployeeDeleteModal = ({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Xóa nhân viên</DialogTitle>
-            <DialogDescription>
-              Việc xóa nhân viên sẽ không thể hoàn tác. Vui lòng xác nhận hành động này.
-            </DialogDescription>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <Trash2 className="w-6 h-6 text-red-500" />
+              {UI_TEXT.EMPLOYEE.DELETE_EMPLOYEE}
+            </DialogTitle>
+            <DialogDescription>{UI_TEXT.EMPLOYEE.DELETE_CONFIRM}</DialogDescription>
           </DialogHeader>
           <Field orientation="horizontal" className="mt-4 gap-3">
             <Checkbox id="confirm_delete" name="confirm_delete" />
-            <FieldContent>
-              <FieldLabel htmlFor="confirm_delete">Xac nhan xoa nhan vien</FieldLabel>
-              <FieldDescription>
-                Bang việc xóa nhân viên, họ sẽ mất quyền truy cập vào hệ thống.
-              </FieldDescription>
-            </FieldContent>
+            <div className="space-y-1">
+              <span className="text-sm font-semibold">{UI_TEXT.EMPLOYEE.CONFIRM_DELETE}</span>
+              <p className="text-xs text-muted-foreground">
+                {UI_TEXT.EMPLOYEE.CONFIRM_DELETE_DESC ||
+                  "Bang việc xóa nhân viên, họ sẽ mất quyền truy cập vào hệ thống."}
+              </p>
+            </div>
           </Field>
           <DialogFooter className="mt-4">
             <DialogClose asChild>

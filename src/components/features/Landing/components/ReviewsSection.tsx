@@ -4,6 +4,8 @@ import { Quote, Star } from "lucide-react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 
+const QUOTE_MARK_MOCK = '"';
+
 export function ReviewsSection() {
   const t = UI_TEXT.LANDING;
 
@@ -36,7 +38,9 @@ export function ReviewsSection() {
                 ))}
               </div>
               <p className="italic text-slate-300 mb-8 leading-relaxed text-lg">
-                &quot;{rev.content}&quot;
+                {QUOTE_MARK_MOCK}
+                {rev.content}
+                {QUOTE_MARK_MOCK}
               </p>
               <div className="flex items-center gap-4">
                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center font-bold text-white text-sm">

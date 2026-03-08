@@ -1,14 +1,14 @@
 "use client";
 
 import { ArrowRight, BookOpen } from "lucide-react";
-import Image from "next/image";
+import Image from "next/image"; // Keep Image import as it's still used
 
+// Added
 import { Button } from "@/components/ui/button";
+// Added
 import { UI_TEXT } from "@/lib/UI_Text";
 
 export function BlogSection() {
-  const t = UI_TEXT.LANDING;
-
   const blogs = [
     {
       img: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600",
@@ -33,12 +33,12 @@ export function BlogSection() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <div className="text-primary font-bold tracking-wider uppercase text-sm mb-2">
-              News & Resources
+              {UI_TEXT.LANDING.NEWS}
             </div>
-            <h2 className="text-4xl font-bold md:text-5xl">{t.BLOG_TITLE}</h2>
+            <h2 className="text-4xl font-bold md:text-5xl">{UI_TEXT.LANDING.BLOG_TITLE}</h2>
           </div>
-          <Button className="flex items-center gap-2 text-foreground font-bold group hover:text-primary transition-colors">
-            {t.READ_MORE}
+          <Button className="flex items-center gap-2 text-primary-foreground font-bold group transition-colors duration-300">
+            {UI_TEXT.LANDING.READ_MORE}
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
@@ -46,7 +46,7 @@ export function BlogSection() {
         <div className="grid gap-10 md:grid-cols-3">
           {blogs.map((blog) => (
             <div key={blog.title} className="group cursor-pointer flex flex-col h-full">
-              <div className="overflow-hidden rounded-2xl mb-6 aspect-[4/3] relative">
+              <div className="overflow-hidden rounded-2xl mb-6 aspect-4/3 relative">
                 <Image
                   src={blog.img}
                   alt={blog.title}
@@ -59,7 +59,8 @@ export function BlogSection() {
                   {blog.date}
                 </span>
                 <span className="flex items-center gap-1">
-                  <BookOpen className="h-3 w-3" /> Insight
+                  <BookOpen className="h-3 w-3" />
+                  {UI_TEXT.LANDING.BLOG_INSIGHT}
                 </span>
               </div>
               <h3 className="font-bold text-2xl text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">

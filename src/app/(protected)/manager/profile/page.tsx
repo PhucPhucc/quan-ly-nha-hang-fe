@@ -1,5 +1,6 @@
 import ChangePasswordDialog from "@/components/features/profile/ChangePasswordDialog";
 import ProfileForm from "@/components/features/profile/ProfileForm";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 const ProfilePage = () => {
   return (
@@ -12,7 +13,7 @@ const ProfilePage = () => {
 
         {/* Security */}
         <section className="h-fit rounded-xl border bg-card p-5 shadow-sm">
-          <h2 className="mb-3 text-sm font-semibold">Bảo mật</h2>
+          <h2 className="mb-3 text-sm font-semibold">{UI_TEXT.EMPLOYEE.ACCOUNT_SECURITY}</h2>
           <ChangePasswordDialog />
         </section>
       </div>

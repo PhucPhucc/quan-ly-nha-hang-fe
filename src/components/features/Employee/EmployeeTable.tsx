@@ -48,7 +48,7 @@ const EmployeeTable = () => {
     if (r === "2" || r === "cashier") return UI_TEXT.ROLE.CASHIER;
     if (r === "3" || r === "waiter") return UI_TEXT.ROLE.WAITER;
     if (r === "4" || r === "chef" || r === "chefbar") return UI_TEXT.ROLE.CHEF;
-    return role || "N/A";
+    return role || UI_TEXT.COMMON.NULL;
   };
 
   const isRoleActive = (role: string | number) => {
@@ -58,7 +58,7 @@ const EmployeeTable = () => {
 
   const getStatusLabel = (status: string | number) => {
     const s = String(status).toLowerCase();
-    return s === "1" || s === "active" ? "Đang kích hoạt" : "Không kích hoạt";
+    return s === "1" || s === "active" ? UI_TEXT.EMPLOYEE.ACTIVE : UI_TEXT.EMPLOYEE.INACTIVE;
   };
 
   const isStatusActive = (status: string | number) => {
@@ -72,22 +72,22 @@ const EmployeeTable = () => {
         <TableHeader>
           <TableRow className="hover:bg-transparent border-slate-100 bg-slate-50/50">
             <TableHead className="w-[100px] py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider pl-6">
-              Mã NV
+              {UI_TEXT.EMPLOYEE.EMP_ID}
             </TableHead>
             <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              Nhân viên
+              {UI_TEXT.EMPLOYEE.EMPLOYEE_TITLE}
             </TableHead>
             <TableHead className="hidden lg:table-cell py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              Liên hệ
+              {UI_TEXT.EMPLOYEE.CONTACT}
             </TableHead>
             <TableHead className="hidden xl:table-cell py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              Địa chỉ
+              {UI_TEXT.EMPLOYEE.ADDRESS}
             </TableHead>
             <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              Vai trò
+              {UI_TEXT.EMPLOYEE.ROLE}
             </TableHead>
             <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              Trạng thái
+              {UI_TEXT.EMPLOYEE.STATUS}
             </TableHead>
             <TableHead className="text-right py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider pr-6">
               {UI_TEXT.COMMON.ACTION}
@@ -122,7 +122,7 @@ const EmployeeTable = () => {
                     onClick={() => window.location.reload()}
                     className="text-xs underline opacity-70 hover:opacity-100"
                   >
-                    Thử lại
+                    {UI_TEXT.EMPLOYEE.RETRY}
                   </Button>
                 </div>
               </TableCell>
@@ -133,7 +133,7 @@ const EmployeeTable = () => {
             <TableRow>
               <TableCell colSpan={7} className="text-center py-20">
                 <span className="text-sm text-slate-400 font-medium tracking-wide">
-                  Không tìm thấy nhân viên nào
+                  {UI_TEXT.EMPLOYEE.NOT_FOUND}
                 </span>
               </TableCell>
             </TableRow>
@@ -158,10 +158,10 @@ const EmployeeTable = () => {
                   </div>
                 </TableCell>
                 <TableCell className="hidden lg:table-cell font-medium text-slate-600 text-[13px]">
-                  {employee.phone || "-"}
+                  {employee.phone || UI_TEXT.COMMON.MINUS}
                 </TableCell>
                 <TableCell className="hidden xl:table-cell text-slate-500 text-[12px] max-w-[220px] truncate font-medium">
-                  {employee.address || "-"}
+                  {employee.address || UI_TEXT.COMMON.MINUS}
                 </TableCell>
 
                 <TableCell>

@@ -1,0 +1,78 @@
+export const LANDING = {
+  TITLE: "Nền tảng Quản lý",
+  SUBTITLE: "Nhà hàng Toàn diện",
+  GET_STARTED: "Bắt đầu miễn phí",
+  FOOTER_BRAND: "FoodHub",
+  FOOTER_DESC:
+    "Nền tảng quản lý nhà hàng 4.0, tối ưu hóa quy trình vận hành từ nhà bếp đến bàn ăn một cách liền mạch.",
+  PRODUCT: "Product",
+  FEATURES: "Features",
+  PRICING: "Pricing",
+  INTEGRATIONS: "Integrations",
+  COMPANY: "Company",
+  ABOUT: "About",
+  CAREERS: "Carreers",
+  BLOG: "Blog",
+  SUPPORT: "Support",
+  HELP_CENTER: "Help Center",
+  STATUS: "Status",
+  COPYRIGHT: "© 2026 FoodHub Kitchen Management. All rights reserved.",
+  PRIVACY: "Privacy Policy",
+  TERMS: "Terms of Service",
+  KDS_V2: "KDS v2.0 - Live Connection",
+  NAV_BRAND: "FoodHub",
+  LEARN_MORE: "Learn more",
+  PARTNERS: "Partner Restaurants",
+  NEWS: "News & Resources",
+  INSIGHT: "Insight",
+  HERO_TITLE: "Tối ưu hóa quy trình",
+  HERO_SUBTITLE: "Vận hành ẩm thực",
+  HERO_DESC:
+    "Từ gọi món tại bàn đến sức nóng của bếp. FoodHub cung cấp nền tảng số cho các hoạt động nhà hàng hiện đại và quản lý bếp thông minh.",
+  ENTER_SYSTEM: "Vào hệ thống",
+  DASHBOARD: "Tổng quan",
+  STAFF_LOGIN: "Đăng nhập nhân viên",
+  KITCHEN_TERMINAL: "Thiết bị Bếp",
+  MISSION_CRITICAL: "Giải pháp cốt lõi cho BOH",
+  MISSION_DESC: "Phần mềm được thiết kế chuyên biệt cho nhịp độ và áp lực của khu vực hậu sảnh.",
+  KITCHEN_INTEL: "Trí tuệ nhà bếp",
+  KDS_PREVIEW: "Giao diện KDS Terminal 01",
+  TECH_REDUCING: "Giảm trung bình 24% thời gian lên món",
+
+  ABOUT_TITLE: "Về FoodHub",
+  ABOUT_DESC:
+    "FoodHub là đối tác tin cậy của hơn 500 nhà hàng lớn nhỏ, cung cấp hệ sinh thái quản lý toàn diện giúp nâng tầm trải nghiệm thực khách.",
+  ESTABLISHED: "Thành lập từ 2018",
+  TEAM_SIZE: "Hơn 100 chuyên gia kỹ thuật và ẩm thực",
+  YEAR_VAL: "2023",
+  AWARDS_VAL: "50+",
+  CUSTOMERS_VAL: "500+",
+  ABOUT_IMG_ALT: "Restaurant Business",
+
+  BLOG_TITLE: "Tin tức & Sự nghiệp",
+  BLOG_DESC: "Cập nhật những xu hướng công nghệ nhà hàng và tin tức nội bộ mới nhất từ FoodHub.",
+  BLOG_INSIGHT: "Insight",
+  READ_MORE: "Đọc thêm",
+
+  REVIEWS_TITLE: "Đánh giá từ đối tác",
+  REVIEWS_DESC: "Những gì các bếp trưởng và quản lý nói về chúng tôi.",
+  REVIEWS_LIST: [
+    {
+      author: "Bếp trưởng Toàn Nguyễn",
+      role: "Ocean Grill",
+      content:
+        "Kể từ khi dùng FoodHub, tình trạng sai sót ticket gần như bằng không. Đội ngũ bếp phối hợp nhịp nhàng hơn hẳn.",
+    },
+    {
+      author: "Chị Lan Anh",
+      role: "Manager tại Red Coral",
+      content:
+        "Hệ thống báo cáo chi tiết giúp tôi nắm bắt tình hình kinh doanh ngay cả khi không có mặt tại quán.",
+    },
+    {
+      author: "Anh Minh Quân",
+      role: "Chủ chuỗi Tasty Hub",
+      content: "Phần mềm ổn định, giao diện hiện đại và rất dễ để đào tạo nhân viên mới.",
+    },
+  ],
+};

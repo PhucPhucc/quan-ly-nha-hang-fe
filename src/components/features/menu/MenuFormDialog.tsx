@@ -39,7 +39,7 @@ import { Category } from "@/types/Menu";
 type MenuFormDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data) => void;
+  onSubmit: (data: any) => void;
   initialData?: any;
   categories: Category[];
   forcedType?: "combo" | "single";

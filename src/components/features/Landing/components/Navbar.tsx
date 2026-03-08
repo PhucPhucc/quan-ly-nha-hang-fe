@@ -1,6 +1,6 @@
 "use client";
 
-import { Utensils } from "lucide-react";
+import { ChefHat } from "lucide-react";
 import Link from "next/link";
 
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -14,11 +14,13 @@ export function Navbar() {
   return (
     <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl rounded-2xl border border-white/20 glass shadow-2xl transition-all duration-300">
       <div className="flex items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl from-primary to-orange-600 text-primary-foreground shadow-lg shadow-primary/25">
-            <Utensils className="h-5 w-5" />
+        <div className="flex items-center gap-3 text-primary">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-r from-primary to-primary/60 text-primary-foreground shadow-lg shadow-primary/25">
+            <ChefHat className="h-8 w-8 text-white drop-shadow-md" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">FoodHub</span>
+          <span className="text-2xl font-black drop-shadow-md tracking-tight">
+            {UI_TEXT.LANDING.NAV_BRAND}
+          </span>
         </div>
         <div className="hidden items-center gap-8 md:flex">
           <Link

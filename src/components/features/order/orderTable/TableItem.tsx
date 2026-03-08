@@ -1,6 +1,7 @@
 import { Loader2, Plus, Users } from "lucide-react";
 
 import { useElapsedTime } from "@/hooks/useElapsedTime";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { OrderStatus } from "@/types/enums";
 
@@ -56,7 +57,8 @@ const TableItem = ({ table, onTableClick, isLoading }: TableItemProps) => {
         <div className="p-1.5 h-full flex flex-col justify-between overflow-hidden">
           <div className="flex justify-between items-start">
             <p className="text-[12px] font-semibold font-mono tracking-wider">
-              #{table.tableNumber.toString().padStart(2, "0")}
+              {UI_TEXT.COMMON.HASH}
+              {table.tableNumber.toString().padStart(2, "0")}
             </p>
             {table.status === OrderStatus.Serving && timeRunning && (
               <div className="flex items-center bg-background/90 p-1 rounded-full border border-table-serving/50">

@@ -31,10 +31,11 @@ interface KDSQuickNavToggleProps {
 
 const KDSQuickNavToggle = ({ isExpanded, onToggle }: KDSQuickNavToggleProps) => (
   <Button
+    variant="ghost"
     onClick={onToggle}
     className={cn(
-      "flex items-center justify-center transition-colors duration-200",
-      isExpanded ? "w-full h-8 hover:bg-muted/50 rounded-xl" : "w-full h-full rounded-2xl"
+      "rounded-b-0 transition-colors duration-200",
+      isExpanded ? "w-full h-8 hover:bg-muted/50 rounded-lg" : "w-full h-full"
     )}
     aria-label={isExpanded ? UI_TEXT.KDS.NAV.COLLAPSE : UI_TEXT.KDS.NAV.EXPAND}
   >
@@ -80,7 +81,7 @@ export function KDSQuickNav() {
         className={cn(
           "flex flex-col items-center bg-secondary/95 backdrop-blur-md shadow-2xl overflow-hidden transition-all duration-300",
           isExpanded
-            ? "rounded-t-3xl p-3 pb-6 gap-3 w-auto max-w-100  border border-b-0 border-muted-foreground/30"
+            ? "rounded-t-xl p-3 pb-6 gap-3 w-auto max-w-100  border border-b-0 border-muted-foreground/30"
             : "rounded-t-2xl p-0 w-32 h-6 justify-center border border-b-0 border-muted-foreground/20 hover:bg-secondary"
         )}
       >

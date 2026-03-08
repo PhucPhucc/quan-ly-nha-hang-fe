@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
 import { PaymentMethod } from "@/types/enums";
 
@@ -87,42 +88,45 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl font-bold">
             <DollarSign className="w-5 h-5 text-primary" />
-            Thanh toán đơn hàng
+            {UI_TEXT.ORDER.CURRENT.CHECKOUT_TITLE}
           </DialogTitle>
-          <DialogDescription>Vui lòng chọn phương thức thanh toán và xác nhận</DialogDescription>
+          <DialogDescription>{UI_TEXT.ORDER.CURRENT.CHECKOUT_DESC}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
-            <span className="font-semibold text-secondary-foreground">Tổng thanh toán:</span>
+            <span className="font-semibold text-secondary-foreground">
+              {UI_TEXT.ORDER.CURRENT.TOTAL_AMOUNT}
+            </span>
             <span className="text-2xl font-black text-primary">
-              {totalAmount.toLocaleString()}đ
+              {totalAmount.toLocaleString()}
+              {UI_TEXT.COMMON.CURRENCY}
             </span>
           </div>
 
           <div className="space-y-2">
-            <span className="font-semibold text-sm">Phương thức thanh toán</span>
+            <span className="font-semibold text-sm">{UI_TEXT.ORDER.CURRENT.PAYMENT_METHOD}</span>
             <div className="grid grid-cols-3 gap-2">
               <Button
                 variant={selectedMethod === PaymentMethod.Cash ? "default" : "outline"}
                 onClick={() => setSelectedMethod(PaymentMethod.Cash)}
                 className="w-full text-xs font-bold"
               >
-                Tiền mặt
+                {UI_TEXT.ORDER.CURRENT.CASH}
               </Button>
               <Button
                 variant={selectedMethod === PaymentMethod.BankTransfer ? "default" : "outline"}
                 onClick={() => setSelectedMethod(PaymentMethod.BankTransfer)}
                 className="w-full text-xs font-bold"
               >
-                Chuyển khoản
+                {UI_TEXT.ORDER.CURRENT.TRANSFER}
               </Button>
               <Button
                 variant={selectedMethod === PaymentMethod.CreditCard ? "default" : "outline"}
                 onClick={() => setSelectedMethod(PaymentMethod.CreditCard)}
                 className="w-full text-xs font-bold"
               >
-                Thẻ (POS)
+                {UI_TEXT.ORDER.CURRENT.CARD}
               </Button>
             </div>
           </div>
@@ -130,7 +134,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           {selectedMethod === PaymentMethod.Cash && (
             <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
               <div className="space-y-1">
-                <span className="font-semibold text-sm">Khách đưa</span>
+                <span className="font-semibold text-sm">{UI_TEXT.ORDER.CURRENT.CUSTOMER_GAVE}</span>
                 <Input
                   type="text"
                   placeholder="Nhập số tiền khách đưa..."
@@ -149,15 +153,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                     className="text-xs font-bold"
                     onClick={() => handleQuickAmount(amount)}
                   >
-                    {amount.toLocaleString()}đ
+                    {amount.toLocaleString()}
+                    {UI_TEXT.COMMON.CURRENCY}
                   </Button>
                 ))}
               </div>
 
               <div className="flex justify-between items-center px-3 py-2 rounded-lg bg-muted border border-muted">
-                <span className="font-semibold text-sm text-muted-foreground">Tiền thối lại:</span>
+                <span className="font-semibold text-sm text-muted-foreground">
+                  {UI_TEXT.ORDER.CURRENT.CHANGE}
+                </span>
                 <span className="font-black text-lg text-primary/90">
-                  {calculateChange().toLocaleString()}đ
+                  {calculateChange().toLocaleString()}
+                  {UI_TEXT.COMMON.CURRENCY}
                 </span>
               </div>
             </div>
@@ -166,16 +174,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
 
         <DialogFooter className="sm:justify-end">
           <Button variant="outline" onClick={onClose} disabled={isProcessing}>
-            Hủy
+            {UI_TEXT.COMMON.CANCEL_EN}
           </Button>
           <Button onClick={handleCheckout} disabled={isProcessing} className="font-bold">
             {isProcessing ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Đang xử lý...
+                {UI_TEXT.ORDER.CURRENT.PROCESSING}
               </>
             ) : (
-              "Xác nhận thanh toán"
+              UI_TEXT.ORDER.CURRENT.CONFIRM_PAYMENT
             )}
           </Button>
         </DialogFooter>

@@ -28,9 +28,6 @@ export function KDSDashboardClient() {
       await fetchKdsData();
     };
     fetchData();
-    // Poll every 10 seconds for testing/simplicity since no SignalR was found
-    // const interval = setInterval(fetchKdsData, 10000);
-    // return () => clearInterval(interval);
   }, [fetchKdsData]);
 
   return (

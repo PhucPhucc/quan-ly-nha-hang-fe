@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { logout } from "@/services/authService";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -27,7 +28,7 @@ export default function LogoutPage() {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <p>Logging out...</p>
+      <p>{UI_TEXT.AUTH.LOGGING_OUT}</p>
     </div>
   );
 }

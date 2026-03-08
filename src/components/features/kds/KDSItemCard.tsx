@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, RotateCcw } from "lucide-react";
+import { Check, Clock, RotateCcw } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
   const handleReturnConfirm = (reason: string) => rejectItem(item.orderItemId, reason);
 
   const getStationColor = (stationName?: string) => {
-    const name = (stationName || "STATION").toLowerCase();
+    const name = (stationName || UI_TEXT.SIDE_BAR.TABLE).toLowerCase();
     if (name.includes("hot") || name.includes("nóng"))
       return "bg-orange-100 text-orange-700 border-orange-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]";
     if (name.includes("cold") || name.includes("lạnh") || name.includes("salad"))
@@ -36,9 +36,10 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
   return (
     <div className="flex flex-row w-full h-full bg-white relative group animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* Left Section: Order Info & Station */}
-      <div className="flex flex-col justify-start gap-3 p-5 border-r border-border-subtle shrink-0 min-w-[180px] bg-slate-50/50">
+      <div className="flex flex-col justify-start gap-3 p-5 border-r border-border-subtle shrink-0 min-w-45 bg-slate-50/50">
         <span className="font-mono text-[11px] font-bold text-slate-400 tracking-[0.2em] uppercase">
-          Order #{orderCode}
+          {UI_TEXT.KDS.ORDER_PREFIX}
+          {orderCode.slice(-4)}
         </span>
         <div className="flex items-center gap-2">
           <span className="px-2 py-0.5 bg-white rounded text-[10px] font-black text-slate-500 uppercase tracking-widest shadow-sm border border-slate-100">
@@ -55,7 +56,7 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
           )}
         >
           <div className="w-1.5 h-1.5 rounded-full bg-current opacity-70"></div>
-          {item.stationSnapshot || "STATION"}
+          {item.stationSnapshot || UI_TEXT.SIDE_BAR.TABLE}
         </span>
       </div>
 
@@ -64,8 +65,9 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
         <div className="flex items-start justify-between gap-4">
           {/* Quantity & Info Side */}
           <div className="flex-1 flex items-start gap-4">
-            <span className="text-sky-600 font-extrabold text-3xl shrink-0 bg-sky-50 px-3 py-1.5 rounded-xl border border-sky-100 flex items-center justify-center min-w-[56px] mt-0.5">
-              x{item.quantity}
+            <span className="text-sky-600 font-extrabold text-3xl shrink-0 bg-sky-50 px-3 py-1.5 rounded-xl border border-sky-100 flex items-center justify-center min-w-14 mt-0.5">
+              {UI_TEXT.KDS.ITEM.QTY_PREFIX}
+              {item.quantity}
             </span>
             <div className="flex flex-col gap-2 mt-1 w-full">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2 w-full">
@@ -75,7 +77,7 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
                 {item.itemOptions && (
                   <div className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-md text-sm font-semibold flex items-baseline gap-1.5 shrink-0">
                     <span className="text-[10px] font-black uppercase tracking-widest opacity-40 shrink-0">
-                      T.Chọn:
+                      {UI_TEXT.KDS.OPTION_LABEL}
                     </span>
                     <span>{item.itemOptions}</span>
                   </div>
@@ -86,7 +88,7 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
               {item.itemNote && (
                 <div className="flex items-start gap-2 mt-1 mb-1 w-full text-black font-medium leading-relaxed">
                   <span className="text-[10px] font-black uppercase tracking-[0.15em] mt-1 shrink-0 opacity-40">
-                    Ghi chú:
+                    {UI_TEXT.KDS.NOTE_LABEL}
                   </span>
                   <span className="text-sm">{item.itemNote}</span>
                 </div>
@@ -107,12 +109,15 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
               {isReady ? UI_TEXT.KDS.ITEM.DONE : UI_TEXT.KDS.ITEM.STATUS_COOKING}
             </span>
             {item.updatedAt && (
-              <span className="text-[9px] font-bold text-text-secondary/30 uppercase tracking-wider">
-                Cập nhật:{" "}
-                {new Date(item.updatedAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+              <span className="text-[9px] font-bold text-text-secondary/30 uppercase tracking-wider flex items-center">
+                <Clock className="w-3.5 h-3.5 mr-1.5 opacity-70" />
+                <span>
+                  {UI_TEXT.KDS.UPDATE_LABEL}{" "}
+                  {new Date(item.updatedAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
               </span>
             )}
           </div>
@@ -120,22 +125,23 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
       </div>
 
       {/* Right Section: Actions */}
-      <div className="p-4 flex flex-col justify-center gap-2 shrink-0 w-[180px] bg-slate-50/50 border-l border-border-subtle">
+      <div className="p-4 flex flex-col justify-center gap-2 shrink-0 w-45 bg-slate-50/50 border-l border-border-subtle">
         {!isReady && (
           <Button
             onClick={handleDone}
-            className="w-full bg-[#10b981] hover:bg-emerald-600 text-white py-3 rounded-xl font-black uppercase tracking-[0.2em] text-xs shadow-lg shadow-emerald-100 transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-2 group/btn"
+            className="w-full bg-primary hover:bg-primary-hover text-primary-foreground py-3 rounded-lg font-black uppercase tracking-[0.2em] text-xs shadow-lg shadow-emerald-100 transition-all hover:translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group/btn"
           >
-            <Check className="w-4 h-4 group-hover/btn:scale-110 transition-transform stroke-3" />
+            <Check className="size-4 group-hover/btn:scale-110 transition-transform stroke-3" />
             {UI_TEXT.KDS.ITEM.DONE}
           </Button>
         )}
 
         <Button
+          variant="outline"
           onClick={() => setIsRejectModalOpen(true)}
-          className="w-full bg-white hover:bg-rose-50 text-rose-500 border border-slate-200 hover:border-rose-200 py-3 rounded-xl font-black uppercase tracking-[0.15em] text-[10px] transition-all flex items-center justify-center gap-2"
+          className="w-full bg-secondary hover:bg-secondary/90 text-primary border border-border hover:border-ring py-3 rounded-xl font-black uppercase tracking-[0.15em] text-[10px] transition-all flex items-center justify-center gap-2"
         >
-          <RotateCcw className="w-3.5 h-3.5" />
+          <RotateCcw className="size-4" />
           {UI_TEXT.KDS.ITEM.RETURN}
         </Button>
       </div>

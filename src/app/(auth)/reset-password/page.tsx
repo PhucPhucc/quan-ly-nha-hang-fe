@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import FieldPassword from "@/components/shared/FieldPassword";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { resetPassword } from "@/services/authService";
 
 const ResetPasswordForm = () => {
@@ -21,7 +22,7 @@ const ResetPasswordForm = () => {
     e.preventDefault();
 
     if (!token) {
-      toast.error("Token không hợp lệ hoặc đã hết hạn.");
+      toast.error(UI_TEXT.AUTH.RESET_PASSWORD.INVALID_TOKEN);
       return;
     }
 
@@ -30,7 +31,7 @@ const ResetPasswordForm = () => {
     const confirmPassword = formData.get("confirmPassword") as string;
 
     if (newPassword !== confirmPassword) {
-      toast.error("Mật khẩu xác nhận không khớp.");
+      toast.error(UI_TEXT.AUTH.RESET_PASSWORD.MISMATCH);
       return;
     }
 
@@ -44,16 +45,16 @@ const ResetPasswordForm = () => {
       });
 
       if (response.isSuccess) {
-        toast.success("Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.");
+        toast.success(UI_TEXT.AUTH.RESET_PASSWORD.SUCCESS);
         router.push("/login");
       } else {
-        toast.error(response.message || "Đặt lại mật khẩu thất bại.");
+        toast.error(response.message || UI_TEXT.AUTH.RESET_PASSWORD.FAILED);
       }
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
-        toast.error("Có lỗi xảy ra.");
+        toast.error(UI_TEXT.COMMON.SOMETHING_WENT_WRONG);
       }
       console.error(error);
     } finally {
@@ -64,12 +65,14 @@ const ResetPasswordForm = () => {
   if (!token) {
     return (
       <div className="rounded-2xl border border-primary bg-card px-5 py-6 shadow-2xl text-center">
-        <h1 className="mb-2 text-3xl font-semibold text-destructive">Lỗi!</h1>
+        <h1 className="mb-2 text-3xl font-semibold text-destructive">
+          {UI_TEXT.AUTH.RESET_PASSWORD.ERROR_TITLE}
+        </h1>
         <p className="mb-6 text-sm text-muted-foreground">
-          Token khôi phục mật khẩu không tồn tại hoặc không hợp lệ.
+          {UI_TEXT.AUTH.RESET_PASSWORD.TOKEN_MISSING}
         </p>
         <Link href="/forgot" className="underline hover:text-primary-hover">
-          Yêu cầu mã mới
+          {UI_TEXT.AUTH.RESET_PASSWORD.REQUEST_NEW}
         </Link>
       </div>
     );
@@ -80,21 +83,23 @@ const ResetPasswordForm = () => {
       onSubmit={handleSubmit}
       className="rounded-2xl border border-primary bg-card px-5 py-6 shadow-2xl"
     >
-      <h1 className="mb-2 text-center text-3xl font-semibold">Đặt lại mật khẩu</h1>
+      <h1 className="mb-2 text-center text-3xl font-semibold">
+        {UI_TEXT.AUTH.RESET_PASSWORD.TITLE}
+      </h1>
       <p className="mb-6 text-center text-sm text-muted-foreground">
-        Vui lòng nhập mật khẩu mới cho tài khoản của bạn.
+        {UI_TEXT.AUTH.RESET_PASSWORD.DESC}
       </p>
       <FieldGroup className="gap-4">
         <FieldPassword
           name="newPassword"
-          label="Mật khẩu mới"
-          placeholder="Nhập mật khẩu mới"
+          label={UI_TEXT.AUTH.RESET_PASSWORD.NEW_PASSWORD}
+          placeholder={UI_TEXT.AUTH.RESET_PASSWORD.NEW_PASSWORD_PLACEHOLDER}
           className="border-primary"
         />
         <FieldPassword
           name="confirmPassword"
-          label="Xác nhận mật khẩu mới"
-          placeholder="Nhập lại mật khẩu mới"
+          label={UI_TEXT.AUTH.RESET_PASSWORD.CONFIRM_NEW_PASSWORD}
+          placeholder={UI_TEXT.AUTH.RESET_PASSWORD.CONFIRM_NEW_PASSWORD_PLACEHOLDER}
           className="border-primary"
         />
       </FieldGroup>
@@ -104,7 +109,7 @@ const ResetPasswordForm = () => {
         disabled={isLoading}
         className="mt-6 w-full hover:bg-primary-hover"
       >
-        {isLoading ? "Đang xử lý..." : "Cập nhật mật khẩu"}
+        {isLoading ? UI_TEXT.COMMON.PROCESSING : UI_TEXT.AUTH.RESET_PASSWORD.UPDATE_BUTTON}
       </Button>
     </form>
   );
@@ -112,7 +117,7 @@ const ResetPasswordForm = () => {
 
 const ResetPasswordPage = () => {
   return (
-    <Suspense fallback={<div className="text-center">Đang tải...</div>}>
+    <Suspense fallback={<div className="text-center">{UI_TEXT.COMMON.LOADING}</div>}>
       <ResetPasswordForm />
     </Suspense>
   );

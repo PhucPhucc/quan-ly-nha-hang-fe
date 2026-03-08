@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { MenuItem } from "@/types/Menu";
 
 const OrderList = ({
@@ -40,7 +41,7 @@ const OrderList = ({
             {item.isOutOfStock && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <span className="text-white font-black uppercase text-xs tracking-widest border border-white px-2 py-1">
-                  Hết hàng
+                  {UI_TEXT.COMMON.OUT_OF_STOCK}
                 </span>
               </div>
             )}
@@ -49,7 +50,10 @@ const OrderList = ({
             <h3 className="font-bold text-sm text-slate-800 line-clamp-2 leading-tight mb-1">
               {item.name}
             </h3>
-            <p className="font-black text-primary text-base">{item.price?.toLocaleString()}đ</p>
+            <p className="font-black text-primary text-base">
+              {item.price?.toLocaleString()}
+              {UI_TEXT.COMMON.CURRENCY}
+            </p>
           </div>
         </li>
       ))}

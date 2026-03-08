@@ -116,8 +116,8 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
             {loading && <Spinner />}
           </Button>
           <SheetClose asChild className="flex-1/2">
-            <Button variant="outline" className="">
-              Cancel
+            <Button type="button" variant="outline">
+              {UI_TEXT.COMMON.CANCEL_EN}
             </Button>
           </SheetClose>
         </Field>

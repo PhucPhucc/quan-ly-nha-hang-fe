@@ -4,7 +4,15 @@ import { ArrowBigRightDash, Receipt } from "lucide-react";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Field } from "@/components/ui/field";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
 
@@ -15,7 +23,7 @@ interface KDSRejectModalProps {
   itemName: string;
 }
 
-const QUICK_REASONS = ["Hết hàng", "Bếp quá tải", "Thiết bị hỏng"];
+const QUICK_REASONS = UI_TEXT.KDS.AUDIT.REJECT_MODAL.REASONS;
 const MAX_CHARS = 200;
 
 export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSRejectModalProps) {
@@ -46,51 +54,53 @@ export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSReje
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
-      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden border-none rounded-[16px] shadow-xl">
+      <DialogContent className="sm:max-w-130 p-0 overflow-hidden border-none rounded-2xl shadow-xl">
         {/* Simplified Header */}
-        <div className="px-6 py-5 border-b border-gray-100 flex flex-col gap-1 bg-white">
-          <h2 className="text-xl font-black text-gray-900 tracking-tight uppercase">
-            {UI_TEXT.KDS.AUDIT.REJECT_MODAL.TITLE}
-          </h2>
-          <p className="text-gray-500 text-[11px] font-medium leading-normal">
-            Hành động này sẽ gửi thông báo đến nhân viên phục vụ và khách hàng.
-          </p>
-        </div>
+        <DialogHeader className="px-6 py-5 border-b border-border flex flex-col gap-1">
+          <DialogTitle className="text-2xl">{UI_TEXT.KDS.AUDIT.REJECT_MODAL.TITLE}</DialogTitle>
+          <DialogDescription className="text-muted-foreground font-medium leading-normal mt-1">
+            {UI_TEXT.KDS.REJECT_WARNING}
+          </DialogDescription>
+        </DialogHeader>
 
-        <div className="p-6 flex flex-col gap-6 bg-white">
+        <div className="px-6 flex flex-col gap-4">
           {/* Design: Context Line */}
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-            <span className="material-symbols-outlined text-gray-400 text-lg">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted border border-border">
+            <span className="material-symbols-outlined text-access text-lg">
               <Receipt />
             </span>
             <p className="text-gray-700 text-xs font-bold uppercase tracking-tight">
-              Bạn đang thực hiện từ chối món:{" "}
+              {UI_TEXT.KDS.REJECT_CONFIRM}{" "}
               <span className="text-primary font-black">{itemName}</span>
             </p>
           </div>
 
-          <div className="flex flex-col gap-2.5">
-            <label
-              className="text-gray-900 text-xs font-black uppercase tracking-wider"
+          <Field className="flex flex-col gap-2.5">
+            <Label
+              className="text-foreground text-xs font-black uppercase tracking-wider"
               htmlFor="reject-reason"
             >
-              Lý do từ chối <span className="text-primary">*</span>
-            </label>
+              {UI_TEXT.KDS.REASON} <span className="text-primary">{UI_TEXT.COMMON.ASTERISK}</span>
+            </Label>
             <div className="relative">
               <Textarea
                 id="reject-reason"
                 placeholder={UI_TEXT.KDS.AUDIT.REJECT_MODAL.PLACEHOLDER}
-                value={reason}
+                value={reason || "Hết nguyên liệu chính"}
                 onChange={(e) => {
                   if (e.target.value.length <= MAX_CHARS) {
                     setReason(e.target.value);
                     if (e.target.value.trim()) setError(null);
                   }
                 }}
-                className="w-full min-h-[140px] bg-white border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus-visible:ring-primary p-4 text-sm font-medium resize-none transition-all"
+                className="w-full min-h-35 bg-white border border-border rounded-xl 
+                text-foreground placeholder:text-gray-400 focus-visible:ring-primary 
+                p-4 text-sm font-medium resize-none transition-all"
               />
               <div className="absolute bottom-3 right-3 text-[10px] font-black text-gray-400 tabular-nums">
-                {reason.length}/{MAX_CHARS}
+                {reason.length}
+                {UI_TEXT.COMMON.SLASH}
+                {MAX_CHARS}
               </div>
             </div>
 
@@ -112,11 +122,11 @@ export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSReje
                 {error}
               </p>
             )}
-          </div>
+          </Field>
         </div>
 
         {/* Design: Red Shadowed Footer Buttons */}
-        <div className="p-6 pt-2 flex items-center justify-end gap-3 bg-white">
+        <div className="p-6 pt-2 flex items-center justify-end gap-3">
           <Button
             variant="outline"
             onClick={handleCancel}

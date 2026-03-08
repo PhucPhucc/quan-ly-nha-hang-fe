@@ -49,7 +49,7 @@ const EmployeeChangePassword = ({
       await changeEmployeePassword(employeeId, reason, newPassword);
       toast.success("Thay doi mat khau thanh cong");
       onToggle(false);
-    } catch (error) {
+    } catch {
       toast.error("Thay doi mat khau that bai");
     }
   };

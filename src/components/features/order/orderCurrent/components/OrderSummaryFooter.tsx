@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
@@ -87,21 +88,28 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
     <CardFooter className="flex flex-col p-2 border-t gap-2 shrink-0">
       <div className="w-full space-y-1.5">
         <div className="flex justify-between items-center text-muted-foreground gap-2 px-1">
-          <span className="text-[10px]">Tạm tính</span>
+          <span className="text-[10px]">{UI_TEXT.ORDER.CURRENT.SUBTOTAL}</span>
           <span className="font-semibold text-xs text-foreground">
-            {subtotal.toLocaleString()}đ
+            {subtotal.toLocaleString()}
+            {UI_TEXT.COMMON.CURRENCY}
           </span>
         </div>
         <div className="flex justify-between items-center text-muted-foreground gap-2 px-1">
-          <span className="text-[10px]">Thuế (VAT 10%)</span>
-          <span className="font-semibold text-xs text-foreground">{tax.toLocaleString()}đ</span>
+          <span className="text-[10px]">{UI_TEXT.ORDER.CURRENT.TAX}</span>
+          <span className="font-semibold text-xs text-foreground">
+            {tax.toLocaleString()}
+            {UI_TEXT.COMMON.CURRENCY}
+          </span>
         </div>
         <Separator />
         <div className="flex justify-between items-center mt-1 p-2 rounded-xl transition-all">
           <div className="flex justify-between w-full text-xl">
-            <span className="font-black text-primary/80 leading-none mb-0.5">Tổng thanh toán:</span>
+            <span className="font-black text-primary/80 leading-none mb-0.5">
+              {UI_TEXT.ORDER.CURRENT.TOTAL_AMOUNT}
+            </span>
             <span className="font-black text-primary leading-none tracking-tighter">
-              {total.toLocaleString()}đ
+              {total.toLocaleString()}
+              {UI_TEXT.COMMON.CURRENCY}
             </span>
           </div>
         </div>
@@ -114,7 +122,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           onClick={() => setIsCheckoutOpen(true)}
           disabled={isSubmitting || !selectedOrderId}
         >
-          Thanh toán
+          {UI_TEXT.ORDER.CURRENT.PAY}
         </Button>
         <Button
           size="sm"
@@ -127,10 +135,10 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Đang gửi...
+              {UI_TEXT.ORDER.CURRENT.PROCESSING}
             </>
           ) : (
-            "Gửi xuống bếp"
+            UI_TEXT.MENU.OPTIONS.ADD_TO_ORDER.replace(" -", "")
           )}
         </Button>
       </div>

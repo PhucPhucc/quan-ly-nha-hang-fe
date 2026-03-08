@@ -3,6 +3,7 @@
 import { ShoppingCart } from "lucide-react";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
 export type TakeawayStatus = "SERVING" | "READY" | "COMPLETED" | "CANCELLED";
@@ -92,7 +93,7 @@ const TakeawayItem = ({ order, onClick }: TakeawayItemProps) => {
           )}
           {order.status === "READY" && (
             <div className="bg-emerald-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-sm uppercase">
-              Sẵn
+              {UI_TEXT.ORDER.BOARD.AVAILABLE_LCT}
             </div>
           )}
         </div>
@@ -100,7 +101,8 @@ const TakeawayItem = ({ order, onClick }: TakeawayItemProps) => {
         <div className="absolute -top-1 -left-1">
           <div className="bg-background/80 backdrop-blur-sm border border-border px-1.5 py-0.5 rounded-md shadow-xs">
             <p className="text-[9px] font-black font-mono text-muted-foreground leading-none">
-              #{order.orderCode.split("-").pop()}
+              {UI_TEXT.COMMON.HASH}
+              {order.orderCode.split("-").pop()}
             </p>
           </div>
         </div>

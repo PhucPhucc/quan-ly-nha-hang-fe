@@ -1,0 +1,73 @@
+export const AUTH = {
+  LOGIN: "Đăng nhập",
+  LOGOUT: "Đăng xuất",
+  REGISTER: "Đăng ký",
+  EMAIL: "Email",
+  PASSWORD: "Mật khẩu",
+  LOGIN_TITLE: "Chào mừng quay lại",
+  EMPLOYEE_CODE: "Mã nhân viên",
+  EMPLOYEE_CODE_PLACEHOLDER: "VD: M000001",
+  REMEMBER_ME: "Ghi nhớ đăng nhập",
+  FORGOT_PASSWORD: "Quên mật khẩu?",
+  FORGOT_PASSWORD_TITLE: "Quên mật khẩu?",
+  FORGOT_PASSWORD_DESC: "Vui lòng nhập Mã nhân viên của bạn để khôi phục mật khẩu.",
+  FORGOT_PASSWORD_PLACEHOLDER: "Ví dụ: WA001",
+  SEND_REQUEST: "Gửi yêu cầu",
+  BACK_TO_LOGIN: "Quay lại đăng nhập",
+  LOGGING_OUT: "Đang đăng xuất...",
+  ERROR_INVALID_CREDENTIALS: "Sai mã nhân viên hoặc mật khẩu",
+};
+
+export const CHANGE_PASSWORD = {
+  TITLE: "Đổi mật khẩu",
+  BUTTON: "Đổi mật khẩu",
+  CURRENT_PASSWORD: "Mật khẩu hiện tại",
+  NEW_PASSWORD: "Mật khẩu mới",
+  CONFIRM_PASSWORD: "Xác nhận mật khẩu",
+
+  CONFIRM_NOT_MATCH: "Mật khẩu xác nhận không khớp",
+  REQUIRED: "Vui lòng điền vào tất cả các trường",
+  UPPERCASE_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ cái viết hoa",
+  LOWERCASE_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ cái viết thường",
+  NUMBER_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ số",
+  SPECIAL_CHAR_REQUIRED: "Mật khẩu mới phải chứa ít nhất một ký tự đặc biệt",
+  MIN_LENGTH: "Mật khẩu mới phải có ít nhất 8 ký tự",
+};
+export const RESET_PASSWORD = {
+  TITLE: "Đặt lại mật khẩu",
+  DESC: "Vui lòng nhập mật khẩu mới cho tài khoản của bạn.",
+  INVALID_TOKEN: "Token không hợp lệ hoặc đã hết hạn.",
+  MISMATCH: "Mật khẩu xác nhận không khớp.",
+  SUCCESS: "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.",
+  FAILED: "Đặt lại mật khẩu thất bại.",
+  ERROR_TITLE: "Lỗi!",
+  TOKEN_MISSING: "Token khôi phục mật khẩu không tồn tại hoặc không hợp lệ.",
+  REQUEST_NEW: "Yêu cầu mã mới",
+  NEW_PASSWORD: "Mật khẩu mới",
+  NEW_PASSWORD_PLACEHOLDER: "Nhập mật khẩu mới",
+  CONFIRM_NEW_PASSWORD: "Xác nhận mật khẩu mới",
+  CONFIRM_NEW_PASSWORD_PLACEHOLDER: "Nhập lại mật khẩu mới",
+  UPDATE_BUTTON: "Cập nhật mật khẩu",
+};
+
+export const PROFILE = {
+  TITLE: "Thông tin cá nhân",
+  DESCRIPTION: "Cập nhật thông tin cá nhân của bạn",
+  CHANGE_PASSWORD: "Đổi mật khẩu",
+  CURRENT_PASSWORD: "Mật khẩu hiện tại",
+  NEW_PASSWORD: "Mật khẩu mới",
+  CONFIRM_PASSWORD: "Xác nhận mật khẩu",
+  CONFIRM_PASSWORD_MISMATCH: "Mật khẩu xác nhận không khớp",
+  PROFILE_TAB: "Hồ sơ cá nhân",
+  PROFILE_DESC: "Thông tin & Bảo mật",
+  SETTINGS_TAB: "Cài đặt",
+  SETTINGS_DESC: "Tùy chỉnh hệ thống",
+};
+
+export const UNAUTHORIZED = {
+  TITLE: "Truy cập bị từ chối",
+  DESCRIPTION:
+    "Bạn không có quyền truy cập vào trang này. Vui lòng kiểm tra lại tài khoản hoặc liên hệ quản trị viên.",
+  GO_BACK: "Quay lại trang trước",
+  LOGIN_OTHER: "Đăng nhập tài khoản khác",
+};

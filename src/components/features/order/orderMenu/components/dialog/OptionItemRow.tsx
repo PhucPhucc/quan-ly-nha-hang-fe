@@ -3,6 +3,7 @@
 import { Check } from "lucide-react";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { OptionItem } from "@/types/Menu";
 
@@ -61,7 +62,9 @@ const OptionItemRow: React.FC<OptionItemRowProps> = ({
       {item.extraPrice > 0 && (
         <div className="flex items-center bg-slate-100 group-hover:bg-slate-200 px-2 py-0.5 rounded-full transition-colors">
           <span className="text-[10px] font-black text-slate-600">
-            +{item.extraPrice.toLocaleString()}đ
+            {UI_TEXT.COMMON.PLUS}
+            {item.extraPrice.toLocaleString()}
+            {UI_TEXT.COMMON.CURRENCY}
           </span>
         </div>
       )}

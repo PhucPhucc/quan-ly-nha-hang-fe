@@ -81,9 +81,10 @@ export function HeroSection() {
               <div className="h-3 w-3 rounded-full bg-red-500" />
               <div className="h-3 w-3 rounded-full bg-amber-500" />
               <div className="h-3 w-3 rounded-full bg-green-500" />
-              <span className="text-xs text-slate-500 font-mono ml-4 opacity-50">
-                KDS v2.0 - Live Connection
-              </span>
+              <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 ml-4 animate-fade-in">
+                <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse mr-2" />
+                <span className="text-sm font-medium text-primary">{UI_TEXT.LANDING.KDS_V2}</span>
+              </div>
             </div>
             <div className="relative aspect-video pt-10">
               <Image

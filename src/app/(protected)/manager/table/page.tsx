@@ -31,13 +31,13 @@ const page = () => {
             <TablesList />
           </TabsContent>
           <TabsContent value="serving">
-            <p>serving</p>
+            <p>{UI_TEXT.TABLE.SERVING}</p>
           </TabsContent>
           <TabsContent value="ready">
-            <p>ready</p>
+            <p>{UI_TEXT.TABLE.READY}</p>
           </TabsContent>
           <TabsContent value="cleaning">
-            <p>cleaning</p>
+            <p>{UI_TEXT.TABLE.CLEANING}</p>
           </TabsContent>
         </Tabs>
       </div>

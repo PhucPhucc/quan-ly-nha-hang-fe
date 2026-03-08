@@ -44,39 +44,34 @@ const EmployeeChangeRole = ({
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newRole = formData.get("role");
-    const confirmChange = formData.get("confirm_change");
+    const confirmChange = formData.get("confirm_changes");
     const reason = formData.get("reason") as string;
 
     if (confirmChange !== "on" || !newRole) {
-      toast.error("Vui lòng xác nhận thay đổi vai trò");
+      toast.error(UI_TEXT.EMPLOYEE.CONFIRM_REQUIRED);
       return;
     }
     if (!reason) {
-      toast.error("Vui lòng nhập lý do thay đổi vai trò");
+      toast.error(UI_TEXT.EMPLOYEE.REASON_REQUIRED);
       return;
     }
 
     if (newRole === role) {
-      toast.error("Vai trò mới phải khác vai trò hiện tại");
+      toast.error(UI_TEXT.EMPLOYEE.ROLE_MISMATCH);
       return;
     }
 
     if (!employeeCode) {
-      toast.error("Mã nhân viên không hợp lệ hoac không tồn tại");
+      toast.error(UI_TEXT.EMPLOYEE.INVALID_CODE);
       return;
     }
     try {
-      const data = await changeEmployeeRole(
-        employeeCode,
-        role as string,
-        newRole as string,
-        reason
-      );
-      toast.success("Thay đổi vai trò thành công");
+      await changeEmployeeRole(employeeCode, role as string, newRole as string, reason);
+      toast.success(UI_TEXT.EMPLOYEE.CHANGE_SUCCESS);
       increment();
       onToggle(false);
     } catch (error) {
-      toast.error("Thay đổi vai trò thất bại");
+      toast.error(UI_TEXT.EMPLOYEE.CHANGE_FAILED);
       console.log(error);
     }
   };
@@ -86,11 +81,8 @@ const EmployeeChangeRole = ({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Change Role</DialogTitle>
-            <DialogDescription>
-              Viec thay doi role cua nhan vien se cap cho nhan vien mot tai khoan moi va tai khoan
-              cu se bi vo hieu hoa.
-            </DialogDescription>
+            <DialogTitle>{UI_TEXT.EMPLOYEE.CHANGE_ROLE_TITLE}</DialogTitle>
+            <DialogDescription>{UI_TEXT.EMPLOYEE.CHANGE_ROLE_DESC_FULL}</DialogDescription>
           </DialogHeader>
           <FieldGroup className="mt-4 gap-4">
             <Field>
@@ -101,33 +93,37 @@ const EmployeeChangeRole = ({
             <EmployeeSelectRole />
 
             <Field>
-              <Label htmlFor="reason">Lý do thay đổi</Label>
-              <Textarea
-                id="reason"
-                name="reason"
-                required
-                placeholder="Nhập lý do thăng chức, chuyển bộ phận..."
-              />
+              <FieldLabel htmlFor="reason">{UI_TEXT.EMPLOYEE.REASON}</FieldLabel>
+              <FieldContent>
+                <Textarea
+                  id="reason"
+                  name="reason"
+                  required
+                  placeholder={UI_TEXT.EMPLOYEE.REASON_PLACEHOLDER}
+                />
+              </FieldContent>
             </Field>
 
-            <div className="bg-blue-50 border border-blue-100 p-3 rounded-lg text-xs text-blue-700">
-              <p className="font-medium mb-1">💡 Thông tin:</p>
-              <ul className="list-disc list-inside space-y-1">
-                <li>Tài khoản cũ sẽ bị vô hiệu hóa.</li>
-                <li>Hệ thống tự động tạo mã nhân viên mới.</li>
+            <div className="bg-yellow-100 rounded-md p-4 text-yellow-800 text-sm">
+              <p className="font-semibold">{UI_TEXT.EMPLOYEE.INFO_TITLE}</p>
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>{UI_TEXT.EMPLOYEE.INFO_1}</li>
+                <li>{UI_TEXT.EMPLOYEE.INFO_2}</li>
                 <li>
-                  Thông tin đăng nhập mới đã được gửi tới <strong>Email nhân viên</strong>.
+                  {UI_TEXT.EMPLOYEE.INFO_3}
+                  <span className="font-medium">{UI_TEXT.AUTH.EMAIL}</span>
+                  {UI_TEXT.COMMON.DOT}
                 </li>
               </ul>
             </div>
 
-            <Field orientation="horizontal" className="gap-2">
-              <Checkbox id="confirm_change" name="confirm_change" />
+            <Field orientation="horizontal" className="shadow-none border-none p-0 mt-4">
+              <Checkbox id="confirm_changes" name="confirm_changes" />
               <FieldContent>
-                <FieldLabel htmlFor="confirm_change">Xác nhận thay đổi vai trò</FieldLabel>
-                <FieldDescription>
-                  Bằng cách nhấp vào hộp kiểm này, tai khoản cũ sẽ bị vô hiệu hóa.
-                </FieldDescription>
+                <FieldLabel htmlFor="confirm_changes">
+                  {UI_TEXT.EMPLOYEE.CONFIRM_CHANGE_ROLE}
+                </FieldLabel>
+                <FieldDescription>{UI_TEXT.EMPLOYEE.AGREE_TERMS}</FieldDescription>
               </FieldContent>
             </Field>
           </FieldGroup>

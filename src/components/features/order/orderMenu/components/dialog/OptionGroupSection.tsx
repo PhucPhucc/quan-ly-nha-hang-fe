@@ -4,6 +4,7 @@ import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { OptionGroup, OptionItem } from "@/types/Menu";
 
 import OptionItemRow from "./OptionItemRow";
@@ -27,19 +28,25 @@ const OptionGroupSection: React.FC<OptionGroupSectionProps> = ({
         <div className="space-y-0.5">
           <h4 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
             {group.name}
-            {group.isRequired && <span className="text-destructive font-black">*</span>}
+            {group.isRequired && (
+              <span className="text-destructive font-black">
+                {UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}
+              </span>
+            )}
           </h4>
           <p className="text-[10px] text-slate-500 font-medium tracking-wide flex items-center gap-1">
             {isSingleSelect ? (
-              <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">Chọn 1</span>
+              <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
+                {UI_TEXT.MENU.OPTIONS.CHOOSE_ONE}
+              </span>
             ) : (
               <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
-                Tối đa {group.maxSelect}
+                {UI_TEXT.MENU.OPTIONS.MAXIMUM} {group.maxSelect}
               </span>
             )}
             {group.isRequired && (
               <span className="bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded font-black uppercase tracking-tighter">
-                Bắt buộc
+                {UI_TEXT.MENU.OPTIONS.REQUIRED_LABEL}
               </span>
             )}
           </p>
@@ -52,7 +59,9 @@ const OptionGroupSection: React.FC<OptionGroupSectionProps> = ({
               ${selectedItems.length > 0 ? "border-emerald-500 text-emerald-600 bg-emerald-50" : ""}
             `}
           >
-            {selectedItems.length > 0 ? "Đã chọn" : "Cần chọn"}
+            {selectedItems.length > 0
+              ? UI_TEXT.MENU.OPTIONS.SELECTED
+              : UI_TEXT.MENU.OPTIONS.NEED_SELECT}
           </Badge>
         )}
       </div>

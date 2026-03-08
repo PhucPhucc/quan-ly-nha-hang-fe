@@ -1,0 +1,32 @@
+export const MENU = {
+  TITLE: "Quản lý Thực đơn",
+  SUBTITLE: "Hệ thống quản lý món ăn, giá bán và điều phối trạm tập trung.",
+  ADD_NEW_ITEM: "THÊM MÓN MỚI",
+  TAB_ITEM: "Món lẻ",
+  TAB_COMBO: "Combo / Set Menu",
+  ADD_ITEM: "+ Thêm món lẻ",
+  ADD_COMBO: "+ Thêm Combo",
+  EMPTY_COMBO: "Chưa có dữ liệu Combo...",
+  ID_NOT_FOUND: "Lỗi: Không tìm thấy ID món ăn!",
+  DELETE_SUCCESS: "Xóa thành công!",
+  DELETE_CONFIRM: (name: string) => `Bạn có chắc chắn muốn xóa món "${name}" không?`,
+  UPDATE_STOCK_ERROR: "Không thể cập nhật trạng thái hàng hóa!",
+  SAVE_SUCCESS: "Lưu dữ liệu thành công!",
+  DELETE_DEFAULT_ERROR:
+    "Món ăn này đã có trong hóa đơn, không thể xóa. Hãy tắt trạng thái bán thay vì xóa!",
+  CATEGORIES: {
+    CAFFEE: "Caffee",
+    SOUP: "Soup",
+    TEA: "Tea",
+  },
+  OPTIONS: {
+    REQUIRED_MARK: "*",
+    CHOOSE_ONE: "Chọn 1",
+    MAXIMUM: "Tối đa",
+    REQUIRED_LABEL: "Bắt buộc",
+    SELECTED: "Đã chọn",
+    NEED_SELECT: "Cần chọn",
+    ADD_TO_ORDER: "Thêm vào đơn -",
+    ITEM_NOTE: "Ghi chú món",
+  },
+};

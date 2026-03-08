@@ -5,6 +5,10 @@ import Image from "next/image";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 
+const YEAR = UI_TEXT.LANDING.YEAR_VAL;
+const AWARDS = UI_TEXT.LANDING.AWARDS_VAL;
+const CUSTOMERS = UI_TEXT.LANDING.CUSTOMERS_VAL;
+
 export function AboutSection() {
   const t = UI_TEXT.LANDING;
 
@@ -27,7 +31,7 @@ export function AboutSection() {
                   <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <Award className="h-5 w-5" />
                   </div>
-                  <span className="font-bold text-lg text-foreground">2023</span>
+                  <span className="font-bold text-lg text-foreground">{YEAR}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">{t.ESTABLISHED}</p>
               </div>
@@ -36,7 +40,7 @@ export function AboutSection() {
                   <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <Users className="h-5 w-5" />
                   </div>
-                  <span className="font-bold text-lg text-foreground">50+</span>
+                  <span className="font-bold text-lg text-foreground">{AWARDS}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">{t.TEAM_SIZE}</p>
               </div>
@@ -48,7 +52,7 @@ export function AboutSection() {
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] shadow-2xl transform transition-transform duration-500 group-hover:-translate-y-2">
               <Image
                 src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1000&auto=format&fit=crop"
-                alt="Restaurant Business"
+                alt={t.ABOUT_IMG_ALT}
                 fill
                 className="object-cover"
               />
@@ -57,9 +61,9 @@ export function AboutSection() {
               className="glass absolute -bottom-8 -left-8 p-8 rounded-2xl hidden lg:block animate-float"
               style={{ animationDelay: "1s" }}
             >
-              <p className="text-4xl font-extrabold text-primary">500+</p>
+              <p className="text-4xl font-extrabold text-primary">{CUSTOMERS}</p>
               <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mt-1">
-                Partner Restaurants
+                {t.PARTNERS}
               </p>
             </div>
           </div>
