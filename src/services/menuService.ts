@@ -1,20 +1,15 @@
 import { ApiResponse, PaginationResult } from "@/types/Api";
-import { MenuItem } from "@/types/Menu";
+import { MenuItem, SetMenu } from "@/types/Menu";
 
 import { apiFetch } from "./api";
 
 export const menuService = {
   // Lấy danh sách món lẻ
   getAll: (
-    params?: Record<string, string | number | boolean | undefined>
+    page: number = 1,
+    pageSize: number = 100
   ): Promise<ApiResponse<PaginationResult<MenuItem>>> => {
-    const filteredParams = params
-      ? Object.entries(params)
-          .filter(([, v]) => v !== undefined)
-          .reduce((acc, [k, v]) => ({ ...acc, [k]: String(v) }), {} as Record<string, string>)
-      : undefined;
-    const query = filteredParams ? new URLSearchParams(filteredParams).toString() : "";
-    return apiFetch<PaginationResult<MenuItem>>(`/menuitems${query ? `?${query}` : ""}`);
+    return apiFetch<PaginationResult<MenuItem>>(`/menuitems?page=${page}&pageSize=${pageSize}`);
   },
 
   // Thêm món mới
@@ -32,7 +27,7 @@ export const menuService = {
     }),
 
   // Cập nhật trạng thái hết hàng
-  updateStock: (id: string, isOutOfStock: boolean): Promise<ApiResponse<void>> =>
+  toggleStock: (id: string, isOutOfStock: boolean): Promise<ApiResponse<void>> =>
     apiFetch<void>(`/menuitems/${id}/stock`, {
       method: "PUT",
       body: { isOutOfStock },
@@ -46,4 +41,45 @@ export const menuService = {
 
   // Lấy chi tiết món theo ID
   getById: (id: string): Promise<ApiResponse<MenuItem>> => apiFetch<MenuItem>(`/menuitems/${id}`),
+
+  // --- SET MENU (COMBO) METHODS ---
+
+  // Lấy danh sách combo
+  getAllSetMenu: (
+    page: number = 1,
+    pageSize: number = 100
+  ): Promise<ApiResponse<PaginationResult<SetMenu>>> => {
+    return apiFetch<PaginationResult<SetMenu>>(`/setmenus?page=${page}&pageSize=${pageSize}`);
+  },
+
+  // Lấy chi tiết combo theo ID
+  getSetMenuById: (id: string): Promise<ApiResponse<SetMenu>> =>
+    apiFetch<SetMenu>(`/setmenus/${id}`),
+
+  // Thêm combo mới
+  createSetMenu: (data: Partial<SetMenu>): Promise<ApiResponse<SetMenu>> =>
+    apiFetch<SetMenu>("/setmenus", {
+      method: "POST",
+      body: data,
+    }),
+
+  // Cập nhật combo
+  updateSetMenu: (id: string, data: Partial<SetMenu>): Promise<ApiResponse<SetMenu>> =>
+    apiFetch<SetMenu>(`/setmenus/${id}`, {
+      method: "PUT",
+      body: data,
+    }),
+
+  // Xóa combo
+  deleteSetMenu: (id: string): Promise<ApiResponse<void>> =>
+    apiFetch<void>(`/setmenus/${id}`, {
+      method: "DELETE",
+    }),
+
+  // Cập nhật trạng thái hết hàng cho combo
+  updateSetMenuStock: (id: string, isOutOfStock: boolean): Promise<ApiResponse<void>> =>
+    apiFetch<void>(`/setmenus/${id}/stock`, {
+      method: "PUT",
+      body: { setMenuId: id, isOutOfStock },
+    }),
 };

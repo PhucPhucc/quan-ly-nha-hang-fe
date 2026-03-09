@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import MenuFilters from "@/components/features/menu/MenuFilters";
 import { MenuFormDialog } from "@/components/features/menu/MenuFormDialog";
 import { MenuTable } from "@/components/features/menu/MenuTable";
+import { OptionManagementDialog } from "@/components/features/menu/OptionManagementDialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { categoryService } from "@/services/categoryService";
@@ -22,6 +23,9 @@ export default function MenuManagementPage() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [formType, setFormType] = useState<"item" | "combo">("item");
 
+  const [isOptionDialogOpen, setIsOptionDialogOpen] = useState(false);
+  const [selectedOptionItem, setSelectedOptionItem] = useState<MenuItem | null>(null);
+
   const userRole = "Manager";
 
   const fetchData = async () => {
@@ -32,11 +36,8 @@ export default function MenuManagementPage() {
         categoryService.getAll(),
       ]);
 
-      const menuArray = Array.isArray(menuRes) ? menuRes : menuRes?.data || menuRes?.items || [];
-
-      const setMenuArrayRaw = Array.isArray(setMenuRes)
-        ? setMenuRes
-        : setMenuRes?.data || setMenuRes?.items || [];
+      const menuArray = menuRes.data?.items || [];
+      const setMenuArrayRaw = setMenuRes.data?.items || [];
 
       // Map lại để đồng bộ structure với MenuItem
       const setMenuArray = setMenuArrayRaw.map((item: any) => ({
@@ -46,9 +47,7 @@ export default function MenuManagementPage() {
         name: item.name || item.Name,
       }));
 
-      const categoryArray = Array.isArray(categoryRes)
-        ? categoryRes
-        : (categoryRes as any)?.data || (categoryRes as any)?.items || [];
+      const categoryArray = categoryRes.data?.items || [];
 
       setMenuData([...menuArray, ...setMenuArray]);
       setCategories(categoryArray);
@@ -62,8 +61,7 @@ export default function MenuManagementPage() {
   }, []);
 
   const handleDeleteItem = async (item: MenuItem) => {
-    const itemId =
-      (item as any).menuItemId || (item as any).MenuItemId || item.menu_item_id || (item as any).id;
+    const itemId = (item as any).menuItemId || (item as any).MenuItemId || (item as any).id;
     const itemName = item.name || (item as any).Name;
 
     if (!itemId) {
@@ -94,15 +92,19 @@ export default function MenuManagementPage() {
 
   const handleToggleStock = async (id: string) => {
     try {
-      const item = menuData.find(
-        (m) => ((m as any).menuItemId || m.menu_item_id || (m as any).id) === id
-      );
+      const item = menuData.find((m) => ((m as any).menuItemId || (m as any).id) === id);
       if (!item) return;
 
-      const currentStatus =
-        (item as any).isOutOfStock ?? (item as any).IsOutOfStock ?? item.is_out_of_stock ?? false;
+      const currentStatus = (item as any).isOutOfStock ?? (item as any).IsOutOfStock ?? false;
 
-      await menuService.toggleStock(id, !currentStatus);
+      const isCombo = (item.code || (item as any).Code || "").toUpperCase().includes("COMBO");
+
+      if (isCombo) {
+        await menuService.updateSetMenuStock(id, !currentStatus);
+      } else {
+        await menuService.toggleStock(id, !currentStatus);
+      }
+
       fetchData();
     } catch (error) {
       console.error("Toggle stock failed:", error);
@@ -136,6 +138,11 @@ export default function MenuManagementPage() {
     }
   };
 
+  const handleManageOptions = (item: MenuItem) => {
+    setSelectedOptionItem(item);
+    setIsOptionDialogOpen(true);
+  };
+
   // Logic useMemo giữ nguyên...
   const baseFilteredData = useMemo(() => {
     return (menuData || []).filter((item) => {
@@ -147,10 +154,9 @@ export default function MenuManagementPage() {
         itemCode.toLowerCase().includes(searchQuery.toLowerCase());
       const itemStation = String(item.station || (item as any).Station || "");
       const matchesStation = filterStation === "all" || itemStation === filterStation;
-      const itemCategoryId =
-        item.category_id || (item as any).categoryId || (item as any).CategoryId;
+      const itemCategoryId = (item as any).categoryId || (item as any).CategoryId;
       const matchesCategory = filterCategory === "all" || itemCategoryId === filterCategory;
-      const price = item.dine_in_price ?? (item as any).PriceDineIn ?? (item as any).price ?? 0;
+      const price = (item as any).price ?? (item as any).Price ?? (item as any).price ?? 0;
       let matchesPrice = true;
       if (filterPrice === "low") matchesPrice = price < 30000;
       if (filterPrice === "mid") matchesPrice = price >= 30000 && price <= 60000;
@@ -240,6 +246,7 @@ export default function MenuManagementPage() {
               setIsFormOpen(true);
             }}
             onDelete={handleDeleteItem}
+            onManageOptions={handleManageOptions}
           />
         </TabsContent>
 
@@ -262,9 +269,11 @@ export default function MenuManagementPage() {
                   // Gọi API lấy chi tiết Combo (bao gồm mảng items món lẻ)
                   const detail = await menuService.getSetMenuById(comboId);
 
-                  setSelectedItem(detail);
-                  setFormType("combo");
-                  setIsFormOpen(true);
+                  if (detail.data) {
+                    setSelectedItem(detail.data as any);
+                    setFormType("combo");
+                    setIsFormOpen(true);
+                  }
                 } catch (error) {
                   console.error("Lỗi khi tải chi tiết combo:", error);
                   alert("Không thể tải danh sách món lẻ của combo này.");
@@ -288,6 +297,12 @@ export default function MenuManagementPage() {
         initialData={selectedItem}
         forcedType={formType}
         allMenuItems={menuData}
+      />
+
+      <OptionManagementDialog
+        open={isOptionDialogOpen}
+        onOpenChange={setIsOptionDialogOpen}
+        menuItem={selectedOptionItem}
       />
     </div>
   );

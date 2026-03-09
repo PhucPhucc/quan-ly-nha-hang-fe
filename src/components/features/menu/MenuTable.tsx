@@ -39,7 +39,7 @@ interface MenuTableProps {
   onDelete: (item: MenuItem) => void;
   role: string;
   onToggleStock: (id: string) => void;
-  onManageOptions: (item: MenuItem) => void;
+  onManageOptions?: (item: MenuItem) => void;
 }
 
 export function MenuTable({
@@ -265,6 +265,19 @@ export function MenuTable({
                           <Trash2 className="mr-2.5 h-4 w-4" />
                           <span>Xóa</span>
                         </DropdownMenuItem>
+
+                        {onManageOptions && (
+                          <>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => onManageOptions(item)}
+                              className="cursor-pointer"
+                            >
+                              <UtensilsCrossed className="mr-2.5 h-4 w-4" />
+                              <span>Tùy chọn</span>
+                            </DropdownMenuItem>
+                          </>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
