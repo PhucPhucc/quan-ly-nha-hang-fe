@@ -31,9 +31,9 @@ export enum ActionType {
 }
 
 export enum Station {
-  HOT_KITCHEN = 1,
-  COLD_KITCHEN = 2,
   BAR = 3,
+  COLD_KITCHEN = 2,
+  HOT_KITCHEN = 1,
 }
 
 export enum CategoryType {

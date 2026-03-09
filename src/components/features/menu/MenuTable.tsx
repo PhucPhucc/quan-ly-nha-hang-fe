@@ -2,12 +2,11 @@
 
 import {
   Beer,
-  Clock,
   Coffee,
   Edit,
   MoreVertical,
-  ShoppingBag,
   Store,
+  Tag,
   Trash2,
   UtensilsCrossed,
 } from "lucide-react";
@@ -30,252 +29,200 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UI_TEXT } from "@/lib/UI_Text";
-import { MenuItem } from "@/types/Menu";
+import type { MenuItem, SetMenu } from "@/types/Menu";
+
+function withCloudinaryThumb(
+  original: string,
+  opts?: { w?: number; h?: number; crop?: "fill" | "fit" | "pad" | "thumb"; q?: string }
+) {
+  // Không phải URL Cloudinary thì trả nguyên
+  if (!/https?:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//.test(original)) return original;
+
+  // Nếu URL đã có transform sau /image/upload/ thì giữ nguyên
+  const hasTransform = /\/image\/upload\/[^/]*(f_|w_|h_|c_)/.test(original);
+  if (hasTransform) return original;
+
+  const { w = 96, h = 96, crop = "fill", q = "auto" } = opts || {};
+  // Chèn transform ngay sau "/image/upload/" (đứng trước v123...)
+  return original.replace("/image/upload/", `/image/upload/f_auto,q_${q},w_${w},h_${h},c_${crop}/`);
+}
+export type TableItem =
+  | (MenuItem & { id: string; type: "item" })
+  | (SetMenu & { id: string; type: "combo" });
 
 interface MenuTableProps {
-  items: MenuItem[];
-  onEdit: (item: MenuItem) => void;
-  onDelete: (item: MenuItem) => void;
+  items: TableItem[];
   role: string;
   onToggleStock: (id: string) => void;
-  onManageOptions: (item: MenuItem) => void;
+  onEdit: (item: TableItem) => void;
+  onDelete: (item: TableItem) => void;
 }
 
-export function MenuTable({
-  items,
-  role,
-  onToggleStock,
-  onEdit,
-  onDelete,
-  onManageOptions,
-}: MenuTableProps) {
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
+}
+
+function getStationBadge(station?: number) {
+  switch (station) {
+    case 1:
+      return (
+        <Badge className="bg-danger/10 text-danger border-none flex gap-1 items-center">
+          <UtensilsCrossed size={13} /> Bếp Nóng
+        </Badge>
+      );
+    case 2:
+      return (
+        <Badge className="bg-info/10 text-info border-none flex gap-1 items-center">
+          <Coffee size={13} /> Bếp Lạnh
+        </Badge>
+      );
+    case 3:
+      return (
+        <Badge className="bg-warning/10 text-warning border-none flex gap-1 items-center">
+          <Beer size={13} /> Quầy Bar
+        </Badge>
+      );
+    default:
+      return <Badge variant="outline">Không xác định</Badge>;
+  }
+}
+
+/** Lấy id thống nhất */
+function getRowId(it: TableItem): string {
+  return it.id;
+}
+
+export function MenuTable({ items, role, onToggleStock, onEdit, onDelete }: MenuTableProps) {
   const isManager = role === "Manager";
   const canSeeCost = role === "Manager" || role === "Cashier";
 
-  const getStationBadge = (station: any) => {
-    const rawStation = station;
-    let stationValue = "Unknown";
-
-    if (rawStation === 3 || String(rawStation).toLowerCase() === "bar") stationValue = "Bar";
-    else if (
-      rawStation === 1 ||
-      String(rawStation).toLowerCase().includes("hot") ||
-      rawStation === "kitchenhot"
-    )
-      stationValue = "KitchenHot";
-    else if (
-      rawStation === 2 ||
-      String(rawStation).toLowerCase().includes("cold") ||
-      rawStation === "kitchencold"
-    )
-      stationValue = "KitchenCold";
-
-    switch (stationValue) {
-      case "Bar":
-        return (
-          <Badge className="bg-warning/10 text-warning hover:bg-warning/20 border-none px-2 py-1 font-medium flex gap-1.5 items-center w-fit">
-            <Beer size={13} /> Quầy Bar
-          </Badge>
-        );
-      case "KitchenHot":
-        return (
-          <Badge className="bg-danger/10 text-danger hover:bg-danger/20 border-none px-2 py-1 font-medium flex gap-1.5 items-center w-fit">
-            <UtensilsCrossed size={13} /> Bếp Nóng
-          </Badge>
-        );
-      case "KitchenCold":
-        return (
-          <Badge className="bg-info/10 text-info hover:bg-info/20 border-none px-2 py-1 font-medium flex gap-1.5 items-center w-fit">
-            <Coffee size={13} /> Bếp Lạnh
-          </Badge>
-        );
-      case 2: // ColdKitchen
-        return (
-          <Badge variant="outline" className="text-muted-foreground font-normal">
-            {rawStation ?? UI_TEXT.COMMON.EMPTY}
-          </Badge>
-        );
-      case 3: // Bar
-        return (
-          <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none flex gap-1 items-center">
-            <Beer size={12} /> Quầy Bar
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="outline" className="flex gap-1 items-center">
-            <UtensilsCrossed size={12} /> Không xác định
-          </Badge>
-        );
-    }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN").format(amount) + " ₫";
-  };
-
   return (
-    <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+    <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted/40 hover:bg-muted/40">
-            <TableHead className="w-[320px] py-4 font-semibold text-foreground uppercase tracking-wider text-[11px]">
-              {UI_TEXT.EMPLOYEE.INFO}
+          <TableRow className="bg-secondary/50 border-border">
+            <TableHead className="w-[280px] py-4 uppercase text-[11px] font-semibold">
+              Món ăn
             </TableHead>
-            <TableHead className="font-semibold text-foreground uppercase tracking-wider text-[11px]">
-              {UI_TEXT.FORM.SKU_CODE}
-            </TableHead>
-            <TableHead className="font-semibold text-foreground uppercase tracking-wider text-[11px]">
-              {UI_TEXT.FORM.PRICE_CONFIG}
-            </TableHead>
+            <TableHead className="uppercase text-[11px]">Danh mục</TableHead>
+            <TableHead className="uppercase text-[11px]">Mã SKU</TableHead>
+            <TableHead className="uppercase text-[11px]">Giá</TableHead>
             {canSeeCost && (
-              <TableHead className="font-semibold text-danger uppercase tracking-wider text-[11px]">
-                {UI_TEXT.FORM.COST_PRICE}
-              </TableHead>
+              <TableHead className="uppercase text-[11px] text-danger">Giá vốn</TableHead>
             )}
-            <TableHead className="font-semibold text-foreground uppercase tracking-wider text-[11px]">
-              {UI_TEXT.FORM.STATION}
-            </TableHead>
-            <TableHead className="font-semibold text-foreground uppercase tracking-wider text-[11px]">
-              {UI_TEXT.FORM.PREP_TIME}
-            </TableHead>
-            <TableHead className="font-semibold text-foreground uppercase tracking-wider text-[11px]">
-              {UI_TEXT.EMPLOYEE.STATUS}
-            </TableHead>
-            <TableHead className="text-right font-semibold text-foreground uppercase tracking-wider text-[11px] pr-6">
-              {UI_TEXT.COMMON.ACTION}
-            </TableHead>
+            <TableHead className="uppercase text-[11px]">Thời gian</TableHead>
+            <TableHead className="uppercase text-[11px]">Khu vực</TableHead>
+            <TableHead className="uppercase text-[11px]">Tồn kho</TableHead>
+            <TableHead className="uppercase text-[11px] text-right">Thao tác</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
-          {items?.length > 0 ? (
+          {items.length > 0 ? (
             items.map((item) => {
-              // --- PHẦN XỬ LÝ DỮ LIỆU ---
-              const itemId =
-                (item as any).menuItemId || (item as any).MenuItemId || (item as any).id;
-              const isOutOfStock =
-                (item as any).isOutOfStock ?? (item as any).IsOutOfStock ?? false;
-
-              const priceDineIn = (item as any).priceDineIn ?? (item as any).PriceDineIn ?? 0;
-              const priceTakeAway = (item as any).priceTakeAway ?? (item as any).PriceTakeAway ?? 0;
-              const costPrice = (item as any).costPrice ?? (item as any).CostPrice ?? 0;
-
-              // LOGIC FIX ẢNH Ở ĐÂY
-              const rawImg = (item as any).imageUrl || (item as any).ImageUrl || "";
-              let finalImg = "https://placehold.co/100x100?text=No+Food";
-
-              if (rawImg) {
-                // Nếu là link Cloudinary (có http) thì dùng luôn, nếu không thì coi là file nội bộ
-                finalImg = rawImg.startsWith("http") ? rawImg : `/${rawImg}`;
-              }
+              const rowId = getRowId(item);
+              const isItem = item.type === "item";
+              console.debug("[MenuTable] img:", item.name, item.imageUrl);
+              const placeholder = "https://placehold.co/100x100?text=No+Image";
+              const imgSrc = item.imageUrl
+                ? withCloudinaryThumb(item.imageUrl, { w: 96, h: 96, crop: "fill" })
+                : placeholder;
+              const desc = item.description || "Không có mô tả";
+              const category = isItem ? item.categoryName || "—" : "Combo";
 
               return (
                 <TableRow
-                  key={itemId}
-                  className={`group transition-colors hover:bg-muted/30 ${isOutOfStock ? "bg-muted/10 opacity-70" : ""}`}
+                  key={rowId}
+                  className={item.isOutOfStock ? "opacity-60 bg-secondary/10" : ""}
                 >
                   <TableCell className="py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="h-14 w-14 rounded-lg overflow-hidden border border-border bg-muted/50 flex-shrink-0 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 rounded-lg overflow-hidden border bg-secondary">
                         <img
-                          src={finalImg}
+                          src={imgSrc}
                           alt={item.name}
-                          className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${isOutOfStock ? "grayscale" : ""}`}
+                          loading="lazy"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "https://placehold.co/100x100?text=Error";
+                            (e.currentTarget as HTMLImageElement).src =
+                              "https://placehold.co/100x100?text=No+Image";
                           }}
+                          className={`h-full w-full object-cover ${item.isOutOfStock ? "grayscale" : ""}`}
                         />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-bold text-foreground text-[15px] tracking-tight leading-tight">
-                          {item.name}
-                        </span>
-                        <span className="text-xs text-muted-foreground line-clamp-1 max-w-[200px]">
-                          {item.description || UI_TEXT.COMMON.EMPTY}
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-bold text-sm truncate">{item.name}</span>
+                        <span className="text-[11px] text-muted-foreground truncate max-w-[180px]">
+                          {desc}
                         </span>
                       </div>
                     </div>
                   </TableCell>
 
                   <TableCell>
-                    <span className="font-mono text-[12px] font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
-                      {(item as any).code || "---"}
+                    <div className="flex items-center gap-1.5">
+                      <Tag size={12} className={!isItem ? "text-primary" : ""} />
+                      <span
+                        className={`text-[12px] font-medium ${!isItem ? "text-primary font-bold" : ""}`}
+                      >
+                        {category}
+                      </span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <span className="font-mono text-[11px] font-semibold bg-secondary px-2 py-0.5 rounded border">
+                      {item.code}
                     </span>
                   </TableCell>
 
                   <TableCell>
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <Store size={10} className="text-info" />
-                        <span className="text-[11px] font-medium text-muted-foreground uppercase">
-                          Trực tiếp:
-                        </span>
-                        <span className="font-bold text-foreground text-sm">
-                          {formatCurrency(priceDineIn)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <ShoppingBag size={10} className="text-warning" />
-                        <span className="text-[11px] font-medium text-muted-foreground uppercase">
-                          Mang về:
-                        </span>
-                        <span className="text-[12px] font-semibold text-muted-foreground">
-                          {formatCurrency(priceTakeAway)}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-1.5">
+                      <Store size={12} />
+                      <span className="font-bold text-sm">{formatCurrency(item.price)}</span>
                     </div>
                   </TableCell>
 
                   {canSeeCost && (
-                    <TableCell>
-                      <span className="text-danger font-bold text-sm bg-danger/5 px-2 py-1 rounded-md border border-danger/10">
-                        {formatCurrency(costPrice)}
-                      </span>
+                    <TableCell className="text-danger font-bold text-sm">
+                      {item.type === "combo"
+                        ? formatCurrency(item.costPrice)
+                        : formatCurrency(item.costPrice)}
                     </TableCell>
                   )}
 
-                  <TableCell>{getStationBadge((item as any).station)}</TableCell>
-
                   <TableCell>
-                    <div className="flex items-center gap-1.5 text-foreground font-semibold">
-                      <Clock size={14} className="text-muted-foreground/60" />
-                      <span className="text-sm">{(item as any).expectedTime || 0}</span>
-                      <span className="text-[11px] text-muted-foreground font-normal">phút</span>
-                    </div>
+                    <span className="text-xs font-semibold bg-secondary px-2 py-1 rounded">
+                      {isItem && item.expectedTime > 0 ? `${item.expectedTime} phút` : "--"}
+                    </span>
                   </TableCell>
 
                   <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Switch
-                        checked={!isOutOfStock}
-                        onCheckedChange={() => onToggleStock(itemId)}
-                        disabled={!isManager}
-                        className="data-[state=checked]:bg-success"
-                      />
-                    </div>
+                    {isItem ? getStationBadge(item.station) : getStationBadge(undefined)}
+                  </TableCell>
+
+                  <TableCell>
+                    <Switch
+                      checked={!item.isOutOfStock}
+                      onCheckedChange={() => onToggleStock(rowId)}
+                      disabled={!isManager}
+                      className="data-[state=checked]:bg-success scale-90"
+                    />
                   </TableCell>
 
                   <TableCell className="text-right pr-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
-                          <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={() => onEdit(item)} className="cursor-pointer">
-                          <Edit className="mr-2.5 h-4 w-4" />
-                          <span>Sửa</span>
+                      <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuItem onClick={() => onEdit(item)}>
+                          <Edit className="mr-2 h-4 w-4" /> Sửa
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => onDelete(item)}
-                          className="cursor-pointer text-danger focus:text-danger"
-                        >
-                          <Trash2 className="mr-2.5 h-4 w-4" />
-                          <span>Xóa</span>
+                        <DropdownMenuItem onClick={() => onDelete(item)} className="text-danger">
+                          <Trash2 className="mr-2 h-4 w-4" /> Xóa
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -285,8 +232,8 @@ export function MenuTable({
             })
           ) : (
             <TableRow>
-              <TableCell colSpan={8} className="text-center py-20 text-muted-foreground">
-                Trống
+              <TableCell colSpan={10} className="text-center py-16 text-muted-foreground">
+                Không tìm thấy món ăn nào
               </TableCell>
             </TableRow>
           )}

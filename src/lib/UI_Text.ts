@@ -12,6 +12,7 @@ export const UI_TEXT = {
     CREATE_AT: "Ngày tạo",
     UPDATE_AT: "Ngày cập nhật",
     NULL: "Null",
+    AUTO_CALC: "Tự tính",
     EMPTY: "Trống",
     UPDATE: "Đã cập nhật",
     ALL: "Tất cả",
@@ -26,6 +27,8 @@ export const UI_TEXT = {
     SAVE_SUCCESS: "Lưu dữ liệu thành công!",
     DELETE_CONFIRM: "Bạn có chắc chắn muốn xóa không?",
     ERROR_UNKNOWN: "Có lỗi xảy ra, vui lòng thử lại.",
+    FILE_SIZE_ERROR: (max: number) => `Tối đa ${max}MB`,
+    FILE_TYPE_ERROR: "Chỉ hỗ trợ JPEG/PNG/WebP",
   },
 
   AUTH: {
@@ -71,10 +74,20 @@ export const UI_TEXT = {
     CHANGE_ROLE: "Thay đổi vai trò",
     DELETE_CONFIRM_NAME: (name: string) => `Bạn có chắc chắn muốn xóa "${name}" không?`,
   },
-
+  STATION: {
+    HOT_KITCHEN: "Bếp Nóng",
+    COLD_KITCHEN: "Bếp Lạnh",
+    BAR: "Quầy Bar",
+  },
   FORM: {
+    NAME_PLACEHOLDER_COMBO: "VD: Combo Lẩu Nướng 4 Người",
+    COOKING_TIME: "Thời gian chế biến",
+    UPDATE_ITEM: "Cập nhật món",
     REQUIRED: "Trường này là bắt buộc",
     INVALID_EMAIL: "Email không hợp lệ",
+    SELECT_CATEGORY_FALLBACK: "Chọn danh mục",
+    DESCRIPTION_PLACEHOLDER: "Thành phần, hương vị, lưu ý...",
+    SELECT_STATION_FALLBACK: "Chọn trạm đảm nhiệm",
     MIN_LENGTH: (min: number) => `Tối thiểu ${min} ký tự`,
     EDIT_COMBO: "Chỉnh sửa Combo",
     ADD_COMBO: "Thêm mới Combo",
@@ -95,6 +108,9 @@ export const UI_TEXT = {
     STATION: "Trạm",
     CANCEL: "HỦY",
     CONFIRM_SAVE: "Xác nhận lưu",
+    QUANTITY: "Số lượng",
+    DROP_OR_PASTE_IMAGE: "Kéo & thả ảnh, dán từ clipboard, hoặc chọn file",
+    IMAGE_LOAD_ERROR: "Không tải được ảnh hiện tại. Hãy chọn ảnh mới.",
   },
 
   ROLE: {
@@ -115,6 +131,9 @@ export const UI_TEXT = {
     DELETE: "Xóa",
     ADD: "Thêm",
     SAVE_CHANGES: "Lưu thay đổi",
+    SELECT_IMAGE: "Chọn ảnh",
+    CHANGE_IMAGE: "Đổi ảnh",
+    CANCEL_SELECTED_IMAGE: "Hủy ảnh vừa chọn",
   },
 
   API: {
@@ -335,7 +354,13 @@ export const UI_TEXT = {
     },
   },
   MENU: {
+    SAVE_ITEM_NOW: "Lưu món ngay",
+    IMAGE_REQUIRED: "Vui lòng chọn ảnh cho combo",
+    COMBO_EMPTY_ERROR: "Combo phải có ít nhất 1 món thành phần",
+    CREATE_COMBO_NOW: "Tạo Combo ngay",
     TITLE: "Quản lý Thực đơn",
+    PAGE_TITLE: "Thực đơn nhà hàng",
+    PAGE_SUBTITLE: "Quản lý món lẻ & combo",
     SUBTITLE: "Hệ thống quản lý món ăn, giá bán và điều phối trạm tập trung.",
     ADD_NEW_ITEM: "THÊM MÓN MỚI",
     TAB_ITEM: "Món lẻ",

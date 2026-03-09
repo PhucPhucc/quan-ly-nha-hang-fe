@@ -42,12 +42,11 @@ export default function MenuFilters({
 }: MenuFiltersProps) {
   return (
     <div className="flex flex-wrap items-center gap-4 bg-card p-5 rounded-2xl shadow-sm border border-border transition-all">
-      {/* Search - Ưu tiên khoảng không gian rộng hơn */}
       <div className="relative flex-2 min-w-70">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
         <InputGroup className="w-full">
           <InputGroupInput
-            placeholder={UI_TEXT.COMMON.SEARCH + "..."} // Dùng UI_TEXT
+            placeholder={UI_TEXT.COMMON.SEARCH + "..."}
             className="pl-11 h-11 bg-muted/30 border-border focus:bg-background transition-all rounded-xl"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
