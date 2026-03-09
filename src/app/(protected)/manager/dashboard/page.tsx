@@ -1,139 +1,176 @@
 "use client";
 
-import { Clock, Info, MapPin } from "lucide-react";
-import React from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, Clock, Download, MapPin, TrendingUp } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
-import { RecentOrders } from "@/components/features/Dashboard/RecentOrders";
-import { RevenueChart } from "@/components/features/Dashboard/RevenueChart";
-import { SharedResources } from "@/components/features/Dashboard/SharedResources";
-import { StatsCards } from "@/components/features/Dashboard/StatsCards";
-import { TableStatusOverview } from "@/components/features/Dashboard/TableStatusOverview";
-import { TeamAnnouncements } from "@/components/features/Dashboard/TeamAnnouncements";
-import { TopDishes } from "@/components/features/Dashboard/TopDishes";
+import { BestSellersTable } from "@/components/features/analytics/BestSellersTable";
+import { CategoryDistributionCard } from "@/components/features/analytics/CategoryDistribution";
+import { RevenueChart } from "@/components/features/analytics/RevenueChart";
+import { StatsGrid } from "@/components/features/analytics/StatsGrid";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { MOCK_ANALYTICS } from "@/data/mockAnalytics";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { cn } from "@/lib/utils";
+import { analyticsService } from "@/services/analyticsService";
 import { useAuthStore } from "@/store/useAuthStore";
+import { AnalyticsSummary } from "@/types/analytics.types";
 import { EmployeeRole } from "@/types/Employee";
 
 export default function DashboardPage() {
+  const t = UI_TEXT.ANALYTICS;
   const { employee } = useAuthStore();
-  const [currentTime, setCurrentTime] = React.useState<Date | null>(null);
-  const [mounted, setMounted] = React.useState(false);
+  const [data, setData] = useState<AnalyticsSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true);
     setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const result = await analyticsService.getSummary();
+        setData(result);
+      } catch (error) {
+        console.error("Failed to fetch analytics:", error);
+        setData(MOCK_ANALYTICS);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
     return () => clearInterval(timer);
   }, []);
 
   const role = employee?.role;
-  const isManager = role === EmployeeRole.MANAGER; // Based on subagent finding "Admin Manager" in token
-  const isChef = role === EmployeeRole.CHEFBAR;
-  const isCashier = role === EmployeeRole.CASHIER;
+  const isManager = role === EmployeeRole.MANAGER;
 
   const getRoleName = () => {
-    if (isManager) return UI_TEXT.ROLE.MANAGER;
-    if (isChef) return UI_TEXT.ROLE.CHEF;
-    if (isCashier) return UI_TEXT.ROLE.CASHIER;
+    if (role === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
+    if (role === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
+    if (role === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;
     return UI_TEXT.ROLE.WAITER;
   };
 
   return (
-    <div className="flex flex-col gap-8 py-4 pb-12">
-      {/* Performance Summary Section */}
-      <div className="px-3 lg:px-4">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex flex-col">
-            <h2 className="text-xl font-semibold text-slate-800 tracking-tight uppercase">
-              {UI_TEXT.DASHBOARD.OVERVIEW}
-            </h2>
-            <p className="text-xs text-muted-foreground font-normal">
+    <div className="flex flex-col gap-8 p-6 md:p-10 animate-fade-in-up">
+      {/* Header Section */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {UI_TEXT.DASHBOARD.OVERVIEW}
+          </h1>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-muted-foreground text-sm">
               {UI_TEXT.DASHBOARD.USER_ROLE(getRoleName())}
             </p>
-          </div>
-
-          {/* Subtle System Info */}
-          <div className="hidden sm:flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-muted/40 rounded-full text-[10px] font-medium text-muted-foreground">
-              <Clock className="size-3" />
-              <span>
-                {mounted && currentTime
-                  ? currentTime.toLocaleTimeString("vi-VN", { hour12: false })
-                  : "--:--:--"}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-muted/40 rounded-full text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
-              <MapPin className="size-3 text-rose-500" />
-              <span>{UI_TEXT.DASHBOARD.MAIN_LOBBY}</span>
-            </div>
+            {mounted && currentTime && (
+              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-muted/40 rounded-full text-[10px] font-medium text-muted-foreground">
+                <Clock className="size-3" />
+                <span>{currentTime.toLocaleTimeString("vi-VN", { hour12: false })}</span>
+              </div>
+            )}
           </div>
         </div>
 
-        <StatsCards />
+        <div className="flex items-center gap-3">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-[240px] justify-start text-left font-normal glass",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP") : <span>{t.SELECT_DATE}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+            </PopoverContent>
+          </Popover>
+
+          <Button className="gap-2 shadow-glow">
+            <Download className="h-4 w-4" />
+            <span className="hidden sm:inline">{t.EXPORT_REPORT}</span>
+          </Button>
+        </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-12 px-1 lg:px-4">
-        {/* LEFT COLUMN: Operations */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium uppercase tracking-widest text-slate-500 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              {UI_TEXT.DASHBOARD.PULSE}
-            </h3>
-            <TableStatusOverview />
+      {/* Main Content Grid - Bento Box Layout */}
+      {data && (
+        <div className="grid gap-6">
+          {/* Top Row: Fast Stats */}
+          <StatsGrid stats={data.stats} loading={loading} />
+
+          {/* Middle Row: Bento Grid */}
+          <div className="grid gap-6 lg:grid-cols-12">
+            {/* Primary Analysis - Large Span */}
+            <div className="lg:col-span-8">
+              <RevenueChart data={data.revenueChart} loading={loading} />
+            </div>
+
+            {/* Secondary Analysis - Tall Span */}
+            <div className="lg:col-span-4 h-full">
+              <CategoryDistributionCard data={data.categoryDistribution} loading={loading} />
+            </div>
+
+            {/* Bottom Row - Full Width for Managers */}
+            <div className="lg:col-span-12">
+              {isManager ? (
+                <BestSellersTable data={data.bestSellers} loading={loading} />
+              ) : (
+                <div className="p-10 text-center rounded-2xl border-2 border-dashed border-muted bg-muted/20">
+                  <p className="text-muted-foreground">{t.MANAGER_ONLY}</p>
+                </div>
+              )}
+            </div>
           </div>
 
-          {isManager || isCashier ? (
-            <div className="flex flex-col gap-6">
-              {isManager && <RevenueChart />}
-              <RecentOrders />
-            </div>
-          ) : (
-            <div className="flex-1 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 flex flex-col items-center justify-center p-12 text-center">
-              <div className="bg-white p-4 rounded-full shadow-sm mb-4">
-                <Info className="h-8 w-8 text-primary/40" />
+          {/* Manager Quick Insights (FE Logic Only) */}
+          {isManager && !loading && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex items-start gap-3">
+                <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                  <TrendingUp className="size-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase text-primary">{t.QUICK_INSIGHTS}</h4>
+                  <p className="text-sm text-foreground mt-1">
+                    {t.BEST_ITEM_INSIGHT(
+                      data.bestSellers[0]?.name || "",
+                      data.bestSellers[0]?.percentageOfTotal || 0
+                    )}
+                  </p>
+                </div>
               </div>
-              <h3 className="font-bold text-slate-600 mb-2">
-                {UI_TEXT.DASHBOARD.OPERATIONAL_DATA_LOCKED}
-              </h3>
-              <p className="text-xs text-muted-foreground max-w-sm">
-                {UI_TEXT.DASHBOARD.LOCKED_DESC}
-              </p>
+              <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/30 flex items-start gap-3">
+                <div className="size-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                  <MapPin className="size-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase text-blue-600">
+                    {t.OPERATIONAL_SUGGESTION}
+                  </h4>
+                  <p className="text-sm text-foreground mt-1">
+                    {t.CATEGORY_INSIGHT(data.categoryDistribution[0]?.category || "")}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
-
-        {/* RIGHT COLUMN: Team Hub */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
-          <TeamAnnouncements />
-          <SharedResources />
-          {(isManager || isChef) && <TopDishes />}
-
-          {/* Quick System Status */}
-          <div className="p-5 rounded-2xl bg-slate-900 text-white shadow-xl relative overflow-hidden group">
-            <div className="absolute -right-8 -bottom-8 h-32 w-32 rounded-full bg-primary/20 blur-3xl" />
-            <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
-              {UI_TEXT.DASHBOARD.SYSTEM_HEALTH}
-            </h4>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center text-[10px]">
-                <span className="opacity-70">{UI_TEXT.DASHBOARD.POS_STATUS}</span>
-                <span className="text-emerald-400 font-bold">{UI_TEXT.DASHBOARD.ONLINE}</span>
-              </div>
-              <div className="flex justify-between items-center text-[10px]">
-                <span className="opacity-70">{UI_TEXT.DASHBOARD.PRINTER_STATUS}</span>
-                <span className="text-emerald-400 font-bold">{UI_TEXT.DASHBOARD.READY}</span>
-              </div>
-              <div className="flex justify-between items-center text-[10px]">
-                <span className="opacity-70">{UI_TEXT.DASHBOARD.INVENTORY_SYNC}</span>
-                <span className="text-amber-400 font-bold">
-                  {UI_TEXT.DASHBOARD.STALE} {UI_TEXT.DASHBOARD.STALE_DURATION(5)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
