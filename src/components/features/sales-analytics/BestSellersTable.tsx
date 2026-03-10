@@ -1,11 +1,10 @@
 "use client";
 
-import { Search } from "lucide-react";
+import React, { useMemo, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -51,7 +50,7 @@ function RankBadge({ rank }: { rank: number }) {
 
 function BestSellerRow({ item }: { item: BestSeller }) {
   return (
-    <TableRow key={item.id} className="group border-muted/30">
+    <TableRow key={item.name} className="group border-muted/30">
       <TableCell>
         <RankBadge rank={item.rank} />
       </TableCell>
@@ -76,6 +75,10 @@ function BestSellerRow({ item }: { item: BestSeller }) {
         {item.revenue.toLocaleString()}
         {UI_TEXT.COMMON.CURRENCY}
       </TableCell>
+      <TableCell className="text-right font-medium text-emerald-600 hidden lg:table-cell">
+        {(item.grossProfit ?? 0).toLocaleString()}
+        {UI_TEXT.COMMON.CURRENCY}
+      </TableCell>
       <TableCell className="text-right">
         <div className="flex flex-col items-end gap-1.5">
           <span className="text-[10px] font-bold text-foreground">
@@ -96,29 +99,38 @@ function BestSellerRow({ item }: { item: BestSeller }) {
 
 export function BestSellersTable({ data, loading }: BestSellersTableProps) {
   const t = UI_TEXT.SALES_ANALYTICS;
+  const [categoryFilter, setCategoryFilter] = useState("all");
+
+  const filteredData = useMemo(() => {
+    return data.filter((item) => {
+      return (
+        categoryFilter === "all" || item.category.toLowerCase() === categoryFilter.toLowerCase()
+      );
+    });
+  }, [data, categoryFilter]);
+
+  // Extract unique categories for the filter
+  const categories = useMemo(() => {
+    const unique = new Set(data.map((item) => item.category));
+    return Array.from(unique);
+  }, [data]);
 
   return (
     <Card className="glass-card">
       <CardHeader className="flex flex-col gap-4 space-y-0 md:flex-row md:items-center md:justify-between">
         <CardTitle className="text-base font-semibold">{t.BEST_SELLERS_ANALYSIS}</CardTitle>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="relative w-full sm:w-[250px]">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={t.SEARCH_PLACEHOLDER}
-              className="pl-9 glass bg-white/50 dark:bg-black/20"
-            />
-          </div>
-          <Select defaultValue="all">
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="w-[140px] glass">
               <SelectValue placeholder={t.FILTER_CATEGORY} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{UI_TEXT.COMMON.ALL}</SelectItem>
-              <SelectItem value="main">{t.MAIN_DISH}</SelectItem>
-              <SelectItem value="starter">{t.STARTER}</SelectItem>
-              <SelectItem value="drink">{t.DRINK}</SelectItem>
-              <SelectItem value="dessert">{t.DESSERT}</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat.toLowerCase()}>
+                  {cat}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -126,6 +138,8 @@ export function BestSellersTable({ data, loading }: BestSellersTableProps) {
       <CardContent>
         {loading ? (
           <div className="py-20 text-center text-muted-foreground">{UI_TEXT.COMMON.LOADING}</div>
+        ) : filteredData.length === 0 ? (
+          <div className="py-20 text-center text-muted-foreground">{UI_TEXT.COMMON.EMPTY}</div>
         ) : (
           <Table>
             <TableHeader>
@@ -135,12 +149,15 @@ export function BestSellersTable({ data, loading }: BestSellersTableProps) {
                 <TableHead className="hidden md:table-cell font-bold">{t.CATEGORY}</TableHead>
                 <TableHead className="text-right font-bold">{t.QUANTITY}</TableHead>
                 <TableHead className="text-right font-bold">{t.REVENUE}</TableHead>
+                <TableHead className="text-right font-bold hidden lg:table-cell">
+                  {t.GROSS_PROFIT}
+                </TableHead>
                 <TableHead className="w-[120px] text-right font-bold">{t.TOTAL_PERCENT}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((item) => (
-                <BestSellerRow key={item.id} item={item} />
+              {filteredData.map((item) => (
+                <BestSellerRow key={item.name} item={item} />
               ))}
             </TableBody>
           </Table>

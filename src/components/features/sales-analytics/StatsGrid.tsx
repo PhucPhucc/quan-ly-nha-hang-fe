@@ -16,10 +16,6 @@ interface StatsGridProps {
 export function StatsGrid({ stats, loading }: StatsGridProps) {
   const t = UI_TEXT.SALES_ANALYTICS;
 
-  // Monthly revenue target (example: 200M VND)
-  const SALES_TARGET = 200000000;
-  const progressPercent = Math.min(Math.round((stats.totalRevenue / SALES_TARGET) * 100), 100);
-
   const items = [
     {
       title: t.TOTAL_REVENUE,
@@ -27,51 +23,18 @@ export function StatsGrid({ stats, loading }: StatsGridProps) {
       growth: stats.revenueGrowth,
       icon: DollarSign,
       color: "text-primary",
-      extra: (
-        <div className="mt-4 space-y-2">
-          <div className="flex items-center justify-between text-[10px] font-medium">
-            <span className="text-muted-foreground">
-              {t.SALES_TARGET_LABEL} {SALES_TARGET.toLocaleString()}
-              {UI_TEXT.COMMON.CURRENCY}
-            </span>
-            <span className="text-primary">
-              {progressPercent}
-              {UI_TEXT.COMMON.PERCENT}
-            </span>
-          </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-primary/10">
-            <div
-              className="h-full bg-primary shadow-glow transition-all duration-1000 ease-out"
-              style={{ width: `${progressPercent}${UI_TEXT.COMMON.PERCENT}` }}
-            />
-          </div>
-        </div>
-      ),
     },
     {
       title: t.TOTAL_ORDERS,
       value: stats.totalOrders.toLocaleString(),
       icon: ShoppingCart,
       color: "text-blue-500",
-      extra: (
-        <div className="mt-4 flex items-center gap-2">
-          <div className="h-1 w-1 rounded-full bg-blue-500 animate-pulse" />
-          <span className="text-[10px] text-muted-foreground">{t.STABLE_OPERATIONS}</span>
-        </div>
-      ),
     },
     {
       title: t.AVG_ORDER_VALUE,
       value: `${stats.avgOrderValue.toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`,
       icon: BarChart3,
       color: "text-emerald-500",
-      extra: (
-        <div className="mt-4 flex items-center gap-2">
-          <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-            {t.TOP_CATEGORY}
-          </span>
-        </div>
-      ),
     },
   ];
 
@@ -118,7 +81,6 @@ export function StatsGrid({ stats, loading }: StatsGridProps) {
                 {loading ? <div className="h-8 w-24 animate-pulse rounded bg-muted" /> : item.value}
               </h3>
             </div>
-            {item.extra}
           </CardContent>
         </Card>
       ))}

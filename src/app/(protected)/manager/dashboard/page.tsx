@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<SalesAnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [viewMode, setViewMode] = useState<"daily" | "monthly">("daily");
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -32,11 +33,26 @@ export default function DashboardPage() {
     setMounted(true);
     setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const result = await salesAnalyticsService.getSummary();
+        let result;
+        if (viewMode === "monthly") {
+          // If a date is selected, use its year/month. Otherwise use current.
+          const targetDate = date || new Date();
+          result = await salesAnalyticsService.getMonthlySummary(
+            targetDate.getFullYear(),
+            targetDate.getMonth() + 1
+          );
+        } else {
+          // Daily view. Use selected date formatted as yyyy-MM-dd if available.
+          const dateStr = date ? format(date, "yyyy-MM-dd") : undefined;
+          result = await salesAnalyticsService.getSummary(dateStr);
+        }
         setData(result);
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
@@ -47,8 +63,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
-    return () => clearInterval(timer);
-  }, []);
+  }, [viewMode, date]);
 
   const role = employee?.role;
   const isManager = role === EmployeeRole.MANAGER;
@@ -75,19 +90,47 @@ export default function DashboardPage() {
             {mounted && currentTime && (
               <div className="flex items-center gap-1.5 px-2 py-0.5 bg-muted/40 rounded-full text-[10px] font-medium text-muted-foreground">
                 <Clock className="size-3" />
-                <span>{currentTime.toLocaleTimeString("vi-VN", { hour12: false })}</span>
+                <span suppressHydrationWarning>
+                  {currentTime.toLocaleTimeString("vi-VN", { hour12: false })}
+                </span>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* View Mode Toggle */}
+          <div className="flex bg-muted/50 p-1 rounded-lg border">
+            <Button
+              variant={viewMode === "daily" ? "default" : "ghost"}
+              size="sm"
+              className={cn(
+                "h-8 px-4 rounded-md transition-all",
+                viewMode === "daily" && "shadow-sm"
+              )}
+              onClick={() => setViewMode("daily")}
+            >
+              {t.DAILY}
+            </Button>
+            <Button
+              variant={viewMode === "monthly" ? "default" : "ghost"}
+              size="sm"
+              className={cn(
+                "h-8 px-4 rounded-md transition-all",
+                viewMode === "monthly" && "shadow-sm"
+              )}
+              onClick={() => setViewMode("monthly")}
+            >
+              {t.MONTHLY}
+            </Button>
+          </div>
+
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[240px] justify-start text-left font-normal glass",
+                  "w-full sm:w-[240px] justify-start text-left font-normal glass",
                   !date && "text-muted-foreground"
                 )}
               >
@@ -117,18 +160,23 @@ export default function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-12">
             {/* Primary Analysis - Large Span */}
             <div className="lg:col-span-8">
-              <RevenueChart data={data.revenueChart} loading={loading} />
+              <RevenueChart
+                data={data.revenueChart || []}
+                loading={loading}
+                view={viewMode}
+                onViewChange={setViewMode}
+              />
             </div>
 
             {/* Secondary Analysis - Tall Span */}
             <div className="lg:col-span-4 h-full">
-              <CategoryDistributionCard data={data.categoryDistribution} loading={loading} />
+              <CategoryDistributionCard data={data.categoryDistribution || []} loading={loading} />
             </div>
 
             {/* Bottom Row - Full Width for Managers */}
             <div className="lg:col-span-12">
               {isManager ? (
-                <BestSellersTable data={data.bestSellers} loading={loading} />
+                <BestSellersTable data={data.bestSellers || []} loading={loading} />
               ) : (
                 <div className="p-10 text-center rounded-2xl border-2 border-dashed border-muted bg-muted/20">
                   <p className="text-muted-foreground">{t.MANAGER_ONLY}</p>
@@ -148,8 +196,8 @@ export default function DashboardPage() {
                   <h4 className="text-xs font-bold uppercase text-primary">{t.QUICK_INSIGHTS}</h4>
                   <p className="text-sm text-foreground mt-1">
                     {t.BEST_ITEM_INSIGHT(
-                      data.bestSellers[0]?.name || "",
-                      data.bestSellers[0]?.percentageOfTotal || 0
+                      data.bestSellers?.[0]?.name || "",
+                      data.bestSellers?.[0]?.percentageOfTotal || 0
                     )}
                   </p>
                 </div>
@@ -163,7 +211,7 @@ export default function DashboardPage() {
                     {t.OPERATIONAL_SUGGESTION}
                   </h4>
                   <p className="text-sm text-foreground mt-1">
-                    {t.CATEGORY_INSIGHT(data.categoryDistribution[0]?.category || "")}
+                    {t.CATEGORY_INSIGHT(data.categoryDistribution?.[0]?.category || "")}
                   </p>
                 </div>
               </div>

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -10,15 +8,27 @@ import { RevenuePoint } from "@/types/salesAnalytics.types";
 interface RevenueChartProps {
   data: RevenuePoint[];
   loading?: boolean;
+  view?: "daily" | "monthly";
+  onViewChange?: (view: "daily" | "monthly") => void;
 }
 
-function RevenueBar({ point, maxValue }: { point: RevenuePoint; maxValue: number }) {
+function RevenueBar({
+  point,
+  maxValue,
+  index,
+}: {
+  point: RevenuePoint;
+  maxValue: number;
+  index: number;
+}) {
+  const heightPercent = (point.revenue / maxValue) * 100;
   return (
-    <div className="group relative flex flex-1 flex-col items-center">
+    <div className="group relative flex h-full flex-1 flex-col items-center justify-end">
       <div
-        className="w-full rounded-t-sm bg-primary/80 transition-all duration-300 hover:bg-primary"
+        className="w-full rounded-t-sm bg-primary/80 transition-all duration-300 hover:bg-primary animate-bar-grow"
         style={{
-          height: `${(point.revenue / maxValue) * 100}${UI_TEXT.COMMON.PERCENT}`,
+          height: `${heightPercent}%`,
+          animationDelay: `${index * 80}ms`,
         }}
       >
         <div className="absolute -top-10 left-1/2 -translate-x-1/2 scale-0 rounded bg-foreground px-2 py-1 text-[10px] text-background transition-transform group-hover:scale-100 z-10 whitespace-nowrap">
@@ -27,16 +37,15 @@ function RevenueBar({ point, maxValue }: { point: RevenuePoint; maxValue: number
           <span className="text-[8px] opacity-70">{point.date}</span>
         </div>
       </div>
-      <span className="mt-2 text-[10px] text-muted-foreground origin-left rotate-45 md:rotate-0">
-        {point.date.split("-").pop()}
+      <span className="mt-2 text-[10px] text-muted-foreground origin-left whitespace-nowrap">
+        {point.date.includes(":") ? point.date.split(":")[0] + "h" : point.date.split("/")[0]}
       </span>
     </div>
   );
 }
 
-export function RevenueChart({ data, loading }: RevenueChartProps) {
+export function RevenueChart({ data, loading, view = "daily", onViewChange }: RevenueChartProps) {
   const t = UI_TEXT.SALES_ANALYTICS;
-  const [view, setView] = useState<"daily" | "monthly">("daily");
 
   const maxValue = Math.max(...data.map((d) => d.revenue), 1);
 
@@ -45,9 +54,8 @@ export function RevenueChart({ data, loading }: RevenueChartProps) {
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
         <div className="space-y-1">
           <CardTitle className="text-base font-semibold">{t.REVENUE_OVER_TIME}</CardTitle>
-          <p className="text-[10px] text-muted-foreground">{t.REAL_TIME_UPDATE}</p>
         </div>
-        <Tabs value={view} onValueChange={(v) => setView(v as "daily" | "monthly")}>
+        <Tabs value={view} onValueChange={(v) => onViewChange?.(v as "daily" | "monthly")}>
           <TabsList className="grid w-[180px] grid-cols-2 h-8">
             <TabsTrigger value="daily" className="text-xs">
               {t.DAILY}
@@ -69,21 +77,15 @@ export function RevenueChart({ data, loading }: RevenueChartProps) {
           ) : (
             <div className="flex h-full items-end justify-between gap-1.5 px-1.5">
               {data.map((point, idx) => (
-                <RevenueBar key={idx} point={point} maxValue={maxValue} />
+                <RevenueBar key={idx} point={point} maxValue={maxValue} index={idx} />
               ))}
             </div>
           )}
 
-          {/* Grid lines and Peak zones */}
           <div className="absolute inset-0 -z-10 flex flex-col justify-between py-10 opacity-5">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="w-full border-t border-foreground" />
             ))}
-          </div>
-
-          <div className="absolute inset-0 -z-20 pointer-events-none opacity-[0.03] flex justify-center">
-            {/* Highlight middle zone as prime time example */}
-            <div className="w-[30%] h-full bg-primary mx-auto rounded-xl" />
           </div>
         </div>
       </CardContent>

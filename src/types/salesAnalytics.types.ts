@@ -12,14 +12,15 @@ export interface RevenuePoint {
 
 export interface BestSeller {
   rank: number;
-  id: string;
+  id?: string;
   name: string;
   category: string;
   quantitySold: number;
-  unitPrice: number;
+  unitPrice?: number;
   revenue: number;
   percentageOfTotal: number;
   imageUrl?: string;
+  grossProfit?: number;
 }
 
 export interface CategoryDistribution {

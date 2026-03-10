@@ -28,6 +28,7 @@ export const SALES_ANALYTICS = {
   TOTAL_REVENUE: "Tổng doanh thu",
   TOTAL_ORDERS: "Tổng số đơn",
   AVG_ORDER_VALUE: "Giá trị trung bình",
+  GROSS_PROFIT: "Lợi nhuận gộp",
   SALES_TARGET_LABEL: "Mục tiêu",
   STABLE_OPERATIONS: "Vận hành ổn định",
   REAL_TIME_UPDATE: "Cập nhật theo thời gian thực",
