@@ -125,7 +125,7 @@ export const orderService = {
     paymentMethod: string,
     amountReceived?: number
   ): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/orders/${orderId}/checkout`, {
+    apiFetch<string>(`/billing/orders/${orderId}/checkout`, {
       method: "POST",
       body: { orderId, paymentMethod, amountReceived },
     }),
