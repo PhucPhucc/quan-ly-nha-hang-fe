@@ -18,9 +18,6 @@ describe("StatsGrid", () => {
   it("renders all statistics correctly", () => {
     render(<StatsGrid stats={mockStats} />);
 
-    expect(screen.getByText("Số liệu thống kê")).toBeInTheDocument(); // If I added a title, wait, I didn't add a title to StatsGrid itself in the code, but it's inside a grid.
-    // Let me check the code I wrote for StatsGrid.
-
     expect(screen.getByText("Tổng doanh thu")).toBeInTheDocument();
     expect(screen.getByText("1.000.000₫")).toBeInTheDocument();
     expect(screen.getByText("Tổng số đơn")).toBeInTheDocument();

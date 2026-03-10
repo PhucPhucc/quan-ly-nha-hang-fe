@@ -287,7 +287,7 @@ export default function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-12">
             {/* Primary Analysis - Large Span */}
             <div className="lg:col-span-8">
-              <RevenueChart data={data.revenueChart || []} loading={loading} view={viewMode} />
+              <RevenueChart data={data.revenueChart || []} loading={loading} />
             </div>
 
             {/* Secondary Analysis - Tall Span */}
