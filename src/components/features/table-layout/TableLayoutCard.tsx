@@ -13,19 +13,17 @@ interface Props {
   onClick: (table: Table) => void;
 }
 
-// Active = mọi trạng thái trừ OUT_OF_SERVICE
-const isActive = (status: TableStatus) => status !== TableStatus.OutOfService;
-
 // Phân bổ ghế: ưu tiên hàng trên
 const getTopChairCount = (capacity: number) => Math.ceil(capacity / 2);
 const getBottomChairCount = (capacity: number) => Math.floor(capacity / 2);
 
 // Màu card theo status (view mode)
 const statusCardStyle: Record<TableStatus, string> = {
-  [TableStatus.Available]: "bg-table-available/15 border-table-available",
-  [TableStatus.Reserved]: "bg-table-reserved/15 border-table-reserved",
-  [TableStatus.Occupied]: "bg-table-occupied/15 border-table-occupied",
-  [TableStatus.Cleaning]: "bg-table-cleaning/15 border-table-cleaning",
+  [TableStatus.Available]:
+    "bg-table-available/15 hover:bg-table-available/10 border-table-available",
+  [TableStatus.Reserved]: "bg-table-reserved/15 hover:bg-table-reserved/10 border-table-reserved",
+  [TableStatus.Occupied]: "bg-table-occupied/15 hover:bg-table-occupied/10 border-table-occupied",
+  [TableStatus.Cleaning]: "bg-table-cleaning/15 hover:bg-table-cleaning/10 border-table-cleaning",
   [TableStatus.OutOfService]: "bg-neutral-100 border-slate-200 opacity-60 grayscale",
 };
 
@@ -65,7 +63,6 @@ const DEFAULT_CHAIR_STYLE = "bg-slate-300";
 const DEFAULT_LABEL = "Không xác định";
 
 function TableLayoutCard({ table, isSelected, onClick }: Props) {
-  const active = isActive(table.status);
   const topChairs = Array.from({ length: getTopChairCount(table.capacity) });
   const bottomChairs = Array.from({ length: getBottomChairCount(table.capacity) });
 
