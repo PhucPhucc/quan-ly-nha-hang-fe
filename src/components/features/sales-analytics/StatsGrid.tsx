@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
-import { DashboardStats } from "@/types/analytics.types";
+import { DashboardStats } from "@/types/salesAnalytics.types";
 
 interface StatsGridProps {
   stats: DashboardStats;
@@ -14,7 +14,7 @@ interface StatsGridProps {
 }
 
 export function StatsGrid({ stats, loading }: StatsGridProps) {
-  const t = UI_TEXT.ANALYTICS;
+  const t = UI_TEXT.SALES_ANALYTICS;
 
   // Monthly revenue target (example: 200M VND)
   const SALES_TARGET = 200000000;

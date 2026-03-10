@@ -1,4 +1,4 @@
-export const ANALYTICS = {
+export const SALES_ANALYTICS = {
   TITLE: "Phân tích & Thống kê",
   DESCRIPTION: "Theo dõi hiệu suất kinh doanh của nhà hàng của bạn.",
   WIP_TITLE: "Tính năng đang phát triển",

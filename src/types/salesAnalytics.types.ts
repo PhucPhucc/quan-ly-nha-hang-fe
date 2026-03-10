@@ -28,7 +28,7 @@ export interface CategoryDistribution {
   percentage: number;
 }
 
-export interface AnalyticsSummary {
+export interface SalesAnalyticsSummary {
   stats: DashboardStats;
   revenueChart: RevenuePoint[];
   bestSellers: BestSeller[];

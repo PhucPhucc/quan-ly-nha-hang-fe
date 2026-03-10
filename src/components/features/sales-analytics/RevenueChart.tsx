@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { RevenuePoint } from "@/types/analytics.types";
+import { RevenuePoint } from "@/types/salesAnalytics.types";
 
 interface RevenueChartProps {
   data: RevenuePoint[];
@@ -35,7 +35,7 @@ function RevenueBar({ point, maxValue }: { point: RevenuePoint; maxValue: number
 }
 
 export function RevenueChart({ data, loading }: RevenueChartProps) {
-  const t = UI_TEXT.ANALYTICS;
+  const t = UI_TEXT.SALES_ANALYTICS;
   const [view, setView] = useState<"daily" | "monthly">("daily");
 
   const maxValue = Math.max(...data.map((d) => d.revenue), 1);

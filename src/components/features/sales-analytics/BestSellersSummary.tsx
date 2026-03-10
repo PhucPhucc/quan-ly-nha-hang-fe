@@ -20,7 +20,7 @@ export function BestSellersSummary({
   totalSales,
   loading,
 }: BestSellersSummaryProps) {
-  const t = UI_TEXT.ANALYTICS;
+  const t = UI_TEXT.SALES_ANALYTICS;
 
   const summary = [
     {

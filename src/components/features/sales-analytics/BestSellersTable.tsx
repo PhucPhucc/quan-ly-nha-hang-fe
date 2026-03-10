@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
-import { BestSeller } from "@/types/analytics.types";
+import { BestSeller } from "@/types/salesAnalytics.types";
 
 interface BestSellersTableProps {
   data: BestSeller[];
@@ -95,7 +95,7 @@ function BestSellerRow({ item }: { item: BestSeller }) {
 }
 
 export function BestSellersTable({ data, loading }: BestSellersTableProps) {
-  const t = UI_TEXT.ANALYTICS;
+  const t = UI_TEXT.SALES_ANALYTICS;
 
   return (
     <Card className="glass-card">

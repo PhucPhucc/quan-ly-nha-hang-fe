@@ -1,6 +1,6 @@
-import { AnalyticsSummary } from "@/types/analytics.types";
+import { SalesAnalyticsSummary } from "@/types/salesAnalytics.types";
 
-export const MOCK_ANALYTICS: AnalyticsSummary = {
+export const MOCK_SALES_ANALYTICS: SalesAnalyticsSummary = {
   stats: {
     totalRevenue: 125400000,
     revenueGrowth: 12.5,

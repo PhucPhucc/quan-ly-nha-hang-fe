@@ -4,25 +4,25 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon, Clock, Download, MapPin, TrendingUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-import { BestSellersTable } from "@/components/features/analytics/BestSellersTable";
-import { CategoryDistributionCard } from "@/components/features/analytics/CategoryDistribution";
-import { RevenueChart } from "@/components/features/analytics/RevenueChart";
-import { StatsGrid } from "@/components/features/analytics/StatsGrid";
+import { BestSellersTable } from "@/components/features/sales-analytics/BestSellersTable";
+import { CategoryDistributionCard } from "@/components/features/sales-analytics/CategoryDistribution";
+import { RevenueChart } from "@/components/features/sales-analytics/RevenueChart";
+import { StatsGrid } from "@/components/features/sales-analytics/StatsGrid";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MOCK_ANALYTICS } from "@/data/mockAnalytics";
+import { MOCK_SALES_ANALYTICS } from "@/data/mockSalesAnalytics";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
-import { analyticsService } from "@/services/analyticsService";
+import { salesAnalyticsService } from "@/services/salesAnalyticsService";
 import { useAuthStore } from "@/store/useAuthStore";
-import { AnalyticsSummary } from "@/types/analytics.types";
 import { EmployeeRole } from "@/types/Employee";
+import { SalesAnalyticsSummary } from "@/types/salesAnalytics.types";
 
 export default function DashboardPage() {
-  const t = UI_TEXT.ANALYTICS;
+  const t = UI_TEXT.SALES_ANALYTICS;
   const { employee } = useAuthStore();
-  const [data, setData] = useState<AnalyticsSummary | null>(null);
+  const [data, setData] = useState<SalesAnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
@@ -36,11 +36,11 @@ export default function DashboardPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const result = await analyticsService.getSummary();
+        const result = await salesAnalyticsService.getSummary();
         setData(result);
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
-        setData(MOCK_ANALYTICS);
+        setData(MOCK_SALES_ANALYTICS);
       } finally {
         setLoading(false);
       }

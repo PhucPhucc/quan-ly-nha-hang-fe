@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { CategoryDistribution } from "@/types/analytics.types";
+import { CategoryDistribution } from "@/types/salesAnalytics.types";
 
 interface CategoryDistributionProps {
   data: CategoryDistribution[];
@@ -10,7 +10,7 @@ interface CategoryDistributionProps {
 }
 
 export function CategoryDistributionCard({ data, loading }: CategoryDistributionProps) {
-  const t = UI_TEXT.ANALYTICS;
+  const t = UI_TEXT.SALES_ANALYTICS;
 
   return (
     <Card className="glass-card h-full">
