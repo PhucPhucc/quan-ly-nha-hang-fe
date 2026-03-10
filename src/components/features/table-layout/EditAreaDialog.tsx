@@ -63,13 +63,13 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[480px] p-0 overflow-hidden border-slate-200 dark:border-slate-800">
-        <DialogHeader className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between bg-white dark:bg-slate-950">
+      <DialogContent className="sm:max-w-120 p-0 overflow-hidden border-border">
+        <DialogHeader className="px-6 py-4 border-b border-border flex flex-row items-center justify-between bg-white dark:bg-slate-950">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
               <Save className="w-5 h-5" />
             </div>
-            <DialogTitle className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <DialogTitle className="text-xl font-bold text-foreground">
               {UI_TEXT.TABLE.AREA_UPDATE}
             </DialogTitle>
           </div>
@@ -112,7 +112,7 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
             <select
               value={type}
               onChange={(e) => setType(e.target.value as AreaType)}
-              className="w-full h-12 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none"
+              className="w-full h-12 px-4 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: "right 0.5rem center",
@@ -131,7 +131,7 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
               {UI_TEXT.TABLE.AREA_DESCRIPTION}
             </label>
             <textarea
-              className="w-full p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none min-h-[100px]"
+              className="w-full p-4 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none min-h-[100px]"
               placeholder={UI_TEXT.TABLE.AREA_DESC_PLACEHOLDER}
               rows={3}
               value={description}
@@ -140,7 +140,7 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
           </div>
         </div>
 
-        <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/30 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3">
+        <div className="px-6 py-4 bg-background border-t border-border flex items-center justify-end gap-3">
           <button
             onClick={onClose}
             className="px-5 py-2.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-sm"
@@ -150,7 +150,7 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
           <button
             onClick={handleSave}
             disabled={!name.trim() || !codePrefix.trim()}
-            className="px-6 py-2.5 rounded-lg font-bold text-white bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 rounded-lg font-bold text-primary-foreground bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save className="w-4 h-4" />
             {UI_TEXT.COMMON.SAVE}
