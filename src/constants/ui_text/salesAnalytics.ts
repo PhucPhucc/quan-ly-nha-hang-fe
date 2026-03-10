@@ -37,6 +37,10 @@ export const SALES_ANALYTICS = {
   MANAGER_ONLY: "Chỉ Quản lý mới có quyền xem dữ liệu chi tiết này.",
   EXPORT_REPORT: "Xuất báo cáo",
   SELECT_DATE: "Chọn ngày",
+  EXPORT_BY_RANGE: "Theo khoảng ngày",
+  EXPORT_BY_MONTH: "Theo tháng",
+  SELECT_MONTH: "Chọn tháng",
+  SELECT_YEAR: "Chọn năm",
   BEST_ITEM_INSIGHT: (name: string, percent: number) =>
     `Món ${name} hiệu quả nhất, đóng góp ${percent}% doanh thu.`,
   CATEGORY_INSIGHT: (name: string) => `Danh mục ${name} dẫn đầu. Nên tối ưu menu.`,

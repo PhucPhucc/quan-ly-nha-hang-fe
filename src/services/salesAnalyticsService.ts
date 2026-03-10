@@ -177,4 +177,33 @@ export const salesAnalyticsService = {
       revenue: p.revenue,
     }));
   },
+
+  exportToExcel: async (filters: {
+    date?: string;
+    year?: number;
+    month?: number;
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    const params = new URLSearchParams();
+    if (filters.date) params.append("date", filters.date);
+    if (filters.year) params.append("year", filters.year.toString());
+    if (filters.month) params.append("month", filters.month.toString());
+    if (filters.startDate) params.append("startDate", filters.startDate);
+    if (filters.endDate) params.append("endDate", filters.endDate);
+
+    const response = await apiFetch<Blob>(`/salesanalytics/export?${params.toString()}`, {
+      responseType: "blob",
+    });
+
+    // Create a link and trigger download
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `Sales_Report_${new Date().toISOString().split("T")[0]}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
 };

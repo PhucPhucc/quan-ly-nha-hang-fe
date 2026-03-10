@@ -11,6 +11,14 @@ import { StatsGrid } from "@/components/features/sales-analytics/StatsGrid";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MOCK_SALES_ANALYTICS } from "@/data/mockSalesAnalytics";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
@@ -28,6 +36,14 @@ export default function DashboardPage() {
   const [viewMode, setViewMode] = useState<"daily" | "monthly">("daily");
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportRange, setExportRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: new Date(),
+    to: new Date(),
+  });
+  const [exportMode, setExportMode] = useState<"range" | "month">("range");
+  const [exportMonth, setExportMonth] = useState<number>(new Date().getMonth() + 1);
+  const [exportYear, setExportYear] = useState<number>(new Date().getFullYear());
 
   useEffect(() => {
     setMounted(true);
@@ -35,6 +51,30 @@ export default function DashboardPage() {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      if (exportMode === "month") {
+        await salesAnalyticsService.exportToExcel({
+          year: exportYear,
+          month: exportMonth,
+        });
+      } else {
+        if (!exportRange.from) return;
+        await salesAnalyticsService.exportToExcel({
+          startDate: format(exportRange.from, "yyyy-MM-dd"),
+          endDate: exportRange.to
+            ? format(exportRange.to, "yyyy-MM-dd")
+            : format(exportRange.from, "yyyy-MM-dd"),
+        });
+      }
+    } catch (error) {
+      console.error("Export failed:", error);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -143,10 +183,97 @@ export default function DashboardPage() {
             </PopoverContent>
           </Popover>
 
-          <Button className="gap-2 shadow-glow">
-            <Download className="h-4 w-4" />
-            <span className="hidden sm:inline">{t.EXPORT_REPORT}</span>
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="gap-2 shadow-glow" disabled={exporting}>
+                <Download className={cn("h-4 w-4", exporting && "animate-bounce")} />
+                <span className="hidden sm:inline">
+                  {exporting ? UI_TEXT.COMMON.LOADING : t.EXPORT_REPORT}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-4 flex flex-col gap-4" align="end">
+              <div className="flex flex-col gap-2">
+                <h4 className="font-bold text-sm leading-none">{t.EXPORT_REPORT}</h4>
+              </div>
+
+              <Tabs
+                defaultValue="range"
+                className="w-full"
+                onValueChange={(v) => setExportMode(v as "range" | "month")}
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="range">{t.EXPORT_BY_RANGE}</TabsTrigger>
+                  <TabsTrigger value="month">{t.EXPORT_BY_MONTH}</TabsTrigger>
+                </TabsList>
+                <TabsContent value="range" className="mt-4 flex flex-col gap-4">
+                  <p className="text-xs text-muted-foreground">
+                    {UI_TEXT.COMMON.SELECT_DATE_RANGE}
+                  </p>
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={exportRange.from}
+                    selected={{ from: exportRange.from, to: exportRange.to }}
+                    onSelect={(range) => setExportRange({ from: range?.from, to: range?.to })}
+                    numberOfMonths={1}
+                  />
+                </TabsContent>
+                <TabsContent value="month" className="mt-4 flex flex-col gap-4 min-w-[280px]">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-medium">{t.SELECT_MONTH}</label>
+                      <Select
+                        value={exportMonth.toString()}
+                        onValueChange={(v) => setExportMonth(parseInt(v))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                            <SelectItem key={m} value={m.toString()}>
+                              {m}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-medium">{t.SELECT_YEAR}</label>
+                      <Select
+                        value={exportYear.toString()}
+                        onValueChange={(v) => setExportYear(parseInt(v))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from(
+                            { length: new Date().getFullYear() - 2024 + 1 },
+                            (_, i) => new Date().getFullYear() - i
+                          ).map((y) => (
+                            <SelectItem key={y} value={y.toString()}>
+                              {y}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+
+              <Button
+                size="sm"
+                className="w-full"
+                onClick={handleExport}
+                disabled={(exportMode === "range" && !exportRange.from) || exporting}
+              >
+                {exporting ? UI_TEXT.COMMON.LOADING : UI_TEXT.COMMON.CONFIRM}
+              </Button>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
@@ -160,12 +287,7 @@ export default function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-12">
             {/* Primary Analysis - Large Span */}
             <div className="lg:col-span-8">
-              <RevenueChart
-                data={data.revenueChart || []}
-                loading={loading}
-                view={viewMode}
-                onViewChange={setViewMode}
-              />
+              <RevenueChart data={data.revenueChart || []} loading={loading} view={viewMode} />
             </div>
 
             {/* Secondary Analysis - Tall Span */}

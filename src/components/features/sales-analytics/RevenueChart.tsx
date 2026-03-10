@@ -1,15 +1,12 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { RevenuePoint } from "@/types/salesAnalytics.types";
 
 interface RevenueChartProps {
   data: RevenuePoint[];
   loading?: boolean;
-  view?: "daily" | "monthly";
-  onViewChange?: (view: "daily" | "monthly") => void;
 }
 
 function RevenueBar({
@@ -44,7 +41,7 @@ function RevenueBar({
   );
 }
 
-export function RevenueChart({ data, loading, view = "daily", onViewChange }: RevenueChartProps) {
+export function RevenueChart({ data, loading }: RevenueChartProps) {
   const t = UI_TEXT.SALES_ANALYTICS;
 
   const maxValue = Math.max(...data.map((d) => d.revenue), 1);
@@ -55,16 +52,6 @@ export function RevenueChart({ data, loading, view = "daily", onViewChange }: Re
         <div className="space-y-1">
           <CardTitle className="text-base font-semibold">{t.REVENUE_OVER_TIME}</CardTitle>
         </div>
-        <Tabs value={view} onValueChange={(v) => onViewChange?.(v as "daily" | "monthly")}>
-          <TabsList className="grid w-[180px] grid-cols-2 h-8">
-            <TabsTrigger value="daily" className="text-xs">
-              {t.DAILY}
-            </TabsTrigger>
-            <TabsTrigger value="monthly" className="text-xs">
-              {t.MONTHLY}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
       </CardHeader>
       <CardContent>
         <div className="relative h-[280px] w-full pt-10">
