@@ -59,6 +59,16 @@ const data = {
       title: UI_TEXT.SIDE_BAR.INVENTORY,
       url: "/manager/inventory",
       icon: Package,
+      items: [
+        {
+          title: UI_TEXT.INVENTORY.ALERTS_BTN,
+          url: "/manager/inventory/alerts",
+        },
+        {
+          title: UI_TEXT.INVENTORY.HISTORY_BTN,
+          url: "/manager/inventory/history",
+        },
+      ],
     },
   ],
 };

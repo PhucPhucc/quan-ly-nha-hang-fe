@@ -91,6 +91,7 @@ export const COMMON = {
   SENDING: "Đang gửi...",
   PROCESSING: "Đang xử lý...",
   SOMETHING_WENT_WRONG: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+  TOGGLE: "Mở rộng",
 };
 
 export const SIDE_BAR = {

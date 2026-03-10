@@ -45,7 +45,15 @@ export async function apiFetch<T>(
   if (options.body && !(options.body instanceof FormData) && typeof options.body === "object") {
     fetchOptions.body = JSON.stringify(options.body);
   }
-  let res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
+  let res: Response;
+
+  try {
+    res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
+  } catch {
+    throw new Error(
+      "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng hoặc đảm bảo backend đang chạy."
+    );
+  }
 
   if (res.status === 401) {
     if (!isRefreshing) {
@@ -74,28 +82,51 @@ export async function apiFetch<T>(
 
     await new Promise((r) => setTimeout(r, 100));
 
-    res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
+    try {
+      res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
+    } catch {
+      throw new Error(
+        "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng hoặc đảm bảo backend đang chạy."
+      );
+    }
   }
 
   if (!res.ok) {
-    let message = "API Error";
+    let message = `Lỗi API (${res.status})`;
     try {
-      const data = (await res.json()) as ApiResponse<T>;
-      message = data.message || data.error || message;
+      const errorText = await res.text();
+      if (errorText) {
+        try {
+          const data = JSON.parse(errorText);
+          message = data.message || data.error || data.title || message;
+          if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+            message = data.errors.join(", ");
+          }
+        } catch {
+          // Response is not JSON (e.g., HTML error page)
+          message = `Lỗi API (${res.status} ${res.statusText})`;
+        }
+      }
     } catch {
-      /* ignore */
+      // Could not read response body
     }
 
     throw new Error(message);
   }
 
   const text = await res.text();
-  const json = text ? JSON.parse(text) : {};
 
-  if (json && typeof json === "object" && "data" in (json as Record<string, unknown>)) {
+  let json: Record<string, unknown>;
+  try {
+    json = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(`Phản hồi từ server không hợp lệ (không phải JSON): ${text.substring(0, 200)}`);
+  }
+
+  if (json && typeof json === "object" && "data" in json) {
     return {
       isSuccess: true,
-      ...(json as Record<string, unknown>),
+      ...json,
     } as ApiResponse<T>;
   }
 
