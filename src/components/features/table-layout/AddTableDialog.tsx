@@ -1,65 +1,64 @@
 "use client";
 
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
 
+import SelectCapacityTable from "./SelectCapacityTable";
+
 interface AddTableDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onCreate: (data: { capacity: number }) => Promise<void>;
 }
 
-export default function AddTableDialog({ open, onOpenChange, onCreate }: AddTableDialogProps) {
+export default function AddTableDialog({ onCreate }: AddTableDialogProps) {
   const [capacity, setCapacity] = useState(4);
 
   const handleSubmit = async () => {
     await onCreate({ capacity });
-    onOpenChange(false);
     setCapacity(4);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>
+          <Plus />
+          {UI_TEXT.TABLE.ADD_TABLE}
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{UI_TEXT.TABLE.ADD_TABLE}</DialogTitle>
+          <DialogTitle className="text-2xl">{UI_TEXT.TABLE.ADD_TABLE}</DialogTitle>
         </DialogHeader>
-
-        <div className="space-y-4 py-4">
+        <div className="space-y-4">
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-600">
-              {UI_TEXT.TABLE.SEAT_COUNT}
-            </label>
-            <div className="flex items-center">
-              <button
-                onClick={() => setCapacity((v) => Math.max(1, v - 1))}
-                className="flex h-10 w-10 items-center justify-center rounded-l border border-gray-300 hover:bg-gray-50"
-              >
-                {UI_TEXT.COMMON.MINUS_SIGN}
-              </button>
-              <div className="flex h-10 flex-1 items-center justify-center border-y border-gray-300 text-lg font-bold">
-                {capacity}
-              </div>
-              <button
-                onClick={() => setCapacity((v) => Math.min(6, v + 1))}
-                className="flex h-10 w-10 items-center justify-center rounded-r border border-gray-300 hover:bg-gray-50"
-              >
-                {UI_TEXT.COMMON.PLUS_SIGN}
-              </button>
-            </div>
-            <p className="text-[9px] italic text-gray-400">{UI_TEXT.TABLE.DEFAULT_SHAPE_NOTE}</p>
+            <SelectCapacityTable capacity={capacity} setCapacity={setCapacity} />
+            <p className="text-xs italic text-muted-foreground">
+              {UI_TEXT.TABLE.DEFAULT_SHAPE_NOTE}
+            </p>
           </div>
         </div>
-
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {UI_TEXT.COMMON.CANCEL}
-          </Button>
-          <Button onClick={handleSubmit}>{UI_TEXT.COMMON.SAVE}</Button>
-        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">{UI_TEXT.COMMON.CANCEL}</Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button onClick={handleSubmit}>{UI_TEXT.COMMON.SAVE}</Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
