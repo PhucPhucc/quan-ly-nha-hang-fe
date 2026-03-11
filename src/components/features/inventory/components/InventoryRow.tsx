@@ -18,8 +18,8 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
   return (
     <TableRow className="group transition-colors">
       <TableCell className="font-medium">{item.name}</TableCell>
-      <TableCell className="text-muted-foreground">{item.sku}</TableCell>
-      <TableCell>{item.category}</TableCell>
+      <TableCell className="text-muted-foreground">{item.code}</TableCell>
+      <TableCell>{item.category ?? UI_TEXT.COMMON.EMPTY}</TableCell>
       <TableCell className="text-right">
         <span className="font-semibold">
           {item.currentStock} {item.unit}
@@ -27,7 +27,7 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
       </TableCell>
       <TableCell className="text-right">
         <span className="text-muted-foreground mr-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
-        <span className="font-medium">{item.costPerUnit.toFixed(2)}</span>
+        <span className="font-medium">{(item.costPrice ?? 0).toFixed(2)}</span>
       </TableCell>
       <TableCell className="w-[140px]">
         <StatusBadge status={item.status as AlertThresholdStatus} />

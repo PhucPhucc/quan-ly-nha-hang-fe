@@ -15,21 +15,19 @@ export enum AlertThresholdStatus {
 }
 
 export interface Ingredient {
-  id: string;
+  ingredientId: string;
   name: string;
-  sku: string;
-  category: string;
+  code: string;
+  category?: string;
   unit: InventoryUnit;
   currentStock: number;
   lowStockThreshold: number;
-  costPerUnit: number;
-  supplierId?: string;
-  supplierName?: string;
-  expirationDate?: string; // ISO Date required?
-  status: AlertThresholdStatus;
+  costPrice: number;
+  status?: AlertThresholdStatus;
   description?: string;
   isActive: boolean;
   updatedAt: string;
+  stockStatus?: string;
 }
 
 export interface StockHistory {

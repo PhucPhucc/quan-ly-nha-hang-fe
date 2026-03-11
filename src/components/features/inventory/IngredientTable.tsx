@@ -124,7 +124,7 @@ export function IngredientTable() {
             ) : (
               ingredients.map((item) => (
                 <InventoryRow
-                  key={item.id}
+                  key={item.ingredientId}
                   item={item}
                   onEdit={handleEdit}
                   onDelete={handleDeleteClick}
@@ -165,7 +165,7 @@ export function IngredientTable() {
                     <span className="font-semibold text-foreground">{deletingItem.name}</span>
                     <span className="text-muted-foreground text-xs ml-2">
                       {UI_TEXT.INVENTORY.TABLE.PAREN_OPEN}
-                      {deletingItem.sku}
+                      {deletingItem.code}
                       {UI_TEXT.INVENTORY.TABLE.PAREN_CLOSE}
                     </span>
                   </div>
@@ -187,7 +187,7 @@ export function IngredientTable() {
               className="rounded-lg"
               onClick={() =>
                 deletingItem &&
-                deleteMutation.mutate(deletingItem.id, {
+                deleteMutation.mutate(deletingItem.ingredientId, {
                   onSuccess: () => {
                     setIsDeleteOpen(false);
                     setDeletingItem(null);

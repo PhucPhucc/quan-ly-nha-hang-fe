@@ -38,12 +38,12 @@ export function IngredientFormFields({ register, errors, control }: Props) {
             {UI_TEXT.INVENTORY.FORM.SKU}
           </label>
           <Input
-            {...register("sku")}
+            {...register("code")}
             placeholder={UI_TEXT.INVENTORY.FORM.PLACEHOLDER_SKU}
-            className={cn(errors.sku && "border-destructive")}
+            className={cn(errors.code && "border-destructive")}
           />
-          {errors.sku?.message && (
-            <span className="text-xs text-destructive">{errors.sku.message}</span>
+          {errors.code?.message && (
+            <span className="text-xs text-destructive">{errors.code.message}</span>
           )}
         </div>
         <div className="grid gap-2">
@@ -91,11 +91,11 @@ export function IngredientFormFields({ register, errors, control }: Props) {
           <Input
             type="number"
             step="0.01"
-            {...register("costPerUnit", { valueAsNumber: true })}
-            className={cn(errors.costPerUnit && "border-destructive")}
+            {...register("costPrice", { valueAsNumber: true })}
+            className={cn(errors.costPrice && "border-destructive")}
           />
-          {errors.costPerUnit?.message && (
-            <span className="text-xs text-destructive">{errors.costPerUnit.message}</span>
+          {errors.costPrice?.message && (
+            <span className="text-xs text-destructive">{errors.costPrice.message}</span>
           )}
         </div>
       </div>

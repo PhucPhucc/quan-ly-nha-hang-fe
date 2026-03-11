@@ -59,18 +59,18 @@ export function AddIngredientPanel({
     defaultValues: ingredient
       ? {
           name: ingredient.name,
-          sku: ingredient.sku,
+          code: ingredient.code,
           category: ingredient.category,
           unit: ingredient.unit,
           lowStockThreshold: ingredient.lowStockThreshold,
-          costPerUnit: ingredient.costPerUnit,
+          costPrice: ingredient.costPrice,
           description: ingredient.description || "",
           isActive: ingredient.isActive,
         }
       : {
           unit: InventoryUnit.KG,
           lowStockThreshold: 10,
-          costPerUnit: 0,
+          costPrice: 0,
           description: "",
           isActive: true,
         },
@@ -82,22 +82,22 @@ export function AddIngredientPanel({
       if (ingredient) {
         reset({
           name: ingredient.name,
-          sku: ingredient.sku,
+          code: ingredient.code,
           category: ingredient.category,
           unit: ingredient.unit,
           lowStockThreshold: ingredient.lowStockThreshold,
-          costPerUnit: ingredient.costPerUnit,
+          costPrice: ingredient.costPrice,
           description: ingredient.description || "",
           isActive: ingredient.isActive,
         });
       } else {
         reset({
           name: "",
-          sku: "",
+          code: "",
           category: "",
           unit: InventoryUnit.KG,
           lowStockThreshold: 10,
-          costPerUnit: 0,
+          costPrice: 0,
           description: "",
           isActive: true,
         });
@@ -118,7 +118,7 @@ export function AddIngredientPanel({
 
       let res;
       if (isEditing && ingredient) {
-        res = await inventoryService.updateIngredient(ingredient.id, payload);
+        res = await inventoryService.updateIngredient(ingredient.ingredientId, payload);
       } else {
         res = await inventoryService.addIngredient(payload);
       }
