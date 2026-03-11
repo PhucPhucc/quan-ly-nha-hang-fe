@@ -1,61 +1,214 @@
-"use client";
-
-import { toast } from "sonner";
+// Assuming sonner is used for toasts based on typical shadcn projects, if not, adjust later. Replace if not needed.
 import { create } from "zustand";
 
-import { categoryService } from "@/services/categoryService";
 import { menuService } from "@/services/menuService";
-import { Category, MenuItem } from "@/types/Menu";
+import { MenuFilter, MenuItem, SetMenu } from "@/types/Menu";
 
-type MenuStore = {
-  categories: Category[];
+interface MenuState {
   menuItems: MenuItem[];
-  loading: boolean;
+  setMenus: SetMenu[];
+  isLoading: boolean;
+  filter: MenuFilter;
 
-  activeTab: string;
-  selectedItem: MenuItem | null;
-  isOptionDialogOpen: boolean;
+  // UI States
+  searchQuery: string;
+  categoryId: string;
+  showOutOfStock: boolean;
+  isModalOpen: boolean;
+  editingItem: MenuItem | null;
 
-  fetchData: () => Promise<void>;
-  setActiveTab: (tab: string) => void;
-  setLoading: (loading: boolean) => void;
-  openOptionDialog: (item: MenuItem) => void;
-  closeOptionDialog: () => void;
-};
+  // Actions
+  setFilter: (filter: Partial<MenuFilter>) => void;
+  setSearchQuery: (query: string) => void;
+  setCategoryId: (id: string) => void;
+  setShowOutOfStock: (show: boolean) => void;
+  setModalOpen: (isOpen: boolean) => void;
+  setEditingItem: (item: MenuItem | null) => void;
+  fetchMenuItems: (page?: number, pageSize?: number) => Promise<void>;
+  fetchSetMenus: (page?: number, pageSize?: number) => Promise<void>;
+  addMenuItem: (item: Partial<MenuItem>) => Promise<void>;
+  updateMenuItem: (id: string, item: Partial<MenuItem>) => Promise<void>;
+  deleteMenuItem: (id: string) => Promise<void>;
+  toggleMenuItemStock: (id: string, isOutOfStock: boolean) => Promise<void>;
 
-export const useMenuStore = create<MenuStore>((set) => ({
-  categories: [],
+  addSetMenu: (item: Partial<SetMenu>) => Promise<void>;
+  updateSetMenu: (id: string, item: Partial<SetMenu>) => Promise<void>;
+  deleteSetMenu: (id: string) => Promise<void>;
+  toggleSetMenuStock: (id: string, isOutOfStock: boolean) => Promise<void>;
+}
+
+export const useMenuStore = create<MenuState>((set, get) => ({
   menuItems: [],
-  loading: true,
+  setMenus: [],
+  isLoading: false,
+  filter: {},
 
-  activeTab: "all",
-  selectedItem: null,
-  isOptionDialogOpen: false,
+  searchQuery: "",
+  categoryId: "all",
+  showOutOfStock: false,
+  isModalOpen: false,
+  editingItem: null,
 
-  fetchData: async () => {
+  setFilter: (filter) => set((state) => ({ filter: { ...state.filter, ...filter } })),
+  setSearchQuery: (searchQuery) => set({ searchQuery }),
+  setCategoryId: (categoryId) => set({ categoryId }),
+  setShowOutOfStock: (showOutOfStock) => set({ showOutOfStock }),
+  setModalOpen: (isModalOpen) => set({ isModalOpen }),
+  setEditingItem: (editingItem) => set({ editingItem }),
+
+  fetchMenuItems: async (page = 1, pageSize = 100) => {
+    set({ isLoading: true });
     try {
-      set({ loading: true });
-
-      const [catRes, menuRes] = await Promise.all([
-        categoryService.getAll(),
-        menuService.getAll({ pageSize: 1000 }),
-      ]);
-
-      set({
-        categories: catRes.isSuccess ? (catRes.data?.items ?? []) : [],
-        menuItems: menuRes.isSuccess ? (menuRes.data?.items ?? []) : [],
-      });
+      const response = await menuService.getAll(page, pageSize);
+      if (response.isSuccess && response.data) {
+        set({ menuItems: response.data.items });
+      }
     } catch (error) {
-      toast.error("Không thể tải thực đơn: " + (error instanceof Error ? error.message : ""));
+      console.error("Failed to fetch menu items:", error);
     } finally {
-      set({ loading: false });
+      set({ isLoading: false });
     }
   },
 
-  setActiveTab: (tab) => set({ activeTab: tab }),
-  setLoading: (loading) => set({ loading }),
+  fetchSetMenus: async (page = 1, pageSize = 100) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.getAllSetMenu(page, pageSize);
+      if (response.isSuccess && response.data) {
+        set({ setMenus: response.data.items });
+      }
+    } catch (error) {
+      console.error("Failed to fetch set menus:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 
-  openOptionDialog: (item) => set({ selectedItem: item, isOptionDialogOpen: true }),
+  addMenuItem: async (item) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.create(item);
+      if (response.isSuccess && response.data) {
+        // Re-fetch to ensure consistency, or optimistic update
+        const currentItems = get().menuItems;
+        set({ menuItems: [response.data, ...currentItems] });
+      }
+    } catch (error) {
+      console.error("Failed to add menu item:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 
-  closeOptionDialog: () => set({ selectedItem: null, isOptionDialogOpen: false }),
+  updateMenuItem: async (id, item) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.update(id, item);
+      if (response.isSuccess && response.data) {
+        const updatedItem = response.data;
+        set((state) => ({
+          menuItems: state.menuItems.map((m) =>
+            m.menuItemId === id ? { ...m, ...updatedItem } : m
+          ),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to update menu item:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  deleteMenuItem: async (id) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.delete(id);
+      if (response.isSuccess) {
+        set((state) => ({
+          menuItems: state.menuItems.filter((m) => m.menuItemId !== id),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to delete menu item:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  toggleMenuItemStock: async (id, isOutOfStock) => {
+    try {
+      const response = await menuService.toggleStock(id, isOutOfStock);
+      if (response.isSuccess) {
+        set((state) => ({
+          menuItems: state.menuItems.map((m) => (m.menuItemId === id ? { ...m, isOutOfStock } : m)),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to toggle stock:", error);
+    }
+  },
+
+  addSetMenu: async (item) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.createSetMenu(item);
+      if (response.isSuccess && response.data) {
+        const currentItems = get().setMenus;
+        set({ setMenus: [response.data, ...currentItems] });
+      }
+    } catch (error) {
+      console.error("Failed to add set menu:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateSetMenu: async (id, item) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.updateSetMenu(id, item);
+      if (response.isSuccess && response.data) {
+        const updatedItem = response.data;
+        set((state) => ({
+          setMenus: state.setMenus.map((m) => (m.setMenuId === id ? { ...m, ...updatedItem } : m)),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to update set menu:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  deleteSetMenu: async (id) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.deleteSetMenu(id);
+      if (response.isSuccess) {
+        set((state) => ({
+          setMenus: state.setMenus.filter((m) => m.setMenuId !== id),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to delete set menu:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  toggleSetMenuStock: async (id, isOutOfStock) => {
+    set({ isLoading: true });
+    try {
+      const response = await menuService.updateSetMenuStock(id, isOutOfStock);
+      if (response.isSuccess) {
+        set((state) => ({
+          setMenus: state.setMenus.map((m) => (m.setMenuId === id ? { ...m, isOutOfStock } : m)),
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to toggle set menu stock:", error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));
