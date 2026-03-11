@@ -189,6 +189,20 @@
   }
 }
 
+@keyframes grow-up {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-bar-grow {
+  transform-origin: bottom;
+  animation: grow-up 0.6s ease-out forwards;
+}
+
 :root {
   /* ===============================
        Base surfaces & text (Warm F&B Theme)
@@ -276,7 +290,7 @@
   /* Màu kem đậm hơn */
   --table-reserved: oklch(0.75 0.15 85);
   /* Vàng sậm hơn */
-  --table-inprocess: oklch(0.6 0.18 145);
+  --table-serving: oklch(0.6 0.18 145);
   /* Xanh lá đậm hơn */
   --table-cleaning: oklch(0.55 0.15 40);
   /* Đỏ nâu/Cam thay vì đỏ rực để đỡ chói */

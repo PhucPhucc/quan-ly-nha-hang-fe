@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { login } from "@/services/authService";
 import { useAuthStore } from "@/store/useAuthStore";
-import { EmployeeRole } from "@/types/Employee";
+import { EmployeeRole, normalizeEmployeeRole } from "@/types/Employee";
 const LoginForm = () => {
   const router = useRouter();
   const [error, setError] = useState("");
@@ -30,27 +30,26 @@ const LoginForm = () => {
 
       if (res.data) {
         const { employeeCode, role, email } = res.data;
+        const normalizedRole = normalizeEmployeeRole(role);
 
         setEmployee({
           email: email || "",
           username: employeeCode,
-          role: role,
+          role: normalizedRole || role,
         });
-        switch (role) {
+
+        switch (normalizedRole) {
           case EmployeeRole.MANAGER:
             router.push("/manager/dashboard");
             break;
           case EmployeeRole.CASHIER:
             router.push("/order");
             break;
-          // case "Waiter":
-          //   router.push("/waiter/orders");
-          //   break;
           case EmployeeRole.CHEFBAR:
             router.push("/kds/station");
             break;
           default:
-            router.push("/dashboard");
+            router.push("/unauthorized");
         }
       }
     } catch (err) {

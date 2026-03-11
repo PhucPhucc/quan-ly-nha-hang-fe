@@ -8,6 +8,7 @@ import { KDSQuickNav } from "../KDSQuickNav";
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   usePathname: vi.fn(() => "/kds/station"),
+  useRouter: () => ({ replace: vi.fn() }),
 }));
 
 describe("KDSQuickNav (Dynamic Island)", () => {

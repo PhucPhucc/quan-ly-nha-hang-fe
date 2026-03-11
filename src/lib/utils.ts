@@ -66,3 +66,15 @@ export const getElapsedTime = (createdAt: string): string => {
   // Nếu số phút lẻ > 0 thì ghép vào, nếu không thì chỉ hiện giờ (VD: "2h0m" -> "2h")
   return remainingMinutes > 0 ? `${hours}h${remainingMinutes}m` : `${hours}h`;
 };
+
+export function toFormData(obj: Record<string, unknown>): FormData {
+  const formData = new FormData();
+
+  Object.entries(obj).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value as string);
+    }
+  });
+
+  return formData;
+}

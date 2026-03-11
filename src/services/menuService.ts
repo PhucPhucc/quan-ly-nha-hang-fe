@@ -1,3 +1,4 @@
+import { toFormData } from "@/lib/utils";
 import { ApiResponse, PaginationResult } from "@/types/Api";
 import { MenuItem, SetMenu } from "@/types/Menu";
 
@@ -16,7 +17,7 @@ export const menuService = {
   create: (data: Partial<MenuItem>): Promise<ApiResponse<MenuItem>> =>
     apiFetch<MenuItem>("/menuitems", {
       method: "POST",
-      body: data,
+      body: toFormData(data),
     }),
 
   // Cập nhật món

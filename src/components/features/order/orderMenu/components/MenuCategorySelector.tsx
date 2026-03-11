@@ -17,19 +17,19 @@ const MenuCategorySelector = () => {
           value="cf"
           className="rounded-full border border-transparent bg-transparent px-3 py-1.5 text-xs font-medium text-muted-foreground data-[state=active]:border-border data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
         >
-          {UI_TEXT.MENU.CATEGORIES.CAFFEE}
+          {UI_TEXT.MENU.CATEGORY.COFFEE}
         </TabsTrigger>
         <TabsTrigger
           value="soup"
           className="rounded-full border border-transparent bg-transparent px-3 py-1.5 text-xs font-medium text-muted-foreground data-[state=active]:border-border data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
         >
-          {UI_TEXT.MENU.CATEGORIES.SOUP}
+          {UI_TEXT.MENU.CATEGORY.SOUP}
         </TabsTrigger>
         <TabsTrigger
           value="tea"
           className="rounded-full border border-transparent bg-transparent px-3 py-1.5 text-xs font-medium text-muted-foreground data-[state=active]:border-border data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
         >
-          {UI_TEXT.MENU.CATEGORIES.TEA}
+          {UI_TEXT.MENU.CATEGORY.TEA}
         </TabsTrigger>
       </TabsList>
     </div>

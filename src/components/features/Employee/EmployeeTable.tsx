@@ -70,28 +70,14 @@ const EmployeeTable = () => {
     <div className="relative w-full overflow-auto">
       <Table>
         <TableHeader>
-          <TableRow className="hover:bg-transparent border-slate-100 bg-slate-50/50">
-            <TableHead className="w-[100px] py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider pl-6">
-              {UI_TEXT.EMPLOYEE.EMP_ID}
-            </TableHead>
-            <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              {UI_TEXT.EMPLOYEE.EMPLOYEE_TITLE}
-            </TableHead>
-            <TableHead className="hidden lg:table-cell py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              {UI_TEXT.EMPLOYEE.CONTACT}
-            </TableHead>
-            <TableHead className="hidden xl:table-cell py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              {UI_TEXT.EMPLOYEE.ADDRESS}
-            </TableHead>
-            <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              {UI_TEXT.EMPLOYEE.ROLE}
-            </TableHead>
-            <TableHead className="py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
-              {UI_TEXT.EMPLOYEE.STATUS}
-            </TableHead>
-            <TableHead className="text-right py-4 font-semibold text-slate-800 uppercase text-[11px] tracking-wider pr-6">
-              {UI_TEXT.COMMON.ACTION}
-            </TableHead>
+          <TableRow>
+            <TableHead>{UI_TEXT.EMPLOYEE.EMP_ID}</TableHead>
+            <TableHead>{UI_TEXT.EMPLOYEE.EMPLOYEE_TITLE}</TableHead>
+            <TableHead>{UI_TEXT.EMPLOYEE.CONTACT}</TableHead>
+            <TableHead>{UI_TEXT.EMPLOYEE.ADDRESS}</TableHead>
+            <TableHead>{UI_TEXT.EMPLOYEE.ROLE}</TableHead>
+            <TableHead>{UI_TEXT.EMPLOYEE.STATUS}</TableHead>
+            <TableHead>{UI_TEXT.COMMON.ACTION}</TableHead>
           </TableRow>
         </TableHeader>
 

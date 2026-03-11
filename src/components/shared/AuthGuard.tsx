@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { apiFetch } from "@/services/api";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Employee } from "@/types/Employee";
+import { Employee, normalizeEmployeeRole } from "@/types/Employee";
 
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -30,10 +30,12 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
         if (res.isSuccess && res.data) {
           if (!cancelled) {
+            const normalizedRole = normalizeEmployeeRole(res.data.role) || res.data.role;
+
             setEmployee({
               email: res.data.email || "",
               username: res.data.employeeCode,
-              role: res.data.role,
+              role: normalizedRole,
             });
           }
         } else {

@@ -59,6 +59,7 @@ export interface PaginationParams {
   pageSize?: number;
   search?: string;
   status?: OrderStatus;
+  orderType?: OrderType;
   fromDate?: string;
   toDate?: string;
 }
@@ -78,6 +79,7 @@ export const orderService = {
     if (params.pageSize) queryParams.append("pageSize", params.pageSize.toString());
     if (params.search) queryParams.append("search", params.search);
     if (params.status) queryParams.append("status", params.status.toString());
+    if (params.orderType) queryParams.append("orderType", params.orderType.toString());
     if (params.fromDate) queryParams.append("fromDate", params.fromDate);
     if (params.toDate) queryParams.append("toDate", params.toDate);
 
@@ -125,7 +127,7 @@ export const orderService = {
     paymentMethod: string,
     amountReceived?: number
   ): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/orders/${orderId}/checkout`, {
+    apiFetch<string>(`/billing/orders/${orderId}/checkout`, {
       method: "POST",
       body: { orderId, paymentMethod, amountReceived },
     }),

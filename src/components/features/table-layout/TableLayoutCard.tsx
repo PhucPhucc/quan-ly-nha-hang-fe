@@ -3,18 +3,15 @@
 import clsx from "clsx";
 import { memo } from "react";
 
+import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Table, TableStatus } from "@/types/Table-Layout";
 
 interface Props {
   table: Table;
   isSelected: boolean;
-  isEditMode: boolean;
   onClick: (table: Table) => void;
 }
-
-// Active = mọi trạng thái trừ OUT_OF_SERVICE
-const isActive = (status: TableStatus) => status !== TableStatus.OutOfService;
 
 // Phân bổ ghế: ưu tiên hàng trên
 const getTopChairCount = (capacity: number) => Math.ceil(capacity / 2);
@@ -22,12 +19,12 @@ const getBottomChairCount = (capacity: number) => Math.floor(capacity / 2);
 
 // Màu card theo status (view mode)
 const statusCardStyle: Record<TableStatus, string> = {
-  [TableStatus.Available]: "bg-table-available/15 border-table-available",
-  [TableStatus.Reserved]: "bg-table-reserved/15 border-table-reserved",
-  [TableStatus.Occupied]: "bg-table-occupied/15 border-table-occupied",
-  [TableStatus.Cleaning]: "bg-table-cleaning/15 border-table-cleaning",
-  [TableStatus.OutOfService]:
-    "bg-neutral-100 border-slate-200 cursor-not-allowed opacity-60 grayscale",
+  [TableStatus.Available]:
+    "bg-table-available/15 hover:bg-table-available/10 border-table-available",
+  [TableStatus.Reserved]: "bg-table-reserved/15 hover:bg-table-reserved/10 border-table-reserved",
+  [TableStatus.Occupied]: "bg-table-occupied/15 hover:bg-table-occupied/10 border-table-occupied",
+  [TableStatus.Cleaning]: "bg-table-cleaning/15 hover:bg-table-cleaning/10 border-table-cleaning",
+  [TableStatus.OutOfService]: "bg-neutral-100 border-slate-200 opacity-60 grayscale",
 };
 
 // Default fallback style
@@ -65,34 +62,21 @@ const statusChairStyle: Record<TableStatus, string> = {
 const DEFAULT_CHAIR_STYLE = "bg-slate-300";
 const DEFAULT_LABEL = "Không xác định";
 
-function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
-  const active = isActive(table.status);
+function TableLayoutCard({ table, isSelected, onClick }: Props) {
   const topChairs = Array.from({ length: getTopChairCount(table.capacity) });
   const bottomChairs = Array.from({ length: getBottomChairCount(table.capacity) });
 
-  // in edit mode we still want to be able to open the panel for out-of-service tables,
-  // so consider a table disabled only when it's inactive *and* we're not editing.
-  const disabled = !active && !isEditMode;
+  // consider a table disabled only when it's out of service.
 
   const cardClasses = clsx(
-    "relative flex h-28 w-full flex-col items-center justify-center rounded-md border-2 transition-all",
-    disabled
-      ? "cursor-not-allowed opacity-60"
-      : isEditMode
-        ? "cursor-pointer hover:scale-105"
-        : "cursor-default",
+    "relative flex h-28 w-full flex-col items-center justify-center rounded-md border-2 hover:scale-105 transition-all duration-300",
     statusCardStyle[table.status] || DEFAULT_CARD_STYLE,
-    isSelected && !disabled && "scale-105 ring-2 ring-primary ring-offset-1"
+    isSelected && "scale-105 border-primary ring-offset-1"
   );
 
   return (
     <div className="relative flex justify-center">
-      <button
-        type="button"
-        onClick={() => onClick(table)}
-        disabled={disabled}
-        className={cardClasses}
-      >
+      <Button variant="ghost" onClick={() => onClick(table)} className={cardClasses}>
         {/* Ghế trên */}
         <div className="absolute -top-1.5 left-0 flex w-full justify-around px-4">
           {topChairs.map((_, i) => (
@@ -116,9 +100,8 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
         </span>
         <span
           className={clsx(
-            "mt-1 text-[10px] font-bold uppercase",
-            statusTextStyle[table.status] || DEFAULT_TEXT_STYLE,
-            "opacity-60"
+            "mt-1 text-[10px] font-bold uppercase opacity-60",
+            statusTextStyle[table.status] || DEFAULT_TEXT_STYLE
           )}
         >
           {statusLabel[table.status] || DEFAULT_LABEL} {UI_TEXT.COMMON.BULLET} {table.capacity}{" "}
@@ -139,8 +122,8 @@ function TableLayoutCard({ table, isSelected, isEditMode, onClick }: Props) {
         </div>
 
         {/* Overlay inactive */}
-        {!active && <div className="absolute inset-0 z-20 rounded-md bg-white/10" />}
-      </button>
+        {/* {!active && <div className="absolute inset-0 z-20 rounded-md bg-white/10" />} */}
+      </Button>
     </div>
   );
 }
