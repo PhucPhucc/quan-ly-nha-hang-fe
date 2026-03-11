@@ -42,7 +42,7 @@ const data = {
     },
     {
       title: UI_TEXT.SIDE_BAR.ORDER,
-      url: "/order",
+      url: "/manager/order",
       icon: UtensilsCrossed,
     },
     {

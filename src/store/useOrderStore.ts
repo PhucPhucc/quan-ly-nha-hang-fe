@@ -2,7 +2,7 @@ import { DateRange } from "react-day-picker";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
-import { orderService } from "@/services/orderService";
+import { orderService, PaginationParams } from "@/services/orderService";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 
@@ -81,7 +81,25 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
     fetchOrders: async (option = {}) => {
       try {
         set({ loading: true });
-        const res = await orderService.getOrders(option);
+        const { searchQuery, activeTab, selectedStatuses, dateRange } = get();
+
+        const params: PaginationParams = {
+          ...option,
+          search: searchQuery || undefined,
+          fromDate: dateRange?.from?.toISOString(),
+          toDate: dateRange?.to?.toISOString(),
+        };
+
+        // Map activeTab to OrderType
+        if (activeTab === "dine_in") params.orderType = OrderType.DineIn;
+        if (activeTab === "takeaway") params.orderType = OrderType.Takeaway;
+
+        // Map status
+        if (selectedStatuses.length > 0) {
+          params.status = selectedStatuses[0] as OrderStatus;
+        }
+
+        const res = await orderService.getOrders(params);
         if (res.isSuccess && res.data) {
           set({ orders: res.data.items || [] });
         }
@@ -108,11 +126,20 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
 
     clearOrderDetails: () => set({ activeOrderDetails: null }),
 
-    setActiveTab: (activeTab) => set({ activeTab }),
+    setActiveTab: (activeTab) => {
+      set({ activeTab });
+      get().fetchOrders();
+    },
     setActiveView: (activeView) => set({ activeView }),
     setSelectedOrderId: (selectedOrderId) => set({ selectedOrderId }),
-    setSearchQuery: (searchQuery) => set({ searchQuery }),
-    setSelectedStatuses: (selectedStatuses) => set({ selectedStatuses }),
+    setSearchQuery: (searchQuery) => {
+      set({ searchQuery });
+      get().fetchOrders();
+    },
+    setSelectedStatuses: (selectedStatuses) => {
+      set({ selectedStatuses });
+      get().fetchOrders();
+    },
     setDateRange: (dateRange) => set({ dateRange }),
     setSortOrder: (sortOrder) => set({ sortOrder }),
 
@@ -150,13 +177,14 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
       }
     },
 
-    resetFilters: () =>
+    resetFilters: () => {
       set({
         searchQuery: "",
         selectedStatuses: [],
-      }),
+      });
+      get().fetchOrders();
+    },
 
-    // ---------- derived ----------
     dineInOrders: () => get().orders.filter((o) => o.orderType === OrderType.DineIn),
 
     takeawayOrders: () => get().orders.filter((o) => o.orderType === OrderType.Takeaway),
@@ -180,12 +208,14 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         });
     },
 
-    toggleStatus: (status: string) =>
+    toggleStatus: (status: string) => {
       set((state) => ({
         selectedStatuses: state.selectedStatuses.includes(status)
           ? state.selectedStatuses.filter((s) => s !== status)
           : [...state.selectedStatuses, status],
-      })),
+      }));
+      get().fetchOrders();
+    },
 
     stats: () => ({
       total: get().orders.length,

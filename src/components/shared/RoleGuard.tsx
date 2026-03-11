@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { useAuthStore } from "@/store/useAuthStore";
+import { normalizeEmployeeRole } from "@/types/Employee";
 
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -20,7 +21,8 @@ export default function RoleGuard({
 }: RoleGuardProps) {
   const router = useRouter();
   const { employee } = useAuthStore();
-  const isAuthorized = Boolean(employee?.role && allowedRoles.includes(employee.role));
+  const normalizedRole = normalizeEmployeeRole(employee?.role || undefined) || employee?.role;
+  const isAuthorized = Boolean(normalizedRole && allowedRoles.includes(normalizedRole));
 
   useEffect(() => {
     if (employee?.role && !isAuthorized) {

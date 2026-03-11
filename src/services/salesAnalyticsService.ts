@@ -59,14 +59,23 @@ export const salesAnalyticsService = {
     try {
       const params = new URLSearchParams();
       if (startDate) params.append("startDate", startDate);
+      // If we only have startDate, use it as endDate as well to satisfy backend requirements
+      if (endDate) params.append("endDate", endDate);
+      else if (startDate) params.append("endDate", startDate);
 
       const query = params.toString() ? `?${params.toString()}` : "";
+
+      const isSingleDay = Boolean(startDate && !endDate);
+      const revenueChartPromise = salesAnalyticsService.getRevenueChart(
+        isSingleDay ? { date: startDate } : { startDate, endDate: endDate || startDate }
+      );
+
       const [summaryResponse, bestSellersResponse, categoryReportResponse, revenueChartResponse] =
         await Promise.all([
           apiFetch<BackendDailyReportResponse>(`/salesanalytics/summary${query}`),
           salesAnalyticsService.getBestSellers(startDate, endDate),
-          salesAnalyticsService.getCategoryReport(startDate, endDate),
-          salesAnalyticsService.getRevenueChart({ date: startDate }),
+          salesAnalyticsService.getCategoryReport(startDate, endDate || startDate),
+          revenueChartPromise,
         ]);
       const data = summaryResponse.data;
 
@@ -137,6 +146,7 @@ export const salesAnalyticsService = {
       const params = new URLSearchParams();
       if (startDate) params.append("startDate", startDate);
       if (endDate) params.append("endDate", endDate);
+      else if (startDate) params.append("endDate", startDate);
       params.append("top", top.toString());
 
       const response = await apiFetch<BackendBestSellersResponse>(
@@ -163,6 +173,7 @@ export const salesAnalyticsService = {
       const params = new URLSearchParams();
       if (startDate) params.append("startDate", startDate);
       if (endDate) params.append("endDate", endDate);
+      else if (startDate) params.append("endDate", startDate);
 
       const response = await apiFetch<BackendCategoryReportResponse>(
         `/salesanalytics/category-report?${params.toString()}`
@@ -178,10 +189,19 @@ export const salesAnalyticsService = {
     }
   },
 
-  getRevenueChart: async (filters: { date?: string; year?: number; month?: number }) => {
+  getRevenueChart: async (filters: {
+    date?: string;
+    startDate?: string;
+    endDate?: string;
+    year?: number;
+    month?: number;
+  }) => {
     try {
       const params = new URLSearchParams();
       if (filters.date) params.append("date", filters.date);
+      if (filters.startDate) params.append("startDate", filters.startDate);
+      if (filters.endDate) params.append("endDate", filters.endDate);
+      else if (filters.startDate) params.append("endDate", filters.startDate);
       if (filters.year) params.append("year", filters.year.toString());
       if (filters.month) params.append("month", filters.month.toString());
 
