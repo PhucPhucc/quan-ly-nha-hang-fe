@@ -88,4 +88,9 @@ export const MENU = {
   // Management Page
   MENU_PAGE_SUBTITLE: "Thêm, sửa, xóa và quản lý trạng thái món ăn trong nhà hàng.",
   LIST_TITLE: "Danh sách món ăn",
+  CATEGORY: {
+    COFFEE: "Cà phê",
+    SOUP: "Món nước",
+    TEA: "Trà",
+  },
 };
