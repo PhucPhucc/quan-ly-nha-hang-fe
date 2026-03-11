@@ -101,6 +101,7 @@ export const SIDE_BAR = {
   EMPLOYEE: "Nhân viên",
   AUDIT_LOG: "Lịch sử",
   INVENTORY: "Kho hàng",
+  RESERVATION: "Đặt bàn",
 };
 
 export const FORM = {
