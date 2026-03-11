@@ -1,13 +1,15 @@
 "use client";
 
-import { ChevronDown, ChevronUp, History, LayoutGrid } from "lucide-react";
+import { ChevronDown, ChevronUp, History, LayoutGrid, LogOut } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
+import { logout } from "@/services/authService";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const NAV_ITEMS = [
   {
@@ -73,7 +75,20 @@ const KDSQuickNavItem = ({ href, label, icon: Icon, isActive }: KDSQuickNavItemP
 
 export function KDSQuickNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
+  const clearAuth = useAuthStore((s) => s.logout);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("[KDSQuickNav] logout failed", err);
+    } finally {
+      clearAuth();
+      router.replace("/login");
+    }
+  };
 
   return (
     <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50">
@@ -106,6 +121,15 @@ export function KDSQuickNav() {
               isActive={pathname === item.href}
             />
           ))}
+          <Button
+            variant="destructive"
+            size="sm"
+            className="rounded-2xl h-10 px-4 gap-2"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="text-sm font-semibold tracking-tight">{UI_TEXT.AUTH.LOGOUT}</span>
+          </Button>
         </div>
       </div>
     </div>

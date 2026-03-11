@@ -38,7 +38,7 @@ export const useMenuStore = create<MenuStore>((set) => ({
 
       const [catRes, menuRes] = await Promise.all([
         categoryService.getAll(),
-        menuService.getAll({ pageSize: 1000 }),
+        menuService.getAll(1, 1000),
       ]);
 
       set({

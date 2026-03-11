@@ -21,7 +21,7 @@ export default function MenuManagementPage() {
   const [filterPrice, setFilterPrice] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
-  const [formType, setFormType] = useState<"item" | "combo">("item");
+  const [formType, setFormType] = useState<"single" | "combo">("single");
 
   const [isOptionDialogOpen, setIsOptionDialogOpen] = useState(false);
   const [selectedOptionItem, setSelectedOptionItem] = useState<MenuItem | null>(null);
@@ -225,7 +225,7 @@ export default function MenuManagementPage() {
             <button
               onClick={() => {
                 setSelectedItem(null);
-                setFormType("item");
+                setFormType("single");
                 setIsFormOpen(true);
               }}
               className="h-9 px-4 text-sm font-bold bg-[#cc0000] text-white hover:bg-[#b30000] rounded-md shadow-sm"
@@ -242,7 +242,7 @@ export default function MenuManagementPage() {
             onToggleStock={handleToggleStock}
             onEdit={(item) => {
               setSelectedItem(item);
-              setFormType("item");
+              setFormType("single");
               setIsFormOpen(true);
             }}
             onDelete={handleDeleteItem}

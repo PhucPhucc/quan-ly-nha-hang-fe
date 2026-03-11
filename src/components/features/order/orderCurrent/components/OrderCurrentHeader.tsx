@@ -19,6 +19,7 @@ const StatusMap: Record<OrderStatus, { label: string; color: string }> = {
   Cleaning: { label: UI_TEXT.TABLE.CLEANING, color: "bg-table-cleaning text-muted " },
   Cancelled: { label: UI_TEXT.TABLE.CANCELLED, color: "bg-orange-500 text-muted " },
   Completed: { label: UI_TEXT.TABLE.COMPLETED, color: "bg-emerald-500 text-muted " },
+  Paid: { label: "Đã thanh toán", color: "bg-slate-500 text-muted " },
 };
 
 //  : UI_TEXT.TABLE.SERVING

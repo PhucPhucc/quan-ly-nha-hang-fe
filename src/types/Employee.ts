@@ -19,6 +19,24 @@ export const ROLEMAP: Record<string, string> = {
   chefbar: "chefbar",
 };
 
+export const normalizeEmployeeRole = (role?: string): EmployeeRole | null => {
+  const value = role?.toLowerCase();
+
+  switch (value) {
+    case "manager":
+      return EmployeeRole.MANAGER;
+    case "cashier":
+      return EmployeeRole.CASHIER;
+    case "waiter":
+      return EmployeeRole.WAITER;
+    case "chefbar":
+    case "chef":
+      return EmployeeRole.CHEFBAR;
+    default:
+      return null;
+  }
+};
+
 export interface Employee {
   employeeId: string;
   employeeCode: string;

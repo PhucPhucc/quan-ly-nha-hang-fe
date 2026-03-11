@@ -1,13 +1,14 @@
 // Các Enum liên quan đến Order
 export enum OrderType {
-  DineIn = 1,
-  Takeaway = 2,
+  DineIn = "DineIn",
+  Takeaway = "Takeaway",
 }
 
 export enum OrderStatus {
   Serving = "Serving",
   Completed = "Completed",
   Cancelled = "Cancelled",
+  Paid = "Paid",
   Ready = "Ready",
   Reserved = "Reserved",
   Cleaning = "Cleaning",
