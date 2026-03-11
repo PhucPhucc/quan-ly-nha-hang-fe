@@ -4,9 +4,6 @@ const nextConfig = {
   images: {
     domains: ["images.unsplash.com", "placehold.co"],
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 };
 
 export default nextConfig;
