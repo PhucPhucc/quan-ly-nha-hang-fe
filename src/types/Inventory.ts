@@ -27,6 +27,8 @@ export interface Ingredient {
   supplierName?: string;
   expirationDate?: string; // ISO Date required?
   status: AlertThresholdStatus;
+  description?: string;
+  isActive: boolean;
   updatedAt: string;
 }
 

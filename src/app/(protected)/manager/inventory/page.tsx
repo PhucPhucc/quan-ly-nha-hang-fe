@@ -26,14 +26,13 @@ export default function InventoryDashboardPage() {
           <p className="text-muted-foreground">{UI_TEXT.INVENTORY.WIP_DESC}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {/* Add more top level actions later if needed */}
-          <Button variant="outline" asChild>
+          <Button variant="outline" className="rounded-xl shadow-sm" asChild>
             <Link href="/manager/inventory/alerts">
-              <BellRing className="w-4 h-4 mr-2" />
+              <BellRing className="w-4 h-4 mr-2 text-destructive" />
               {UI_TEXT.INVENTORY.ALERTS_BTN}
             </Link>
           </Button>
-          <Button variant="outline" asChild>
+          <Button variant="outline" className="rounded-xl shadow-sm" asChild>
             <Link href="/manager/inventory/history">
               <History className="w-4 h-4 mr-2" />
               {UI_TEXT.INVENTORY.HISTORY_BTN}

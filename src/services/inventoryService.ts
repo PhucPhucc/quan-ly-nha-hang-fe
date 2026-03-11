@@ -18,6 +18,7 @@ const mockIngredients: Ingredient[] = Array.from({ length: 15 }).map((_, i) => (
   lowStockThreshold: 20,
   costPerUnit: Math.floor(Math.random() * 50) + 10,
   status: Math.random() > 0.8 ? AlertThresholdStatus.LOW_STOCK : AlertThresholdStatus.NORMAL,
+  isActive: true,
   updatedAt: new Date().toISOString(),
 }));
 

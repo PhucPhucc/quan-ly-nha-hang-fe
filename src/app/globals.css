@@ -276,7 +276,7 @@
   /* Màu kem đậm hơn */
   --table-reserved: oklch(0.75 0.15 85);
   /* Vàng sậm hơn */
-  --table-inprocess: oklch(0.6 0.18 145);
+  --table-serving: oklch(0.6 0.18 145);
   /* Xanh lá đậm hơn */
   --table-cleaning: oklch(0.55 0.15 40);
   /* Đỏ nâu/Cam thay vì đỏ rực để đỡ chói */

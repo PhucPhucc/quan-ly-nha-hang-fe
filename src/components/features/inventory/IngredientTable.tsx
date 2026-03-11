@@ -1,10 +1,7 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Edit, Package, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,37 +21,38 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventoryService";
-import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
+import { Ingredient } from "@/types/Inventory";
 
 import { AddIngredientPanel } from "./AddIngredientPanel";
+import { InventoryEmptyState } from "./components/InventoryEmptyState";
+import { InventoryPagination } from "./components/InventoryPagination";
+import { InventoryRow } from "./components/InventoryRow";
+import { InventoryTableHeader } from "./components/InventoryTableHeader";
+import { useInventoryTable } from "./useInventoryTable";
 
 export function IngredientTable() {
-  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const queryClient = useQueryClient();
-
-  // Use React Query for data fetching
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["ingredients", currentPage, pageSize],
-    queryFn: () => inventoryService.getIngredients(currentPage, pageSize),
-  });
+  const {
+    ingredients,
+    totalPages,
+    isLoading,
+    isError,
+    error,
+    currentPage,
+    setCurrentPage,
+    searchQuery,
+    setSearchQuery,
+    statusFilter,
+    setStatusFilter,
+    deleteMutation,
+  } = useInventoryTable(pageSize);
 
   const [editingItem, setEditingItem] = useState<Ingredient | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const [deletingItem, setDeletingItem] = useState<Ingredient | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => inventoryService.deleteIngredient(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ingredients"] });
-      setIsDeleteOpen(false);
-      setDeletingItem(null);
-    },
-  });
 
   const handleEdit = (item: Ingredient) => {
     setEditingItem(item);
@@ -67,167 +65,83 @@ export function IngredientTable() {
   };
 
   const handleEditSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ["ingredients"] });
+    // invalidate handled inside hook via mutations
   };
 
-  const ingredients = data?.data?.items || [];
-  const totalPages = data?.data?.totalPages || 1;
+  const renderLoading = () => (
+    <div className="space-y-4">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Skeleton key={i} className="h-12 w-full rounded-xl" />
+      ))}
+    </div>
+  );
 
-  const getStatusBadge = (status: AlertThresholdStatus) => {
-    switch (status) {
-      case AlertThresholdStatus.NORMAL:
-        return (
-          <Badge className="bg-success text-success-foreground">
-            {UI_TEXT.INVENTORY.STOCK.STATUS_NORMAL}
-          </Badge>
-        );
-      case AlertThresholdStatus.LOW_STOCK:
-        return (
-          <Badge className="bg-warning text-warning-foreground">
-            {UI_TEXT.INVENTORY.STOCK.STATUS_LOW}
-          </Badge>
-        );
-      case AlertThresholdStatus.OUT_OF_STOCK:
-        return (
-          <Badge className="bg-destructive text-destructive-foreground">
-            {UI_TEXT.INVENTORY.STOCK.STATUS_OUT}
-          </Badge>
-        );
-      default:
-        return null;
-    }
-  };
+  const renderError = () => (
+    <div className="p-8 text-center text-destructive rounded-xl border bg-destructive/5">
+      <p>
+        {UI_TEXT.INVENTORY.TABLE.ERROR_PREFIX} {(error as Error).message}
+      </p>
+    </div>
+  );
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full" />
-        ))}
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="p-8 text-center text-destructive">
-        <p>
-          {UI_TEXT.INVENTORY.TABLE.ERROR_PREFIX} {(error as Error).message}
-        </p>
-      </div>
-    );
-  }
-
-  if (ingredients.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-muted/20">
-        <Package className="h-12 w-12 text-muted-foreground/50 mb-4" />
-        <h3 className="text-lg font-medium">{UI_TEXT.INVENTORY.TABLE.EMPTY_TITLE}</h3>
-        <p className="text-muted-foreground mt-1">{UI_TEXT.INVENTORY.TABLE.EMPTY_DESC}</p>
-      </div>
-    );
-  }
+  if (isLoading) return renderLoading();
+  if (isError) return renderError();
 
   return (
-    <div className="rounded-md border bg-card text-card-foreground shadow-sm">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_NAME}</TableHead>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_SKU}</TableHead>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_CATEGORY}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_STOCK}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_PRICE}</TableHead>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {ingredients.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.name}</TableCell>
-              <TableCell className="text-muted-foreground">{item.sku}</TableCell>
-              <TableCell>{item.category}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex flex-col items-end">
-                  <span>
-                    {item.currentStock} {item.unit}
-                  </span>
-                  {item.currentStock <= item.lowStockThreshold && (
-                    <span className="text-xs text-warning border-t border-warning/20 mt-1 pt-1">
-                      {UI_TEXT.INVENTORY.TABLE.THRESHOLD_PREFIX} {item.lowStockThreshold}
-                    </span>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell className="text-right">
-                {UI_TEXT.INVENTORY.TABLE.CURRENCY}
-                {item.costPerUnit.toFixed(2)}
-              </TableCell>
-              <TableCell>{getStatusBadge(item.status)}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Sửa"
-                    title="Sửa"
-                    onClick={() => handleEdit(item)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive"
-                    aria-label="Xóa"
-                    title="Xóa"
-                    onClick={() => handleDeleteClick(item)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
+    <div className="space-y-4">
+      <InventoryTableHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+      />
+
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_NAME}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_SKU}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_CATEGORY}</TableHead>
+              <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_STOCK}</TableHead>
+              <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_PRICE}</TableHead>
+              <TableHead className="w-[140px]">{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
+              <TableHead className="w-[120px] text-center">
+                {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
+              </TableHead>
+              <TableHead className="w-[140px] text-right">
+                {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {ingredients.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="h-48 text-center">
+                  <InventoryEmptyState />
+                </TableCell>
+              </TableRow>
+            ) : (
+              ingredients.map((item) => (
+                <InventoryRow
+                  key={item.id}
+                  item={item}
+                  onEdit={handleEdit}
+                  onDelete={handleDeleteClick}
+                />
+              ))
+            )}
+          </TableBody>
+        </Table>
 
-      {/* Pagination Footer */}
-      {!isLoading && !isError && totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-slate-500 mr-2">
-              {UI_TEXT.INVENTORY.TABLE.PAGE}
-            </span>
-            <div className="flex items-center justify-center min-w-12 px-2 py-1 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-sm font-bold">{currentPage}</span>
-              <span className="text-muted-foreground mx-1">{UI_TEXT.INVENTORY.TABLE.SLASH}</span>
-              <span className="text-sm font-medium text-muted-foreground">{totalPages}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-              disabled={currentPage <= 1}
-              className="h-8 shadow-sm transition-all hover:shadow-md"
-            >
-              {UI_TEXT.COMMON.PREVIOUS}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-              disabled={currentPage >= totalPages}
-              className="h-8 shadow-sm transition-all hover:shadow-md"
-            >
-              {UI_TEXT.COMMON.NEXT}
-            </Button>
-          </div>
-        </div>
-      )}
+        <InventoryPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrev={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+          onNext={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+        />
+      </div>
 
-      {/* Edit Form Panel */}
       <AddIngredientPanel
         ingredient={editingItem || undefined}
         open={isEditOpen}
@@ -239,27 +153,30 @@ export function IngredientTable() {
         hideTrigger={true}
       />
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent>
+        <DialogContent className="rounded-xl">
           <DialogHeader>
             <DialogTitle>{UI_TEXT.INVENTORY.DELETE.TITLE}</DialogTitle>
             <DialogDescription asChild>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 pt-2">
                 <span>{UI_TEXT.INVENTORY.DELETE.DESC}</span>
                 {deletingItem && (
-                  <span className="font-medium text-foreground">
-                    {deletingItem.name} {UI_TEXT.INVENTORY.TABLE.PAREN_OPEN}
-                    {deletingItem.sku}
-                    {UI_TEXT.INVENTORY.TABLE.PAREN_CLOSE}
-                  </span>
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                    <span className="font-semibold text-foreground">{deletingItem.name}</span>
+                    <span className="text-muted-foreground text-xs ml-2">
+                      {UI_TEXT.INVENTORY.TABLE.PAREN_OPEN}
+                      {deletingItem.sku}
+                      {UI_TEXT.INVENTORY.TABLE.PAREN_CLOSE}
+                    </span>
+                  </div>
                 )}
               </div>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-0">
             <Button
               variant="outline"
+              className="rounded-lg"
               onClick={() => setIsDeleteOpen(false)}
               disabled={deleteMutation.isPending}
             >
@@ -267,7 +184,16 @@ export function IngredientTable() {
             </Button>
             <Button
               variant="destructive"
-              onClick={() => deletingItem && deleteMutation.mutate(deletingItem.id)}
+              className="rounded-lg"
+              onClick={() =>
+                deletingItem &&
+                deleteMutation.mutate(deletingItem.id, {
+                  onSuccess: () => {
+                    setIsDeleteOpen(false);
+                    setDeletingItem(null);
+                  },
+                })
+              }
               disabled={deleteMutation.isPending}
             >
               {deleteMutation.isPending
