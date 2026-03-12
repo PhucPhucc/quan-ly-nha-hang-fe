@@ -35,6 +35,12 @@ export function Navbar() {
           >
             {t.BLOG_TITLE}
           </Link>
+          <a
+            href="#reservation-form"
+            className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            {t.RESERVATION_BTN}
+          </a>
           {employee ? (
             <>
               <Link
