@@ -68,7 +68,6 @@ export function IngredientTable() {
     // invalidate handled inside hook via mutations
   };
 
-  const isDeactivating = deletingItem?.isActive;
   const dialogTitle = UI_TEXT.INVENTORY.DELETE.TITLE;
   const dialogDesc = UI_TEXT.INVENTORY.DELETE.DESC;
   const confirmLabel = UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;

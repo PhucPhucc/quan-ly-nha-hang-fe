@@ -1,4 +1,13 @@
-import { EllipsisVertical, History, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
+import {
+  Bell,
+  EllipsisVertical,
+  History,
+  Package,
+  RotateCcw,
+  Search,
+  Settings,
+  SlidersHorizontal,
+} from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -37,7 +46,7 @@ export function InventoryTableHeader({
   onReset,
 }: Props) {
   return (
-    <div className="w-full rounded-2xl border border-slate-100 bg-white shadow-sm shadow-slate-100/60 px-4 py-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto_auto] lg:items-center">
+    <div className="w-full rounded-2xl border border-slate-100 bg-white shadow-sm shadow-slate-100/60 px-4 py-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto] lg:items-center">
       <div className="flex-1 min-w-0">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -81,33 +90,45 @@ export function InventoryTableHeader({
       </div>
 
       <div className="flex items-center justify-end gap-2">
+        <AddIngredientTrigger />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               type="button"
-              variant="outline"
-              className="h-11 w-11 rounded-xl text-slate-500 border-slate-200 hover:bg-slate-50"
+              variant="ghost"
+              className="h-9 w-9 rounded-xl text-slate-500 hover:bg-slate-50"
               aria-label="Thao tác"
             >
               <EllipsisVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 rounded-xl">
-            <DropdownMenuItem asChild>
+          <DropdownMenuContent align="end" className="w-56 rounded-xl">
+            <DropdownMenuItem asChild className="cursor-pointer">
               <Link href="/manager/inventory/alerts" className="flex items-center gap-2">
-                <EllipsisVertical className="h-4 w-4 text-slate-400" />
-                <span>{UI_TEXT.INVENTORY.ALERTS_TITLE}</span>
+                <Bell className="h-4 w-4 text-orange-500" />
+                <span>{UI_TEXT.INVENTORY.ALERTS_BTN}</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="cursor-pointer">
               <Link href="/manager/inventory/history" className="flex items-center gap-2">
-                <History className="h-4 w-4" />
-                <span>{UI_TEXT.INVENTORY.HISTORY_TITLE}</span>
+                <History className="h-4 w-4 text-blue-500" />
+                <span>{UI_TEXT.INVENTORY.HISTORY_BTN}</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/manager/inventory/opening-stock" className="flex items-center gap-2">
+                <Package className="h-4 w-4 text-green-500" />
+                <span>{UI_TEXT.INVENTORY.OPENING_STOCK.TITLE}</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/manager/inventory/settings" className="flex items-center gap-2">
+                <Settings className="h-4 w-4 text-slate-500" />
+                <span>{UI_TEXT.INVENTORY.SETTINGS.TITLE}</span>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <AddIngredientTrigger />
       </div>
     </div>
   );

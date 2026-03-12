@@ -49,3 +49,21 @@ export interface InventoryStats {
   lowStockItems: number;
   totalValue: number;
 }
+
+export interface InventorySettings {
+  expiryWarningDays: number;
+  defaultLowStockThreshold: number;
+  autoDeductOnCompleted: boolean;
+  costMethod: string;
+  maxCostRecalcDays: number;
+}
+
+export interface OpeningStockItem {
+  ingredientId: string;
+  initialQuantity: number;
+  costPrice?: number;
+}
+
+export interface ImportOpeningStockRequest {
+  items: OpeningStockItem[];
+}

@@ -71,7 +71,7 @@ const EmployeeTable = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{UI_TEXT.EMPLOYEE.EMP_ID}</TableHead>
+            <TableHead className="text-center">{UI_TEXT.EMPLOYEE.EMP_ID}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.EMPLOYEE_TITLE}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.CONTACT}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.ADDRESS}</TableHead>
@@ -132,7 +132,7 @@ const EmployeeTable = () => {
                 key={employee.employeeId}
                 className="group border-slate-50 transition-all duration-200 hover:bg-slate-50/80"
               >
-                <TableCell className="pl-6 font-medium text-slate-500 text-xs">
+                <TableCell className="text-center font-medium text-slate-500 text-xs">
                   {employee.employeeCode}
                 </TableCell>
                 <TableCell>

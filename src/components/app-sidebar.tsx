@@ -1,9 +1,12 @@
 "use client";
 
 import {
+  Bell,
   ChartColumn,
+  History,
   LayoutDashboard,
   Package,
+  Settings,
   SquareMenu,
   Table,
   Users,
@@ -63,10 +66,22 @@ const data = {
         {
           title: UI_TEXT.INVENTORY.ALERTS_BTN,
           url: "/manager/inventory/alerts",
+          icon: Bell,
         },
         {
           title: UI_TEXT.INVENTORY.HISTORY_BTN,
           url: "/manager/inventory/history",
+          icon: History,
+        },
+        {
+          title: UI_TEXT.INVENTORY.SETTINGS.TITLE,
+          url: "/manager/inventory/settings",
+          icon: Settings,
+        },
+        {
+          title: UI_TEXT.INVENTORY.OPENING_STOCK.TITLE,
+          url: "/manager/inventory/opening-stock",
+          icon: Package,
         },
       ],
     },
