@@ -151,6 +151,7 @@ export const BUTTON = {
   DETAIL: "Chi tiết",
   HISTORY: "Lịch sử",
   CONFIRM_DELETE: "Đồng ý xóa",
+  PREFERENCE: "Tùy chọn",
 };
 
 export const API = {

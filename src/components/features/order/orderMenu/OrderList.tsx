@@ -33,7 +33,7 @@ const OrderList = ({
         >
           <div className="flex-1 mb-2 rounded-xl overflow-hidden bg-slate-50 relative group">
             <Image
-              src={"https://placehold.co/200x200?text=No+Image"}
+              src={"https://placehold.co/200x200/png?text=No+Image"}
               alt={item.name}
               fill
               className="object-cover group-hover:scale-110 transition-transform duration-500"

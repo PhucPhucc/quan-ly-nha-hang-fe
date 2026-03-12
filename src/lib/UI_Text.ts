@@ -1,3 +1,5 @@
+import { PREFERENCE } from "@/constants/ui_text/preference";
+
 import { AUDIT_LOG } from "../constants/ui_text/audit";
 import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_text/auth";
 import { API, BUTTON, COMMON, FORM, ROLE, SIDE_BAR } from "../constants/ui_text/common";
@@ -32,4 +34,5 @@ export const UI_TEXT = {
   AUDIT_LOG,
   SALES_ANALYTICS,
   INVENTORY,
+  PREFERENCE,
 };
