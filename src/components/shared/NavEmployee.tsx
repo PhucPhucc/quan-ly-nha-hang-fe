@@ -10,7 +10,6 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { useTheme } from "@/store/ThemeContext";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ThemeMode } from "@/types/enums";
-import { ThemeMode } from "@/types/enums";
 
 import { Button } from "../ui/button";
 import {
