@@ -132,10 +132,7 @@ const NavEmployee = () => {
           </FeatureItem>
 
           <FeatureItem title={UI_TEXT.PREFERENCE.THEME} des={UI_TEXT.PREFERENCE.THEME_DESC}>
-            <Select
-              defaultValue={ThemeMode.LIGHT}
-              onValueChange={(e) => selectTheme(e as ThemeMode)}
-            >
+            <Select defaultValue={theme} onValueChange={(e) => selectTheme(e as ThemeMode)}>
               <SelectTrigger className="w-full max-w-32">
                 <SelectValue />
               </SelectTrigger>
