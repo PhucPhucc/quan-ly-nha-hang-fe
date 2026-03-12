@@ -26,7 +26,9 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
       </TableCell>
       <TableCell className="text-right">
         <span className="text-muted-foreground mr-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
-        <span className="font-medium">{(item.costPrice ?? 0).toFixed(2)}</span>
+        <span className="font-medium" aria-label="Average cost (read only)">
+          {(item.costPrice ?? 0).toFixed(2)}
+        </span>
       </TableCell>
       <TableCell className="w-[140px]">
         <StatusBadge status={item.status as AlertThresholdStatus} />

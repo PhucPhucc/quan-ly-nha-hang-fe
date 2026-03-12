@@ -57,17 +57,28 @@ export function IngredientFormFields({
         </div>
         <div className="grid gap-2">
           <label className="text-sm font-semibold text-foreground">
-            {isEditing ? "Tồn hiện tại" : UI_TEXT.INVENTORY.FORM.INITIAL_STOCK}
+            {isEditing
+              ? UI_TEXT.INVENTORY.FORM.CURRENT_STOCK
+              : UI_TEXT.INVENTORY.FORM.INITIAL_STOCK}
+            <span className="ml-1 text-xs font-normal text-muted-foreground">
+              {UI_TEXT.INVENTORY.FORM.AUTO_GEN}
+            </span>
           </label>
           <Input
             type="number"
             step="0.01"
+            readOnly
+            aria-readonly
+            tabIndex={-1}
             {...register("currentStock", { valueAsNumber: true })}
-            className={cn(errors.currentStock && "border-destructive")}
+            className={cn(
+              "bg-muted text-foreground/80",
+              errors.currentStock && "border-destructive"
+            )}
           />
-          {errors.currentStock?.message && (
-            <span className="text-xs text-destructive">{errors.currentStock.message}</span>
-          )}
+          <span className="text-xs text-muted-foreground">
+            {UI_TEXT.INVENTORY.FORM.STOCK_HELP_TEXT}
+          </span>
         </div>
       </div>
 
@@ -97,16 +108,22 @@ export function IngredientFormFields({
         <div className="grid gap-2">
           <label className="text-sm font-semibold text-foreground">
             {UI_TEXT.INVENTORY.FORM.COST}
+            <span className="ml-1 text-xs font-normal text-muted-foreground">
+              {UI_TEXT.INVENTORY.FORM.AUTO_GEN}
+            </span>
           </label>
           <Input
             type="number"
             step="0.01"
+            readOnly
+            aria-readonly
+            tabIndex={-1}
             {...register("costPrice", { valueAsNumber: true })}
-            className={cn(errors.costPrice && "border-destructive")}
+            className={cn("bg-muted text-foreground/80", errors.costPrice && "border-destructive")}
           />
-          {errors.costPrice?.message && (
-            <span className="text-xs text-destructive">{errors.costPrice.message}</span>
-          )}
+          <span className="text-xs text-muted-foreground">
+            {UI_TEXT.INVENTORY.FORM.COST_HELP_TEXT}
+          </span>
         </div>
       </div>
 

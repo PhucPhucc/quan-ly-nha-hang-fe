@@ -36,9 +36,9 @@ describe("AddIngredientPanel", () => {
         name: "Apple",
         sku: "APPLE",
         unit: InventoryUnit.KG,
-        currentStock: 5,
+        currentStock: 0,
         lowStockThreshold: 10,
-        costPerUnit: 5,
+        costPerUnit: 0,
         status: AlertThresholdStatus.NORMAL,
         updatedAt: "",
       },
@@ -58,13 +58,11 @@ describe("AddIngredientPanel", () => {
     await user.type(nameInput, "Apple");
     await user.type(screen.getByLabelText(/SKU \/ Barcode/i), "APPLE");
     const qtyInput = screen.getByLabelText(/Current Stock/i);
-    await user.clear(qtyInput);
-    await user.type(qtyInput, "5");
+    expect(qtyInput).toHaveAttribute("readonly");
     await user.selectOptions(screen.getByLabelText(/Base Unit/i), "kg");
 
     const costInput = screen.getByLabelText(/Average Cost Per Unit/i);
-    await user.clear(costInput);
-    await user.type(costInput, "2.5");
+    expect(costInput).toHaveAttribute("readonly");
 
     // Submit
     await user.click(screen.getByRole("button", { name: /Lưu nguyên liệu/i }));
@@ -74,10 +72,11 @@ describe("AddIngredientPanel", () => {
       expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           name: "Apple",
-          sku: "APPLE",
-          currentStock: 5,
+          code: "APPLE",
           unit: "kg",
-          costPerUnit: 2.5,
+          lowStockThreshold: 10,
+          description: "",
+          isActive: true,
         })
       );
     });

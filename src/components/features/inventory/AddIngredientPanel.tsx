@@ -69,6 +69,7 @@ export function AddIngredientPanel({
           unit: ingredient.unit,
           lowStockThreshold: ingredient.lowStockThreshold,
           costPrice: ingredient.costPrice,
+          currentStock: ingredient.currentStock,
           description: ingredient.description || "",
           isActive: ingredient.isActive,
         }
@@ -135,12 +136,13 @@ export function AddIngredientPanel({
     setError(null);
     try {
       const payload: Partial<Ingredient> = {
-        ...data,
-        ingredientId: ingredient?.ingredientId,
-        currentStock: isEditing ? ingredient.currentStock : 0,
-        costPrice: data.costPrice,
-        unit: data.unit,
+        name: data.name,
         code: data.code,
+        unit: data.unit,
+        lowStockThreshold: data.lowStockThreshold,
+        description: data.description,
+        isActive: data.isActive,
+        ingredientId: ingredient?.ingredientId,
         status: isEditing ? ingredient.status : AlertThresholdStatus.NORMAL,
       };
 
