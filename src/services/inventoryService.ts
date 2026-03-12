@@ -67,8 +67,7 @@ export const inventoryService = {
     });
   },
 
-  // Xóa nguyên liệu
-
+  // Ngừng sử dụng nguyên liệu
   deleteIngredient: async (id: string): Promise<ApiResponse<boolean>> => {
     return apiFetch<boolean>(`/ingredients/${id}/deactivate`, {
       method: "PATCH",

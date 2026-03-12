@@ -60,7 +60,7 @@ export function useInventoryTable(pageSize = 10) {
   }, [items]);
 
   const filteredIngredients = useMemo(() => {
-    return normalizedItems.filter((item) => {
+    const filtered = normalizedItems.filter((item) => {
       const matchesSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.code.toLowerCase().includes(searchQuery.toLowerCase());
@@ -72,6 +72,12 @@ export function useInventoryTable(pageSize = 10) {
         (statusFilter === "normal" && item.status === AlertThresholdStatus.NORMAL);
 
       return matchesSearch && matchesStatus;
+    });
+
+    return [...filtered].sort((a, b) => {
+      const activeDiff = Number(b.isActive) - Number(a.isActive); // active first
+      if (activeDiff !== 0) return activeDiff;
+      return a.name.localeCompare(b.name, "vi", { sensitivity: "base" });
     });
   }, [normalizedItems, searchQuery, statusFilter]);
 

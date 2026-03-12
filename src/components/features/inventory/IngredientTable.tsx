@@ -68,6 +68,11 @@ export function IngredientTable() {
     // invalidate handled inside hook via mutations
   };
 
+  const isDeactivating = deletingItem?.isActive;
+  const dialogTitle = UI_TEXT.INVENTORY.DELETE.TITLE;
+  const dialogDesc = UI_TEXT.INVENTORY.DELETE.DESC;
+  const confirmLabel = UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;
+
   const renderLoading = () => (
     <div className="space-y-4">
       {Array.from({ length: 5 }).map((_, i) => (
@@ -171,10 +176,10 @@ export function IngredientTable() {
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="rounded-xl">
           <DialogHeader>
-            <DialogTitle>{UI_TEXT.INVENTORY.DELETE.TITLE}</DialogTitle>
+            <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription asChild>
               <div className="flex flex-col gap-2 pt-2">
-                <span>{UI_TEXT.INVENTORY.DELETE.DESC}</span>
+                <span>{dialogDesc}</span>
                 {deletingItem && (
                   <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
                     <span className="font-semibold text-foreground">{deletingItem.name}</span>
@@ -198,7 +203,7 @@ export function IngredientTable() {
               {UI_TEXT.INVENTORY.DELETE.BTN_CANCEL}
             </Button>
             <Button
-              variant="destructive"
+              variant={"destructive"}
               className="rounded-lg"
               onClick={() =>
                 deletingItem &&
@@ -211,9 +216,7 @@ export function IngredientTable() {
               }
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending
-                ? UI_TEXT.INVENTORY.DELETE.BTN_DELETING
-                : UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM}
+              {deleteMutation.isPending ? UI_TEXT.INVENTORY.DELETE.BTN_DELETING : confirmLabel}
             </Button>
           </DialogFooter>
         </DialogContent>
