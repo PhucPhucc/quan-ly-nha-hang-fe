@@ -1,3 +1,8 @@
+export enum ThemeMode {
+  LIGHT = "light",
+  DARK = "dark",
+}
+
 // Các Enum liên quan đến Order
 export enum OrderType {
   DineIn = "DineIn",

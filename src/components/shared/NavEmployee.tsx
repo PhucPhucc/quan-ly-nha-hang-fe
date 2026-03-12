@@ -7,7 +7,10 @@ import { useState } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useTheme } from "@/store/ThemeContext";
 import { useAuthStore } from "@/store/useAuthStore";
+import { ThemeMode } from "@/types/enums";
+import { ThemeMode } from "@/types/enums";
 
 import { Button } from "../ui/button";
 import {
@@ -30,10 +33,28 @@ import { Separator } from "../ui/separator";
 
 const NavEmployee = () => {
   const [position, setPosition] = useState("bottom-left");
+  const { theme, selectTheme } = useTheme();
   const employee = useAuthStore((state) => state.employee);
+  console.log(position);
+
+  let cssPosition = "";
+  switch (position) {
+    case "bottom-right":
+      cssPosition = "bottom-6 right-6";
+      break;
+    case "top-right":
+      cssPosition = "top-6 right-6";
+      break;
+    case "top-left":
+      cssPosition = "top-6 left-6";
+      break;
+    default:
+      cssPosition = "bottom-6 left-6";
+      break;
+  }
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 ">
+    <div className={`fixed ${cssPosition} z-50 `}>
       <Popover>
         <PopoverTrigger asChild>
           <Button size="icon" className="rounded-full p-5">
@@ -92,13 +113,13 @@ const NavEmployee = () => {
           </FeatureItem>
 
           <FeatureItem title={UI_TEXT.PREFERENCE.POSITION} des={UI_TEXT.PREFERENCE.POSITION_DESC}>
-            <Select defaultValue="bottom-left">
+            <Select defaultValue="bottom-left" onValueChange={(e) => setPosition(e)}>
               <SelectTrigger className="w-full max-w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="text-xs">
                 <SelectGroup>
-                  <SelectItem value="bottom-left">
+                  <SelectItem value="bottom-left" onClick={() => console.log(123)}>
                     {UI_TEXT.PREFERENCE.POSITION_BOTTOM_LEFT}
                   </SelectItem>
                   <SelectItem value="bottom-right">
@@ -112,14 +133,17 @@ const NavEmployee = () => {
           </FeatureItem>
 
           <FeatureItem title={UI_TEXT.PREFERENCE.THEME} des={UI_TEXT.PREFERENCE.THEME_DESC}>
-            <Select defaultValue="light">
+            <Select
+              defaultValue={ThemeMode.LIGHT}
+              onValueChange={(e) => selectTheme(e as ThemeMode)}
+            >
               <SelectTrigger className="w-full max-w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="text-xs">
                 <SelectGroup>
-                  <SelectItem value="light">{UI_TEXT.PREFERENCE.THEME_LIGHT}</SelectItem>
-                  <SelectItem value="dark">{UI_TEXT.PREFERENCE.THEME_DARK}</SelectItem>
+                  <SelectItem value={ThemeMode.LIGHT}>{UI_TEXT.PREFERENCE.THEME_LIGHT}</SelectItem>
+                  <SelectItem value={ThemeMode.DARK}>{UI_TEXT.PREFERENCE.THEME_DARK}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
