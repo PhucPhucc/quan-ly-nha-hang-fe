@@ -55,22 +55,20 @@ export function IngredientFormFields({
             <span className="text-xs text-destructive">{errors.code.message}</span>
           )}
         </div>
-        {!isEditing && (
-          <div className="grid gap-2">
-            <label className="text-sm font-semibold text-foreground">
-              {UI_TEXT.INVENTORY.FORM.INITIAL_STOCK}
-            </label>
-            <Input
-              type="number"
-              step="0.01"
-              {...register("currentStock", { valueAsNumber: true })}
-              className={cn(errors.currentStock && "border-destructive")}
-            />
-            {errors.currentStock?.message && (
-              <span className="text-xs text-destructive">{errors.currentStock.message}</span>
-            )}
-          </div>
-        )}
+        <div className="grid gap-2">
+          <label className="text-sm font-semibold text-foreground">
+            {isEditing ? "Tồn hiện tại" : UI_TEXT.INVENTORY.FORM.INITIAL_STOCK}
+          </label>
+          <Input
+            type="number"
+            step="0.01"
+            {...register("currentStock", { valueAsNumber: true })}
+            className={cn(errors.currentStock && "border-destructive")}
+          />
+          {errors.currentStock?.message && (
+            <span className="text-xs text-destructive">{errors.currentStock.message}</span>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

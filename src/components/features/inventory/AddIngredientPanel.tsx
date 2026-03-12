@@ -138,6 +138,9 @@ export function AddIngredientPanel({
         ...data,
         ingredientId: ingredient?.ingredientId,
         currentStock: isEditing ? ingredient.currentStock : 0,
+        costPrice: data.costPrice,
+        unit: data.unit,
+        code: data.code,
         status: isEditing ? ingredient.status : AlertThresholdStatus.NORMAL,
       };
 
