@@ -18,7 +18,6 @@ export interface Ingredient {
   ingredientId: string;
   name: string;
   code: string;
-  category?: string;
   unit: InventoryUnit;
   currentStock: number;
   lowStockThreshold: number;

@@ -34,11 +34,11 @@ export const INVENTORY = {
   FORM: {
     NAME: "Tên nguyên liệu",
     SKU: "Mã SKU / Barcode",
-    CATEGORY: "Danh mục",
     UNIT: "Đơn vị tính",
     SELECT_UNIT: "Chọn đơn vị",
     ALERT_THRESHOLD: "Ngưỡng cảnh báo hết hàng",
     COST: "Giá trung bình",
+    INITIAL_STOCK: "Số lượng ban đầu",
     SUPPLIER: "Nhà cung cấp chính",
     DESCRIPTION: "Mô tả / Ghi chú",
     IS_ACTIVE: "Trạng thái hoạt động",

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
 import { inventoryService } from "@/services/inventoryService";
-import { AlertThresholdStatus } from "@/types/Inventory";
+import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
 
 export type StatusFilter = "all" | "normal" | "low" | "out";
 
@@ -15,6 +15,7 @@ export function useInventoryTable(pageSize = 10) {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["ingredients", currentPage, pageSize],
     queryFn: () => inventoryService.getIngredients(currentPage, pageSize),
+    staleTime: 0,
   });
 
   const deleteMutation = useMutation({
@@ -26,11 +27,34 @@ export function useInventoryTable(pageSize = 10) {
 
   const { items = [], totalPages = 1 } = data?.data || {};
 
+  const normalizedItems = useMemo<Ingredient[]>(() => {
+    return items.map((item: Ingredient) => {
+      const derivedStatus = (() => {
+        if (item.status) return item.status;
+        const text = item.stockStatus?.toLowerCase() || "";
+        if (text.includes("hết hàng") || item.currentStock === 0) {
+          return AlertThresholdStatus.OUT_OF_STOCK;
+        }
+        if (text.includes("sắp hết") || item.currentStock <= item.lowStockThreshold) {
+          return AlertThresholdStatus.LOW_STOCK;
+        }
+        return AlertThresholdStatus.NORMAL;
+      })();
+
+      return {
+        ...item,
+        status: derivedStatus,
+        sku: (item as unknown as { sku?: string }).sku ?? item.code, // fallback search field
+      };
+    });
+  }, [items]);
+
   const filteredIngredients = useMemo(() => {
-    return items.filter((item) => {
+    return normalizedItems.filter((item) => {
       const matchesSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.sku.toLowerCase().includes(searchQuery.toLowerCase());
+        item.sku?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.code.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" ||
@@ -40,7 +64,7 @@ export function useInventoryTable(pageSize = 10) {
 
       return matchesSearch && matchesStatus;
     });
-  }, [items, searchQuery, statusFilter]);
+  }, [normalizedItems, searchQuery, statusFilter]);
 
   return {
     ingredients: filteredIngredients,

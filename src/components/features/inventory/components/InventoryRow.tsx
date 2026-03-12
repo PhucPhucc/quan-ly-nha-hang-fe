@@ -19,7 +19,6 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
     <TableRow className="group transition-colors">
       <TableCell className="font-medium">{item.name}</TableCell>
       <TableCell className="text-muted-foreground">{item.code}</TableCell>
-      <TableCell>{item.category ?? UI_TEXT.COMMON.EMPTY}</TableCell>
       <TableCell className="text-right">
         <span className="font-semibold">
           {item.currentStock} {item.unit}

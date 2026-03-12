@@ -13,9 +13,17 @@ type Props = {
   register: UseFormRegister<IngredientFormValues>;
   errors: FieldErrors<IngredientFormValues>;
   control: Control<IngredientFormValues>;
+  isEditing?: boolean;
+  setHasCustomCode?: (custom: boolean) => void;
 };
 
-export function IngredientFormFields({ register, errors, control }: Props) {
+export function IngredientFormFields({
+  register,
+  errors,
+  control,
+  isEditing,
+  setHasCustomCode,
+}: Props) {
   return (
     <div className="space-y-4">
       <div className="grid gap-2">
@@ -40,25 +48,29 @@ export function IngredientFormFields({ register, errors, control }: Props) {
           <Input
             {...register("code")}
             placeholder={UI_TEXT.INVENTORY.FORM.PLACEHOLDER_SKU}
+            onChange={() => setHasCustomCode?.(true)}
             className={cn(errors.code && "border-destructive")}
           />
           {errors.code?.message && (
             <span className="text-xs text-destructive">{errors.code.message}</span>
           )}
         </div>
-        <div className="grid gap-2">
-          <label className="text-sm font-semibold text-foreground">
-            {UI_TEXT.INVENTORY.FORM.CATEGORY}
-          </label>
-          <Input
-            {...register("category")}
-            placeholder={UI_TEXT.INVENTORY.FORM.PLACEHOLDER_CATEGORY}
-            className={cn(errors.category && "border-destructive")}
-          />
-          {errors.category?.message && (
-            <span className="text-xs text-destructive">{errors.category.message}</span>
-          )}
-        </div>
+        {!isEditing && (
+          <div className="grid gap-2">
+            <label className="text-sm font-semibold text-foreground">
+              {UI_TEXT.INVENTORY.FORM.INITIAL_STOCK}
+            </label>
+            <Input
+              type="number"
+              step="0.01"
+              {...register("currentStock", { valueAsNumber: true })}
+              className={cn(errors.currentStock && "border-destructive")}
+            />
+            {errors.currentStock?.message && (
+              <span className="text-xs text-destructive">{errors.currentStock.message}</span>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">

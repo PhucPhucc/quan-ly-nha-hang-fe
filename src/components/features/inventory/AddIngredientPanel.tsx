@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, PackagePlus } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -44,15 +45,19 @@ export function AddIngredientPanel({
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = setControlledOpen || setInternalOpen;
   const isEditing = !!ingredient;
+  const [hasCustomCode, setHasCustomCode] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
     reset,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<IngredientFormValues>({
     resolver: zodResolver(ingredientSchema),
@@ -68,6 +73,9 @@ export function AddIngredientPanel({
           isActive: ingredient.isActive,
         }
       : {
+          name: "",
+          code: "",
+          currentStock: 0,
           unit: InventoryUnit.KG,
           lowStockThreshold: 10,
           costPrice: 0,
@@ -83,8 +91,8 @@ export function AddIngredientPanel({
         reset({
           name: ingredient.name,
           code: ingredient.code,
-          category: ingredient.category,
           unit: ingredient.unit,
+          currentStock: ingredient.currentStock,
           lowStockThreshold: ingredient.lowStockThreshold,
           costPrice: ingredient.costPrice,
           description: ingredient.description || "",
@@ -94,7 +102,7 @@ export function AddIngredientPanel({
         reset({
           name: "",
           code: "",
-          category: "",
+          currentStock: 0,
           unit: InventoryUnit.KG,
           lowStockThreshold: 10,
           costPrice: 0,
@@ -103,8 +111,24 @@ export function AddIngredientPanel({
         });
       }
       setError(null);
+      setHasCustomCode(false);
     }
   }, [open, ingredient, reset]);
+
+  const watchedName = watch("name");
+
+  React.useEffect(() => {
+    if (isEditing || hasCustomCode) return;
+
+    const normalizedName = (watchedName || "").trim();
+    if (!normalizedName) {
+      setValue("code", "", { shouldValidate: true });
+      return;
+    }
+
+    const generatedCode = normalizedName.replace(/\s+/g, "").toUpperCase();
+    setValue("code", generatedCode, { shouldValidate: true });
+  }, [watchedName, isEditing, hasCustomCode, setValue]);
 
   const onSubmit = async (data: IngredientFormValues) => {
     setIsSubmitting(true);
@@ -112,6 +136,7 @@ export function AddIngredientPanel({
     try {
       const payload: Partial<Ingredient> = {
         ...data,
+        ingredientId: ingredient?.ingredientId,
         currentStock: isEditing ? ingredient.currentStock : 0,
         status: isEditing ? ingredient.status : AlertThresholdStatus.NORMAL,
       };
@@ -124,6 +149,7 @@ export function AddIngredientPanel({
       }
 
       if (res.isSuccess) {
+        queryClient.invalidateQueries({ queryKey: ["ingredients"] });
         setOpen(false);
         reset();
         if (onSuccess) onSuccess();
@@ -172,7 +198,13 @@ export function AddIngredientPanel({
               </div>
             )}
 
-            <IngredientFormFields register={register} errors={errors} control={control} />
+            <IngredientFormFields
+              register={register}
+              errors={errors}
+              control={control}
+              isEditing={isEditing}
+              setHasCustomCode={setHasCustomCode}
+            />
           </form>
         </div>
 

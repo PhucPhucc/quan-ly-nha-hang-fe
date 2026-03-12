@@ -34,10 +34,9 @@ describe("AddIngredientPanel", () => {
       data: {
         id: "new-1",
         name: "Apple",
-        sku: "123",
-        category: "Fruit",
+        sku: "APPLE",
         unit: InventoryUnit.KG,
-        currentStock: 0,
+        currentStock: 5,
         lowStockThreshold: 10,
         costPerUnit: 5,
         status: AlertThresholdStatus.NORMAL,
@@ -57,8 +56,10 @@ describe("AddIngredientPanel", () => {
 
     // Fill form
     await user.type(nameInput, "Apple");
-    await user.type(screen.getByLabelText(/SKU \/ Barcode/i), "SKU-APPLE");
-    await user.type(screen.getByLabelText(/Category/i), "Fruit");
+    await user.type(screen.getByLabelText(/SKU \/ Barcode/i), "APPLE");
+    const qtyInput = screen.getByLabelText(/Current Stock/i);
+    await user.clear(qtyInput);
+    await user.type(qtyInput, "5");
     await user.selectOptions(screen.getByLabelText(/Base Unit/i), "kg");
 
     const costInput = screen.getByLabelText(/Average Cost Per Unit/i);
@@ -73,8 +74,8 @@ describe("AddIngredientPanel", () => {
       expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           name: "Apple",
-          sku: "SKU-APPLE",
-          category: "Fruit",
+          sku: "APPLE",
+          currentStock: 5,
           unit: "kg",
           costPerUnit: 2.5,
         })

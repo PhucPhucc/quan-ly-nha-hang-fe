@@ -102,7 +102,6 @@ export function IngredientTable() {
             <TableRow className="hover:bg-transparent">
               <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_NAME}</TableHead>
               <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_SKU}</TableHead>
-              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_CATEGORY}</TableHead>
               <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_STOCK}</TableHead>
               <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_PRICE}</TableHead>
               <TableHead className="w-[140px]">{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
