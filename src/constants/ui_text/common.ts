@@ -92,6 +92,7 @@ export const COMMON = {
   PROCESSING: "Đang xử lý...",
   SOMETHING_WENT_WRONG: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
   TOGGLE: "Mở rộng",
+  SELECT_DATE_RANGE: "Chọn khoảng thời gian",
 };
 
 export const SIDE_BAR = {
@@ -150,6 +151,7 @@ export const BUTTON = {
   DETAIL: "Chi tiết",
   HISTORY: "Lịch sử",
   CONFIRM_DELETE: "Đồng ý xóa",
+  PREFERENCE: "Tùy chọn",
 };
 
 export const API = {

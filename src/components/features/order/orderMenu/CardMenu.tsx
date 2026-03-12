@@ -1,32 +1,43 @@
 "use client";
 
 import { UtensilsCrossed } from "lucide-react";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { categoryService } from "@/services/categoryService";
 import { useMenuStore } from "@/store/useMenuStore";
-import { MenuItem } from "@/types/Menu";
+import { Category, MenuItem } from "@/types/Menu";
 
 import { MenuOptionSelectionDialog } from "./MenuOptionSelectionDialog";
 import OrderList from "./OrderList";
 
 const CardMenu = () => {
-  const categories = useMenuStore((state) => state.categories);
   const menuItems = useMenuStore((state) => state.menuItems);
-  const loading = useMenuStore((state) => state.loading);
-  const activeTab = useMenuStore((state) => state.activeTab);
-  const isOptionDialogOpen = useMenuStore((state) => state.isOptionDialogOpen);
-  const selectedItem = useMenuStore((state) => state.selectedItem);
-  const setActiveTab = useMenuStore((state) => state.setActiveTab);
-  const setIsOptionDialogOpen = useMenuStore((state) => state.closeOptionDialog);
-  const setSelectedItem = useMenuStore((state) => state.openOptionDialog);
-  const fetchData = useMenuStore((state) => state.fetchData);
+  const isLoading = useMenuStore((state) => state.isLoading);
+  const fetchMenuItems = useMenuStore((state) => state.fetchMenuItems);
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeTab, setActiveTab] = useState("all");
+  const [isOptionDialogOpen, setIsOptionDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchMenuItems();
+    const fetchCats = async () => {
+      try {
+        const response = await categoryService.getAll();
+        if (response.isSuccess && response.data) {
+          setCategories(response.data.items.filter((c) => c.isActive));
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+    fetchCats();
+  }, [fetchMenuItems]);
 
   const filteredItems = useMemo(() => {
     if (activeTab === "all") return menuItems;
@@ -35,9 +46,10 @@ const CardMenu = () => {
 
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);
+    setIsOptionDialogOpen(true);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner label={UI_TEXT.ORDER.FETCH_MENU} />;
   }
 

@@ -2,8 +2,22 @@
 const nextConfig = {
   output: "standalone",
   images: {
-    domains: ["images.unsplash.com", "placehold.co"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
   },
+
   typescript: {
     ignoreBuildErrors: true,
   },

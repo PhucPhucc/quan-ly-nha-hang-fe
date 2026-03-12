@@ -33,10 +33,5 @@
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
-  "exclude": [
-    "node_modules",
-    "src/app/(protected)/manager/menu",
-    "src/components/features/menu",
-    "src/data/mockMenu.ts"
-  ]
+  "exclude": ["node_modules"]
 }

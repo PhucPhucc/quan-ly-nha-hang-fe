@@ -1,0 +1,144 @@
+import { toast } from "sonner";
+import { shallow } from "zustand/shallow";
+import { createWithEqualityFn } from "zustand/traditional";
+
+import { tableService } from "@/services/tableService";
+import { Area, AreaStatus, Table, TableStatus } from "@/types/Table-Layout";
+
+interface TableState {
+  // data
+  areas: Area[];
+  tables: Table[];
+  selectedAreaId: string;
+
+  // ui state
+  isLoading: boolean;
+  searchQuery: string;
+
+  // actions
+  setAreas: (areas: Area[]) => void;
+  setTables: (tables: Table[]) => void;
+  setSelectedAreaId: (id: string) => void;
+  setSearchQuery: (searchQuery: string) => void;
+
+  // thunks
+  fetchAreas: () => Promise<void>;
+  fetchTablesByArea: (areaId: string) => Promise<void>;
+  createTable: (capacity: number, areaId: string) => Promise<void>;
+  updateTableInfo: (
+    tableId: string,
+    payload: { tableNumber: number; capacity: number; areaId: string }
+  ) => Promise<void>;
+  updateTableCurrentStatus: (tableId: string, isActive: boolean) => Promise<void>;
+}
+
+export const useTableStore = createWithEqualityFn<TableState>(
+  (set, get) => ({
+    // ---------- state ----------
+    areas: [],
+    tables: [],
+    selectedAreaId: "",
+    isLoading: false,
+    searchQuery: "",
+
+    // ---------- simple setters ----------
+    setAreas: (areas) => set({ areas }),
+    setTables: (tables) => set({ tables }),
+    setSelectedAreaId: (id) => set({ selectedAreaId: id }),
+    setSearchQuery: (searchQuery) => set({ searchQuery }),
+
+    // ---------- thunks ----------
+    fetchAreas: async () => {
+      set({ isLoading: true });
+      try {
+        const response = await tableService.getAreas();
+        if (response.isSuccess && response.data) {
+          set({ areas: response.data });
+
+          const activeAreas = response.data.filter((a) => a.status === AreaStatus.Active);
+          const { selectedAreaId } = get();
+          if (activeAreas.length > 0 && !selectedAreaId) {
+            set({ selectedAreaId: activeAreas[0].areaId });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch areas:", error);
+        toast.error("Không thể tải danh sách khu vực");
+      } finally {
+        set({ isLoading: false });
+      }
+    },
+
+    fetchTablesByArea: async (areaId: string) => {
+      try {
+        const response = await tableService.getTablesByArea(areaId);
+        if (response.isSuccess && response.data) {
+          set({ tables: response.data });
+        }
+      } catch (error) {
+        console.error("Failed to fetch tables:", error);
+        toast.error("Không thể tải danh sách bàn");
+      }
+    },
+
+    createTable: async (capacity, areaId) => {
+      try {
+        const response = await tableService.createTable({
+          capacity,
+          areaId,
+        });
+
+        if (response.isSuccess) {
+          toast.success("Thêm bàn thành công");
+          // Refresh tables
+          await get().fetchTablesByArea(areaId);
+        }
+      } catch (error) {
+        console.error("Failed to create table:", error);
+        toast.error("Không thể thêm bàn");
+      }
+    },
+
+    updateTableInfo: async (tableId, payload) => {
+      try {
+        const response = await tableService.updateTable(tableId, payload);
+        if (response.isSuccess && response.data) {
+          toast.success("Cập nhật thành công");
+          // Instead of refetching all tables, let's update the specific one in state
+          const updatedTable = response.data;
+          set((state) => ({
+            tables: state.tables.map((t) =>
+              t.tableId === updatedTable.tableId ? updatedTable : t
+            ),
+          }));
+        }
+      } catch (err) {
+        toast.error((err as Error).message || "Không thể cập nhật");
+      }
+    },
+
+    updateTableCurrentStatus: async (tableId, isActive) => {
+      try {
+        const response = await tableService.updateTableStatus(tableId, isActive);
+        if (response.isSuccess) {
+          toast.success(isActive ? "Đã kích hoạt bàn" : "Đã ngưng hoạt động bàn");
+          // Update the table status locally
+          set((state) => ({
+            tables: state.tables.map((t) => {
+              if (t.tableId === tableId) {
+                return {
+                  ...t,
+                  status: isActive ? TableStatus.Available : TableStatus.OutOfService,
+                };
+              }
+              return t;
+            }),
+          }));
+        }
+      } catch {
+        toast.error("Thao tác thất bại");
+      }
+    },
+  }),
+  shallow
+);

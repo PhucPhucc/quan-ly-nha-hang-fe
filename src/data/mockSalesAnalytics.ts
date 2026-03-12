@@ -1,0 +1,57 @@
+import { SalesAnalyticsSummary } from "@/types/salesAnalytics.types";
+
+export const MOCK_SALES_ANALYTICS: SalesAnalyticsSummary = {
+  stats: {
+    totalRevenue: 125400000,
+    revenueGrowth: 12.5,
+    totalOrders: 1450,
+    avgOrderValue: 86500,
+  },
+  revenueChart: [
+    { date: "2024-03-01", revenue: 4200000 },
+    { date: "2024-03-02", revenue: 3800000 },
+    { date: "2024-03-03", revenue: 5100000 },
+    { date: "2024-03-04", revenue: 4500000 },
+    { date: "2024-03-05", revenue: 4800000 },
+    { date: "2024-03-06", revenue: 6200000 },
+    { date: "2024-03-07", revenue: 5800000 },
+  ],
+  bestSellers: [
+    {
+      rank: 1,
+      id: "1",
+      name: "Phở Bò Kobe",
+      category: "Món chính",
+      quantitySold: 450,
+      unitPrice: 150000,
+      revenue: 67500000,
+      percentageOfTotal: 25,
+    },
+    {
+      rank: 2,
+      id: "2",
+      name: "Gỏi Cuốn Tôm",
+      category: "Khai vị",
+      quantitySold: 320,
+      unitPrice: 45000,
+      revenue: 14400000,
+      percentageOfTotal: 15,
+    },
+    {
+      rank: 3,
+      id: "3",
+      name: "Cà Phê Muối",
+      category: "Đồ uống",
+      quantitySold: 280,
+      unitPrice: 35000,
+      revenue: 9800000,
+      percentageOfTotal: 10,
+    },
+  ],
+  categoryDistribution: [
+    { category: "Món chính", revenue: 65000000, percentage: 52 },
+    { category: "Khai vị", revenue: 25000000, percentage: 20 },
+    { category: "Đồ uống", revenue: 20400000, percentage: 16 },
+    { category: "Tráng miệng", revenue: 15000000, percentage: 12 },
+  ],
+};

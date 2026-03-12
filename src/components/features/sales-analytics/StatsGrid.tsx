@@ -1,0 +1,89 @@
+"use client";
+
+import { BarChart3, DollarSign, ShoppingCart, TrendingDown, TrendingUp } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { UI_TEXT } from "@/lib/UI_Text";
+import { cn } from "@/lib/utils";
+import { DashboardStats } from "@/types/salesAnalytics.types";
+
+interface StatsGridProps {
+  stats: DashboardStats;
+  loading?: boolean;
+}
+
+export function StatsGrid({ stats, loading }: StatsGridProps) {
+  const t = UI_TEXT.SALES_ANALYTICS;
+
+  const items = [
+    {
+      title: t.TOTAL_REVENUE,
+      value: `${stats.totalRevenue.toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`,
+      growth: stats.revenueGrowth,
+      icon: DollarSign,
+      color: "text-primary",
+    },
+    {
+      title: t.TOTAL_ORDERS,
+      value: stats.totalOrders.toLocaleString(),
+      icon: ShoppingCart,
+      color: "text-blue-500",
+    },
+    {
+      title: t.AVG_ORDER_VALUE,
+      value: `${stats.avgOrderValue.toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`,
+      icon: BarChart3,
+      color: "text-emerald-500",
+    },
+  ];
+
+  return (
+    <div className="grid gap-6 md:grid-cols-3">
+      {items.map((item, idx) => (
+        <Card
+          key={idx}
+          className="glass-card group overflow-hidden transition-all hover:shadow-glow-sm"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div
+                className={cn(
+                  "rounded-xl bg-primary/10 p-2.5 transition-transform group-hover:scale-110",
+                  item.color
+                    .replace("text-", "bg-")
+                    .replace("500", "50")
+                    .replace("primary", "primary/10")
+                )}
+              >
+                <item.icon className={cn("h-5 w-5", item.color)} />
+              </div>
+              {item.growth !== undefined && (
+                <Badge
+                  variant={item.growth >= 0 ? "default" : "destructive"}
+                  className="gap-1 font-bold shadow-sm"
+                >
+                  {item.growth >= 0 ? (
+                    <TrendingUp className="h-3 w-3" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3" />
+                  )}
+                  {Math.abs(item.growth)}
+                  {UI_TEXT.COMMON.PERCENT}
+                </Badge>
+              )}
+            </div>
+            <div className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">
+                {item.title}
+              </p>
+              <h3 className="mt-1 text-2xl font-black tracking-tight text-foreground">
+                {loading ? <div className="h-8 w-24 animate-pulse rounded bg-muted" /> : item.value}
+              </h3>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}

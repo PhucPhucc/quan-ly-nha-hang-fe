@@ -1,79 +1,76 @@
-export interface Category {
-  categoryId: string;
-  name: string;
-  type: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MenuItem {
-  menuItemId: string;
-  code: string;
-  name: string;
-  imageUrl: string;
-  description: string;
-  categoryId: string;
-  categoryName: string;
-  price: number;
-  cost: number | null;
-  station: number;
-  isOutOfStock: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { OptionType, SetMenuType, Station } from "./enums";
 
 export interface OptionGroup {
   optionGroupId: string;
   menuItemId: string;
   name: string;
-  optionType: number;
+  optionType: OptionType;
   isRequired: boolean;
   minSelect: number;
   maxSelect: number;
   sortOrder: number;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  optionItems?: OptionItem[]; // Added from backend response
+  optionItems?: OptionItem[];
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
 }
 
 export interface OptionItem {
   optionItemId: string;
   optionGroupId: string;
-  menuItemId: string;
-  isCombo?: boolean;
   label: string;
   value: string;
   extraPrice: number;
   sortOrder: number;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
+}
+export interface Category {
+  categoryId: string;
+  name: string;
+  codePrefix: string;
+  type: number;
+  createdAt?: string;
+  updatedAt?: string;
+  isActive: boolean;
+}
+
+export interface MenuItem {
+  menuItemId: string;
+  name: string;
+  code: string;
+  description: string;
+  price: number;
+  costPrice: number;
+  expectedTime: number;
+  imageUrl: string;
+  station: Station;
+  categoryId: string;
+  categoryName?: string;
+  isOutOfStock: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SetMenu {
   setMenuId: string;
   code: string;
   name: string;
-  setType: number;
-  imageUrl: string;
-  description: string;
+  setType: SetMenuType;
+  imageUrl?: string;
+  description?: string;
   price: number;
-  cost: number;
+  costPrice: number;
   isOutOfStock: boolean;
-  createdByEmployeeId: string;
-  updatedByEmployeeId: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface SetMenuItem {
-  setMenuItemId: number;
-  setMenuId: string;
-  menuItemId: string;
-  quantity: number;
-  createdAt: string;
+export interface MenuFilter {
+  searchQuery?: string;
+  categoryId?: string;
+  isOutOfStock?: boolean;
 }

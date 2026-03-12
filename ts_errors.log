@@ -1,0 +1,87 @@
+src/components/features/Employee/EmployeeCount.tsx(1,24): error TS2307: Cannot find module '@/components/shared/TitleCount' or its corresponding type declarations.
+src/components/features/order/orderMenu/CardMenu.tsx(17,52): error TS2551: Property 'categories' does not exist on type 'MenuState'. Did you mean 'categoryId'?
+src/components/features/order/orderMenu/CardMenu.tsx(19,49): error TS2551: Property 'loading' does not exist on type 'MenuState'. Did you mean 'isLoading'?
+src/components/features/order/orderMenu/CardMenu.tsx(20,51): error TS2339: Property 'activeTab' does not exist on type 'MenuState'.
+src/components/features/order/orderMenu/CardMenu.tsx(21,60): error TS2339: Property 'isOptionDialogOpen' does not exist on type 'MenuState'.
+src/components/features/order/orderMenu/CardMenu.tsx(22,54): error TS2339: Property 'selectedItem' does not exist on type 'MenuState'.
+src/components/features/order/orderMenu/CardMenu.tsx(23,54): error TS2339: Property 'setActiveTab' does not exist on type 'MenuState'.
+src/components/features/order/orderMenu/CardMenu.tsx(24,63): error TS2339: Property 'closeOptionDialog' does not exist on type 'MenuState'.
+src/components/features/order/orderMenu/CardMenu.tsx(25,57): error TS2339: Property 'openOptionDialog' does not exist on type 'MenuState'.
+src/components/features/order/orderMenu/CardMenu.tsx(26,51): error TS2339: Property 'fetchData' does not exist on type 'MenuState'.
+src/components/features/order/orderMenu/CardMenu.tsx(59,30): error TS7006: Parameter 'cat' implicitly has an 'any' type.
+src/components/features/order/orderMenu/MenuOptionSelectionDialog.tsx(14,20): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionGroup'.
+src/components/features/order/orderMenu/MenuOptionSelectionDialog.tsx(14,33): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionItem'.
+src/components/features/order/orderMenu/components/MenuCategorySelector.tsx(20,25): error TS2339: Property 'CATEGORIES' does not exist on type '{ TITLE: string; SUBTITLE: string; ADD_NEW_ITEM: string; TAB_ITEM: string; TAB_COMBO: string; ADD_ITEM: string; ADD_COMBO: string; EMPTY_COMBO: string; ID_NOT_FOUND: string; DELETE_SUCCESS: string; ... 43 more ...; LIST_TITLE: string; }'.
+src/components/features/order/orderMenu/components/MenuCategorySelector.tsx(26,25): error TS2339: Property 'CATEGORIES' does not exist on type '{ TITLE: string; SUBTITLE: string; ADD_NEW_ITEM: string; TAB_ITEM: string; TAB_COMBO: string; ADD_ITEM: string; ADD_COMBO: string; EMPTY_COMBO: string; ID_NOT_FOUND: string; DELETE_SUCCESS: string; ... 43 more ...; LIST_TITLE: string; }'.
+src/components/features/order/orderMenu/components/MenuCategorySelector.tsx(32,25): error TS2339: Property 'CATEGORIES' does not exist on type '{ TITLE: string; SUBTITLE: string; ADD_NEW_ITEM: string; TAB_ITEM: string; TAB_COMBO: string; ADD_ITEM: string; ADD_COMBO: string; EMPTY_COMBO: string; ID_NOT_FOUND: string; DELETE_SUCCESS: string; ... 43 more ...; LIST_TITLE: string; }'.
+src/components/features/order/orderMenu/components/dialog/OptionGroupSection.tsx(8,10): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionGroup'.
+src/components/features/order/orderMenu/components/dialog/OptionGroupSection.tsx(8,23): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionItem'.
+src/components/features/order/orderMenu/components/dialog/OptionGroupSection.tsx(70,34): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/components/features/order/orderMenu/components/dialog/OptionItemRow.tsx(8,10): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionItem'.
+src/components/features/order/orderMenu/components/dialog/SelectionOptionsContent.tsx(10,10): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionGroup'.
+src/components/features/order/orderMenu/components/dialog/SelectionOptionsContent.tsx(10,23): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionItem'.
+src/data/mockMenu.ts(2,30): error TS2305: Module '"../types/Menu"' has no exported member 'OptionGroup'.
+src/data/mockMenu.ts(2,43): error TS2305: Module '"../types/Menu"' has no exported member 'OptionItem'.
+src/data/mockMenu.ts(8,3): error TS2739: Type '{ categoryId: string; name: string; type: CategoryType.NORMAL; createdAt: string; updatedAt: string; }' is missing the following properties from type 'Category': codePrefix, isActive
+src/data/mockMenu.ts(15,3): error TS2739: Type '{ categoryId: string; name: string; type: CategoryType.NORMAL; createdAt: string; updatedAt: string; }' is missing the following properties from type 'Category': codePrefix, isActive
+src/data/mockMenu.ts(22,3): error TS2739: Type '{ categoryId: string; name: string; type: CategoryType.NORMAL; createdAt: string; updatedAt: string; }' is missing the following properties from type 'Category': codePrefix, isActive
+src/data/mockMenu.ts(29,3): error TS2739: Type '{ categoryId: string; name: string; type: CategoryType.NORMAL; createdAt: string; updatedAt: string; }' is missing the following properties from type 'Category': codePrefix, isActive
+src/data/mockMenu.ts(36,3): error TS2739: Type '{ categoryId: string; name: string; type: CategoryType.NORMAL; createdAt: string; updatedAt: string; }' is missing the following properties from type 'Category': codePrefix, isActive
+src/data/mockMenu.ts(57,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(74,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(91,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(110,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(127,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(144,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(163,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(180,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(199,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(216,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(235,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockMenu.ts(252,5): error TS2353: Object literal may only specify known properties, and 'priceDineIn' does not exist in type 'MenuItem'.
+src/data/mockTable.ts(4,3): error TS2741: Property 'type' is missing in type '{ areaId: string; name: string; codePrefix: string; status: any; }' but required in type 'Area'.
+src/data/mockTable.ts(4,71): error TS2551: Property 'ACTIVE' does not exist on type 'typeof AreaStatus'. Did you mean 'Active'?
+src/data/mockTable.ts(5,3): error TS2741: Property 'type' is missing in type '{ areaId: string; name: string; codePrefix: string; status: any; }' but required in type 'Area'.
+src/data/mockTable.ts(5,71): error TS2551: Property 'ACTIVE' does not exist on type 'typeof AreaStatus'. Did you mean 'Active'?
+src/data/mockTable.ts(6,3): error TS2741: Property 'type' is missing in type '{ areaId: string; name: string; codePrefix: string; status: any; }' but required in type 'Area'.
+src/data/mockTable.ts(6,73): error TS2551: Property 'ACTIVE' does not exist on type 'typeof AreaStatus'. Did you mean 'Active'?
+src/data/mockTable.ts(10,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(10,72): error TS2551: Property 'OCCUPIED' does not exist on type 'typeof TableStatus'. Did you mean 'Occupied'?
+src/data/mockTable.ts(11,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(11,72): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(12,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(12,72): error TS2551: Property 'OCCUPIED' does not exist on type 'typeof TableStatus'. Did you mean 'Occupied'?
+src/data/mockTable.ts(13,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(13,72): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(14,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(14,72): error TS2551: Property 'RESERVED' does not exist on type 'typeof TableStatus'. Did you mean 'Reserved'?
+src/data/mockTable.ts(15,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(15,72): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(16,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(16,72): error TS2551: Property 'OCCUPIED' does not exist on type 'typeof TableStatus'. Did you mean 'Occupied'?
+src/data/mockTable.ts(17,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(17,72): error TS2551: Property 'CLEANING' does not exist on type 'typeof TableStatus'. Did you mean 'Cleaning'?
+src/data/mockTable.ts(18,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(22,25): error TS2551: Property 'OUT_OF_SERVICE' does not exist on type 'typeof TableStatus'. Did you mean 'OutOfService'?
+src/data/mockTable.ts(25,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(25,73): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(26,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(26,73): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(27,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(27,73): error TS2551: Property 'RESERVED' does not exist on type 'typeof TableStatus'. Did you mean 'Reserved'?
+src/data/mockTable.ts(28,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(32,25): error TS2551: Property 'OUT_OF_SERVICE' does not exist on type 'typeof TableStatus'. Did you mean 'OutOfService'?
+src/data/mockTable.ts(36,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(36,73): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(37,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(37,73): error TS2551: Property 'OCCUPIED' does not exist on type 'typeof TableStatus'. Did you mean 'Occupied'?
+src/data/mockTable.ts(38,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(38,73): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(40,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(40,74): error TS2551: Property 'AVAILABLE' does not exist on type 'typeof TableStatus'. Did you mean 'Available'?
+src/data/mockTable.ts(41,3): error TS2741: Property 'tableNumber' is missing in type '{ tableId: string; tableCode: string; capacity: number; status: any; areaId: string; }' but required in type 'Table'.
+src/data/mockTable.ts(41,74): error TS2551: Property 'OCCUPIED' does not exist on type 'typeof TableStatus'. Did you mean 'Occupied'?
+src/hooks/useMenuOptionReducer.ts(1,10): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionGroup'.
+src/hooks/useMenuOptionReducer.ts(1,23): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionItem'.
+src/services/optionService.ts(2,10): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionGroup'.
+src/services/optionService.ts(2,23): error TS2305: Module '"@/types/Menu"' has no exported member 'OptionItem'.

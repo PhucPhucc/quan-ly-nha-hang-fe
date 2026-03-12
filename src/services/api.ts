@@ -25,7 +25,10 @@ export async function refreshToken() {
 
 export async function apiFetch<T>(
   path: string,
-  options: Omit<RequestInit, "body"> & { body?: object | string | number | boolean | null } = {}
+  options: Omit<RequestInit, "body"> & {
+    body?: object | string | number | boolean | null;
+    responseType?: "json" | "blob";
+  } = {}
 ): Promise<ApiResponse<T>> {
   const headers: Record<string, string> = {
     ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
@@ -112,6 +115,14 @@ export async function apiFetch<T>(
     }
 
     throw new Error(message);
+  }
+
+  if (options.responseType === "blob") {
+    const blob = (await res.blob()) as unknown as T;
+    return {
+      isSuccess: true,
+      data: blob,
+    };
   }
 
   const text = await res.text();

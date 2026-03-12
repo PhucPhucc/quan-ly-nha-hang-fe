@@ -1,4 +1,5 @@
-import { ANALYTICS } from "../constants/ui_text/analytics";
+import { PREFERENCE } from "@/constants/ui_text/preference";
+
 import { AUDIT_LOG } from "../constants/ui_text/audit";
 import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_text/auth";
 import { API, BUTTON, COMMON, FORM, ROLE, SIDE_BAR } from "../constants/ui_text/common";
@@ -9,6 +10,7 @@ import { KDS } from "../constants/ui_text/kds";
 import { LANDING } from "../constants/ui_text/landing";
 import { MENU } from "../constants/ui_text/menu";
 import { ORDER } from "../constants/ui_text/order";
+import { SALES_ANALYTICS } from "../constants/ui_text/salesAnalytics";
 import { TABLE } from "../constants/ui_text/table";
 
 export const UI_TEXT = {
@@ -30,6 +32,7 @@ export const UI_TEXT = {
   KDS,
   LANDING,
   AUDIT_LOG,
-  ANALYTICS,
+  SALES_ANALYTICS,
   INVENTORY,
+  PREFERENCE,
 };
