@@ -3,6 +3,7 @@
 import { PopoverClose } from "@radix-ui/react-popover";
 import { TableOfContents, X } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -28,7 +29,7 @@ import {
 import { Separator } from "../ui/separator";
 
 const NavEmployee = () => {
-  // const [position, setPosition] = useState("bottom-left");
+  const [position, setPosition] = useState("bottom-left");
   const employee = useAuthStore((state) => state.employee);
 
   return (
@@ -43,14 +44,6 @@ const NavEmployee = () => {
           align="start"
           className="bg-background py-3 px-4 text-sm w-100 mb-1 shadow-2xl gap-2 border-2"
         >
-          {/* <div className="flex justify-between">
-            <span className="font-semibold">{UI_TEXT.AUTH.EMPLOYEE_CODE} </span>
-            <span className="text-muted-foreground">{employee?.username}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="font-semibold">{UI_TEXT.EMPLOYEE.ROLE} </span>
-            <span className="text-muted-foreground">{employee?.role}</span>
-          </div> */}
           <div className="flex items-center justify-between">
             <span className="font-semibold">{UI_TEXT.PREFERENCE.TITLE}</span>
             <PopoverClose className="hover:cursor-pointer">
@@ -163,7 +156,6 @@ function FeatureItem({
           <p className="font-semibold">{title}</p>
           <p className="text-xs text-muted-foreground">{des}</p>
         </div>
-
         {children}
       </div>
       <Separator className="my-3" />
