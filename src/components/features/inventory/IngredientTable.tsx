@@ -89,26 +89,42 @@ export function IngredientTable() {
 
   return (
     <div className="space-y-4">
-      <InventoryTableHeader
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
-      />
+      <div className="grid gap-3">
+        <InventoryTableHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+          onReset={() => {
+            setSearchQuery("");
+            setStatusFilter("all");
+          }}
+        />
+      </div>
 
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_NAME}</TableHead>
-              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_SKU}</TableHead>
-              <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_STOCK}</TableHead>
-              <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_PRICE}</TableHead>
-              <TableHead className="w-[140px]">{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
-              <TableHead className="w-[120px] text-center">
+            <TableRow className="hover:bg-transparent border-slate-100 bg-slate-50/50">
+              <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider text-center">
+                {UI_TEXT.INVENTORY.TABLE.COL_SKU}
+              </TableHead>
+              <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+                {UI_TEXT.INVENTORY.TABLE.COL_NAME}
+              </TableHead>
+              <TableHead className="py-3 text-right font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+                {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
+              </TableHead>
+              <TableHead className="py-3 text-right font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+                {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
+              </TableHead>
+              <TableHead className="py-3 w-[140px] font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+                {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
+              </TableHead>
+              <TableHead className="py-3 w-[120px] text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
               </TableHead>
-              <TableHead className="w-[140px] text-right">
+              <TableHead className="py-3 w-[140px] text-right font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
               </TableHead>
             </TableRow>

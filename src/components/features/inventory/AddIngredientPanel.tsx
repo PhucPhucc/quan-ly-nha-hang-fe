@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, PackagePlus } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -65,7 +66,6 @@ export function AddIngredientPanel({
       ? {
           name: ingredient.name,
           code: ingredient.code,
-          category: ingredient.category,
           unit: ingredient.unit,
           lowStockThreshold: ingredient.lowStockThreshold,
           costPrice: ingredient.costPrice,
@@ -154,6 +154,9 @@ export function AddIngredientPanel({
       }
 
       if (res.isSuccess) {
+        toast.success(
+          isEditing ? UI_TEXT.INVENTORY.FORM.SUCCESS_EDIT : UI_TEXT.INVENTORY.FORM.SUCCESS_ADD
+        );
         queryClient.invalidateQueries({ queryKey: ["ingredients"] });
         setOpen(false);
         reset();
@@ -161,8 +164,9 @@ export function AddIngredientPanel({
       } else {
         setError(res.message || UI_TEXT.INVENTORY.FORM.ERROR_ADD);
       }
-    } catch {
-      setError(UI_TEXT.INVENTORY.FORM.ERROR_CONN);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : UI_TEXT.INVENTORY.FORM.ERROR_CONN;
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }

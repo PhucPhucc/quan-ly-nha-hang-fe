@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventoryService";
 import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
 
@@ -20,7 +22,15 @@ export function useInventoryTable(pageSize = 10) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => inventoryService.deleteIngredient(id),
-    onSuccess: () => {
+    onSuccess: (_, id) => {
+      const item = items.find((i: Ingredient) => i.ingredientId === id);
+      if (item) {
+        toast.success(
+          item.isActive
+            ? UI_TEXT.INVENTORY.DELETE.SUCCESS_DEACTIVATE
+            : UI_TEXT.INVENTORY.DELETE.SUCCESS_REACTIVATE
+        );
+      }
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
     },
   });
@@ -53,7 +63,6 @@ export function useInventoryTable(pageSize = 10) {
     return normalizedItems.filter((item) => {
       const matchesSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.sku?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.code.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =

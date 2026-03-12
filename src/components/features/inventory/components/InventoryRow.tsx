@@ -1,4 +1,4 @@
-import { Edit, Trash2 } from "lucide-react";
+import { Ban, Edit, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -16,17 +16,17 @@ type Props = {
 
 export function InventoryRow({ item, onEdit, onDelete }: Props) {
   return (
-    <TableRow className="group transition-colors">
-      <TableCell className="font-medium">{item.name}</TableCell>
-      <TableCell className="text-muted-foreground">{item.code}</TableCell>
+    <TableRow className="group transition-colors border-slate-50 hover:bg-slate-50/60">
+      <TableCell className="text-slate-500 text-sm text-center">{item.code}</TableCell>
+      <TableCell className="pl-4 font-semibold text-slate-800 text-sm">{item.name}</TableCell>
       <TableCell className="text-right">
-        <span className="font-semibold">
+        <span className="font-semibold text-slate-800 text-sm">
           {item.currentStock} {item.unit}
         </span>
       </TableCell>
-      <TableCell className="text-right">
-        <span className="text-muted-foreground mr-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
-        <span className="font-medium" aria-label="Average cost (read only)">
+      <TableCell className="text-right text-sm">
+        <span className="text-slate-400 mr-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
+        <span className="font-semibold text-slate-800" aria-label="Average cost (read only)">
           {(item.costPrice ?? 0).toFixed(2)}
         </span>
       </TableCell>
@@ -73,10 +73,16 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+            className={cn(
+              "h-8 w-8 rounded-lg",
+              item.isActive
+                ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
+                : "text-muted-foreground hover:bg-muted/20"
+            )}
+            title={item.isActive ? "Deactivate" : "Reactivate"}
             onClick={() => onDelete(item)}
           >
-            <Trash2 className="h-4 w-4" />
+            {item.isActive ? <Ban className="h-4 w-4" /> : <RotateCcw className="h-4 w-4" />}
           </Button>
         </div>
       </TableCell>
