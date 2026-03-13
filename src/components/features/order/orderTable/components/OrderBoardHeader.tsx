@@ -1,8 +1,7 @@
 import { format } from "date-fns";
 import {
-  Armchair,
   Calendar as CalendarIcon,
-  LayoutGrid,
+  Layers,
   Search,
   ShoppingCart,
   SlidersHorizontal,
@@ -25,9 +24,15 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
-import { ActiveTab, useOrderBoardStore } from "@/store/useOrderStore";
+import { useOrderBoardStore } from "@/store/useOrderStore";
+import { useTableStore } from "@/store/useTableStore";
 import { OrderType } from "@/types/enums";
 import { DINE_IN_STATUSES, TAKEAWAY_STATUSES } from "@/types/Order";
+import { AreaStatus } from "@/types/Table-Layout";
+
+const TAKEAWAY_TAB = "takeaway";
+const DATE_PICKER_LABEL = "Chọn ngày";
+const SEARCH_PLACEHOLDER = "Tìm kiếm mã đơn, số bàn...";
 
 const OrderBoardHeader = () => {
   const searchQuery = useOrderBoardStore((s) => s.searchQuery);
@@ -45,6 +50,8 @@ const OrderBoardHeader = () => {
   const sortOrder = useOrderBoardStore((s) => s.sortOrder);
   const setSortOrder = useOrderBoardStore((s) => s.setSortOrder);
 
+  const resetFilters = useOrderBoardStore((s) => s.resetFilters);
+
   const stats = useOrderBoardStore(
     (s) => ({
       total: s.orders.length,
@@ -53,7 +60,11 @@ const OrderBoardHeader = () => {
     }),
     shallow
   );
-  const resetFilters = useOrderBoardStore((s) => s.resetFilters);
+
+  const areas = useTableStore((s) => s.areas);
+  const activeAreas = areas.filter((a) => a.status === AreaStatus.Active);
+
+  const isTakeaway = activeTab === TAKEAWAY_TAB;
 
   return (
     <div className="px-5 py-4 border-b space-y-4 bg-muted/5">
@@ -62,7 +73,7 @@ const OrderBoardHeader = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Tìm kiếm mã đơn, số bàn..."
+            placeholder={SEARCH_PLACEHOLDER}
             className="pl-10 h-11 bg-background border-muted-foreground/20 rounded-2xl shadow-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -104,7 +115,7 @@ const OrderBoardHeader = () => {
 
             <div className="p-4 space-y-6">
               <div className="flex gap-6">
-                {(activeTab === "all" || activeTab === "dine_in") && (
+                {!isTakeaway && (
                   <div className="space-y-3 flex-1">
                     <span className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
                       {UI_TEXT.ORDER.BOARD.AT_TABLE}
@@ -135,7 +146,7 @@ const OrderBoardHeader = () => {
                   </div>
                 )}
 
-                {(activeTab === "all" || activeTab === "takeaway") && (
+                {isTakeaway && (
                   <div className="space-y-3 flex-1">
                     <span className="text-[10px] font-black text-muted-foreground uppercase border-b pb-1 block">
                       {UI_TEXT.ORDER.BOARD.STATUS_LABEL}
@@ -204,7 +215,7 @@ const OrderBoardHeader = () => {
                     format(dateRange.from, "dd/MM/yyyy")
                   )
                 ) : (
-                  "Chọn ngày"
+                  DATE_PICKER_LABEL
                 )}
               </span>
             </Button>
@@ -220,36 +231,27 @@ const OrderBoardHeader = () => {
         </Popover>
       </div>
 
-      {/* Tabs */}
-      <Tabs
-        value={activeTab}
-        className="w-full"
-        onValueChange={(value) => setActiveTab(value as ActiveTab)}
-      >
+      {/* Area-based Tabs */}
+      <Tabs value={activeTab} className="w-full" onValueChange={(value) => setActiveTab(value)}>
         <TabsList className="flex items-center w-full bg-muted/40 rounded-2xl border border-muted-foreground/10">
+          {activeAreas.map((area) => (
+            <TabsTrigger
+              key={area.areaId}
+              value={area.areaId}
+              className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 flex justify-center items-center py-1 rounded-xl gap-2 font-semibold text-xs uppercase whitespace-nowrap"
+            >
+              <Layers className="size-4" />
+              <span>{area.name}</span>
+              {area.numberOfTables != null && (
+                <Badge variant="secondary" className="ml-1 scale-90">
+                  {area.numberOfTables}
+                </Badge>
+              )}
+            </TabsTrigger>
+          ))}
           <TabsTrigger
-            value="all"
-            className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 flex justify-center items-center py-1 rounded-xl gap-2 font-semibold text-xs uppercase"
-          >
-            <LayoutGrid className="size-4" />
-            <span>{UI_TEXT.ORDER.BOARD.OVERVIEW}</span>
-            <Badge variant="secondary" className="ml-1 scale-90">
-              {stats.total}
-            </Badge>
-          </TabsTrigger>
-          <TabsTrigger
-            value="dine_in"
-            className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 rounded-xl gap-2 font-semibold text-xs uppercase"
-          >
-            <Armchair className="size-4" />
-            <span>{UI_TEXT.ORDER.BOARD.AT_TABLE}</span>
-            <Badge variant="secondary" className="ml-1 scale-90">
-              {stats.dineIn}
-            </Badge>
-          </TabsTrigger>
-          <TabsTrigger
-            value="takeaway"
-            className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 rounded-xl gap-2 font-semibold text-xs uppercase"
+            value={TAKEAWAY_TAB}
+            className="data-[state=active]:border-2 data-[state=active]:border-muted-foreground/20 rounded-xl gap-2 font-semibold text-xs uppercase whitespace-nowrap"
           >
             <ShoppingCart className="size-4" />
             <span>{UI_TEXT.ORDER.BOARD.TAKEAWAY}</span>

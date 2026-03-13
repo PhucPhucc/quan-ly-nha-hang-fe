@@ -3,10 +3,13 @@
 import { PopoverClose } from "@radix-ui/react-popover";
 import { TableOfContents, X } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useTheme } from "@/store/ThemeContext";
 import { useAuthStore } from "@/store/useAuthStore";
+import { ThemeMode } from "@/types/enums";
 
 import { Button } from "../ui/button";
 import {
@@ -28,11 +31,29 @@ import {
 import { Separator } from "../ui/separator";
 
 const NavEmployee = () => {
-  // const [position, setPosition] = useState("bottom-left");
+  const [position, setPosition] = useState("bottom-left");
+  const { theme, selectTheme } = useTheme();
   const employee = useAuthStore((state) => state.employee);
+  console.log(position);
+
+  let cssPosition = "";
+  switch (position) {
+    case "bottom-right":
+      cssPosition = "bottom-6 right-6";
+      break;
+    case "top-right":
+      cssPosition = "top-6 right-6";
+      break;
+    case "top-left":
+      cssPosition = "top-6 left-6";
+      break;
+    default:
+      cssPosition = "bottom-6 left-6";
+      break;
+  }
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 ">
+    <div className={`fixed ${cssPosition} z-50 `}>
       <Popover>
         <PopoverTrigger asChild>
           <Button size="icon" className="rounded-full p-5">
@@ -43,14 +64,6 @@ const NavEmployee = () => {
           align="start"
           className="bg-background py-3 px-4 text-sm w-100 mb-1 shadow-2xl gap-2 border-2"
         >
-          {/* <div className="flex justify-between">
-            <span className="font-semibold">{UI_TEXT.AUTH.EMPLOYEE_CODE} </span>
-            <span className="text-muted-foreground">{employee?.username}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="font-semibold">{UI_TEXT.EMPLOYEE.ROLE} </span>
-            <span className="text-muted-foreground">{employee?.role}</span>
-          </div> */}
           <div className="flex items-center justify-between">
             <span className="font-semibold">{UI_TEXT.PREFERENCE.TITLE}</span>
             <PopoverClose className="hover:cursor-pointer">
@@ -99,13 +112,13 @@ const NavEmployee = () => {
           </FeatureItem>
 
           <FeatureItem title={UI_TEXT.PREFERENCE.POSITION} des={UI_TEXT.PREFERENCE.POSITION_DESC}>
-            <Select defaultValue="bottom-left">
+            <Select defaultValue="bottom-left" onValueChange={(e) => setPosition(e)}>
               <SelectTrigger className="w-full max-w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="text-xs">
                 <SelectGroup>
-                  <SelectItem value="bottom-left">
+                  <SelectItem value="bottom-left" onClick={() => console.log(123)}>
                     {UI_TEXT.PREFERENCE.POSITION_BOTTOM_LEFT}
                   </SelectItem>
                   <SelectItem value="bottom-right">
@@ -119,14 +132,14 @@ const NavEmployee = () => {
           </FeatureItem>
 
           <FeatureItem title={UI_TEXT.PREFERENCE.THEME} des={UI_TEXT.PREFERENCE.THEME_DESC}>
-            <Select defaultValue="light">
+            <Select defaultValue={theme} onValueChange={(e) => selectTheme(e as ThemeMode)}>
               <SelectTrigger className="w-full max-w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="text-xs">
                 <SelectGroup>
-                  <SelectItem value="light">{UI_TEXT.PREFERENCE.THEME_LIGHT}</SelectItem>
-                  <SelectItem value="dark">{UI_TEXT.PREFERENCE.THEME_DARK}</SelectItem>
+                  <SelectItem value={ThemeMode.LIGHT}>{UI_TEXT.PREFERENCE.THEME_LIGHT}</SelectItem>
+                  <SelectItem value={ThemeMode.DARK}>{UI_TEXT.PREFERENCE.THEME_DARK}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -163,7 +176,6 @@ function FeatureItem({
           <p className="font-semibold">{title}</p>
           <p className="text-xs text-muted-foreground">{des}</p>
         </div>
-
         {children}
       </div>
       <Separator className="my-3" />

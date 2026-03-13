@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -66,9 +67,13 @@ const EmployeeTable = () => {
     return s === "1" || s === "active";
   };
 
+  if (loading) {
+    return <TableSkeleton columns={7} rows={6} className="mt-4" />;
+  }
+
   return (
-    <div className="relative w-full overflow-auto">
-      <Table>
+    <div className="fh-table-shell mt-4">
+      <Table className="fh-table">
         <TableHeader>
           <TableRow>
             <TableHead className="text-center">{UI_TEXT.EMPLOYEE.EMP_ID}</TableHead>
@@ -82,31 +87,15 @@ const EmployeeTable = () => {
         </TableHeader>
 
         <TableBody>
-          {loading && (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-20">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <div className="size-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div className="size-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="size-2 bg-primary rounded-full animate-bounce"></div>
-                  </div>
-                  <span className="text-xs font-medium text-slate-400 uppercase tracking-widest">
-                    {UI_TEXT.COMMON.LOADING}
-                  </span>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-
           {error && (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-20">
-                <div className="flex flex-col items-center gap-2 text-danger">
-                  <span className="font-semibold">{error}</span>
+            <TableRow className="fh-table-row">
+              <TableCell colSpan={7} className="fh-table-cell">
+                <div className="fh-table-feedback text-danger">
+                  <span className="text-base font-semibold">{error}</span>
                   <Button
                     onClick={() => window.location.reload()}
-                    className="text-xs underline opacity-70 hover:opacity-100"
+                    variant="outline"
+                    className="mt-1"
                   >
                     {UI_TEXT.EMPLOYEE.RETRY}
                   </Button>
@@ -115,18 +104,19 @@ const EmployeeTable = () => {
             </TableRow>
           )}
 
-          {!loading && !error && employees.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-20">
-                <span className="text-sm text-slate-400 font-medium tracking-wide">
-                  {UI_TEXT.EMPLOYEE.NOT_FOUND}
-                </span>
+          {!error && employees.length === 0 && (
+            <TableRow className="fh-table-row">
+              <TableCell colSpan={7} className="fh-table-cell">
+                <div className="fh-table-feedback">
+                  <span className="text-sm font-medium text-table-text-muted">
+                    {UI_TEXT.EMPLOYEE.NOT_FOUND}
+                  </span>
+                </div>
               </TableCell>
             </TableRow>
           )}
 
-          {!loading &&
-            !error &&
+          {!error &&
             employees.map((employee) => (
               <TableRow
                 key={employee.employeeId}
@@ -135,44 +125,46 @@ const EmployeeTable = () => {
                 <TableCell className="text-center font-medium text-slate-500 text-xs">
                   {employee.employeeCode}
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-slate-800 text-sm leading-tight">
+                <TableCell className="fh-table-cell">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm font-semibold leading-tight text-table-text-strong">
                       {employee.fullName}
                     </span>
-                    <span className="text-[11px] text-slate-400 font-medium">{employee.email}</span>
+                    <span className="text-xs text-table-text-muted">{employee.email}</span>
                   </div>
                 </TableCell>
-                <TableCell className="hidden lg:table-cell font-medium text-slate-600 text-[13px]">
+                <TableCell className="fh-table-cell hidden text-[13px] font-medium lg:table-cell">
                   {employee.phone || UI_TEXT.COMMON.MINUS}
                 </TableCell>
-                <TableCell className="hidden xl:table-cell text-slate-500 text-[12px] max-w-[220px] truncate font-medium">
+                <TableCell className="fh-table-cell hidden max-w-55 truncate text-xs xl:table-cell">
                   {employee.address || UI_TEXT.COMMON.MINUS}
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="fh-table-cell">
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
+                    className={`fh-table-pill border-0 ${
                       isRoleActive(employee.role)
-                        ? "bg-primary/10 text-primary border border-primary/10"
-                        : "bg-slate-100 text-slate-500 border border-slate-200/50"
+                        ? "fh-table-pill-primary"
+                        : "fh-table-pill-neutral"
                     }`}
                   >
                     {getRoleLabel(employee.role)}
                   </span>
                 </TableCell>
-                <TableCell>
+                <TableCell className="fh-table-cell">
                   <div className="flex items-center gap-2">
                     <div
-                      className={`size-1.5 rounded-full ${
+                      className={`fh-table-status-dot ${
                         isStatusActive(employee.status)
-                          ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
-                          : "bg-slate-300"
+                          ? "fh-table-status-dot-active"
+                          : "fh-table-status-dot-muted"
                       }`}
                     />
                     <span
-                      className={`text-[11px] font-medium tracking-tight ${
-                        isStatusActive(employee.status) ? "text-emerald-600" : "text-slate-400"
+                      className={`text-xs font-medium ${
+                        isStatusActive(employee.status)
+                          ? "fh-table-status-text-active"
+                          : "fh-table-status-text-muted"
                       }`}
                     >
                       {getStatusLabel(employee.status)}
@@ -180,8 +172,8 @@ const EmployeeTable = () => {
                   </div>
                 </TableCell>
 
-                <TableCell className="text-right pr-6">
-                  <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                <TableCell className="fh-table-cell pr-6 text-right">
+                  <div className="flex justify-end opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                     <EmployeeAction employee={employee} />
                   </div>
                 </TableCell>

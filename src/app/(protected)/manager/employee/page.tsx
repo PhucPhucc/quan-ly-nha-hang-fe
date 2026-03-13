@@ -17,7 +17,7 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-hidden">
         <EmployeeTable />
       </div>
     </div>

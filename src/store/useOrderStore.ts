@@ -6,7 +6,10 @@ import { orderService, PaginationParams } from "@/services/orderService";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 
-export type ActiveTab = "all" | "dine_in" | "takeaway";
+/** Area ID string or "takeaway" */
+export type ActiveTab = string;
+
+const TAKEAWAY_TAB = "takeaway";
 
 export type OrderActiveView = "order" | "menu";
 
@@ -39,7 +42,7 @@ export interface OrderBoardState {
   setSortOrder: (s: string) => void;
   resetFilters: () => void;
 
-  // order mutations ✅
+  // order mutations
   addOrder: (order: Order) => void;
   removeOrder: (orderId: string) => void;
   updateOrder: (order: Order) => void;
@@ -50,6 +53,7 @@ export interface OrderBoardState {
   ) => Promise<boolean>;
 
   // selectors (derived)
+  isTakeawayTab: () => boolean;
   dineInOrders: () => Order[];
   takeawayOrders: () => Order[];
   filteredTakeaways: () => Order[];
@@ -69,7 +73,7 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
     loading: true,
     orderDetailsLoading: false,
 
-    activeTab: "all",
+    activeTab: "", // will be set to first area ID on mount
     activeView: "order",
     selectedOrderId: null,
     searchQuery: "",
@@ -91,8 +95,12 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         };
 
         // Map activeTab to OrderType
-        if (activeTab === "dine_in") params.orderType = OrderType.DineIn;
-        if (activeTab === "takeaway") params.orderType = OrderType.Takeaway;
+        if (activeTab === TAKEAWAY_TAB) {
+          params.orderType = OrderType.Takeaway;
+        } else if (activeTab) {
+          // An area tab is selected — fetch dine-in orders
+          params.orderType = OrderType.DineIn;
+        }
 
         // Map status
         if (selectedStatuses.length > 0) {
@@ -185,13 +193,15 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
       get().fetchOrders();
     },
 
+    isTakeawayTab: () => get().activeTab === TAKEAWAY_TAB,
+
     dineInOrders: () => get().orders.filter((o) => o.orderType === OrderType.DineIn),
 
     takeawayOrders: () => get().orders.filter((o) => o.orderType === OrderType.Takeaway),
 
     filteredTakeaways: () => {
       const { activeTab, searchQuery, selectedStatuses } = get();
-      if (activeTab === "dine_in") return [];
+      if (activeTab !== TAKEAWAY_TAB) return [];
 
       return get()
         .takeawayOrders()
