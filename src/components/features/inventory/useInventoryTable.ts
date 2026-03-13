@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventoryService";
+import { inventoryService } from "@/services/inventory.service";
 import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
 
 export type StatusFilter = "all" | "normal" | "low" | "out";

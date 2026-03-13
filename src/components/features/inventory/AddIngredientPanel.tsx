@@ -19,7 +19,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventoryService";
+import { inventoryService } from "@/services/inventory.service";
 import { AlertThresholdStatus, Ingredient, InventoryUnit } from "@/types/Inventory";
 
 import { IngredientFormFields } from "./components/IngredientFormFields";

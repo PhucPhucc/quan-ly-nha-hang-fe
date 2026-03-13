@@ -5,13 +5,13 @@ import { toast } from "sonner";
 import { describe, expect, it, vi } from "vitest";
 
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventoryService";
+import { inventoryService } from "@/services/inventory.service";
 import { InventoryUnit } from "@/types/Inventory";
 
 import { OpeningStockEntry } from "../OpeningStockEntry";
 
 // Mock services and toast
-vi.mock("@/services/inventoryService", () => ({
+vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
     getIngredients: vi.fn(),
     importOpeningStock: vi.fn(),

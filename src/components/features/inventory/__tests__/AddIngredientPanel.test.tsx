@@ -4,13 +4,13 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { inventoryService } from "@/services/inventoryService";
+import { inventoryService } from "@/services/inventory.service";
 import { AlertThresholdStatus, InventoryUnit } from "@/types/Inventory";
 
 import { AddIngredientPanel } from "../AddIngredientPanel";
 
 // Mock the service
-vi.mock("@/services/inventoryService", () => ({
+vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
     addIngredient: vi.fn(),
   },

@@ -2,9 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, CircleAlert, Info, Save } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import React from "react";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,74 +20,41 @@ import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { type InventorySettingsInput, inventorySettingsSchema } from "@/lib/zod-schemas/inventory";
-import { inventoryService } from "@/services/inventoryService";
+
+import { DEFAULT_INVENTORY_SETTINGS } from "./inventorySettings.constants";
 
 const { SETTINGS } = UI_TEXT.INVENTORY;
 
-export function InventorySettingsForm() {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+type Props = {
+  initialValues?: InventorySettingsInput;
+  saving?: boolean;
+  onSubmit: (data: InventorySettingsInput) => Promise<void> | void;
+};
 
+export function InventorySettingsForm({
+  initialValues = DEFAULT_INVENTORY_SETTINGS,
+  saving = false,
+  onSubmit,
+}: Props) {
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
-    reset,
+    control,
     formState: { errors },
   } = useForm<InventorySettingsInput>({
     resolver: zodResolver(inventorySettingsSchema),
-    defaultValues: {
-      expiryWarningDays: 7,
-      defaultLowStockThreshold: 0,
-      autoDeductOnCompleted: true,
-      costMethod: "Bình quân gia quyền",
-      maxCostRecalcDays: 31,
-    },
+    defaultValues: initialValues,
   });
 
-  const autoDeductValue = watch("autoDeductOnCompleted");
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await inventoryService.getInventorySettings();
-        if (response.isSuccess && response.data) {
-          reset(response.data);
-        }
-      } catch (error) {
-        toast.error(SETTINGS.ERROR_FETCH);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSettings();
-  }, [reset]);
-
-  const onSubmit = async (data: InventorySettingsInput) => {
-    setSaving(true);
-    try {
-      const response = await inventoryService.updateInventorySettings(data);
-      if (response.isSuccess) {
-        toast.success(SETTINGS.SUCCESS_UPDATE);
-      } else {
-        toast.error(response.message || UI_TEXT.API.ERROR);
-      }
-    } catch (error) {
-      toast.error(UI_TEXT.API.CONNECTION_ERROR);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Spinner className="size-8" />
-      </div>
-    );
-  }
+  const autoDeductValue = useWatch({
+    control,
+    name: "autoDeductOnCompleted",
+  });
+  const costMethodValue = useWatch({
+    control,
+    name: "costMethod",
+  });
 
   return (
     <div className="w-full p-4 pb-10 md:p-6 md:pb-12">
@@ -159,7 +125,7 @@ export function InventorySettingsForm() {
                       variant="secondary"
                       className="px-3 py-1 text-sm bg-secondary text-secondary-foreground"
                     >
-                      {watch("costMethod") || "Bình quân gia quyền"}
+                      {costMethodValue || "Bình quân gia quyền"}
                     </Badge>
                   </div>
                   <FieldDescription>{SETTINGS.COST_METHOD_DESC}</FieldDescription>

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventoryService";
+import { inventoryService } from "@/services/inventory.service";
 
 export function InventoryAlertsTable() {
   const [activeTab, setActiveTab] = useState("low-stock");

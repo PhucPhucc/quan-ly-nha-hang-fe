@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventoryService";
+import { inventoryService } from "@/services/inventory.service";
 
 export function StockHistoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
