@@ -15,6 +15,7 @@ import { OpeningStockEntry } from "../OpeningStockEntry";
 vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
     getIngredients: vi.fn(),
+    getInventorySettings: vi.fn(),
     importOpeningStock: vi.fn(),
   },
 }));
@@ -64,6 +65,18 @@ describe("OpeningStockEntry", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(inventoryService.getInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        expiryWarningDays: 7,
+        defaultLowStockThreshold: 0,
+        autoDeductOnCompleted: true,
+        costMethod: "WeightedAverage",
+        maxCostRecalcDays: 31,
+        openingStockStatus: 1,
+        lockedAt: null,
+      },
+    });
   });
 
   it("should render and load ingredients", async () => {
@@ -100,7 +113,11 @@ describe("OpeningStockEntry", () => {
 
     const mockImport = vi.mocked(inventoryService.importOpeningStock).mockResolvedValue({
       isSuccess: true,
-      data: true,
+      data: {
+        updatedCount: 1,
+        transactionCount: 1,
+        updatedAt: new Date().toISOString(),
+      },
     });
 
     const user = userEvent.setup();
@@ -130,5 +147,43 @@ describe("OpeningStockEntry", () => {
       });
       expect(toast.success).toHaveBeenCalledWith(OPENING_STOCK.SUCCESS_IMPORT);
     });
+  });
+
+  it("should disable inputs and save button when opening stock is locked", async () => {
+    vi.mocked(inventoryService.getIngredients).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        items: mockIngredients,
+        totalCount: 1,
+        pageSize: 10,
+        currentPage: 1,
+        totalPages: 1,
+      },
+    });
+    vi.mocked(inventoryService.getInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        expiryWarningDays: 7,
+        defaultLowStockThreshold: 0,
+        autoDeductOnCompleted: true,
+        costMethod: "WeightedAverage",
+        maxCostRecalcDays: 31,
+        openingStockStatus: 2,
+        lockedAt: new Date().toISOString(),
+      },
+    });
+
+    renderWithProviders(<OpeningStockEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByText("So du dau ky da khoa")).toBeInTheDocument();
+    });
+
+    const saveBtn = screen.getByRole("button", { name: OPENING_STOCK.BTN_SAVE });
+    const inputs = screen.getAllByRole("spinbutton");
+
+    expect(saveBtn).toBeDisabled();
+    expect(inputs[0]).toBeDisabled();
+    expect(inputs[1]).toBeDisabled();
   });
 });

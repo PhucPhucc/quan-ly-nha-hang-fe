@@ -25,6 +25,8 @@ export function OpeningStockEntry() {
     loading,
     isError,
     error,
+    isLocked,
+    lockedAt,
     handleInputChange,
   } = useOpeningStockIngredients();
   const { handleSave, saving } = useOpeningStockSubmit();
@@ -54,6 +56,7 @@ export function OpeningStockEntry() {
             placeholder={OPENING_STOCK.SEARCH_PLACEHOLDER}
             className="pl-9"
             value={search}
+            disabled={isLocked}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
@@ -61,7 +64,7 @@ export function OpeningStockEntry() {
           <OpeningStockSummary totalValue={totalValue} />
           <Button
             onClick={() => handleSave(entryItems)}
-            disabled={saving}
+            disabled={saving || isLocked}
             className="bg-primary hover:bg-primary-hover"
           >
             {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-4 w-4" />}
@@ -70,11 +73,24 @@ export function OpeningStockEntry() {
         </div>
       </div>
 
+      {isLocked ? (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <p className="font-semibold">{OPENING_STOCK.LOCKED_TITLE}</p>
+          <p>
+            {OPENING_STOCK.LOCKED_DESC}
+            {lockedAt
+              ? ` ${OPENING_STOCK.LOCKED_TIME} ${new Date(lockedAt).toLocaleString()}.`
+              : ""}
+          </p>
+        </div>
+      ) : null}
+
       <Card className="border-border shadow-soft overflow-hidden">
         <CardContent className="p-0">
           <OpeningStockTable
             ingredients={filteredIngredients}
             entryItems={entryItems}
+            disabled={isLocked}
             onInputChange={handleInputChange}
           />
         </CardContent>

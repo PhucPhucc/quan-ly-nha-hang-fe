@@ -2,6 +2,7 @@ import { apiFetch } from "@/services/api";
 import { ApiResponse, PaginationResult, QueryParams } from "@/types/Api";
 import {
   ImportOpeningStockRequest,
+  ImportOpeningStockResponse,
   Ingredient,
   InventorySettings,
   InventoryStats,
@@ -89,8 +90,10 @@ export const inventoryService = {
   },
 
   // Nhập số dư đầu kỳ
-  importOpeningStock: async (data: ImportOpeningStockRequest): Promise<ApiResponse<boolean>> => {
-    return apiFetch<boolean>("/inventory/opening-stock", {
+  importOpeningStock: async (
+    data: ImportOpeningStockRequest
+  ): Promise<ApiResponse<ImportOpeningStockResponse>> => {
+    return apiFetch<ImportOpeningStockResponse>("/inventory/opening-stock", {
       method: "POST",
       body: data,
     });

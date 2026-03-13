@@ -144,5 +144,12 @@ export const INVENTORY = {
     SUCCESS_IMPORT: "Nhập số dư ban đầu thành công",
     EMPTY_SEARCH: "Không tìm thấy nguyên vật liệu nào",
     VALIDATION_REQUIRED: "Vui lòng nhập số lượng cho ít nhất một nguyên vật liệu",
+    LOCKED_TITLE: "Số dư đầu kỳ đã khóa",
+    LOCKED_DESC: "Dữ liệu tồn đầu kỳ đã được chốt và không thể chỉnh sửa thêm.",
+    LOCKED_TIME: "Thời gian khóa:",
+    REMINDER_TITLE: "Bạn chưa nhập số dư đầu kỳ",
+    REMINDER_DESC:
+      "Vui lòng nhập số dư đầu kỳ trước khi tiếp tục quản lý kho để dữ liệu tồn kho được chính xác.",
+    REMINDER_BTN: "Đi đến nhập số dư",
   },
 };

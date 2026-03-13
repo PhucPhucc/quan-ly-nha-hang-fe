@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -11,6 +11,8 @@ import { buildImportOpeningStockInput } from "./openingStockEntry.utils";
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 
 export function useOpeningStockSubmit() {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: async (entryItems: OpeningStockEntryValues) => {
       const payload = buildImportOpeningStockInput(entryItems);
@@ -26,7 +28,17 @@ export function useOpeningStockSubmit() {
         throw new Error(response.message || UI_TEXT.API.NETWORK_ERROR);
       }
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      queryClient.setQueryData(["inventory-settings"], (current) => ({
+        ...(typeof current === "object" && current !== null ? current : {}),
+        openingStockStatus: 2,
+        lockedAt: new Date().toISOString(),
+      }));
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["inventory-settings"] }),
+        queryClient.invalidateQueries({ queryKey: ["opening-stock-ingredients"] }),
+      ]);
       toast.success(OPENING_STOCK.SUCCESS_IMPORT);
     },
     onError: (error) => {

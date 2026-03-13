@@ -1,37 +1,59 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { inventoryService } from "@/services/inventory.service";
 import { AlertThresholdStatus, InventoryUnit } from "@/types/Inventory";
 
 import { IngredientTable } from "../IngredientTable";
 
-// Mock the service
 vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
     getIngredients: vi.fn(),
+    getInventorySettings: vi.fn(),
   },
 }));
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-  },
-});
+function createQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+}
 
-const renderWithProviders = (ui: React.ReactElement) => {
+function renderWithProviders(ui: React.ReactElement) {
+  const queryClient = createQueryClient();
+
   return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
-};
+}
 
 describe("IngredientTable", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    vi.mocked(inventoryService.getInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        expiryWarningDays: 7,
+        defaultLowStockThreshold: 0,
+        autoDeductOnCompleted: true,
+        costMethod: "WeightedAverage",
+        maxCostRecalcDays: 31,
+        openingStockStatus: 2,
+        lockedAt: new Date().toISOString(),
+      },
+    });
+  });
+
   it("should display loading skeletons initially", () => {
-    // Force loading state
     vi.mocked(inventoryService.getIngredients).mockImplementation(() => new Promise(() => {}));
 
     renderWithProviders(<IngredientTable />);
-    // Since we use shadcn Skeleton, it doesn't expose a specific standard role by default, but we can check if table isn't present
+
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 
@@ -43,8 +65,7 @@ describe("IngredientTable", () => {
 
     renderWithProviders(<IngredientTable />);
 
-    const emptyMsg = await screen.findByText(/Chưa có nguyên liệu/i);
-    expect(emptyMsg).toBeInTheDocument();
+    expect(await screen.findByText("Chưa có nguyên liệu")).toBeInTheDocument();
   });
 
   it("should display table rows with ingredients", async () => {
@@ -53,16 +74,16 @@ describe("IngredientTable", () => {
       data: {
         items: [
           {
-            id: "1",
+            ingredientId: "1",
             name: "Potato",
-            sku: "SKU-P",
-            category: "Veg",
+            code: "SKU-P",
             unit: InventoryUnit.KG,
             currentStock: 50,
             lowStockThreshold: 10,
-            costPerUnit: 2,
+            costPrice: 2,
             status: AlertThresholdStatus.NORMAL,
             updatedAt: "",
+            isActive: true,
           },
         ],
         totalCount: 1,
@@ -74,8 +95,50 @@ describe("IngredientTable", () => {
 
     renderWithProviders(<IngredientTable />);
 
-    const cell = await screen.findByText("Potato");
-    expect(cell).toBeInTheDocument();
+    expect(await screen.findByText("Potato")).toBeInTheDocument();
     expect(screen.getByText("SKU-P")).toBeInTheDocument();
+  });
+
+  it("should show opening stock reminder when inventory has not been initialized", async () => {
+    vi.mocked(inventoryService.getIngredients).mockResolvedValue({
+      isSuccess: true,
+      data: { items: [], totalCount: 0, currentPage: 1, pageSize: 20, totalPages: 1 },
+    });
+
+    vi.mocked(inventoryService.getInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        expiryWarningDays: 7,
+        defaultLowStockThreshold: 0,
+        autoDeductOnCompleted: true,
+        costMethod: "WeightedAverage",
+        maxCostRecalcDays: 31,
+        openingStockStatus: 1,
+        lockedAt: null,
+      },
+    });
+
+    renderWithProviders(<IngredientTable />);
+
+    expect(await screen.findByText("Bạn chưa nhập số dư đầu kỳ")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Đi đến nhập số dư" })).toHaveAttribute(
+      "href",
+      "/manager/inventory/opening-stock"
+    );
+  });
+
+  it("should still show opening stock reminder when settings cannot be loaded", async () => {
+    vi.mocked(inventoryService.getIngredients).mockResolvedValue({
+      isSuccess: true,
+      data: { items: [], totalCount: 0, currentPage: 1, pageSize: 20, totalPages: 1 },
+    });
+
+    vi.mocked(inventoryService.getInventorySettings).mockRejectedValue(
+      new Error("Settings unavailable")
+    );
+
+    renderWithProviders(<IngredientTable />);
+
+    expect(await screen.findByText("Bạn chưa nhập số dư đầu kỳ")).toBeInTheDocument();
   });
 });
