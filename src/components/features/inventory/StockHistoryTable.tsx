@@ -59,39 +59,57 @@ export function StockHistoryTable() {
   }
 
   return (
-    <div className="rounded-md border bg-card text-card-foreground shadow-sm">
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_DATE}</TableHead>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_ITEM}</TableHead>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_BATCH}</TableHead>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_SUPPLIER}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_QTY}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_PRICE}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_TOTAL_COST}</TableHead>
-            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}</TableHead>
+          <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_DATE}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_ITEM}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_BATCH}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_SUPPLIER}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_QTY}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_TOTAL_COST}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {history.map((record) => (
-            <TableRow key={record.id}>
-              <TableCell>{new Date(record.receivedDate).toLocaleDateString()}</TableCell>
-              <TableCell className="font-medium">{record.ingredientName}</TableCell>
-              <TableCell className="text-muted-foreground font-mono text-xs">
+            <TableRow key={record.id} className="border-slate-100 hover:bg-slate-50/50">
+              <TableCell className="text-center">
+                {new Date(record.receivedDate).toLocaleDateString()}
+              </TableCell>
+              <TableCell className="text-center font-medium">{record.ingredientName}</TableCell>
+              <TableCell className="text-center font-mono text-xs text-muted-foreground">
                 {record.batchNumber}
               </TableCell>
-              <TableCell>{record.supplierName}</TableCell>
-              <TableCell className="text-right">{record.quantityAdded}</TableCell>
-              <TableCell className="text-right">
+              <TableCell className="text-center">{record.supplierName}</TableCell>
+              <TableCell className="text-center">{record.quantityAdded}</TableCell>
+              <TableCell className="text-center">
                 {UI_TEXT.INVENTORY.TABLE.CURRENCY}
                 {record.costPerUnit.toFixed(2)}
               </TableCell>
-              <TableCell className="text-right font-medium">
+              <TableCell className="text-center font-medium">
                 {UI_TEXT.INVENTORY.TABLE.CURRENCY}
                 {record.totalCost.toFixed(2)}
               </TableCell>
-              <TableCell>{record.receivedBy}</TableCell>
+              <TableCell className="text-center">{record.receivedBy}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -99,7 +117,7 @@ export function StockHistoryTable() {
 
       {/* Pagination Footer */}
       {!isLoading && !isError && totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
+        <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-4">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-slate-500 mr-2">
               {UI_TEXT.INVENTORY.TABLE.PAGE}

@@ -70,7 +70,7 @@ export function OpeningStockEntry() {
         </div>
       </div>
 
-      <Card className="border-border shadow-soft overflow-hidden">
+      <Card className="overflow-hidden border-border py-0 shadow-soft">
         <CardContent className="p-0">
           <OpeningStockTable
             ingredients={filteredIngredients}

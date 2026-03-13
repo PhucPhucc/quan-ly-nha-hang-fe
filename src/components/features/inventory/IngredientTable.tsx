@@ -106,29 +106,29 @@ export function IngredientTable() {
         />
       </div>
 
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent border-slate-100 bg-slate-50/50">
+            <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
               <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider text-center">
                 {UI_TEXT.INVENTORY.TABLE.COL_SKU}
               </TableHead>
-              <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_NAME}
               </TableHead>
-              <TableHead className="py-3 text-right font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
               </TableHead>
-              <TableHead className="py-3 text-right font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
               </TableHead>
-              <TableHead className="py-3 w-[140px] font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
               </TableHead>
               <TableHead className="py-3 w-[120px] text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
               </TableHead>
-              <TableHead className="py-3 w-[140px] text-right font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
               </TableHead>
             </TableRow>

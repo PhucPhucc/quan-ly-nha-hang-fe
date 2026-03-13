@@ -12,6 +12,7 @@ import { InventorySettingsFormContainer } from "../InventorySettingsFormContaine
 
 vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
+    getInventorySettings: vi.fn(),
     updateInventorySettings: vi.fn(),
   },
 }));
@@ -42,6 +43,10 @@ const initialValues = {
 describe("InventorySettingsForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(inventoryService.getInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: initialValues,
+    });
   });
 
   it("should render initial settings", async () => {
@@ -91,7 +96,8 @@ describe("InventorySettingsForm", () => {
     const user = userEvent.setup();
     render(<InventorySettingsFormContainer initialValues={initialValues} />);
 
-    await user.click(screen.getByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES }));
+    const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
+    await user.click(saveBtn);
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith("Cap nhat that bai");
@@ -106,10 +112,22 @@ describe("InventorySettingsForm", () => {
     const user = userEvent.setup();
     render(<InventorySettingsFormContainer initialValues={initialValues} />);
 
-    await user.click(screen.getByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES }));
+    const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
+    await user.click(saveBtn);
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(UI_TEXT.API.NETWORK_ERROR);
+    });
+  });
+
+  it("should fetch inventory settings on mount", async () => {
+    render(<InventorySettingsFormContainer />);
+
+    await waitFor(() => {
+      expect(inventoryService.getInventorySettings).toHaveBeenCalledTimes(1);
+      const inputs = screen.getAllByRole("spinbutton");
+      expect(inputs[0]).toHaveValue(10);
+      expect(inputs[1]).toHaveValue(5);
     });
   });
 });

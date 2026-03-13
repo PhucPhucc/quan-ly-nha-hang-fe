@@ -1,22 +1,57 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import type { InventorySettingsInput } from "@/lib/zod-schemas/inventory";
 import { inventoryService } from "@/services/inventory.service";
 
+import {
+  DEFAULT_INVENTORY_SETTINGS,
+  getInventorySettingsFormValues,
+} from "./inventorySettings.constants";
 import { InventorySettingsForm } from "./InventorySettingsForm";
 
 const { SETTINGS } = UI_TEXT.INVENTORY;
 
 type Props = {
-  initialValues: InventorySettingsInput;
+  initialValues?: InventorySettingsInput;
 };
 
-export function InventorySettingsFormContainer({ initialValues }: Props) {
+export function InventorySettingsFormContainer({
+  initialValues = DEFAULT_INVENTORY_SETTINGS,
+}: Props) {
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [formValues, setFormValues] = useState<InventorySettingsInput>(initialValues);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchSettings = async () => {
+      try {
+        const response = await inventoryService.getInventorySettings();
+
+        if (response.isSuccess && mounted) {
+          setFormValues(getInventorySettingsFormValues(response.data));
+        }
+      } catch (error) {
+        console.error("Failed to fetch inventory settings:", error);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchSettings();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleSubmit = async (data: InventorySettingsInput) => {
     setSaving(true);
@@ -37,7 +72,15 @@ export function InventorySettingsFormContainer({ initialValues }: Props) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <Spinner className="size-8" />
+      </div>
+    );
+  }
+
   return (
-    <InventorySettingsForm initialValues={initialValues} onSubmit={handleSubmit} saving={saving} />
+    <InventorySettingsForm initialValues={formValues} onSubmit={handleSubmit} saving={saving} />
   );
 }
