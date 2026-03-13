@@ -18,9 +18,10 @@ export type Table = {
 type TableItemProps = {
   table: Table;
   onTableClick?: () => void;
+  currentOrderCode?: string;
   isLoading?: boolean;
 };
-const TableItem = ({ table, onTableClick, isLoading }: TableItemProps) => {
+const TableItem = ({ table, onTableClick, currentOrderCode, isLoading }: TableItemProps) => {
   const timeRunning = useElapsedTime(table.createdAt);
 
   const isReady = table.status === OrderStatus.Ready;
@@ -45,7 +46,7 @@ const TableItem = ({ table, onTableClick, isLoading }: TableItemProps) => {
     >
       <div
         className={cn(
-          "relative border-2 w-28 h-20 sm:w-32 sm:h-24 rounded-xl transition-all duration-300 shadow-sm group-hover:shadow-md overflow-visible",
+          "relative border-2 w-28 h-20 sm:w-36 sm:h-24 m-3 rounded-xl transition-all duration-300 shadow-sm group-hover:shadow-md overflow-visible",
           getStatusColor(table.status)
         )}
       >
@@ -56,10 +57,12 @@ const TableItem = ({ table, onTableClick, isLoading }: TableItemProps) => {
 
         <div className="p-1.5 h-full flex flex-col justify-between overflow-hidden">
           <div className="flex justify-between items-start">
-            <p className="text-[12px] font-semibold font-mono tracking-wider">
-              {UI_TEXT.COMMON.HASH}
-              {table.tableNumber.toString().padStart(2, "0")}
-            </p>
+            {currentOrderCode && (
+              <p className="text-[12px] font-semibold font-mono tracking-wider">
+                {UI_TEXT.COMMON.HASH}
+                {currentOrderCode}
+              </p>
+            )}
             {table.status === OrderStatus.Serving && timeRunning && (
               <div className="flex items-center bg-background/90 p-1 rounded-full border border-table-serving/50">
                 <span className="text-[8px] font-black text-table-serving leading-none">
@@ -109,16 +112,16 @@ const FootTableItem = ({ position, color }: { position: string; color: string })
 
   switch (position) {
     case "top":
-      cssDefault += " -top-2 w-full h-1.5 flex justify-center gap-2 px-3";
+      cssDefault += " -top-2.5 w-full h-1.5 flex justify-center gap-2 px-3";
       break;
     case "bottom":
-      cssDefault += " -bottom-2 w-full h-1.5 flex justify-center gap-2 px-3";
+      cssDefault += " -bottom-2.5 w-full h-1.5 flex justify-center gap-2 px-3";
       break;
     case "left":
-      cssDefault += " -left-2 h-full flex flex-col justify-center gap-2 py-3";
+      cssDefault += " -left-2.5 h-full flex flex-col justify-center gap-2 py-3";
       break;
     case "right":
-      cssDefault += " -right-2 h-full flex flex-col justify-center gap-2 py-3";
+      cssDefault += " -right-2.5 h-full flex flex-col justify-center gap-2 py-3";
       break;
     default:
       break;
@@ -150,6 +153,8 @@ const getStatusColor = (status: OrderStatus) => {
       return "border-table-reserved/60 bg-table-reserved/20";
     case OrderStatus.Cleaning:
       return "border-table-cleaning/60 bg-table-cleaning/20";
+    case OrderStatus.OutOfService:
+      return "border-table-out-of-service/60 bg-table-out-of-service/20";
     default:
       return "border-secondary-foreground/30";
   }
@@ -165,6 +170,8 @@ const getFootColor = (status: OrderStatus) => {
       return "bg-table-reserved/50";
     case OrderStatus.Cleaning:
       return "bg-table-cleaning/50";
+    case OrderStatus.OutOfService:
+      return "bg-table-out-of-service/50";
     default:
       return "bg-secondary-foreground/40";
   }
