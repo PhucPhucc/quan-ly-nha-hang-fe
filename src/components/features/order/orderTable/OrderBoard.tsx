@@ -9,7 +9,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
 import { OrderStatus } from "@/types/enums";
-import { AreaStatus, TableStatus } from "@/types/Table-Layout";
+import { AreaStatus } from "@/types/Table-Layout";
 
 import OrderBoardHeader from "./components/OrderBoardHeader";
 import TableList from "./TableList";
@@ -25,7 +25,6 @@ const OrderBoard = () => {
 
   const areas = useTableStore((s) => s.areas);
   const fetchAreas = useTableStore((s) => s.fetchAreas);
-  const tables = useTableStore((s) => s.tables);
 
   // Fetch areas + orders on mount
   useEffect(() => {
@@ -104,19 +103,3 @@ const OrderBoard = () => {
 };
 
 export default OrderBoard;
-
-const mapTableStatusToOrder = (status: TableStatus): OrderStatus => {
-  switch (status) {
-    case TableStatus.Occupied:
-      return OrderStatus.Serving;
-    case TableStatus.Reserved:
-      return OrderStatus.Reserved;
-    case TableStatus.Cleaning:
-      return OrderStatus.Cleaning;
-    case TableStatus.OutOfService:
-      return OrderStatus.OutOfService;
-    case TableStatus.Available:
-    default:
-      return OrderStatus.Ready;
-  }
-};
