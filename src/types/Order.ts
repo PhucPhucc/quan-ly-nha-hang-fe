@@ -42,6 +42,7 @@ export const DINE_IN_STATUSES = [
   { value: "serving", label: "Đang sử dụng", color: "bg-table-serving" },
   { value: "reserved", label: "Đặt trước", color: "bg-table-reserved" },
   { value: "cleaning", label: "Đang dọn", color: "bg-table-cleaning" },
+  { value: "out_of_service", label: "Tạm ngưng", color: "bg-table-out-of-service" },
 ];
 
 export const TAKEAWAY_STATUSES = [
