@@ -49,14 +49,6 @@ const OrderBoard = () => {
     return <LoadingSpinner label={UI_TEXT.ORDER.FETCH_ORDERING} />;
   }
 
-  // Build table card data for TableStats from useTableStore tables
-  const tableCards = tables.map((t) => ({
-    tableNumber: t.tableNumber,
-    label: t.tableCode,
-    status: mapTableStatusToOrder(t.status),
-    people: 0,
-  }));
-
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">
       <OrderBoardHeader />
