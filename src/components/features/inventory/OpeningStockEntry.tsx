@@ -1,113 +1,46 @@
 "use client";
 
 import { Save, Search } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventory.service";
-import type { Ingredient, OpeningStockItem } from "@/types/Inventory";
 
-import type { OpeningStockEntryValues } from "./components/openingStockEntry.types";
 import { OpeningStockSummary } from "./components/OpeningStockSummary";
 import { OpeningStockTable } from "./components/OpeningStockTable";
+import { useOpeningStockIngredients } from "./useOpeningStockIngredients";
+import { useOpeningStockSubmit } from "./useOpeningStockSubmit";
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 
 export function OpeningStockEntry() {
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [search, setSearch] = useState("");
-  const [entryItems, setEntryItems] = useState<OpeningStockEntryValues>({});
-
-  useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const response = await inventoryService.getIngredients(1, 100);
-        if (response.isSuccess && response.data) {
-          const activeIngredients = response.data.items.filter((item) => item.isActive);
-          setIngredients(activeIngredients);
-          const initialItems: OpeningStockEntryValues = {};
-          activeIngredients.forEach((item) => {
-            initialItems[item.ingredientId] = {
-              quantity: item.currentStock || 0,
-              costPrice: item.costPrice || 0,
-            };
-          });
-          setEntryItems(initialItems);
-        }
-      } catch {
-        toast.error(OPENING_STOCK.ERROR_FETCH);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchIngredients();
-  }, []);
-
-  const filteredIngredients = useMemo(() => {
-    return ingredients.filter(
-      (item) =>
-        item.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.code.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [ingredients, search]);
-
-  const totalValue = useMemo(
-    () => Object.values(entryItems).reduce((sum, item) => sum + item.quantity * item.costPrice, 0),
-    [entryItems]
-  );
-
-  const handleInputChange = (id: string, field: "quantity" | "costPrice", value: string) => {
-    const numValue = parseFloat(value) || 0;
-    setEntryItems((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [field]: numValue,
-      },
-    }));
-  };
-
-  const handleSave = async () => {
-    const itemsToImport: OpeningStockItem[] = Object.entries(entryItems)
-      .filter(([, value]) => value.quantity > 0)
-      .map(([id, value]) => ({
-        ingredientId: id,
-        initialQuantity: value.quantity,
-        costPrice: value.costPrice,
-      }));
-
-    if (itemsToImport.length === 0) {
-      toast.warning(OPENING_STOCK.VALIDATION_REQUIRED);
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const response = await inventoryService.importOpeningStock({ items: itemsToImport });
-      if (response.isSuccess) {
-        toast.success(OPENING_STOCK.SUCCESS_IMPORT);
-      } else {
-        toast.error(response.message || UI_TEXT.API.NETWORK_ERROR);
-      }
-    } catch {
-      toast.error(UI_TEXT.API.NETWORK_ERROR);
-    } finally {
-      setSaving(false);
-    }
-  };
+  const {
+    search,
+    setSearch,
+    filteredIngredients,
+    entryItems,
+    totalValue,
+    loading,
+    isError,
+    error,
+    handleInputChange,
+  } = useOpeningStockIngredients();
+  const { handleSave, saving } = useOpeningStockSubmit();
 
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
         <Spinner className="size-8" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-64 items-center justify-center px-4 text-center text-destructive">
+        {error instanceof Error ? error.message : OPENING_STOCK.ERROR_FETCH}
       </div>
     );
   }
@@ -127,7 +60,7 @@ export function OpeningStockEntry() {
         <div className="flex items-center gap-4">
           <OpeningStockSummary totalValue={totalValue} />
           <Button
-            onClick={handleSave}
+            onClick={() => handleSave(entryItems)}
             disabled={saving}
             className="bg-primary hover:bg-primary-hover"
           >

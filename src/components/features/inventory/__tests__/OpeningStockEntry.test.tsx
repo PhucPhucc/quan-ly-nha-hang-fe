@@ -1,8 +1,9 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { toast } from "sonner";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
@@ -28,10 +29,28 @@ vi.mock("sonner", () => ({
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 
+const createQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+      mutations: {
+        retry: false,
+      },
+    },
+  });
+
+const renderWithProviders = (ui: React.ReactElement) => {
+  const queryClient = createQueryClient();
+
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+};
+
 describe("OpeningStockEntry", () => {
   const mockIngredients = [
     {
-      ingredientId: "ing-1",
+      ingredientId: "550e8400-e29b-41d4-a716-446655440000",
       name: "Cà chua",
       code: "TOMATO",
       unit: InventoryUnit.KG,
@@ -42,6 +61,10 @@ describe("OpeningStockEntry", () => {
       lowStockThreshold: 5,
     },
   ];
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("should render and load ingredients", async () => {
     vi.mocked(inventoryService.getIngredients).mockResolvedValue({
@@ -55,7 +78,7 @@ describe("OpeningStockEntry", () => {
       },
     });
 
-    render(<OpeningStockEntry />);
+    renderWithProviders(<OpeningStockEntry />);
 
     await waitFor(() => {
       expect(screen.getByText("Cà chua")).toBeInTheDocument();
@@ -81,7 +104,7 @@ describe("OpeningStockEntry", () => {
     });
 
     const user = userEvent.setup();
-    render(<OpeningStockEntry />);
+    renderWithProviders(<OpeningStockEntry />);
 
     await waitFor(() => {
       expect(screen.getByText("Cà chua")).toBeInTheDocument();
@@ -100,7 +123,7 @@ describe("OpeningStockEntry", () => {
       expect(mockImport).toHaveBeenCalledWith({
         items: [
           expect.objectContaining({
-            ingredientId: "ing-1",
+            ingredientId: "550e8400-e29b-41d4-a716-446655440000",
             initialQuantity: 20,
           }),
         ],
