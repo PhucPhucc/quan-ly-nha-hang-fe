@@ -82,8 +82,10 @@ export const inventoryService = {
   },
 
   // Cập nhật cấu hình kho
-  updateInventorySettings: async (data: InventorySettings): Promise<ApiResponse<boolean>> => {
-    return apiFetch<boolean>("/inventory/settings", {
+  updateInventorySettings: async (
+    data: InventorySettings
+  ): Promise<ApiResponse<InventorySettings>> => {
+    return apiFetch<InventorySettings>("/inventory/settings", {
       method: "PUT",
       body: data,
     });

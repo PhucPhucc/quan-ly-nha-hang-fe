@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -22,6 +23,7 @@ type Props = {
 export function InventorySettingsFormContainer({
   initialValues = DEFAULT_INVENTORY_SETTINGS,
 }: Props) {
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [formValues, setFormValues] = useState<InventorySettingsInput>(initialValues);
 
@@ -53,7 +55,12 @@ export function InventorySettingsFormContainer({
     try {
       const response = await inventoryService.updateInventorySettings(data);
 
-      if (response.isSuccess) {
+      if (response.isSuccess && response.data) {
+        const nextValues = getInventorySettingsFormValues(response.data);
+
+        setFormValues(nextValues);
+        queryClient.setQueryData(["inventory-settings"], response);
+        await queryClient.invalidateQueries({ queryKey: ["inventory-settings"] });
         toast.success(SETTINGS.SUCCESS_UPDATE);
         return;
       }

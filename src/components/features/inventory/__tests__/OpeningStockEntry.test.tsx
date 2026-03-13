@@ -11,7 +11,6 @@ import { InventoryUnit } from "@/types/Inventory";
 
 import { OpeningStockEntry } from "../OpeningStockEntry";
 
-// Mock services and toast
 vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
     getIngredients: vi.fn(),
@@ -96,10 +95,11 @@ describe("OpeningStockEntry", () => {
     await waitFor(() => {
       expect(screen.getByText("Cà chua")).toBeInTheDocument();
       expect(screen.getByText("TOMATO")).toBeInTheDocument();
+      expect(screen.getByText("10")).toBeInTheDocument();
     });
   });
 
-  it("should handle quantity changes and submit", async () => {
+  it("should ask for overwrite confirmation before submitting existing stock", async () => {
     vi.mocked(inventoryService.getIngredients).mockResolvedValue({
       isSuccess: true,
       data: {
@@ -127,23 +127,24 @@ describe("OpeningStockEntry", () => {
       expect(screen.getByText("Cà chua")).toBeInTheDocument();
     });
 
-    const inputs = screen.getAllByRole("spinbutton"); // quantity and cost inputs
-    const qtyInput = inputs[0];
-
-    await user.clear(qtyInput);
-    await user.type(qtyInput, "20");
-
     const saveBtn = screen.getByRole("button", { name: OPENING_STOCK.BTN_SAVE });
     await user.click(saveBtn);
+
+    expect(screen.getByText("Xác nhận ghi đè tồn kho")).toBeInTheDocument();
+    expect(screen.getByText("NVL này đã có tồn kho. Bạn có chắc muốn ghi đè?")).toBeInTheDocument();
+    expect(mockImport).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: "Xác nhận ghi đè" }));
 
     await waitFor(() => {
       expect(mockImport).toHaveBeenCalledWith({
         items: [
           expect.objectContaining({
             ingredientId: "550e8400-e29b-41d4-a716-446655440000",
-            initialQuantity: 20,
+            initialQuantity: 10,
           }),
         ],
+        confirmOverwrite: true,
       });
       expect(toast.success).toHaveBeenCalledWith(OPENING_STOCK.SUCCESS_IMPORT);
     });
@@ -176,7 +177,7 @@ describe("OpeningStockEntry", () => {
     renderWithProviders(<OpeningStockEntry />);
 
     await waitFor(() => {
-      expect(screen.getByText("So du dau ky da khoa")).toBeInTheDocument();
+      expect(screen.getByText("Số dư đầu kỳ đã khóa")).toBeInTheDocument();
     });
 
     const saveBtn = screen.getByRole("button", { name: OPENING_STOCK.BTN_SAVE });

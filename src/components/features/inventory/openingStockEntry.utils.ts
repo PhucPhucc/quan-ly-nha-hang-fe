@@ -29,7 +29,8 @@ export function mergeOpeningStockEntryValues(
 }
 
 export function buildImportOpeningStockInput(
-  entryItems: OpeningStockEntryValues
+  entryItems: OpeningStockEntryValues,
+  confirmOverwrite: boolean = false
 ): ImportOpeningStockInput {
   return {
     items: Object.entries(entryItems).reduce<ImportOpeningStockInput["items"]>(
@@ -46,5 +47,6 @@ export function buildImportOpeningStockInput(
       },
       []
     ),
+    confirmOverwrite,
   };
 }

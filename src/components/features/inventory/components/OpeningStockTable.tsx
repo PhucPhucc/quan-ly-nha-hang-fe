@@ -34,9 +34,9 @@ export function OpeningStockTable({
   return (
     <div className="max-h-[600px] overflow-auto">
       <Table>
-        <TableHeader className="bg-muted/50 sticky top-0 z-10">
+        <TableHeader className="sticky top-0 z-10 bg-muted/50">
           <TableRow>
-            <TableHead className="w-[120px]">{OPENING_STOCK.COL_CODE}</TableHead>
+            <TableHead className="w-[160px]">{OPENING_STOCK.COL_CODE}</TableHead>
             <TableHead>{OPENING_STOCK.COL_NAME}</TableHead>
             <TableHead className="w-[100px]">{OPENING_STOCK.COL_UNIT}</TableHead>
             <TableHead className="w-[120px] text-right">{OPENING_STOCK.COL_CURRENT}</TableHead>
@@ -61,7 +61,7 @@ export function OpeningStockTable({
               const rowTotal = (entryItem?.quantity || 0) * (entryItem?.costPrice || 0);
 
               return (
-                <TableRow key={item.ingredientId} className="hover:bg-muted/30 transition-colors">
+                <TableRow key={item.ingredientId} className="transition-colors hover:bg-muted/30">
                   <TableCell className="font-medium">
                     <Badge variant="outline" className="font-mono text-xs">
                       {item.code}

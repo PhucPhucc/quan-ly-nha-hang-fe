@@ -102,6 +102,7 @@ export function useOpeningStockIngredients() {
   return {
     search,
     setSearch,
+    ingredients,
     filteredIngredients,
     entryItems,
     totalValue,

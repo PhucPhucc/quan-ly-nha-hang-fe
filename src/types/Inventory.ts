@@ -68,6 +68,7 @@ export interface OpeningStockItem {
 
 export interface ImportOpeningStockRequest {
   items: OpeningStockItem[];
+  confirmOverwrite: boolean;
 }
 
 export interface ImportOpeningStockResponse {
