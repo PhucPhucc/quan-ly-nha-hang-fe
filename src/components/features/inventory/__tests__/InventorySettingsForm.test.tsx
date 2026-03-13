@@ -12,6 +12,7 @@ import { InventorySettingsFormContainer } from "../InventorySettingsFormContaine
 
 vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
+    getInventorySettings: vi.fn(),
     updateInventorySettings: vi.fn(),
   },
 }));
@@ -42,6 +43,10 @@ const initialValues = {
 describe("InventorySettingsForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(inventoryService.getInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: initialValues,
+    });
   });
 
   it("should render initial settings", async () => {
