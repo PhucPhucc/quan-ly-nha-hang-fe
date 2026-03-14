@@ -69,14 +69,14 @@ const data = {
           icon: Bell,
         },
         {
-          title: UI_TEXT.INVENTORY.HISTORY_BTN,
-          url: "/manager/inventory/history",
-          icon: History,
-        },
-        {
           title: UI_TEXT.INVENTORY.SETTINGS.TITLE,
           url: "/manager/inventory/settings",
           icon: Settings,
+        },
+        {
+          title: UI_TEXT.INVENTORY.STOCK_IN_TITLE,
+          url: "/manager/inventory/stock-in",
+          icon: History,
         },
         {
           title: UI_TEXT.INVENTORY.OPENING_STOCK.TITLE,

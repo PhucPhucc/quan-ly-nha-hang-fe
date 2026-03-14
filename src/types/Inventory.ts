@@ -31,20 +31,6 @@ export interface Ingredient {
   expirationDate?: string;
 }
 
-export interface StockHistory {
-  id: string;
-  ingredientId: string;
-  ingredientName: string;
-  batchNumber: string;
-  quantityAdded: number;
-  costPerUnit: number;
-  totalCost: number;
-  supplierName: string;
-  receivedDate: string;
-  expirationDate?: string;
-  receivedBy: string; // Employee Name
-}
-
 // Stats for dashboard
 export interface InventoryStats {
   totalItems: number;

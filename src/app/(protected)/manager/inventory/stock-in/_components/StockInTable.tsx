@@ -1,0 +1,158 @@
+"use client";
+
+import { Edit, Eye, MessageSquare, MoreHorizontal, Search, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { UI_TEXT } from "@/lib/UI_Text";
+import { StockInReceipt } from "@/types/StockIn";
+
+interface StockInTableProps {
+  data: StockInReceipt[];
+  onViewDetail: (id: string) => void;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+}
+
+export const StockInTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTableProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredData = data.filter((item) =>
+    item.receiptCode.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={UI_TEXT.INVENTORY.TOOLBAR.SEARCH_PLACEHOLDER}
+            className="pl-9"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="fh-table-shell">
+        <Table className="fh-table">
+          <TableHeader>
+            <TableRow className="fh-table-header-row">
+              <TableHead className="fh-table-head">
+                {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
+              </TableHead>
+              <TableHead className="fh-table-head">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</TableHead>
+              <TableHead className="fh-table-head text-center">
+                {UI_TEXT.INVENTORY.OPENING_STOCK.COL_UNIT}
+              </TableHead>
+              <TableHead className="fh-table-head text-right">
+                {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
+              </TableHead>
+              <TableHead className="fh-table-head">
+                {UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}
+              </TableHead>
+              <TableHead className="fh-table-head">{UI_TEXT.INVENTORY.FORM.DESCRIPTION}</TableHead>
+              <TableHead className="fh-table-head text-right">
+                {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.length > 0 ? (
+              filteredData.map((item) => (
+                <TableRow key={item.id} className="fh-table-row">
+                  <TableCell className="fh-table-cell fh-table-cell-strong">
+                    {item.receiptCode}
+                  </TableCell>
+                  <TableCell className="fh-table-cell">
+                    {new Date(item.receivedDate).toLocaleDateString("vi-VN")}
+                  </TableCell>
+                  <TableCell className="fh-table-cell text-center">
+                    <Badge variant="secondary" className="font-semibold">
+                      {item.totalItems}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="fh-table-cell text-right font-bold text-primary">
+                    {item.totalAmount.toLocaleString("vi-VN")}
+                    {UI_TEXT.COMMON.CURRENCY}
+                  </TableCell>
+                  <TableCell className="fh-table-cell">
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
+                        {item.createdBy.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="text-sm">{item.createdBy}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="fh-table-cell">
+                    {item.note && (
+                      <div className="flex items-center gap-1.5 text-muted-foreground italic">
+                        <MessageSquare className="size-3.5" />
+                        <span className="truncate max-w-[150px]">{item.note}</span>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell className="fh-table-cell text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>{UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => onViewDetail(item.id)}>
+                          <Eye className="mr-2 size-4" /> {UI_TEXT.BUTTON.DETAIL}
+                        </DropdownMenuItem>
+                        {onEdit && (
+                          <DropdownMenuItem onClick={() => onEdit(item.id)}>
+                            <Edit className="mr-2 size-4" /> {UI_TEXT.BUTTON.EDIT}
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        {onDelete && (
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => onDelete(item.id)}
+                          >
+                            <Trash2 className="mr-2 size-4" />{" "}
+                            {UI_TEXT.INVENTORY.DELETE.TITLE || "Xóa phiếu"}
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                  {UI_TEXT.INVENTORY.OPENING_STOCK.EMPTY_SEARCH}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+};

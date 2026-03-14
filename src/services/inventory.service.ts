@@ -6,7 +6,6 @@ import {
   Ingredient,
   InventorySettings,
   InventoryStats,
-  StockHistory,
 } from "@/types/Inventory";
 
 function buildFallbackIngredientCode(name: string): string {
@@ -112,17 +111,6 @@ export const inventoryService = {
     return apiFetch<boolean>(`/ingredients/${id}/deactivate`, {
       method: "PATCH",
     });
-  },
-
-  // Lấy lịch sử nhập kho
-  getStockHistory: async (
-    page: number = 1,
-    pageSize: number = 10
-  ): Promise<ApiResponse<PaginationResult<StockHistory>>> => {
-    const params = new URLSearchParams();
-    params.set("pageNumber", page.toString());
-    params.set("pageSize", pageSize.toString());
-    return apiFetch<PaginationResult<StockHistory>>(`/inventory/history?${params.toString()}`);
   },
 
   // Lấy thống kê tổng quan (Dashboard)
