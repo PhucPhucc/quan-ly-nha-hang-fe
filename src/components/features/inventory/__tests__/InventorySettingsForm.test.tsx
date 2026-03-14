@@ -120,6 +120,30 @@ describe("InventorySettingsForm", () => {
     });
   });
 
+  it("should show success toast when update succeeds", async () => {
+    vi.mocked(inventoryService.updateInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        expiryWarningDays: 14,
+        defaultLowStockThreshold: 3,
+        autoDeductOnCompleted: false,
+        costMethod: "FIFO",
+        maxCostRecalcDays: 45,
+      },
+    });
+
+    const user = userEvent.setup();
+    renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
+
+    const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
+    await user.click(saveBtn);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalled();
+      expect(toast.error).not.toHaveBeenCalledWith(UI_TEXT.API.NETWORK_ERROR);
+    });
+  });
+
   it("should show network error toast when update throws", async () => {
     vi.mocked(inventoryService.updateInventorySettings).mockRejectedValue(
       new Error("Network error")
@@ -137,7 +161,7 @@ describe("InventorySettingsForm", () => {
   });
 
   it("should fetch inventory settings on mount", async () => {
-    render(<InventorySettingsFormContainer />);
+    renderWithQueryClient(<InventorySettingsFormContainer />);
 
     await waitFor(() => {
       expect(inventoryService.getInventorySettings).toHaveBeenCalledTimes(1);

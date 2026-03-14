@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -23,6 +24,7 @@ type Props = {
 export function InventorySettingsFormContainer({
   initialValues = DEFAULT_INVENTORY_SETTINGS,
 }: Props) {
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [formValues, setFormValues] = useState<InventorySettingsInput>(initialValues);
