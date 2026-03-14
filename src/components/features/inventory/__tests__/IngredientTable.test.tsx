@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -140,5 +141,24 @@ describe("IngredientTable", () => {
     renderWithProviders(<IngredientTable />);
 
     expect(await screen.findByText("Bạn chưa nhập số dư đầu kỳ")).toBeInTheDocument();
+  });
+  it("should refetch ingredients when search changes", async () => {
+    vi.mocked(inventoryService.getIngredients).mockResolvedValue({
+      isSuccess: true,
+      data: { items: [], totalCount: 0, currentPage: 1, pageSize: 10, totalPages: 1 },
+    });
+
+    const user = userEvent.setup();
+    renderWithProviders(<IngredientTable />);
+
+    await waitFor(() => {
+      expect(inventoryService.getIngredients).toHaveBeenCalledWith(1, 10, undefined, undefined);
+    });
+
+    await user.type(await screen.findByPlaceholderText(/Tìm mã hoặc tên NVL/i), "Potato");
+
+    await waitFor(() => {
+      expect(inventoryService.getIngredients).toHaveBeenLastCalledWith(1, 10, "Potato", undefined);
+    });
   });
 });

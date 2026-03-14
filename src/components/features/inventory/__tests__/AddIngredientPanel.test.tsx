@@ -13,6 +13,7 @@ import { AddIngredientPanel } from "../AddIngredientPanel";
 vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
     addIngredient: vi.fn(),
+    generateIngredientCode: vi.fn(),
     getInventorySettings: vi.fn(),
   },
 }));
@@ -50,6 +51,11 @@ describe("AddIngredientPanel", () => {
         maxCostRecalcDays: 31,
       },
     });
+
+    vi.mocked(inventoryService.generateIngredientCode).mockResolvedValue({
+      isSuccess: true,
+      data: "APPLE-AUTO",
+    });
   });
 
   it("should render the trigger button", () => {
@@ -63,7 +69,7 @@ describe("AddIngredientPanel", () => {
       data: {
         id: "new-1",
         name: "Apple",
-        sku: "APPLE",
+        sku: "APPLE-AUTO",
         unit: InventoryUnit.KG,
         currentStock: 0,
         lowStockThreshold: 3,
@@ -88,8 +94,9 @@ describe("AddIngredientPanel", () => {
 
     // Fill form
     await user.type(nameInput, "Apple");
-    await user.clear(codeInput);
-    await user.type(codeInput, "APPLE");
+    await waitFor(() => {
+      expect(codeInput).toHaveValue("APPLE-AUTO");
+    });
 
     const spinbuttons = within(dialog).getAllByRole("spinbutton");
     const qtyInput = spinbuttons[0];
@@ -104,16 +111,40 @@ describe("AddIngredientPanel", () => {
 
     await waitFor(() => {
       expect(mockAdd).toHaveBeenCalledTimes(1);
+      expect(inventoryService.generateIngredientCode).toHaveBeenCalledWith("Apple");
       expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           name: "Apple",
-          code: "APPLE",
+          code: "APPLE-AUTO",
           unit: "kg",
           lowStockThreshold: 3,
           description: "",
           isActive: true,
         })
       );
+    });
+  });
+
+  it("should fallback to local code if generate API fails", async () => {
+    vi.mocked(inventoryService.generateIngredientCode).mockResolvedValue({
+      isSuccess: true,
+      data: "HANHTAY",
+    });
+
+    const user = userEvent.setup();
+    renderWithProviders(<AddIngredientPanel />);
+
+    await user.click(screen.getByRole("button", { name: /Thêm nguyên liệu mới/i }));
+
+    const dialog = await screen.findByRole("dialog");
+    const textboxes = within(dialog).getAllByRole("textbox");
+    const nameInput = textboxes[0];
+    const codeInput = textboxes[1];
+
+    await user.type(nameInput, "Hanh tay");
+
+    await waitFor(() => {
+      expect(codeInput).toHaveValue("HANHTAY");
     });
   });
 });

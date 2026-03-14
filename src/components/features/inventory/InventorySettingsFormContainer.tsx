@@ -59,7 +59,7 @@ export function InventorySettingsFormContainer({
         const nextValues = getInventorySettingsFormValues(response.data);
 
         setFormValues(nextValues);
-        queryClient.setQueryData(["inventory-settings"], response);
+        queryClient.setQueryData(["inventory-settings"], response.data);
         await queryClient.invalidateQueries({ queryKey: ["inventory-settings"] });
         toast.success(SETTINGS.SUCCESS_UPDATE);
         return;

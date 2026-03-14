@@ -74,9 +74,12 @@ export function IngredientTable() {
     deleteMutation,
   } = useInventoryTable(pageSize);
 
-  const { data: settingsResponse } = useQuery({
+  const { data: settings } = useQuery({
     queryKey: ["inventory-settings"],
-    queryFn: () => inventoryService.getInventorySettings(),
+    queryFn: async () => {
+      const response = await inventoryService.getInventorySettings();
+      return response.data;
+    },
   });
 
   const [editingItem, setEditingItem] = useState<Ingredient | null>(null);
@@ -128,7 +131,7 @@ export function IngredientTable() {
 
   return (
     <div className="space-y-4">
-      {shouldShowOpeningStockReminder(settingsResponse?.data) ? (
+      {shouldShowOpeningStockReminder(settings) ? (
         <div className="flex items-start justify-between gap-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-950">
           <div className="flex items-start gap-3">
             <CircleAlert className="mt-0.5 h-5 w-5 shrink-0" />

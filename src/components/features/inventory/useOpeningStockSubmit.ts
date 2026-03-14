@@ -52,18 +52,12 @@ export function useOpeningStockSubmit() {
     },
     onSuccess: async () => {
       queryClient.setQueryData(["inventory-settings"], (current) => ({
-        ...(typeof current === "object" && current !== null ? current : {}),
-        data: {
-          ...((typeof current === "object" &&
-          current !== null &&
-          "data" in current &&
-          typeof current.data === "object" &&
-          current.data !== null
-            ? current.data
-            : {}) as Record<string, unknown>),
-          openingStockStatus: 2,
-          lockedAt: new Date().toISOString(),
-        },
+        ...((typeof current === "object" && current !== null ? current : {}) as Record<
+          string,
+          unknown
+        >),
+        openingStockStatus: 2,
+        lockedAt: new Date().toISOString(),
       }));
 
       await Promise.all([

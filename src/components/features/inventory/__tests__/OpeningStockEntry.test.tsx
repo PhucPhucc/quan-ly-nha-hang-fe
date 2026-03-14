@@ -187,4 +187,111 @@ describe("OpeningStockEntry", () => {
     expect(inputs[0]).toBeDisabled();
     expect(inputs[1]).toBeDisabled();
   });
+
+  it("should lock the screen after submitting opening stock successfully", async () => {
+    vi.mocked(inventoryService.getIngredients).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        items: mockIngredients,
+        totalCount: 1,
+        pageSize: 10,
+        currentPage: 1,
+        totalPages: 1,
+      },
+    });
+
+    vi.mocked(inventoryService.getInventorySettings)
+      .mockResolvedValueOnce({
+        isSuccess: true,
+        data: {
+          expiryWarningDays: 7,
+          defaultLowStockThreshold: 0,
+          autoDeductOnCompleted: true,
+          costMethod: "WeightedAverage",
+          maxCostRecalcDays: 31,
+          openingStockStatus: 1,
+          lockedAt: null,
+        },
+      })
+      .mockResolvedValue({
+        isSuccess: true,
+        data: {
+          expiryWarningDays: 7,
+          defaultLowStockThreshold: 0,
+          autoDeductOnCompleted: true,
+          costMethod: "WeightedAverage",
+          maxCostRecalcDays: 31,
+          openingStockStatus: 2,
+          lockedAt: new Date().toISOString(),
+        },
+      });
+
+    vi.mocked(inventoryService.importOpeningStock).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        updatedCount: 1,
+        transactionCount: 1,
+        updatedAt: new Date().toISOString(),
+      },
+    });
+
+    const user = userEvent.setup();
+    renderWithProviders(<OpeningStockEntry />);
+
+    await waitFor(() => {
+      expect(screen.getByText("TOMATO")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: OPENING_STOCK.BTN_SAVE }));
+    await user.click(screen.getByRole("button", { name: "Xác nhận ghi đè" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Số dư đầu kỳ đã khóa")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: OPENING_STOCK.BTN_SAVE })).toBeDisabled();
+    });
+  });
+  it("should keep showing loading state until inventory settings are loaded", async () => {
+    let resolveSettings:
+      | ((value: Awaited<ReturnType<typeof inventoryService.getInventorySettings>>) => void)
+      | undefined;
+
+    vi.mocked(inventoryService.getIngredients).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        items: mockIngredients,
+        totalCount: 1,
+        pageSize: 10,
+        currentPage: 1,
+        totalPages: 1,
+      },
+    });
+
+    vi.mocked(inventoryService.getInventorySettings).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveSettings = resolve;
+        })
+    );
+
+    renderWithProviders(<OpeningStockEntry />);
+
+    expect(screen.queryByText("TOMATO")).not.toBeInTheDocument();
+
+    resolveSettings?.({
+      isSuccess: true,
+      data: {
+        expiryWarningDays: 7,
+        defaultLowStockThreshold: 0,
+        autoDeductOnCompleted: true,
+        costMethod: "WeightedAverage",
+        maxCostRecalcDays: 31,
+        openingStockStatus: 1,
+        lockedAt: null,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("TOMATO")).toBeInTheDocument();
+    });
+  });
 });

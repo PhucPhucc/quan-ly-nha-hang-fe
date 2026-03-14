@@ -47,15 +47,19 @@ export function AddIngredientPanel({
   const setOpen = setControlledOpen || setInternalOpen;
   const isEditing = !!ingredient;
   const [hasCustomCode, setHasCustomCode] = useState(false);
+  const generateCodeRequestIdRef = React.useRef(0);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
-  const { data: settingsResponse } = useQuery({
+  const { data: settings } = useQuery({
     queryKey: ["inventory-settings"],
-    queryFn: () => inventoryService.getInventorySettings(),
+    queryFn: async () => {
+      const response = await inventoryService.getInventorySettings();
+      return response.data;
+    },
   });
-  const defaultLowStockThreshold = settingsResponse?.data?.defaultLowStockThreshold ?? 10;
+  const defaultLowStockThreshold = settings?.defaultLowStockThreshold ?? 10;
 
   const {
     register,
@@ -139,12 +143,30 @@ export function AddIngredientPanel({
 
     const normalizedName = (watchedName || "").trim();
     if (!normalizedName) {
+      generateCodeRequestIdRef.current += 1;
       setValue("code", "", { shouldValidate: true });
       return;
     }
 
-    const generatedCode = normalizedName.replace(/\s+/g, "").toUpperCase();
-    setValue("code", generatedCode, { shouldValidate: true });
+    const currentRequestId = generateCodeRequestIdRef.current + 1;
+    generateCodeRequestIdRef.current = currentRequestId;
+
+    const timeoutId = window.setTimeout(async () => {
+      const response = await inventoryService.generateIngredientCode(normalizedName);
+
+      if (generateCodeRequestIdRef.current !== currentRequestId) {
+        return;
+      }
+
+      setValue("code", response.data, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [watchedName, isEditing, hasCustomCode, setValue]);
 
   const onSubmit = async (data: IngredientFormValues) => {

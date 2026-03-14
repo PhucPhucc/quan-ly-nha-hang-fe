@@ -43,7 +43,12 @@ export function useOpeningStockIngredients() {
       return response.data.items.filter((item) => item.isActive);
     },
   });
-  const { data: settings } = useQuery({
+  const {
+    data: settings,
+    isLoading: isSettingsLoading,
+    isError: isSettingsError,
+    error: settingsError,
+  } = useQuery({
     queryKey: ["inventory-settings"],
     queryFn: async () => {
       const response = await inventoryService.getInventorySettings();
@@ -106,9 +111,9 @@ export function useOpeningStockIngredients() {
     filteredIngredients,
     entryItems,
     totalValue,
-    loading: isLoading,
-    isError,
-    error,
+    loading: isLoading || isSettingsLoading,
+    isError: isError || isSettingsError,
+    error: error ?? settingsError,
     isLocked: isOpeningStockLocked(settings),
     lockedAt: settings?.lockedAt ?? null,
     handleInputChange,
