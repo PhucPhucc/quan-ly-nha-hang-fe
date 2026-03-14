@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -13,12 +13,41 @@ export function useInventoryTable(pageSize = 10) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const normalizedSearchQuery = searchQuery.trim();
+  const backendStatusFilter =
+    statusFilter === "all"
+      ? undefined
+      : {
+          status:
+            statusFilter === "low"
+              ? AlertThresholdStatus.LOW_STOCK
+              : statusFilter === "out"
+                ? AlertThresholdStatus.OUT_OF_STOCK
+                : AlertThresholdStatus.NORMAL,
+        };
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["ingredients", currentPage, pageSize],
-    queryFn: () => inventoryService.getIngredients(currentPage, pageSize),
+    queryKey: ["ingredients", currentPage, pageSize, normalizedSearchQuery, statusFilter],
+    queryFn: () =>
+      inventoryService.getIngredients(
+        currentPage,
+        pageSize,
+        normalizedSearchQuery || undefined,
+        backendStatusFilter
+      ),
     staleTime: 0,
+    placeholderData: keepPreviousData,
   });
+
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  }, []);
+
+  const handleStatusChange = useCallback((status: StatusFilter) => {
+    setStatusFilter(status);
+    setCurrentPage(1);
+  }, []);
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => inventoryService.deleteIngredient(id),
@@ -60,26 +89,12 @@ export function useInventoryTable(pageSize = 10) {
   }, [items]);
 
   const filteredIngredients = useMemo(() => {
-    const filtered = normalizedItems.filter((item) => {
-      const matchesSearch =
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.code.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesStatus =
-        statusFilter === "all" ||
-        (statusFilter === "low" && item.status === AlertThresholdStatus.LOW_STOCK) ||
-        (statusFilter === "out" && item.status === AlertThresholdStatus.OUT_OF_STOCK) ||
-        (statusFilter === "normal" && item.status === AlertThresholdStatus.NORMAL);
-
-      return matchesSearch && matchesStatus;
-    });
-
-    return [...filtered].sort((a, b) => {
+    return [...normalizedItems].sort((a, b) => {
       const activeDiff = Number(b.isActive) - Number(a.isActive); // active first
       if (activeDiff !== 0) return activeDiff;
       return a.name.localeCompare(b.name, "vi", { sensitivity: "base" });
     });
-  }, [normalizedItems, searchQuery, statusFilter]);
+  }, [normalizedItems]);
 
   return {
     ingredients: filteredIngredients,
@@ -90,9 +105,9 @@ export function useInventoryTable(pageSize = 10) {
     currentPage,
     setCurrentPage,
     searchQuery,
-    setSearchQuery,
+    setSearchQuery: handleSearchChange,
     statusFilter,
-    setStatusFilter,
+    setStatusFilter: handleStatusChange,
     deleteMutation,
   };
 }

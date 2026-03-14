@@ -2,11 +2,38 @@ import { apiFetch } from "@/services/api";
 import { ApiResponse, PaginationResult, QueryParams } from "@/types/Api";
 import {
   ImportOpeningStockRequest,
+  ImportOpeningStockResponse,
   Ingredient,
   InventorySettings,
   InventoryStats,
   StockHistory,
 } from "@/types/Inventory";
+
+function buildFallbackIngredientCode(name: string): string {
+  return name.trim().replace(/\s+/g, "").toUpperCase();
+}
+
+function extractGeneratedIngredientCode(payload: unknown): string | null {
+  if (typeof payload === "string" && payload.trim()) {
+    return payload;
+  }
+
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+
+  const candidate = payload as Record<string, unknown>;
+  const possibleKeys = ["code", "generatedCode", "ingredientCode", "value"];
+
+  for (const key of possibleKeys) {
+    const value = candidate[key];
+    if (typeof value === "string" && value.trim()) {
+      return value;
+    }
+  }
+
+  return null;
+}
 
 export const inventoryService = {
   // Lấy danh sách nguyên liệu
@@ -39,6 +66,34 @@ export const inventoryService = {
       method: "POST",
       body: data,
     });
+  },
+
+  generateIngredientCode: async (name: string): Promise<ApiResponse<string>> => {
+    const normalizedName = name.trim();
+    if (!normalizedName) {
+      return {
+        isSuccess: true,
+        data: "",
+      };
+    }
+
+    const params = new URLSearchParams({ name });
+    try {
+      const response = await apiFetch<string | Record<string, unknown>>(
+        `/ingredients/generate-code?${params.toString()}`
+      );
+      const generatedCode = extractGeneratedIngredientCode(response.data);
+
+      return {
+        ...response,
+        data: generatedCode ?? buildFallbackIngredientCode(normalizedName),
+      };
+    } catch {
+      return {
+        isSuccess: true,
+        data: buildFallbackIngredientCode(normalizedName),
+      };
+    }
   },
 
   // Cập nhật nguyên liệu
@@ -81,16 +136,20 @@ export const inventoryService = {
   },
 
   // Cập nhật cấu hình kho
-  updateInventorySettings: async (data: InventorySettings): Promise<ApiResponse<boolean>> => {
-    return apiFetch<boolean>("/inventory/settings", {
+  updateInventorySettings: async (
+    data: InventorySettings
+  ): Promise<ApiResponse<InventorySettings>> => {
+    return apiFetch<InventorySettings>("/inventory/settings", {
       method: "PUT",
       body: data,
     });
   },
 
   // Nhập số dư đầu kỳ
-  importOpeningStock: async (data: ImportOpeningStockRequest): Promise<ApiResponse<boolean>> => {
-    return apiFetch<boolean>("/inventory/opening-stock", {
+  importOpeningStock: async (
+    data: ImportOpeningStockRequest
+  ): Promise<ApiResponse<ImportOpeningStockResponse>> => {
+    return apiFetch<ImportOpeningStockResponse>("/inventory/opening-stock", {
       method: "POST",
       body: data,
     });

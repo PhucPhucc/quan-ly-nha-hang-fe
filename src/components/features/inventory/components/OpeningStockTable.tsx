@@ -20,11 +20,17 @@ type Props = {
   ingredients: Ingredient[];
   entryItems: OpeningStockEntryValues;
   onInputChange: (id: string, field: "quantity" | "costPrice", value: string) => void;
+  disabled?: boolean;
 };
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 
-export function OpeningStockTable({ ingredients, entryItems, onInputChange }: Props) {
+export function OpeningStockTable({
+  ingredients,
+  entryItems,
+  onInputChange,
+  disabled = false,
+}: Props) {
   return (
     <div className="max-h-[600px] overflow-auto rounded-xl border border-slate-200 bg-white">
       <Table>
@@ -88,6 +94,7 @@ export function OpeningStockTable({ ingredients, entryItems, onInputChange }: Pr
                       type="number"
                       min="0"
                       className="h-9 text-center"
+                      disabled={disabled}
                       value={entryItem?.quantity ?? ""}
                       onChange={(e) => onInputChange(item.ingredientId, "quantity", e.target.value)}
                     />
@@ -97,6 +104,7 @@ export function OpeningStockTable({ ingredients, entryItems, onInputChange }: Pr
                       type="number"
                       min="0"
                       className="h-9 text-center"
+                      disabled={disabled}
                       value={entryItem?.costPrice ?? ""}
                       onChange={(e) =>
                         onInputChange(item.ingredientId, "costPrice", e.target.value)

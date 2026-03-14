@@ -1,5 +1,8 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { CircleAlert } from "lucide-react";
+import Link from "next/link";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { inventoryService } from "@/services/inventory.service";
 import { Ingredient } from "@/types/Inventory";
 
 import { AddIngredientPanel } from "./AddIngredientPanel";
@@ -29,6 +33,28 @@ import { InventoryPagination } from "./components/InventoryPagination";
 import { InventoryRow } from "./components/InventoryRow";
 import { InventoryTableHeader } from "./components/InventoryTableHeader";
 import { useInventoryTable } from "./useInventoryTable";
+
+const COMPLETED_OPENING_STOCK_STATUS = 2;
+const OPENING_STOCK_REMINDER = {
+  title: "Bạn chưa nhập số dư đầu kỳ",
+  description:
+    "Vui lòng nhập số dư đầu kỳ trước khi tiếp tục quản lý kho để dữ liệu tồn kho được chính xác.",
+  action: "Đi đến nhập số dư",
+} as const;
+
+function shouldShowOpeningStockReminder(
+  settings?: { openingStockStatus?: number | string; lockedAt?: string | null } | null
+) {
+  if (!settings) {
+    return true;
+  }
+
+  return (
+    !settings.lockedAt &&
+    settings.openingStockStatus !== COMPLETED_OPENING_STOCK_STATUS &&
+    settings.openingStockStatus !== "Completed"
+  );
+}
 
 export function IngredientTable() {
   const pageSize = 10;
@@ -48,9 +74,16 @@ export function IngredientTable() {
     deleteMutation,
   } = useInventoryTable(pageSize);
 
+  const { data: settings } = useQuery({
+    queryKey: ["inventory-settings"],
+    queryFn: async () => {
+      const response = await inventoryService.getInventorySettings();
+      return response.data;
+    },
+  });
+
   const [editingItem, setEditingItem] = useState<Ingredient | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-
   const [deletingItem, setDeletingItem] = useState<Ingredient | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -65,7 +98,7 @@ export function IngredientTable() {
   };
 
   const handleEditSuccess = () => {
-    // invalidate handled inside hook via mutations
+    // Query invalidation is handled inside the hook mutations.
   };
 
   const dialogTitle = UI_TEXT.INVENTORY.DELETE.TITLE;
@@ -74,25 +107,45 @@ export function IngredientTable() {
 
   const renderLoading = () => (
     <div className="space-y-4">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Skeleton key={i} className="h-12 w-full rounded-xl" />
+      {Array.from({ length: 5 }).map((_, index) => (
+        <Skeleton key={index} className="h-12 w-full rounded-xl" />
       ))}
     </div>
   );
 
   const renderError = () => (
-    <div className="p-8 text-center text-destructive rounded-xl border bg-destructive/5">
+    <div className="rounded-xl border bg-destructive/5 p-8 text-center text-destructive">
       <p>
         {UI_TEXT.INVENTORY.TABLE.ERROR_PREFIX} {(error as Error).message}
       </p>
     </div>
   );
 
-  if (isLoading) return renderLoading();
-  if (isError) return renderError();
+  if (isLoading) {
+    return renderLoading();
+  }
+
+  if (isError) {
+    return renderError();
+  }
 
   return (
     <div className="space-y-4">
+      {shouldShowOpeningStockReminder(settings) ? (
+        <div className="flex items-start justify-between gap-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-950">
+          <div className="flex items-start gap-3">
+            <CircleAlert className="mt-0.5 h-5 w-5 shrink-0" />
+            <div className="space-y-1">
+              <p className="font-semibold">{OPENING_STOCK_REMINDER.title}</p>
+              <p className="text-sm text-amber-900/90">{OPENING_STOCK_REMINDER.description}</p>
+            </div>
+          </div>
+          <Button asChild className="shrink-0">
+            <Link href="/manager/inventory/opening-stock">{OPENING_STOCK_REMINDER.action}</Link>
+          </Button>
+        </div>
+      ) : null}
+
       <div className="grid gap-3">
         <InventoryTableHeader
           searchQuery={searchQuery}
@@ -125,7 +178,7 @@ export function IngredientTable() {
               <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
               </TableHead>
-              <TableHead className="py-3 w-[120px] text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="w-[120px] py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
               </TableHead>
               <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
@@ -166,7 +219,9 @@ export function IngredientTable() {
         open={isEditOpen}
         onOpenChange={(open) => {
           setIsEditOpen(open);
-          if (!open) setEditingItem(null);
+          if (!open) {
+            setEditingItem(null);
+          }
         }}
         onSuccess={handleEditSuccess}
         hideTrigger={true}
@@ -180,9 +235,9 @@ export function IngredientTable() {
               <div className="flex flex-col gap-2 pt-2">
                 <span>{dialogDesc}</span>
                 {deletingItem && (
-                  <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
+                  <div className="rounded-lg border border-border/50 bg-muted/50 p-3">
                     <span className="font-semibold text-foreground">{deletingItem.name}</span>
-                    <span className="text-muted-foreground text-xs ml-2">
+                    <span className="ml-2 text-xs text-muted-foreground">
                       {UI_TEXT.INVENTORY.TABLE.PAREN_OPEN}
                       {deletingItem.code}
                       {UI_TEXT.INVENTORY.TABLE.PAREN_CLOSE}
@@ -202,7 +257,7 @@ export function IngredientTable() {
               {UI_TEXT.INVENTORY.DELETE.BTN_CANCEL}
             </Button>
             <Button
-              variant={"destructive"}
+              variant="destructive"
               className="rounded-lg"
               onClick={() =>
                 deletingItem &&

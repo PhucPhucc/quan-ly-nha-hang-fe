@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -31,6 +32,21 @@ class ResizeObserverMock {
 }
 
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
+
+function renderWithQueryClient(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+      mutations: {
+        retry: false,
+      },
+    },
+  });
+
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+}
 
 const initialValues = {
   expiryWarningDays: 10,
@@ -94,7 +110,7 @@ describe("InventorySettingsForm", () => {
     });
 
     const user = userEvent.setup();
-    render(<InventorySettingsFormContainer initialValues={initialValues} />);
+    renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
 
     const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
     await user.click(saveBtn);
@@ -110,7 +126,7 @@ describe("InventorySettingsForm", () => {
     );
 
     const user = userEvent.setup();
-    render(<InventorySettingsFormContainer initialValues={initialValues} />);
+    renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
 
     const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
     await user.click(saveBtn);

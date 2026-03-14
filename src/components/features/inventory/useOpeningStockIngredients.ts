@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
-import type { Ingredient } from "@/types/Inventory";
+import type { Ingredient, InventorySettings } from "@/types/Inventory";
 
 import type { OpeningStockEntryValues } from "./components/openingStockEntry.types";
 import {
@@ -13,6 +13,19 @@ import {
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 const EMPTY_INGREDIENTS: Ingredient[] = [];
+const COMPLETED_OPENING_STOCK_STATUS = 2;
+
+function isOpeningStockLocked(settings?: InventorySettings | null) {
+  if (!settings) {
+    return false;
+  }
+
+  return (
+    !!settings.lockedAt ||
+    settings.openingStockStatus === COMPLETED_OPENING_STOCK_STATUS ||
+    settings.openingStockStatus === "Completed"
+  );
+}
 
 export function useOpeningStockIngredients() {
   const [search, setSearch] = useState("");
@@ -28,6 +41,23 @@ export function useOpeningStockIngredients() {
       }
 
       return response.data.items.filter((item) => item.isActive);
+    },
+  });
+  const {
+    data: settings,
+    isLoading: isSettingsLoading,
+    isError: isSettingsError,
+    error: settingsError,
+  } = useQuery({
+    queryKey: ["inventory-settings"],
+    queryFn: async () => {
+      const response = await inventoryService.getInventorySettings();
+
+      if (!response.isSuccess || !response.data) {
+        throw new Error(response.message || OPENING_STOCK.ERROR_FETCH);
+      }
+
+      return response.data;
     },
   });
 
@@ -58,6 +88,10 @@ export function useOpeningStockIngredients() {
   );
 
   const handleInputChange = (id: string, field: "quantity" | "costPrice", value: string) => {
+    if (isOpeningStockLocked(settings)) {
+      return;
+    }
+
     const parsedValue = Number.parseFloat(value);
     const nextValue = Number.isFinite(parsedValue) ? parsedValue : 0;
 
@@ -73,12 +107,15 @@ export function useOpeningStockIngredients() {
   return {
     search,
     setSearch,
+    ingredients,
     filteredIngredients,
     entryItems,
     totalValue,
-    loading: isLoading,
-    isError,
-    error,
+    loading: isLoading || isSettingsLoading,
+    isError: isError || isSettingsError,
+    error: error ?? settingsError,
+    isLocked: isOpeningStockLocked(settings),
+    lockedAt: settings?.lockedAt ?? null,
     handleInputChange,
   };
 }

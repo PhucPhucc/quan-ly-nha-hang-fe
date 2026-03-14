@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, CircleAlert, Info, Save } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
@@ -40,12 +40,17 @@ export function InventorySettingsForm({
     register,
     handleSubmit,
     setValue,
+    reset,
     control,
     formState: { errors },
   } = useForm<InventorySettingsInput>({
     resolver: zodResolver(inventorySettingsSchema),
     defaultValues: initialValues,
   });
+
+  useEffect(() => {
+    reset(initialValues);
+  }, [initialValues, reset]);
 
   const autoDeductValue = useWatch({
     control,
@@ -102,13 +107,14 @@ export function InventorySettingsForm({
 
               <Field
                 orientation="horizontal"
-                className="md:col-span-2 items-center justify-between"
+                className="md:col-span-2 items-start justify-start gap-4"
               >
-                <div className="space-y-0.5">
+                <div className="max-w-xl space-y-0.5">
                   <FieldLabel>{SETTINGS.AUTO_DEDUCT}</FieldLabel>
                   <FieldDescription>{SETTINGS.AUTO_DEDUCT_DESC}</FieldDescription>
                 </div>
                 <Switch
+                  className="mt-0.5"
                   checked={autoDeductValue}
                   onCheckedChange={(checked) => setValue("autoDeductOnCompleted", checked)}
                 />

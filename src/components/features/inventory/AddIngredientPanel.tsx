@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, PackagePlus } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -47,10 +47,19 @@ export function AddIngredientPanel({
   const setOpen = setControlledOpen || setInternalOpen;
   const isEditing = !!ingredient;
   const [hasCustomCode, setHasCustomCode] = useState(false);
+  const generateCodeRequestIdRef = React.useRef(0);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const { data: settings } = useQuery({
+    queryKey: ["inventory-settings"],
+    queryFn: async () => {
+      const response = await inventoryService.getInventorySettings();
+      return response.data;
+    },
+  });
+  const defaultLowStockThreshold = settings?.defaultLowStockThreshold ?? 10;
 
   const {
     register,
@@ -59,7 +68,7 @@ export function AddIngredientPanel({
     control,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<IngredientFormValues>({
     resolver: zodResolver(ingredientSchema),
     defaultValues: ingredient
@@ -78,7 +87,7 @@ export function AddIngredientPanel({
           code: "",
           currentStock: 0,
           unit: InventoryUnit.KG,
-          lowStockThreshold: 10,
+          lowStockThreshold: defaultLowStockThreshold,
           costPrice: 0,
           description: "",
           isActive: true,
@@ -105,7 +114,7 @@ export function AddIngredientPanel({
           code: "",
           currentStock: 0,
           unit: InventoryUnit.KG,
-          lowStockThreshold: 10,
+          lowStockThreshold: defaultLowStockThreshold,
           costPrice: 0,
           description: "",
           isActive: true,
@@ -114,7 +123,18 @@ export function AddIngredientPanel({
       setError(null);
       setHasCustomCode(false);
     }
-  }, [open, ingredient, reset]);
+  }, [defaultLowStockThreshold, open, ingredient, reset]);
+
+  React.useEffect(() => {
+    if (!open || isEditing || isDirty) {
+      return;
+    }
+
+    setValue("lowStockThreshold", defaultLowStockThreshold, {
+      shouldDirty: false,
+      shouldValidate: true,
+    });
+  }, [defaultLowStockThreshold, isDirty, isEditing, open, setValue]);
 
   const watchedName = watch("name");
 
@@ -123,12 +143,30 @@ export function AddIngredientPanel({
 
     const normalizedName = (watchedName || "").trim();
     if (!normalizedName) {
+      generateCodeRequestIdRef.current += 1;
       setValue("code", "", { shouldValidate: true });
       return;
     }
 
-    const generatedCode = normalizedName.replace(/\s+/g, "").toUpperCase();
-    setValue("code", generatedCode, { shouldValidate: true });
+    const currentRequestId = generateCodeRequestIdRef.current + 1;
+    generateCodeRequestIdRef.current = currentRequestId;
+
+    const timeoutId = window.setTimeout(async () => {
+      const response = await inventoryService.generateIngredientCode(normalizedName);
+
+      if (generateCodeRequestIdRef.current !== currentRequestId) {
+        return;
+      }
+
+      setValue("code", response.data, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [watchedName, isEditing, hasCustomCode, setValue]);
 
   const onSubmit = async (data: IngredientFormValues) => {

@@ -19,6 +19,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 
+function getAlertRowKey(
+  item: { ingredientId?: string; code?: string; name?: string },
+  index: number
+) {
+  return item.ingredientId ?? item.code ?? item.name ?? `inventory-alert-${index}`;
+}
+
 export function InventoryAlertsTable() {
   const [activeTab, setActiveTab] = useState("low-stock");
   const [currentPage, setCurrentPage] = useState(1);
@@ -112,9 +119,9 @@ export function InventoryAlertsTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {lowStockItems.map((item) => (
+                {lowStockItems.map((item, index) => (
                   <TableRow
-                    key={item.ingredientId}
+                    key={getAlertRowKey(item, index)}
                     className="border-slate-100 hover:bg-slate-50/50"
                   >
                     <TableCell className="text-center font-medium">{item.name}</TableCell>
@@ -166,9 +173,9 @@ export function InventoryAlertsTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {expiringItems.map((item) => (
+                {expiringItems.map((item, index) => (
                   <TableRow
-                    key={item.ingredientId}
+                    key={getAlertRowKey(item, index)}
                     className="border-slate-100 hover:bg-slate-50/50"
                   >
                     <TableCell className="text-center font-medium">{item.name}</TableCell>
