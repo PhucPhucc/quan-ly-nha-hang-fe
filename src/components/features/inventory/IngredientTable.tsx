@@ -71,7 +71,7 @@ export function IngredientTable() {
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-    deleteMutation,
+    toggleActivationMutation,
   } = useInventoryTable(pageSize);
 
   const { data: settings } = useQuery({
@@ -101,9 +101,17 @@ export function IngredientTable() {
     // Query invalidation is handled inside the hook mutations.
   };
 
-  const dialogTitle = UI_TEXT.INVENTORY.DELETE.TITLE;
-  const dialogDesc = UI_TEXT.INVENTORY.DELETE.DESC;
-  const confirmLabel = UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;
+  const isReactivating = deletingItem && !deletingItem.isActive;
+
+  const dialogTitle = isReactivating
+    ? UI_TEXT.INVENTORY.DELETE.REACTIVATE_TITLE
+    : UI_TEXT.INVENTORY.DELETE.TITLE;
+  const dialogDesc = isReactivating
+    ? UI_TEXT.INVENTORY.DELETE.REACTIVATE_DESC
+    : UI_TEXT.INVENTORY.DELETE.DESC;
+  const confirmLabel = isReactivating
+    ? UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM_REACTIVATE
+    : UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;
 
   const renderLoading = () => (
     <div className="space-y-4">
@@ -252,25 +260,30 @@ export function IngredientTable() {
               variant="outline"
               className="rounded-lg"
               onClick={() => setIsDeleteOpen(false)}
-              disabled={deleteMutation.isPending}
+              disabled={toggleActivationMutation.isPending}
             >
               {UI_TEXT.INVENTORY.DELETE.BTN_CANCEL}
             </Button>
             <Button
-              variant="destructive"
+              variant={isReactivating ? "default" : "destructive"}
               className="rounded-lg"
               onClick={() =>
                 deletingItem &&
-                deleteMutation.mutate(deletingItem.ingredientId, {
-                  onSuccess: () => {
-                    setIsDeleteOpen(false);
-                    setDeletingItem(null);
-                  },
-                })
+                toggleActivationMutation.mutate(
+                  { id: deletingItem.ingredientId, isActive: deletingItem.isActive },
+                  {
+                    onSuccess: () => {
+                      setIsDeleteOpen(false);
+                      setDeletingItem(null);
+                    },
+                  }
+                )
               }
-              disabled={deleteMutation.isPending}
+              disabled={toggleActivationMutation.isPending}
             >
-              {deleteMutation.isPending ? UI_TEXT.INVENTORY.DELETE.BTN_DELETING : confirmLabel}
+              {toggleActivationMutation.isPending
+                ? UI_TEXT.INVENTORY.DELETE.BTN_DELETING
+                : confirmLabel}
             </Button>
           </DialogFooter>
         </DialogContent>

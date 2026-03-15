@@ -48,6 +48,26 @@ export interface InventorySettings {
   lockedAt?: string | null;
 }
 
+export enum InventoryTransactionType {
+  OpeningStock = 1,
+  StockIn = 2,
+  StockInReverse = 3,
+}
+
+export interface InventoryTransaction {
+  inventoryTransactionId: string;
+  ingredientId: string;
+  ingredientName: string;
+  ingredientCode: string;
+  transactionCode?: number;
+  transactionType: InventoryTransactionType;
+  quantity: number;
+  unitCost?: number | null;
+  balanceAfter: number;
+  reference?: string | null;
+  occurredAt: string;
+}
+
 export interface OpeningStockItem {
   ingredientId: string;
   initialQuantity: number;

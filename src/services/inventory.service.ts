@@ -6,6 +6,7 @@ import {
   Ingredient,
   InventorySettings,
   InventoryStats,
+  InventoryTransaction,
 } from "@/types/Inventory";
 
 function buildFallbackIngredientCode(name: string): string {
@@ -113,6 +114,13 @@ export const inventoryService = {
     });
   },
 
+  // Kích hoạt lại nguyên liệu
+  activateIngredient: async (id: string): Promise<ApiResponse<boolean>> => {
+    return apiFetch<boolean>(`/ingredients/${id}/activate`, {
+      method: "PATCH",
+    });
+  },
+
   // Lấy thống kê tổng quan (Dashboard)
   getStats: async (): Promise<ApiResponse<InventoryStats>> => {
     return apiFetch<InventoryStats>("/inventory/stats");
@@ -141,5 +149,25 @@ export const inventoryService = {
       method: "POST",
       body: data,
     });
+  },
+
+  // Lịch sử giao dịch kho
+  getInventoryTransactions: async (
+    page: number = 1,
+    pageSize: number = 10,
+    options?: { search?: string; filters?: string[]; orderBy?: string }
+  ): Promise<ApiResponse<PaginationResult<InventoryTransaction>>> => {
+    const params = new URLSearchParams();
+    params.set("pageNumber", page.toString());
+    params.set("pageSize", pageSize.toString());
+    if (options?.search) params.set("search", options.search);
+    if (options?.orderBy) params.set("orderBy", options.orderBy);
+    if (options?.filters) {
+      options.filters.forEach((f) => params.append("filters", f));
+    }
+
+    return apiFetch<PaginationResult<InventoryTransaction>>(
+      `/inventory/transactions?${params.toString()}`
+    );
   },
 };

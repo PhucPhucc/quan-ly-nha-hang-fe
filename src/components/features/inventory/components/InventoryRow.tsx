@@ -91,7 +91,11 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
                 ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
                 : "text-muted-foreground hover:bg-muted/20"
             )}
-            title={item.isActive ? "Deactivate" : "Reactivate"}
+            title={
+              item.isActive
+                ? UI_TEXT.INVENTORY.DELETE.TITLE
+                : UI_TEXT.INVENTORY.DELETE.REACTIVATE_TITLE
+            }
             onClick={() => onDelete(item)}
           >
             {item.isActive ? <Ban className="h-4 w-4" /> : <RotateCcw className="h-4 w-4" />}

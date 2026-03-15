@@ -2,6 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +32,8 @@ interface ReceiptItemEntry {
   ingredientId: string;
   quantity: number;
   unitPrice: number;
-  batchCode?: string;
-  expirationDate?: string;
+  batchCode?: string | null;
+  expirationDate?: string | null;
 }
 
 export const CreateStockInDrawer = ({
@@ -49,13 +50,20 @@ export const CreateStockInDrawer = ({
   useEffect(() => {
     if (open) {
       const fetchIngredients = async () => {
-        const response = await inventoryService.getIngredients(1, 100);
-        if (response.isSuccess && response.data) {
-          setIngredients(response.data.items);
+        try {
+          const response = await inventoryService.getIngredients(1, 100, undefined, {
+            isActive: true,
+          });
+          if (response.isSuccess && response.data) {
+            setIngredients(response.data.items.filter((item) => item.isActive));
+          }
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : UI_TEXT.API.NETWORK_ERROR);
         }
       };
       fetchIngredients();
-      // Initialize with one empty row
+      setNote("");
+      setReceivedDate(new Date().toISOString().split("T")[0]);
       setItems([{ ingredientId: "", quantity: 1, unitPrice: 0 }]);
     }
   }, [open]);
@@ -103,11 +111,13 @@ export const CreateStockInDrawer = ({
       };
       const response = await stockInService.createReceipt(request);
       if (response.isSuccess) {
+        toast.success(`Đã tạo phiếu nhập ${response.data.receiptCode}`);
         onSuccess();
         onOpenChange(false);
       }
     } catch (error) {
       console.error("Failed to create receipt", error);
+      toast.error(error instanceof Error ? error.message : UI_TEXT.API.NETWORK_ERROR);
     } finally {
       setSubmitting(false);
     }

@@ -24,6 +24,9 @@ import {
 import { UI_TEXT } from "@/lib/UI_Text";
 import { StockInReceipt } from "@/types/StockIn";
 
+const REVERSE_RECEIPT_LABEL = UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;
+const RECEIPT_ITEM_COUNT_LABEL = "Số lượng hàng";
+
 interface StockInTableProps {
   data: StockInReceipt[];
   onViewDetail: (id: string) => void;
@@ -31,7 +34,7 @@ interface StockInTableProps {
   onDelete?: (id: string) => void;
 }
 
-export const StockInTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTableProps) => {
+export const StockInListTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTableProps) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="fh-table-shell border-none shadow-none">
@@ -43,7 +46,7 @@ export const StockInTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTa
               </TableHead>
               <TableHead className="fh-table-head">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</TableHead>
               <TableHead className="fh-table-head text-center">
-                {UI_TEXT.INVENTORY.OPENING_STOCK.COL_UNIT}
+                {RECEIPT_ITEM_COUNT_LABEL}
               </TableHead>
               <TableHead className="fh-table-head text-right">
                 {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
@@ -74,14 +77,14 @@ export const StockInTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTa
                   </TableCell>
                   <TableCell className="fh-table-cell text-right font-bold text-primary">
                     {item.totalAmount.toLocaleString("vi-VN")}
-                    {UI_TEXT.COMMON.CURRENCY}
+                    {UI_TEXT.TABLE.CURRENCY}
                   </TableCell>
                   <TableCell className="fh-table-cell">
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
-                        {item.createdBy.charAt(0).toUpperCase()}
+                        {(item.createdBy || "-").charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-sm">{item.createdBy}</span>
+                      <span className="text-sm">{item.createdBy || UI_TEXT.COMMON.DASH}</span>
                     </div>
                   </TableCell>
                   <TableCell className="fh-table-cell">
@@ -115,8 +118,7 @@ export const StockInTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTa
                             className="text-destructive"
                             onClick={() => onDelete(item.id)}
                           >
-                            <Trash2 className="mr-2 size-4" />{" "}
-                            {UI_TEXT.INVENTORY.DELETE.TITLE || "Xóa phiếu"}
+                            <Trash2 className="mr-2 size-4" /> {REVERSE_RECEIPT_LABEL}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>

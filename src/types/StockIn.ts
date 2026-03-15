@@ -1,15 +1,16 @@
 import { InventoryUnit } from "./Inventory";
 
 export interface StockInReceiptItem {
-  id?: string;
+  id: string;
   ingredientId: string;
+  ingredientCode?: string;
   ingredientName?: string;
   quantity: number;
-  unit?: InventoryUnit;
+  unit?: InventoryUnit | string;
   unitPrice?: number;
   totalAmount: number;
-  expirationDate?: string;
-  batchCode?: string;
+  expirationDate?: string | null;
+  batchCode?: string | null;
 }
 
 export interface StockInReceipt {
@@ -19,7 +20,7 @@ export interface StockInReceipt {
   totalItems: number;
   totalAmount: number;
   createdBy: string;
-  note?: string;
+  note?: string | null;
   items: StockInReceiptItem[];
 }
 
@@ -30,7 +31,7 @@ export interface CreateStockInRequest {
     ingredientId: string;
     quantity: number;
     unitPrice?: number;
-    expirationDate?: string;
-    batchCode?: string;
+    expirationDate?: string | null;
+    batchCode?: string | null;
   }[];
 }

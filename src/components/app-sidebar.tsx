@@ -2,6 +2,7 @@
 
 import {
   Bell,
+  Boxes,
   ChartColumn,
   History,
   LayoutDashboard,
@@ -76,6 +77,11 @@ const data = {
         {
           title: UI_TEXT.INVENTORY.STOCK_IN_TITLE,
           url: "/manager/inventory/stock-in",
+          icon: Boxes,
+        },
+        {
+          title: "Lịch sử kho",
+          url: "/manager/inventory/transactions",
           icon: History,
         },
         {

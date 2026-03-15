@@ -49,17 +49,15 @@ export function useInventoryTable(pageSize = 10) {
     setCurrentPage(1);
   }, []);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => inventoryService.deleteIngredient(id),
-    onSuccess: (_, id) => {
-      const item = items.find((i: Ingredient) => i.ingredientId === id);
-      if (item) {
-        toast.success(
-          item.isActive
-            ? UI_TEXT.INVENTORY.DELETE.SUCCESS_DEACTIVATE
-            : UI_TEXT.INVENTORY.DELETE.SUCCESS_REACTIVATE
-        );
-      }
+  const toggleActivationMutation = useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      isActive ? inventoryService.deleteIngredient(id) : inventoryService.activateIngredient(id),
+    onSuccess: (_, { isActive }) => {
+      toast.success(
+        isActive
+          ? UI_TEXT.INVENTORY.DELETE.SUCCESS_DEACTIVATE
+          : UI_TEXT.INVENTORY.DELETE.SUCCESS_REACTIVATE
+      );
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
     },
   });
@@ -108,6 +106,6 @@ export function useInventoryTable(pageSize = 10) {
     setSearchQuery: handleSearchChange,
     statusFilter,
     setStatusFilter: handleStatusChange,
-    deleteMutation,
+    toggleActivationMutation,
   };
 }

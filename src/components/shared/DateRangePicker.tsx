@@ -1,6 +1,14 @@
 "use client";
 
-import { format } from "date-fns";
+import {
+  endOfMonth,
+  endOfYesterday,
+  format,
+  startOfMonth,
+  startOfToday,
+  startOfYesterday,
+  subMonths,
+} from "date-fns";
 import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon, X } from "lucide-react";
 import * as React from "react";
@@ -25,6 +33,32 @@ export function DateRangePicker({
   onChange,
   placeholder = "Chọn khoảng ngày",
 }: DateRangePickerProps) {
+  const handleQuickSelect = (range: DateRange) => {
+    onChange?.(range);
+  };
+
+  const shortcuts = [
+    {
+      label: "Hôm nay",
+      getValue: () => ({ from: startOfToday(), to: startOfToday() }),
+    },
+    {
+      label: "Hôm qua",
+      getValue: () => ({ from: startOfYesterday(), to: endOfYesterday() }),
+    },
+    {
+      label: "Tháng này",
+      getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }),
+    },
+    {
+      label: "Tháng trước",
+      getValue: () => {
+        const lastMonth = subMonths(new Date(), 1);
+        return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
+      },
+    },
+  ];
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -72,13 +106,28 @@ export function DateRangePicker({
               </Button>
             )}
           </div>
+
+          <div className="flex flex-wrap gap-1 p-2 border-b border-slate-50">
+            {shortcuts.map((shortcut) => (
+              <Button
+                key={shortcut.label}
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-[11px] font-medium text-slate-600 hover:text-primary hover:bg-primary/5 rounded-md"
+                onClick={() => handleQuickSelect(shortcut.getValue())}
+              >
+                {shortcut.label}
+              </Button>
+            ))}
+          </div>
+
           <Calendar
             initialFocus
             mode="range"
             defaultMonth={value?.from}
             selected={value}
             onSelect={onChange}
-            numberOfMonths={2}
+            numberOfMonths={1}
             locale={vi}
             className="p-3"
           />

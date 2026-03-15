@@ -1,5 +1,6 @@
 import {
   Bell,
+  Boxes,
   EllipsisVertical,
   History,
   Package,
@@ -113,8 +114,14 @@ export function InventoryTableHeader({
             </DropdownMenuItem>
             <DropdownMenuItem asChild className="cursor-pointer">
               <Link href="/manager/inventory/stock-in" className="flex items-center gap-2">
-                <History className="h-4 w-4 text-primary" />
+                <Boxes className="h-4 w-4 text-primary" />
                 <span>{UI_TEXT.INVENTORY.STOCK_IN_TITLE}</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/manager/inventory/transactions" className="flex items-center gap-2">
+                <History className="h-4 w-4 text-indigo-500" />
+                <span>{UI_TEXT.INVENTORY.TABLE.TRANS_HISTORY}</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild className="cursor-pointer">
