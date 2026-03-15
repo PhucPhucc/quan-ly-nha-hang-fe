@@ -54,8 +54,10 @@ export const StockInDetailView = ({
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="space-y-6 md:col-span-2">
           <div className="glass-card p-6 space-y-4">
-            <h2 className="text-lg font-semibold border-b pb-2">{UI_TEXT.BUTTON.DETAIL}</h2>
-            <div className="fh-table-shell overflow-hidden rounded-lg border">
+            <h2 className="text-lg font-semibold border-b pb-2">
+              {UI_TEXT.INVENTORY.STOCK_IN_VOUCHER}
+            </h2>
+            <div className="fh-table-shell overflow-hidden rounded-lg border text-foreground">
               <Table className="fh-table">
                 <TableHeader className="bg-muted/50">
                   <TableRow className="fh-table-row">
@@ -64,6 +66,9 @@ export const StockInDetailView = ({
                     </TableHead>
                     <TableHead className="fh-table-head text-center">
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_INITIAL}
+                    </TableHead>
+                    <TableHead className="fh-table-head text-center">
+                      {UI_TEXT.INVENTORY.TABLE.COL_EXPIRATION}
                     </TableHead>
                     <TableHead className="fh-table-head text-right">
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
@@ -78,14 +83,26 @@ export const StockInDetailView = ({
                     <TableRow key={index} className="fh-table-row">
                       <TableCell className="fh-table-cell">
                         <div className="font-medium text-foreground">{item.ingredientName}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {item.batchCode || UI_TEXT.COMMON.EMPTY}
-                        </div>
                       </TableCell>
                       <TableCell className="fh-table-cell text-center">
                         {item.quantity}
                         {UI_TEXT.COMMON.SPACE}
                         {item.unit}
+                      </TableCell>
+                      <TableCell className="fh-table-cell text-center text-xs">
+                        {item.expirationDate ? (
+                          <span
+                            className={
+                              new Date(item.expirationDate) < new Date()
+                                ? "text-destructive font-bold"
+                                : "text-muted-foreground"
+                            }
+                          >
+                            {new Date(item.expirationDate).toLocaleDateString("vi-VN")}
+                          </span>
+                        ) : (
+                          UI_TEXT.COMMON.DASH
+                        )}
                       </TableCell>
                       <TableCell className="fh-table-cell text-right">
                         {item.unitPrice?.toLocaleString("vi-VN")}
@@ -106,7 +123,7 @@ export const StockInDetailView = ({
         <div className="space-y-6">
           <div className="glass-card p-6 space-y-4">
             <h2 className="text-lg font-semibold border-b pb-2">
-              {UI_TEXT.INVENTORY.HISTORY_TITLE}
+              {UI_TEXT.INVENTORY.STOCK_IN_VOUCHER}
             </h2>
             <div className="space-y-3">
               <div className="flex justify-between">
@@ -114,21 +131,23 @@ export const StockInDetailView = ({
                   {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
                   {UI_TEXT.COMMON.COLON}
                 </span>
-                <span className="font-mono font-bold">{receipt.receiptCode}</span>
+                <span className="font-mono font-bold text-foreground">{receipt.receiptCode}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">
                   {UI_TEXT.INVENTORY.TABLE.COL_DATE}
                   {UI_TEXT.COMMON.COLON}
                 </span>
-                <span>{new Date(receipt.receivedDate).toLocaleDateString("vi-VN")}</span>
+                <span className="text-foreground">
+                  {new Date(receipt.receivedDate).toLocaleDateString("vi-VN")}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">
                   {UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}
                   {UI_TEXT.COMMON.COLON}
                 </span>
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2 text-foreground text-sm">
                   <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center text-[8px] font-bold text-primary">
                     {receipt.createdBy.charAt(0).toUpperCase()}
                   </div>

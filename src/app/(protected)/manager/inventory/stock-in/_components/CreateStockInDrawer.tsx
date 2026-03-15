@@ -117,7 +117,9 @@ export const CreateStockInDrawer = ({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-[500px] w-full flex flex-col p-0 text-foreground">
         <SheetHeader className="p-6 border-b shrink-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-          <SheetTitle className="text-xl font-bold">{UI_TEXT.INVENTORY.HISTORY_TITLE}</SheetTitle>
+          <SheetTitle className="text-xl font-bold">
+            {UI_TEXT.INVENTORY.STOCK_IN_VOUCHER}
+          </SheetTitle>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
@@ -249,8 +251,20 @@ export const CreateStockInDrawer = ({
                       </div>
                     </div>
 
+                    <div className="space-y-1.5">
+                      <Label className="text-[10px] font-bold uppercase text-muted-foreground block text-left">
+                        {UI_TEXT.INVENTORY.TABLE.COL_EXPIRATION}
+                      </Label>
+                      <Input
+                        type="date"
+                        className="h-9 rounded-lg"
+                        value={item.expirationDate || ""}
+                        onChange={(e) => updateItem(index, "expirationDate", e.target.value)}
+                      />
+                    </div>
+
                     <div className="flex items-center justify-between pt-2 border-t border-dashed">
-                      <span className="text-[10px] font-bold uppercase text-muted-foreground">
+                      <span className="text-xs font-medium text-muted-foreground">
                         {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
                       </span>
                       <span className="text-sm font-bold text-primary">

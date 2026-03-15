@@ -97,7 +97,7 @@ export const INVENTORY = {
     COL_SUPPLIER: "Nhà cung cấp",
     COL_QTY: "Số lượng",
     COL_TOTAL_COST: "Tổng chi phí",
-    COL_RECEIVER: "Người nhận",
+    COL_RECEIVER: "Người tạo",
     THRESHOLD_PREFIX: "Ngưỡng:",
     ERROR_PREFIX: "Lỗi:",
     EXPIRING_BADGE: "Sắp hết hạn",

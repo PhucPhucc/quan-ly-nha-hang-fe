@@ -1,7 +1,7 @@
 "use client";
 
-import { Edit, Eye, MessageSquare, MoreHorizontal, Search, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import { Edit, Eye, MessageSquare, MoreHorizontal, Trash2 } from "lucide-react";
+import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -33,27 +32,9 @@ interface StockInTableProps {
 }
 
 export const StockInTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTableProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredData = data.filter((item) =>
-    item.receiptCode.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={UI_TEXT.INVENTORY.TOOLBAR.SEARCH_PLACEHOLDER}
-            className="pl-9"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className="fh-table-shell">
+      <div className="fh-table-shell border-none shadow-none">
         <Table className="fh-table">
           <TableHeader>
             <TableRow className="fh-table-header-row">
@@ -77,8 +58,8 @@ export const StockInTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTa
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.length > 0 ? (
-              filteredData.map((item) => (
+            {data.length > 0 ? (
+              data.map((item) => (
                 <TableRow key={item.id} className="fh-table-row">
                   <TableCell className="fh-table-cell fh-table-cell-strong">
                     {item.receiptCode}
