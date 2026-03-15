@@ -109,6 +109,22 @@
   --color-chart-5: var(--chart-5);
 
   /* ===============================
+     Table
+     =============================== */
+  --color-table-shell-bg: var(--table-shell-bg);
+  --color-table-header-bg: var(--table-header-bg);
+  --color-table-border-strong: var(--table-border-strong);
+  --color-table-border-soft: var(--table-border-soft);
+  --color-table-row-hover: var(--table-row-hover);
+  --color-table-row-muted: var(--table-row-muted);
+  --color-table-heading: var(--table-heading);
+  --color-table-text-strong: var(--table-text-strong);
+  --color-table-text: var(--table-text);
+  --color-table-text-muted: var(--table-text-muted);
+  --color-table-skeleton: var(--table-skeleton);
+  --color-table-skeleton-soft: var(--table-skeleton-soft);
+
+  /* ===============================
      Radius system
      =============================== */
   --radius-sm: calc(var(--radius) - 4px);
@@ -311,8 +327,28 @@
   --role-cashier: oklch(0.55 0.2 220);
 
   /* ===============================
-       Shadows
+       Shared table surfaces
        =============================== */
+  --table-shell-bg: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--card) 94%, var(--accent) 6%) 0%,
+    var(--card) 100%
+  );
+  --table-header-bg: color-mix(in oklab, var(--secondary) 76%, var(--card) 24%);
+  --table-border-strong: color-mix(in oklab, var(--border) 90%, var(--foreground) 10%);
+  --table-border-soft: color-mix(in oklab, var(--border) 78%, white 22%);
+  --table-row-hover: color-mix(in oklab, var(--primary) 5%, var(--card) 95%);
+  --table-row-muted: color-mix(in oklab, var(--muted) 70%, var(--card) 30%);
+  --table-heading: color-mix(in oklab, var(--foreground) 68%, var(--primary) 32%);
+  --table-text-strong: color-mix(in oklab, var(--foreground) 92%, black 8%);
+  --table-text: color-mix(in oklab, var(--foreground) 82%, var(--muted-foreground) 18%);
+  --table-text-muted: var(--muted-foreground);
+  --table-skeleton: color-mix(in oklab, var(--accent) 70%, var(--primary) 30%);
+  --table-skeleton-soft: color-mix(in oklab, var(--accent) 88%, white 12%);
+
+  /* ===============================
+        Shadows
+        =============================== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
   /* Đậm hơn xíu */
@@ -360,6 +396,23 @@
 
   --order-cooking: oklch(0.7 0.2 45);
 
+  --table-shell-bg: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--card) 90%, var(--accent) 10%) 0%,
+    color-mix(in oklab, var(--card) 96%, black 4%) 100%
+  );
+  --table-header-bg: color-mix(in oklab, var(--secondary) 80%, var(--card) 20%);
+  --table-border-strong: color-mix(in oklab, var(--border) 88%, white 12%);
+  --table-border-soft: color-mix(in oklab, var(--border) 70%, var(--card) 30%);
+  --table-row-hover: color-mix(in oklab, var(--primary) 12%, var(--card) 88%);
+  --table-row-muted: color-mix(in oklab, var(--muted) 78%, var(--card) 22%);
+  --table-heading: color-mix(in oklab, var(--foreground) 78%, var(--primary) 22%);
+  --table-text-strong: color-mix(in oklab, var(--foreground) 96%, white 4%);
+  --table-text: color-mix(in oklab, var(--foreground) 85%, var(--muted-foreground) 15%);
+  --table-text-muted: var(--muted-foreground);
+  --table-skeleton: color-mix(in oklab, var(--accent) 78%, var(--primary) 22%);
+  --table-skeleton-soft: color-mix(in oklab, var(--accent) 92%, white 8%);
+
   --sidebar: oklch(0.16 0.015 40);
   --sidebar-foreground: oklch(0.98 0.005 50);
   --sidebar-primary: oklch(0.65 0.2 35);
@@ -376,6 +429,175 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .fh-table-shell {
+    background: var(--table-shell-bg);
+    border: 1px solid var(--table-border-strong);
+    border-radius: calc(var(--radius) + 0.35rem);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .fh-table {
+    width: 100%;
+  }
+
+  .fh-table-header-row {
+    background: var(--table-header-bg);
+    border-color: var(--table-border-strong);
+  }
+
+  .fh-table-head {
+    height: 3.4rem;
+    padding: 0.95rem 1.5rem;
+    color: var(--table-heading);
+    font-size: 0.69rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .fh-table-row {
+    border-color: var(--table-border-soft);
+  }
+
+  .fh-table-row:hover {
+    background: var(--table-row-hover);
+  }
+
+  .fh-table-row-muted {
+    background: var(--table-row-muted);
+  }
+
+  .fh-table-cell {
+    padding: 1rem 1.5rem;
+    color: var(--table-text);
+    vertical-align: middle;
+  }
+
+  .fh-table-cell-strong {
+    color: var(--table-text-strong);
+    font-weight: 600;
+  }
+
+  .fh-table-cell-muted {
+    color: var(--table-text-muted);
+  }
+
+  .fh-table-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .fh-table-pill-primary {
+    background: color-mix(in oklab, var(--primary) 12%, var(--card) 88%);
+    border-color: color-mix(in oklab, var(--primary) 18%, var(--border) 82%);
+    color: var(--primary-hover);
+  }
+
+  .fh-table-pill-neutral {
+    background: color-mix(in oklab, var(--muted) 80%, var(--card) 20%);
+    border-color: color-mix(in oklab, var(--border) 86%, var(--muted-foreground) 14%);
+    color: var(--table-text-muted);
+  }
+
+  .fh-table-pill-success {
+    background: color-mix(in oklab, var(--success) 14%, var(--card) 86%);
+    border-color: color-mix(in oklab, var(--success) 22%, var(--border) 78%);
+    color: color-mix(in oklab, var(--success) 78%, black 22%);
+  }
+
+  .fh-table-pill-warning {
+    background: color-mix(in oklab, var(--warning) 20%, var(--card) 80%);
+    border-color: color-mix(in oklab, var(--warning) 24%, var(--border) 76%);
+    color: color-mix(in oklab, var(--warning-foreground) 78%, black 22%);
+  }
+
+  .fh-table-pill-danger {
+    background: color-mix(in oklab, var(--danger) 12%, var(--card) 88%);
+    border-color: color-mix(in oklab, var(--danger) 18%, var(--border) 82%);
+    color: color-mix(in oklab, var(--danger) 82%, black 18%);
+  }
+
+  .fh-table-pill-info {
+    background: color-mix(in oklab, var(--info) 14%, var(--card) 86%);
+    border-color: color-mix(in oklab, var(--info) 20%, var(--border) 80%);
+    color: color-mix(in oklab, var(--info) 78%, black 22%);
+  }
+
+  .fh-table-status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    flex-shrink: 0;
+  }
+
+  .fh-table-status-dot-active {
+    background: var(--success);
+    box-shadow: 0 0 10px color-mix(in oklab, var(--success) 45%, transparent);
+  }
+
+  .fh-table-status-dot-muted {
+    background: var(--table-border-strong);
+  }
+
+  .fh-table-status-text-active {
+    color: color-mix(in oklab, var(--success) 80%, black 20%);
+  }
+
+  .fh-table-status-text-muted {
+    color: var(--table-text-muted);
+  }
+
+  .fh-table-feedback {
+    display: flex;
+    min-height: 18rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--table-text-muted);
+  }
+
+  .fh-table-feedback-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--primary) 10%, var(--card) 90%);
+    color: var(--primary);
+  }
+
+  .fh-table-feedback-icon-danger {
+    background: color-mix(in oklab, var(--danger) 12%, var(--card) 88%);
+    color: var(--danger);
+  }
+
+  .fh-table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid var(--table-border-soft);
+    background: color-mix(in oklab, var(--table-header-bg) 70%, var(--card) 30%);
+    padding: 1rem 1.5rem;
   }
 }
 

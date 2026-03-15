@@ -28,6 +28,8 @@ const ROUTE_CONFIG: Record<string, { label: string; icon: React.ReactNode }> = {
   "audit-log": { label: "Lịch sử", icon: <History className="size-3.5" /> },
   profile: { label: "Cá nhân", icon: <User className="size-3.5" /> },
   table: { label: "Sơ đồ bàn", icon: <TableIcon className="size-3.5" /> },
+  inventory: { label: "Kho hàng", icon: <Utensils className="size-3.5" /> },
+  "stock-in": { label: "Xuất nhập kho", icon: <History className="size-3.5" /> },
 };
 
 const HeaderBar = () => {

@@ -17,6 +17,7 @@ export enum OrderStatus {
   Ready = "Ready",
   Reserved = "Reserved",
   Cleaning = "Cleaning",
+  OutOfService = "OutOfService",
 }
 
 export enum OrderItemStatus {

@@ -53,10 +53,12 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
   const imageSrc = !item.imageUrl ? "https://placehold.co/200x200/png" : item.imageUrl;
 
   return (
-    <TableRow className={`${item.isOutOfStock ? "opacity-70 grayscale bg-border" : ""}`}>
-      <TableCell className="font-medium">
+    <TableRow
+      className={`fh-table-row ${item.isOutOfStock ? "fh-table-row-muted opacity-75" : ""}`}
+    >
+      <TableCell className="fh-table-cell">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-md overflow-hidden shrink-0">
+          <div className="h-12 w-12 overflow-hidden rounded-2xl border border-[var(--table-border-soft)] bg-[var(--table-row-muted)] shrink-0">
             <Image
               src={imageSrc}
               alt={item.name}
@@ -66,48 +68,58 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold">{item.name}</span>
-            <span className="text-xs text-gray-500 line-clamp-1">{item.description}</span>
+            <span className="text-sm font-semibold text-[var(--table-text-strong)]">
+              {item.name}
+            </span>
+            <span className="line-clamp-1 text-xs text-[var(--table-text-muted)]">
+              {item.description}
+            </span>
           </div>
         </div>
       </TableCell>
 
-      <TableCell>
+      <TableCell className="fh-table-cell">
         {item.categoryName ? (
-          <Badge variant="outline">{item.categoryName}</Badge>
+          <Badge variant="outline" className="fh-table-pill fh-table-pill-neutral border-0">
+            {item.categoryName}
+          </Badge>
         ) : (
-          <span className="text-xs text-gray-400">{UI_TEXT.MENU.NO_CATEGORY}</span>
+          <span className="text-xs text-[var(--table-text-muted)]">{UI_TEXT.MENU.NO_CATEGORY}</span>
         )}
       </TableCell>
 
-      <TableCell>
-        <div className="font-semibold text-primary">
+      <TableCell className="fh-table-cell">
+        <div className="text-sm font-semibold text-[var(--primary)]">
           {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
             item.price
           )}
         </div>
       </TableCell>
 
-      <TableCell>
+      <TableCell className="fh-table-cell">
         <div className="flex items-center gap-2">
           <Switch
             checked={!item.isOutOfStock}
             onCheckedChange={handleToggleStock}
             title={UI_TEXT.MENU.TOOLTIP_CHANGE_STATUS}
           />
-          <Badge variant={item.isOutOfStock ? "destructive" : "secondary"}>
+          <Badge
+            variant="outline"
+            className={`fh-table-pill border-0 ${item.isOutOfStock ? "fh-table-pill-danger" : "fh-table-pill-success"}`}
+          >
             {item.isOutOfStock ? UI_TEXT.MENU.STATUS_OUT_OF_STOCK : UI_TEXT.MENU.STATUS_IN_STOCK}
           </Badge>
         </div>
       </TableCell>
 
-      <TableCell className="text-right">
+      <TableCell className="fh-table-cell text-right">
         <div className="flex justify-end gap-2">
           <Button
             variant="outline"
             size="icon"
             onClick={handleEdit}
             title={UI_TEXT.MENU.TOOLTIP_EDIT}
+            className="border-[var(--table-border-soft)] text-[var(--table-text-strong)] hover:bg-[var(--table-row-hover)]"
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -116,6 +128,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
             size="icon"
             onClick={handleDelete}
             title={UI_TEXT.MENU.TOOLTIP_DELETE}
+            className="shadow-none"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

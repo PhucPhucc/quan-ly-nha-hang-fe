@@ -91,7 +91,11 @@ export const COMMON = {
   SENDING: "Đang gửi...",
   PROCESSING: "Đang xử lý...",
   SOMETHING_WENT_WRONG: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+  TOGGLE: "Mở rộng",
   SELECT_DATE_RANGE: "Chọn khoảng thời gian",
+  SELECT_TIME: "Chọn thời gian",
+  CLEAR_FILTER: "Xóa lọc",
+  HYPHEN: " - ",
 };
 
 export const SIDE_BAR = {

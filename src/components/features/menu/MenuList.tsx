@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import TableSkeleton from "@/components/shared/TableSkeleton";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useMenuStore } from "@/store/useMenuStore";
@@ -22,28 +22,35 @@ export const MenuList: React.FC = () => {
   }, [menuItems, searchQuery, categoryId]);
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <TableSkeleton columns={5} rows={6} showMediaInFirstColumn />;
   }
 
   if (filteredItems.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center p-8 bg-card rounded-lg border border-dashed text-gray-500 mt-4 min-h-100">
-        <p className="text-xl font-bold">{UI_TEXT.MENU.NOT_FOUND_TITLE}</p>
-        <p className="text-sm mt-2">{UI_TEXT.MENU.NOT_FOUND_DESC}</p>
+      <div className="fh-table-shell mt-4">
+        <div className="fh-table-feedback">
+          <div className="fh-table-feedback-icon">{UI_TEXT.COMMON.DASH}</div>
+          <p className="text-lg font-semibold text-[var(--table-text-strong)]">
+            {UI_TEXT.MENU.NOT_FOUND_TITLE}
+          </p>
+          <p className="max-w-md text-sm text-[var(--table-text-muted)]">
+            {UI_TEXT.MENU.NOT_FOUND_DESC}
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-md border mt-4 bg-card overflow-hidden">
-      <Table className="">
+    <div className="fh-table-shell mt-4">
+      <Table className="fh-table">
         <TableHeader>
-          <TableRow>
-            <TableHead>{UI_TEXT.MENU.COL_ITEM_NAME}</TableHead>
-            <TableHead>{UI_TEXT.MENU.COL_CATEGORY}</TableHead>
-            <TableHead>{UI_TEXT.MENU.COL_PRICE}</TableHead>
-            <TableHead>{UI_TEXT.MENU.COL_STATUS}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.MENU.COL_ACTION}</TableHead>
+          <TableRow className="fh-table-header-row hover:bg-[var(--table-header-bg)]">
+            <TableHead className="fh-table-head">{UI_TEXT.MENU.COL_ITEM_NAME}</TableHead>
+            <TableHead className="fh-table-head">{UI_TEXT.MENU.COL_CATEGORY}</TableHead>
+            <TableHead className="fh-table-head">{UI_TEXT.MENU.COL_PRICE}</TableHead>
+            <TableHead className="fh-table-head">{UI_TEXT.MENU.COL_STATUS}</TableHead>
+            <TableHead className="fh-table-head text-right">{UI_TEXT.MENU.COL_ACTION}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

@@ -70,6 +70,7 @@ export const useTableStore = createWithEqualityFn<TableState>(
     },
 
     fetchTablesByArea: async (areaId: string) => {
+      set({ isLoading: true });
       try {
         const response = await tableService.getTablesByArea(areaId);
         if (response.isSuccess && response.data) {
@@ -78,6 +79,8 @@ export const useTableStore = createWithEqualityFn<TableState>(
       } catch (error) {
         console.error("Failed to fetch tables:", error);
         toast.error("Không thể tải danh sách bàn");
+      } finally {
+        set({ isLoading: false });
       }
     },
 

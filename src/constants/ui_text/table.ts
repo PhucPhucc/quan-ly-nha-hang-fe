@@ -6,6 +6,7 @@ export const TABLE = {
   RESERVED: "Đã đặt trước",
   EMPTY: "Chưa có bàn nào",
   CANCELLED: "Đã hủy",
+  OUT_OF_SERVICE: "Tạm ngưng",
   COMPLETED: "Hoàn tất",
   FETCH_ERROR: "Không thể tải danh sách bàn",
   RESERVATION_BTN: "Đặt bàn",

@@ -78,3 +78,7 @@ export function toFormData(obj: Record<string, unknown>): FormData {
 
   return formData;
 }
+
+export function formatCurrency(value: number) {
+  return `${value.toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`;
+}

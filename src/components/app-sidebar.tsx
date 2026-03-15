@@ -1,9 +1,13 @@
 "use client";
 
 import {
+  Bell,
+  Boxes,
   ChartColumn,
+  History,
   LayoutDashboard,
   Package,
+  Settings,
   SquareMenu,
   Table,
   Users,
@@ -59,6 +63,33 @@ const data = {
       title: UI_TEXT.SIDE_BAR.INVENTORY,
       url: "/manager/inventory",
       icon: Package,
+      items: [
+        {
+          title: UI_TEXT.INVENTORY.ALERTS_BTN,
+          url: "/manager/inventory/alerts",
+          icon: Bell,
+        },
+        {
+          title: UI_TEXT.INVENTORY.SETTINGS.TITLE,
+          url: "/manager/inventory/settings",
+          icon: Settings,
+        },
+        {
+          title: UI_TEXT.INVENTORY.STOCK_IN_TITLE,
+          url: "/manager/inventory/stock-in",
+          icon: Boxes,
+        },
+        {
+          title: "Lịch sử kho",
+          url: "/manager/inventory/transactions",
+          icon: History,
+        },
+        {
+          title: UI_TEXT.INVENTORY.OPENING_STOCK.TITLE,
+          url: "/manager/inventory/opening-stock",
+          icon: Package,
+        },
+      ],
     },
   ],
 };

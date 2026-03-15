@@ -2,6 +2,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { ApiResponse } from "@/types/Api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+const NETWORK_ERROR_MESSAGE =
+  "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng hoặc đảm bảo backend đang chạy.";
 
 let isRefreshing = false;
 let refreshQueue: (() => void)[] = [];
@@ -21,6 +23,40 @@ export async function refreshToken() {
   }
 
   return res.json();
+}
+
+async function performRequest(path: string, options: RequestInit): Promise<Response> {
+  try {
+    return await fetch(BASE_URL + "/api/v1" + path, options);
+  } catch {
+    throw new Error(NETWORK_ERROR_MESSAGE);
+  }
+}
+
+async function getErrorMessage(res: Response): Promise<string> {
+  let message = `Lỗi API (${res.status})`;
+
+  try {
+    const errorText = await res.text();
+    if (!errorText) {
+      return message;
+    }
+
+    try {
+      const data = JSON.parse(errorText);
+      message = data.message || data.error || data.title || message;
+
+      if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+        message = data.errors.join(", ");
+      }
+    } catch {
+      message = `Lỗi API (${res.status} ${res.statusText})`;
+    }
+  } catch {
+    return message;
+  }
+
+  return message;
 }
 
 export async function apiFetch<T>(
@@ -48,7 +84,8 @@ export async function apiFetch<T>(
   if (options.body && !(options.body instanceof FormData) && typeof options.body === "object") {
     fetchOptions.body = JSON.stringify(options.body);
   }
-  let res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
+
+  let res = await performRequest(path, fetchOptions);
 
   if (res.status === 401) {
     if (!isRefreshing) {
@@ -63,9 +100,11 @@ export async function apiFetch<T>(
         isRefreshing = false;
         refreshQueue = [];
         useAuthStore.getState().logout();
+
         if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
+
         console.error("Token refresh failed:", err);
         throw new Error("Session expired");
       }
@@ -75,21 +114,11 @@ export async function apiFetch<T>(
       });
     }
 
-    await new Promise((r) => setTimeout(r, 100));
-
-    res = await fetch(BASE_URL + "/api/v1" + path, fetchOptions);
+    res = await performRequest(path, fetchOptions);
   }
 
   if (!res.ok) {
-    let message = "API Error";
-    try {
-      const data = (await res.json()) as ApiResponse<T>;
-      message = data.message || data.error || message;
-    } catch {
-      /* ignore */
-    }
-
-    throw new Error(message);
+    throw new Error(await getErrorMessage(res));
   }
 
   if (options.responseType === "blob") {
@@ -101,12 +130,18 @@ export async function apiFetch<T>(
   }
 
   const text = await res.text();
-  const json = text ? JSON.parse(text) : {};
 
-  if (json && typeof json === "object" && "data" in (json as Record<string, unknown>)) {
+  let json: Record<string, unknown>;
+  try {
+    json = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(`Phản hồi từ server không hợp lệ (không phải JSON): ${text.substring(0, 200)}`);
+  }
+
+  if (json && typeof json === "object" && "data" in json) {
     return {
       isSuccess: true,
-      ...(json as Record<string, unknown>),
+      ...json,
     } as ApiResponse<T>;
   }
 
