@@ -11,6 +11,7 @@ import {
   Table,
   Users,
   UtensilsCrossed,
+  CalendarDays,
 } from "lucide-react";
 import * as React from "react";
 
@@ -42,6 +43,11 @@ const data = {
       title: UI_TEXT.SIDE_BAR.TABLE,
       url: "/manager/table",
       icon: Table,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.RESERVATION,
+      url: "/manager/reservation",
+      icon: CalendarDays,
     },
     {
       title: UI_TEXT.SIDE_BAR.ORDER,

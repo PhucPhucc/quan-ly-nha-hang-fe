@@ -13,7 +13,7 @@ export const TABLE = {
   PEOPLE: "Khách",
   SELECTED_AREA_PLEASE: "Vui lòng chọn khu vực",
   NO_TABLES_FOUND: "Không tìm thấy bàn nào phù hợp.",
-  CAPACITY_LIMIT: "Số ghế phải từ 1 đến 6",
+  CAPACITY_LIMIT: "Số ghế không hợp lệ.",
   TABLE_NUMBER(num: number) {
     return `Bàn ${num}`;
   },
@@ -36,6 +36,7 @@ export const TABLE = {
   // Toolbar
   EDIT_MODE: "Chế độ chỉnh sửa",
   ADD_TABLE: "Thêm bàn",
+  VIP_SINGLE_TABLE_NOTICE: "Phòng VIP chỉ có thể chứa 1 bàn.",
   SEAT_COUNT: "Số ghế",
   DEFAULT_SHAPE_NOTE: "* Bàn mặc định hình chữ nhật",
   SEARCH_PLACEHOLDER: "Tìm kiếm bàn...",
@@ -78,6 +79,7 @@ export const TABLE = {
   AREA_NAME_PLACEHOLDER: "VD: Sảnh chính",
   AREA_CODE_PLACEHOLDER: "VD: A",
   AREA_DESC_PLACEHOLDER: "Mô tả ngắn về khu vực...",
+  AREA_DESCRIPTION_EMPTY: "Chưa có mô tả",
   AREA_CODE_UNIQUE: "Mã sẽ được dùng làm tiền tố cho mã bàn (phải là duy nhất)",
   SEARCH_AREA_PLACEHOLDER: "Tìm kiếm khu vực...",
 
