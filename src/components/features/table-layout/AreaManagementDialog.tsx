@@ -74,6 +74,7 @@ export default function AreaManagementDialog({ open, onClose, areas, onUpdate }:
 
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Toolbar */}
+
           <div className="flex items-center justify-between px-6 py-4">
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
