@@ -44,9 +44,9 @@ export default function AreaManagementDialog({ open, onClose, areas, onUpdate }:
     }
   };
 
-  const handleToggle = async (areaId: string, currentIsActive: boolean) => {
+  const handleToggle = async (areaId: string, shouldActivate: boolean) => {
     try {
-      const response = await tableService.updateAreaStatus(areaId, !currentIsActive);
+      const response = await tableService.updateAreaStatus(areaId, shouldActivate);
       if (response.isSuccess) {
         toast.success(UI_TEXT.COMMON.UPDATE_SUCCESS);
         await refreshAreas();

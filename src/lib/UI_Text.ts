@@ -12,7 +12,7 @@ import { MENU } from "../constants/ui_text/menu";
 import { ORDER } from "../constants/ui_text/order";
 import { SALES_ANALYTICS } from "../constants/ui_text/salesAnalytics";
 import { TABLE } from "../constants/ui_text/table";
-
+import { RESERVATION } from "../constants/ui_text/reservation";
 export const UI_TEXT = {
   COMMON,
   SIDE_BAR,
@@ -23,6 +23,7 @@ export const UI_TEXT = {
   AUTH,
   CHANGE_PASSWORD,
   PROFILE,
+  RESERVATION,
   UNAUTHORIZED,
   EMPLOYEE,
   ORDER,

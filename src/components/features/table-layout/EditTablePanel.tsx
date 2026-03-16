@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { Table, TableStatus } from "@/types/Table-Layout";
+import { AreaType, Table, TableStatus } from "@/types/Table-Layout";
 
 import SelectCapacityTable from "./SelectCapacityTable";
 
@@ -15,12 +15,25 @@ interface Props {
     payload: { tableNumber: number; capacity: number; areaId: string }
   ) => Promise<void>;
   onUpdateStatus: (tableId: string, isActive: boolean) => Promise<void>;
+  areaType: AreaType;
 }
 
-export default function EditTablePanel({ table, onClose, onUpdateInfo, onUpdateStatus }: Props) {
+export default function EditTablePanel({ table, onClose, onUpdateInfo, onUpdateStatus, areaType }: Props) {
   const [capacity, setCapacity] = useState(table.capacity);
   const [showBelow, setShowBelow] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  const isVipArea = areaType === AreaType.VIP;
+  const minCapacity = 1;
+  const maxCapacity = isVipArea ? undefined : 6;
+
+  useEffect(() => {
+    const normalizedCapacity = Math.max(
+      minCapacity,
+      maxCapacity !== undefined ? Math.min(maxCapacity, table.capacity) : table.capacity
+    );
+    setCapacity(normalizedCapacity);
+  }, [maxCapacity, minCapacity, table.capacity]);
 
   useEffect(() => {
     if (!panelRef.current) return;
@@ -66,7 +79,12 @@ export default function EditTablePanel({ table, onClose, onUpdateInfo, onUpdateS
 
         {/* Số ghế stepper */}
         <div className="space-y-1">
-          <SelectCapacityTable capacity={capacity} setCapacity={setCapacity} />
+          <SelectCapacityTable
+            capacity={capacity}
+            setCapacity={setCapacity}
+            minCapacity={minCapacity}
+            maxCapacity={maxCapacity}
+          />
           <p className="text-[9px] italic text-gray-400">{UI_TEXT.TABLE.DEFAULT_SHAPE_NOTE}</p>
         </div>
 
