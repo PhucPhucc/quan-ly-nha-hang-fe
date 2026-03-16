@@ -2,7 +2,7 @@
 
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,11 @@ interface AddTableDialogProps {
   existingTableCount: number;
 }
 
-export default function AddTableDialog({ onCreate, areaType, existingTableCount }: AddTableDialogProps) {
+export default function AddTableDialog({
+  onCreate,
+  areaType,
+  existingTableCount,
+}: AddTableDialogProps) {
   const isVipArea = areaType === AreaType.VIP;
   const [capacity, setCapacity] = useState(isVipArea ? 9 : 2);
   const isVipLimitReached = isVipArea && existingTableCount >= 1;

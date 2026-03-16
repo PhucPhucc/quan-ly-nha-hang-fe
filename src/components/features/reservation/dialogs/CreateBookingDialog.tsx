@@ -42,13 +42,23 @@ interface CreateBookingDialogProps {
   onSuccess?: () => void;
 }
 
+interface FormData {
+  customerName: string;
+  customerPhone: string;
+  reservationDate: string;
+  reservationTime: string;
+  guestCount: number;
+  partyType: string;
+  areaId: string;
+}
+
 export const CreateBookingDialog = ({
   open,
   onOpenChange,
   onSuccess,
 }: CreateBookingDialogProps) => {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     customerName: "",
     customerPhone: "",
     reservationDate: "",
@@ -71,7 +81,7 @@ export const CreateBookingDialog = ({
     if (open) fetchAreas();
   }, [open]);
 
-  const handleChange = (field: string, value: string | number) => {
+  const handleChange = (field: keyof FormData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -138,7 +148,9 @@ export const CreateBookingDialog = ({
     } catch (error: unknown) {
       // Log technical error (e.g. connection timeout)
       console.error("[CreateReservation] Connection Error:", error);
-      toast.error(error instanceof Error ? error.message : UI_TEXT.RESERVATION.ERROR_CONNECTION);
+      const errorMessage =
+        error instanceof Error ? error.message : UI_TEXT.RESERVATION.ERROR_CONNECTION;
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -194,6 +206,8 @@ export const CreateBookingDialog = ({
               <div className="flex flex-col gap-2">
                 <Label htmlFor="phone">
                   {UI_TEXT.RESERVATION.FIELD_PHONE}{" "}
+                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
+                  {UI_TEXT.RESERVATION.FIELD_PHONE}
                   <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
