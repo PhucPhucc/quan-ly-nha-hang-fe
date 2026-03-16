@@ -50,7 +50,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
     toggleMenuItemStock(item.menuItemId, !checked);
   };
 
-  const imageSrc = !item.imageUrl ? "https://placehold.co/200x200/png" : item.imageUrl;
+  const imageSrc = !item.imageUrl ? "/placeholderMenu.webp" : item.imageUrl;
 
   return (
     <TableRow
@@ -58,7 +58,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
     >
       <TableCell className="fh-table-cell">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 overflow-hidden rounded-2xl border border-[var(--table-border-soft)] bg-[var(--table-row-muted)] shrink-0">
+          <div className="h-12 w-12 overflow-hidden rounded-2xl border border-table-border-soft bg-table-row-muted shrink-0">
             <Image
               src={imageSrc}
               alt={item.name}
@@ -68,12 +68,8 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
             />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-[var(--table-text-strong)]">
-              {item.name}
-            </span>
-            <span className="line-clamp-1 text-xs text-[var(--table-text-muted)]">
-              {item.description}
-            </span>
+            <span className="text-sm font-semibold text-table-text-strong">{item.name}</span>
+            <span className="line-clamp-1 text-xs text-table-text-muted">{item.description}</span>
           </div>
         </div>
       </TableCell>
@@ -84,12 +80,12 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
             {item.categoryName}
           </Badge>
         ) : (
-          <span className="text-xs text-[var(--table-text-muted)]">{UI_TEXT.MENU.NO_CATEGORY}</span>
+          <span className="text-xs text-table-text-muted">{UI_TEXT.MENU.NO_CATEGORY}</span>
         )}
       </TableCell>
 
       <TableCell className="fh-table-cell">
-        <div className="text-sm font-semibold text-[var(--primary)]">
+        <div className="text-sm font-semibold text-primary">
           {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
             item.price
           )}
@@ -119,7 +115,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
             size="icon"
             onClick={handleEdit}
             title={UI_TEXT.MENU.TOOLTIP_EDIT}
-            className="border-[var(--table-border-soft)] text-[var(--table-text-strong)] hover:bg-[var(--table-row-hover)]"
+            className="border-table-border-soft text-table-text-strong hover:bg-table-row-hover"
           >
             <Edit className="h-4 w-4" />
           </Button>
