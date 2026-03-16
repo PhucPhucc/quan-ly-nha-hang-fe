@@ -11,6 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { OrderStatus, OrderType } from "@/types/enums";
@@ -29,15 +30,15 @@ interface OrderBoardTableProps {
 const getStatusBadgeClassName = (status: string) => {
   switch (status) {
     case OrderStatus.Serving:
-      return "fh-table-pill-primary";
+      return "table-pill-primary";
     case OrderStatus.Completed:
-      return "fh-table-pill-success";
+      return "table-pill-success";
     case OrderStatus.Cancelled:
-      return "fh-table-pill-danger";
+      return "table-pill-danger";
     case OrderStatus.Paid:
-      return "fh-table-pill-info";
+      return "table-pill-info";
     default:
-      return "fh-table-pill-neutral";
+      return "table-pill-neutral";
   }
 };
 
@@ -70,27 +71,25 @@ export default function OrderBoardTable({
   }
 
   return (
-    <div className="fh-table-shell mt-4 flex min-h-0 flex-1 flex-col">
+    <TableShell className="mt-4 flex min-h-0 flex-1 flex-col">
       <div className="overflow-auto flex-1">
-        <Table className="fh-table">
+        <Table>
           <TableHeader>
-            <TableRow className="fh-table-header-row hover:bg-[var(--table-header-bg)]">
-              <TableHead className="fh-table-head w-[150px]">
-                {UI_TEXT.ORDER.BOARD.ORDER_CODE}
-              </TableHead>
-              <TableHead className="fh-table-head">{UI_TEXT.ORDER.BOARD.TYPE_TABLE}</TableHead>
-              <TableHead className="fh-table-head">{UI_TEXT.ORDER.BOARD.TIME}</TableHead>
-              <TableHead className="fh-table-head">{UI_TEXT.ORDER.BOARD.TOTAL_AMOUNT}</TableHead>
-              <TableHead className="fh-table-head">{UI_TEXT.ORDER.BOARD.STATUS_LABEL}</TableHead>
-              <TableHead className="fh-table-head text-right">{UI_TEXT.ORDER.BOARD.VIP}</TableHead>
+            <TableRow variant="header">
+              <TableHead className="w-[150px]">{UI_TEXT.ORDER.BOARD.ORDER_CODE}</TableHead>
+              <TableHead>{UI_TEXT.ORDER.BOARD.TYPE_TABLE}</TableHead>
+              <TableHead>{UI_TEXT.ORDER.BOARD.TIME}</TableHead>
+              <TableHead>{UI_TEXT.ORDER.BOARD.TOTAL_AMOUNT}</TableHead>
+              <TableHead>{UI_TEXT.ORDER.BOARD.STATUS_LABEL}</TableHead>
+              <TableHead className="text-right">{UI_TEXT.ORDER.BOARD.VIP}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {error && (
-              <TableRow className="fh-table-row">
-                <TableCell colSpan={6} className="fh-table-cell">
-                  <div className="fh-table-feedback text-danger">
-                    <span className="fh-table-feedback-icon fh-table-feedback-icon-danger">
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <div className="table-feedback text-danger">
+                    <span className="table-feedback-icon table-feedback-icon-danger">
                       <AlertCircle className="h-5 w-5" />
                     </span>
                     <p className="font-medium">{error}</p>
@@ -103,10 +102,10 @@ export default function OrderBoardTable({
             )}
 
             {!error && orders.length === 0 && (
-              <TableRow className="fh-table-row">
-                <TableCell colSpan={6} className="fh-table-cell">
-                  <div className="fh-table-feedback">
-                    <p className="text-sm font-medium text-[var(--table-text-muted)]">
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <div className="table-feedback">
+                    <p className="text-sm font-medium text-table-text-muted">
                       {UI_TEXT.ORDER.BOARD.NOT_FOUND}
                     </p>
                   </div>
@@ -116,51 +115,46 @@ export default function OrderBoardTable({
 
             {!error &&
               orders.map((order) => (
-                <TableRow key={order.orderId} className="fh-table-row">
-                  <TableCell className="fh-table-cell fh-table-cell-strong">
-                    {order.orderCode}
-                  </TableCell>
-                  <TableCell className="fh-table-cell">
+                <TableRow key={order.orderId}>
+                  <TableCell className="table-cell-strong">{order.orderCode}</TableCell>
+                  <TableCell>
                     <div className="flex flex-col gap-1">
-                      <span className="text-sm font-semibold text-[var(--table-text-strong)]">
+                      <span className="text-sm font-semibold text-table-text-strong">
                         {order.orderType === OrderType.DineIn
                           ? UI_TEXT.ORDER.CURRENT.DINE_IN
                           : UI_TEXT.ORDER.CURRENT.TAKEAWAY}
                       </span>
                       {order.tableId && (
-                        <span className="text-xs text-[var(--table-text-muted)]">
+                        <span className="text-xs text-table-text-muted">
                           {UI_TEXT.ORDER.BOARD.TABLE_PREFIX} {order.tableId}
                         </span>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="fh-table-cell text-sm">
+                  <TableCell className="text-sm">
                     {new Date(order.createdAt).toLocaleString("vi-VN")}
                   </TableCell>
-                  <TableCell className="fh-table-cell text-sm font-semibold text-[var(--primary)]">
+                  <TableCell className="text-sm font-semibold text-primary">
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",
                       currency: "VND",
                     }).format(order.totalAmount)}
                   </TableCell>
-                  <TableCell className="fh-table-cell">
+                  <TableCell>
                     <Badge
                       variant="outline"
-                      className={`fh-table-pill border-0 ${getStatusBadgeClassName(order.status)}`}
+                      className={`table-pill border-0 ${getStatusBadgeClassName(order.status)}`}
                     >
                       {getStatusTranslation(order.status)}
                     </Badge>
                   </TableCell>
-                  <TableCell className="fh-table-cell text-right">
+                  <TableCell className="text-right">
                     {order.isPriority ? (
-                      <Badge
-                        variant="outline"
-                        className="fh-table-pill fh-table-pill-danger border-0"
-                      >
+                      <Badge variant="outline" className="table-pill table-pill-danger border-0">
                         {UI_TEXT.ORDER.BOARD.VIP}
                       </Badge>
                     ) : (
-                      <span className="text-[var(--table-text-muted)]">{UI_TEXT.COMMON.MINUS}</span>
+                      <span className="text-table-text-muted">{UI_TEXT.COMMON.MINUS}</span>
                     )}
                   </TableCell>
                 </TableRow>
@@ -170,8 +164,8 @@ export default function OrderBoardTable({
       </div>
 
       {!loading && !error && totalPages > 1 && (
-        <div className="fh-table-pagination">
-          <span className="text-sm font-medium text-[var(--table-text-muted)]">
+        <div className="table-pagination">
+          <span className="text-sm font-medium text-table-text-muted">
             {UI_TEXT.ORDER.BOARD.PAGE} {pageNumber} {UI_TEXT.COMMON.SLASH} {totalPages}
           </span>
           <div className="flex gap-2">
@@ -194,6 +188,6 @@ export default function OrderBoardTable({
           </div>
         </div>
       )}
-    </div>
+    </TableShell>
   );
 }
