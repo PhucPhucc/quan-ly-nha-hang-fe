@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { RotateCcw, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -75,7 +75,7 @@ export default function InventoryTransactionsPage() {
         filters,
         orderBy: sort,
       }),
-    placeholderData: (previousData) => previousData,
+    placeholderData: keepPreviousData,
   });
 
   const transactions = data?.data?.items ?? [];
@@ -158,7 +158,7 @@ export default function InventoryTransactionsPage() {
                 setSort("-occurredAt");
                 setPage(1);
               }}
-              title={UI_TEXT.COMMON.RESET ?? "Reset"}
+              title={UI_TEXT.COMMON.RESET}
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
@@ -232,7 +232,7 @@ export default function InventoryTransactionsPage() {
                       {item.quantity}
                     </TableCell>
                     <TableCell className="text-right text-slate-700">
-                      {item.unitCost ?? "-"}
+                      {item.unitCost ?? UI_TEXT.COMMON.DASH}
                     </TableCell>
                     <TableCell className="text-right font-semibold text-primary">
                       {item.balanceAfter}

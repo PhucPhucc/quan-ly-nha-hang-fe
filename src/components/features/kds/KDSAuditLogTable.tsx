@@ -56,8 +56,6 @@ const getRoleInitialColor = (role: string) => {
   switch (role) {
     case "ChefBar":
       return "bg-teal-100 text-teal-600 border-teal-200";
-    case "Barista":
-      return "bg-purple-100 text-purple-600 border-purple-200";
     default:
       return "bg-gray-100 text-gray-600 border-gray-200";
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Printer, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import React from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -16,21 +16,15 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
-import { StockInReceipt } from "@/types/StockIn";
+import { StockOutReceipt } from "@/types/StockOut";
 
-interface StockInDetailViewProps {
-  receipt: StockInReceipt;
+interface StockOutDetailViewProps {
+  receipt: StockOutReceipt;
   onBack: () => void;
-  onPrint?: () => void;
   onDelete?: () => void;
 }
 
-export const StockInDetailView = ({
-  receipt,
-  onBack,
-  onPrint,
-  onDelete,
-}: StockInDetailViewProps) => {
+export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetailViewProps) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -38,28 +32,16 @@ export const StockInDetailView = ({
           <ArrowLeft className="size-4" />
           {UI_TEXT.COMMON.BACK}
         </Button>
-        <div className="flex items-center gap-2">
-          {onPrint && (
-            <Button
-              variant="outline"
-              onClick={onPrint}
-              className="gap-2 rounded-2xl border-slate-200"
-            >
-              <Printer className="size-4" />
-              {UI_TEXT.BUTTON.DETAIL}
-            </Button>
-          )}
-          {onDelete && (
-            <Button
-              variant="destructive"
-              onClick={onDelete}
-              className="gap-2 rounded-2xl bg-destructive hover:bg-destructive/90 text-white"
-            >
-              <Trash2 className="size-4" />
-              {UI_TEXT.BUTTON.DELETE}
-            </Button>
-          )}
-        </div>
+        {onDelete && (
+          <Button
+            variant="destructive"
+            onClick={onDelete}
+            className="gap-2 rounded-2xl bg-destructive hover:bg-destructive/90 text-white"
+          >
+            <Trash2 className="size-4" />
+            {UI_TEXT.BUTTON.DELETE}
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -67,7 +49,7 @@ export const StockInDetailView = ({
           <Card className="rounded-3xl border-slate-100 shadow-sm shadow-slate-100/60 p-0 overflow-hidden">
             <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 py-4">
               <CardTitle className="text-base font-semibold text-slate-700">
-                {UI_TEXT.INVENTORY.STOCK_IN_VOUCHER}
+                {UI_TEXT.INVENTORY.STOCK_OUT_VOUCHER}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -81,7 +63,7 @@ export const StockInDetailView = ({
                       {UI_TEXT.INVENTORY.TABLE.COL_ITEM}
                     </TableHead>
                     <TableHead className="w-[120px] text-center font-semibold text-[11px] uppercase tracking-wider text-slate-500">
-                      {UI_TEXT.INVENTORY.OPENING_STOCK.COL_INITIAL}
+                      {UI_TEXT.INVENTORY.STOCK_OUT.QTY_LABEL}
                     </TableHead>
                     <TableHead className="w-[150px] text-right font-semibold text-[11px] uppercase tracking-wider text-slate-500">
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
@@ -141,7 +123,7 @@ export const StockInDetailView = ({
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</span>
                   <span className="text-slate-700 font-medium">
-                    {new Date(receipt.receivedDate).toLocaleDateString("vi-VN", {
+                    {new Date(receipt.stockOutDate).toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI, {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",
@@ -149,10 +131,22 @@ export const StockInDetailView = ({
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
+                  <span className="text-slate-500">{UI_TEXT.INVENTORY.TABLE.COL_ITEM}</span>
+                  <span className="text-slate-700 font-medium">{receipt.totalItems}</span>
+                </div>
+                {receipt.reason && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">
+                      {UI_TEXT.INVENTORY.STOCK_OUT.REASON_LABEL}
+                    </span>
+                    <span className="text-slate-700 font-medium">{receipt.reason}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
                   <span className="text-slate-500">{UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}</span>
                   <div className="flex items-center gap-2">
                     <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary uppercase">
-                      {(receipt.createdBy || UI_TEXT.COMMON.DASH).charAt(0)}
+                      {(receipt.createdBy || "-").charAt(0)}
                     </div>
                     <span className="text-slate-700 font-medium">{receipt.createdBy}</span>
                   </div>

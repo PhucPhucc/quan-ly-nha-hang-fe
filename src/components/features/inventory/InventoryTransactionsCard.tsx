@@ -3,6 +3,7 @@
 import { History } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 import { InventoryTransactionsTable } from "./InventoryTransactionsTable";
 

@@ -1,9 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -47,7 +48,7 @@ export function InventoryTransactionsTable() {
   const { data, isLoading } = useQuery({
     queryKey: ["inventory-transactions", page, pageSize],
     queryFn: () => inventoryService.getInventoryTransactions(page, pageSize),
-    placeholderData: (previousData) => previousData,
+    placeholderData: keepPreviousData,
   });
 
   const transactions = data?.data?.items ?? [];
@@ -121,7 +122,9 @@ export function InventoryTransactionsTable() {
                 <TableCell className="text-right font-semibold text-slate-800">
                   {item.quantity}
                 </TableCell>
-                <TableCell className="text-right text-slate-700">{item.unitCost ?? "-"}</TableCell>
+                <TableCell className="text-right text-slate-700">
+                  {item.unitCost ?? UI_TEXT.COMMON.DASH}
+                </TableCell>
                 <TableCell className="text-right font-semibold text-primary">
                   {item.balanceAfter}
                 </TableCell>
@@ -142,20 +145,22 @@ export function InventoryTransactionsTable() {
           {UI_TEXT.INVENTORY.TABLE.PAGE} {page} {UI_TEXT.INVENTORY.TABLE.SLASH} {totalPages}
         </span>
         <div className="flex items-center gap-2">
-          <button
-            className="rounded-lg border border-slate-300 px-3 py-1 disabled:opacity-50"
+          <Button
+            variant="outline"
+            className="h-8 shadow-none"
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
             {UI_TEXT.COMMON.PREVIOUS}
-          </button>
-          <button
-            className="rounded-lg border border-slate-300 px-3 py-1 disabled:opacity-50"
+          </Button>
+          <Button
+            variant="outline"
+            className="h-8 shadow-none"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           >
             {UI_TEXT.COMMON.NEXT}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { ChevronDown, FileInput, FileOutput, History } from "lucide-react";
 import React, { useState } from "react";
 
 import { CreateStockInDrawer } from "@/app/(protected)/manager/inventory/stock-in/_components/CreateStockInDrawer";
+import { CreateStockOutDrawer } from "@/app/(protected)/manager/inventory/stock-out/_components/CreateStockOutDrawer";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +20,7 @@ interface Props {
 
 export function CreateStockInTrigger({ onSuccess }: Props) {
   const [isStockInOpen, setIsStockInOpen] = useState(false);
+  const [isStockOutOpen, setIsStockOutOpen] = useState(false);
 
   return (
     <>
@@ -42,7 +44,7 @@ export function CreateStockInTrigger({ onSuccess }: Props) {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="flex items-center gap-2 py-2.5 rounded-lg cursor-pointer transition-colors focus:bg-red-50 focus:text-red-600"
-            onClick={() => alert("Chức năng đang được phát triển")}
+            onClick={() => setIsStockOutOpen(true)}
           >
             <FileOutput className="size-4" />
             <span className="font-medium">{UI_TEXT.INVENTORY.STOCK_OUT_VOUCHER}</span>
@@ -60,6 +62,17 @@ export function CreateStockInTrigger({ onSuccess }: Props) {
             window.location.reload();
           }
         }}
+      />
+      <CreateStockOutDrawer
+        onSuccess={() => {
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            window.location.reload();
+          }
+        }}
+        open={isStockOutOpen}
+        onOpenChange={setIsStockOutOpen}
       />
     </>
   );

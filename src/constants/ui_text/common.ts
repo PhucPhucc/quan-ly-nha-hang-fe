@@ -96,6 +96,7 @@ export const COMMON = {
   SELECT_TIME: "Chọn thời gian",
   CLEAR_FILTER: "Xóa lọc",
   HYPHEN: " - ",
+  LOCALE_VI: "vi-VN",
 };
 
 export const SIDE_BAR = {
