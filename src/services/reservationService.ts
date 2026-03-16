@@ -22,7 +22,6 @@ export const reservationService = {
       body: data,
     }),
   getAreas: async () => {
-    // Phải có <Area[]> ở đây
     return await apiFetch<Area[]>("/public/reservations/areas", {
       method: "GET",
     });

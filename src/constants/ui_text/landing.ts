@@ -102,11 +102,11 @@ export const LANDING = {
       AREA_PLACEHOLDER: "Chọn vị trí",
       MENU_LABEL: "Hình thức",
       MENU_PLACEHOLDER: "Chọn thực đơn",
-      NOTE_LABEL: "Lời nhắn",
+      NOTE_LABEL: "Lời nhắn (Không quá 200 ký tự)",
       NOTE_PLACEHOLDER: "Yêu cầu đặc biệt (Sinh nhật, dị ứng...)",
       SUBMIT_BUTTON: "Xác nhận đặt bàn",
       SUBMIT_DISABLED: "Ngừng nhận khách",
-      FOOTER_NOTE: "Xác nhận tức thì • Miễn phí hủy bàn",
+      FOOTER_NOTE: "Xác nhận tức thì • Miễn phí hủy bàn (Trước 45p)",
     },
     AREAS: [
       { value: 0, label: "Phòng Thường" },

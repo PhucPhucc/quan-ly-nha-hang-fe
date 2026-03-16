@@ -29,7 +29,7 @@ export function useReservation(initialDate: Date | undefined) {
     customerPhone: "",
     areaId: "",
     note: "",
-    guestCount: 2,
+    guestCount: 1,
     partyType: "General",
   });
 
@@ -64,7 +64,6 @@ export function useReservation(initialDate: Date | undefined) {
 
       if (res.isSuccess) {
         toast.success("Đặt bàn thành công! Hẹn gặp bạn tại nhà hàng nhé.");
-        // Reset các field cần thiết
         setFormData((prev) => ({
           ...prev,
           customerName: "",

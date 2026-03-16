@@ -17,14 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { LANDING } from "@/constants/ui_text/landing";
-import { useReservation } from "@/hooks/use-reservation"; // Đường dẫn hook của bạn
+import { useReservation } from "@/hooks/use-reservation";
 import { useReservationSlots } from "@/hooks/use-reservation-slots";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 export function ReservationSection() {
-  const { RESERVATION } = LANDING;
+  const { RESERVATION } = UI_TEXT.LANDING;
 
-  // 1. Sử dụng Hook của bạn
   const {
     date,
     setDate,
@@ -37,14 +36,12 @@ export function ReservationSection() {
     areas,
   } = useReservation(new Date());
 
-  // Lấy các khung giờ trống dựa theo ngày đã chọn
   const timeSlots = useReservationSlots(date);
 
   return (
     <section id="reservation-form" className="py-24 bg-background scroll-mt-24 overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          {/* CỘT TRÁI - Thông tin tiêu đề (Giữ nguyên) */}
           <div className="lg:col-span-5 space-y-8 lg:sticky lg:top-32">
             <div className="space-y-4">
               <h3 className="text-primary font-bold uppercase tracking-widest text-sm">
@@ -81,51 +78,53 @@ export function ReservationSection() {
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
                   {RESERVATION.FORM.NAME_LABEL}
                 </Label>
-                <div className="relative group border-b-2 border-border/50 focus-within:border-primary transition-colors pb-2">
-                  <User className="absolute left-0 bottom-2.5 h-5 w-5 text-muted-foreground" />
+                {/* Thay absolute bằng flex items-center */}
+                <div className="flex items-center group border-b-2 border-border/50 focus-within:border-primary transition-colors pb-1">
+                  <User className="h-5 w-5 text-muted-foreground shrink-0" />
                   <Input
                     value={formData.customerName}
                     onChange={(e) => updateField("customerName", e.target.value)}
                     placeholder={RESERVATION.FORM.NAME_PLACEHOLDER}
-                    className="border-0 pl-8 bg-transparent focus-visible:ring-0 text-lg font-medium"
+                    className="border-0 pl-3 bg-transparent focus-visible:ring-0 text-lg font-medium h-10"
                   />
                 </div>
               </div>
 
-              {/* Số điện thoại */}
+              {/* Số điện thoại (tương tự) */}
               <div className="space-y-2.5">
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
                   {RESERVATION.FORM.PHONE_LABEL}
                 </Label>
-                <div className="relative group border-b-2 border-border/50 focus-within:border-primary transition-colors pb-2">
-                  <Phone className="absolute left-0 bottom-2.5 h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center group border-b-2 border-border/50 focus-within:border-primary transition-colors pb-1">
+                  <Phone className="h-5 w-5 text-muted-foreground shrink-0" />
                   <Input
                     type="tel"
                     value={formData.customerPhone}
                     onChange={(e) => updateField("customerPhone", e.target.value)}
                     placeholder={RESERVATION.FORM.PHONE_PLACEHOLDER}
-                    className="border-0 pl-8 bg-transparent focus-visible:ring-0 text-lg font-medium"
+                    className="border-0 pl-3 bg-transparent focus-visible:ring-0 text-lg font-medium h-10"
                   />
                 </div>
               </div>
 
-              {/* Ngày đặt */}
+              {/* Trường NGÀY DÙNG BỮA */}
               <div className="space-y-2.5">
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
                   {RESERVATION.FORM.DATE_LABEL}
                 </Label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <div className="flex items-center gap-3 border-b-2 py-2 cursor-pointer hover:border-primary transition-all">
-                      <CalendarDays className="h-5 w-5 text-muted-foreground" />
-                      <span className="text-lg font-medium">
+                    {/* Thêm cursor-pointer và đồng nhất border/height */}
+                    <div className="flex items-center gap-3 border-b-2 border-border/50 hover:border-primary transition-colors h-11 pb-1 cursor-pointer">
+                      <CalendarDays className="h-5 w-5 text-muted-foreground shrink-0" />
+                      <span className="text-lg font-medium leading-none truncate">
                         {date
                           ? format(date, "PPP", { locale: vi })
                           : RESERVATION.FORM.DATE_PICKER_EMPTY}
                       </span>
                     </div>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       selected={date}
@@ -136,6 +135,7 @@ export function ReservationSection() {
                 </Popover>
               </div>
 
+              {/* Trường GIỜ NHẬN BÀN */}
               <div className="space-y-2.5">
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
                   {RESERVATION.FORM.TIME_LABEL}
@@ -145,9 +145,9 @@ export function ReservationSection() {
                   onValueChange={setSelectedTime}
                   disabled={timeSlots.length === 0}
                 >
-                  <SelectTrigger className="border-0 border-b-2 rounded-none px-0 bg-transparent focus:ring-0 text-lg font-medium">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
+                  <SelectTrigger className="flex items-center gap-3 border-0 border-b-2 border-border/50 rounded-none px-0 h-11 pb-1 bg-transparent focus:ring-0 focus:border-primary transition-colors shadow-none">
+                    <CheckCircle2 className="h-5 w-5 text-muted-foreground shrink-0" />
+                    <div className="text-lg font-medium">
                       <SelectValue
                         placeholder={
                           timeSlots.length > 0
@@ -173,7 +173,6 @@ export function ReservationSection() {
                 <Select value={formData.areaId} onValueChange={(val) => updateField("areaId", val)}>
                   <SelectTrigger className="rounded-xl border-border/50 bg-background">
                     <MapPin className="mr-2 h-4 w-4 text-primary" />
-                    {/* SelectValue sẽ tự hiển thị name dựa trên value (areaId) đang chọn */}
                     <SelectValue placeholder={RESERVATION.FORM.AREA_PLACEHOLDER} />
                   </SelectTrigger>
 
@@ -185,7 +184,6 @@ export function ReservationSection() {
                         </SelectItem>
                       ))
                     ) : (
-                      // Hiển thị trạng thái khi API chưa trả về dữ liệu
                       <SelectItem value="loading" disabled></SelectItem>
                     )}
                   </SelectContent>
@@ -196,8 +194,8 @@ export function ReservationSection() {
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
                   {RESERVATION.FORM.GUESTS_LABEL}
                 </Label>
-                <div className="relative group border-b-2 border-border/50 focus-within:border-primary transition-colors pb-2">
-                  <User className="absolute left-0 bottom-2.5 h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center group border-b-2 border-border/50 focus-within:border-primary transition-colors pb-1">
+                  <User className="h-5 w-5 text-muted-foreground shrink-0" />
                   <Input
                     type="number"
                     min={1}
@@ -205,11 +203,10 @@ export function ReservationSection() {
                     value={formData.guestCount}
                     onChange={(e) => updateField("guestCount", parseInt(e.target.value) || 1)}
                     placeholder="Số người"
-                    className="border-0 pl-8 bg-transparent focus-visible:ring-0 text-lg font-medium"
+                    className="border-0 pl-3 bg-transparent focus-visible:ring-0 text-lg font-medium h-10"
                   />
                 </div>
               </div>
-              {/* Ghi chú */}
               <div className="md:col-span-2 space-y-3">
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
                   {RESERVATION.FORM.NOTE_LABEL}
@@ -220,6 +217,13 @@ export function ReservationSection() {
                   placeholder={RESERVATION.FORM.NOTE_PLACEHOLDER}
                   className="rounded-2xl min-h-[100px]"
                 />
+                <p
+                  className={`text-xs text-right ${
+                    formData.note.length > 180 ? "text-destructive" : "text-muted-foreground"
+                  }`}
+                >
+                  {formData.note.length}
+                </p>
               </div>
 
               {/* Nút xác nhận */}
