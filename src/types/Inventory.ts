@@ -56,6 +56,8 @@ export interface InventorySettings {
   autoDeductOnCompleted: boolean;
   costMethod: string;
   maxCostRecalcDays: number;
+  openingStockStatus?: number | string;
+  lockedAt?: string | null;
 }
 
 export interface OpeningStockItem {
@@ -66,4 +68,11 @@ export interface OpeningStockItem {
 
 export interface ImportOpeningStockRequest {
   items: OpeningStockItem[];
+  confirmOverwrite: boolean;
+}
+
+export interface ImportOpeningStockResponse {
+  updatedCount: number;
+  transactionCount: number;
+  updatedAt: string;
 }

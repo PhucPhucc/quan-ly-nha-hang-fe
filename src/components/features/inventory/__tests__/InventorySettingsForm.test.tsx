@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -12,6 +13,7 @@ import { InventorySettingsFormContainer } from "../InventorySettingsFormContaine
 
 vi.mock("@/services/inventory.service", () => ({
   inventoryService: {
+    getInventorySettings: vi.fn(),
     updateInventorySettings: vi.fn(),
   },
 }));
@@ -31,6 +33,21 @@ class ResizeObserverMock {
 
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
+function renderWithQueryClient(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+      mutations: {
+        retry: false,
+      },
+    },
+  });
+
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+}
+
 const initialValues = {
   expiryWarningDays: 10,
   defaultLowStockThreshold: 5,
@@ -42,6 +59,10 @@ const initialValues = {
 describe("InventorySettingsForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(inventoryService.getInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: initialValues,
+    });
   });
 
   it("should render initial settings", async () => {
@@ -89,7 +110,7 @@ describe("InventorySettingsForm", () => {
     });
 
     const user = userEvent.setup();
-    render(<InventorySettingsFormContainer initialValues={initialValues} />);
+    renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
 
     await user.click(screen.getByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES }));
 
@@ -104,7 +125,7 @@ describe("InventorySettingsForm", () => {
     );
 
     const user = userEvent.setup();
-    render(<InventorySettingsFormContainer initialValues={initialValues} />);
+    renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
 
     await user.click(screen.getByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES }));
 

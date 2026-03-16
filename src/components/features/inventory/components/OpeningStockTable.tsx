@@ -20,17 +20,23 @@ type Props = {
   ingredients: Ingredient[];
   entryItems: OpeningStockEntryValues;
   onInputChange: (id: string, field: "quantity" | "costPrice", value: string) => void;
+  disabled?: boolean;
 };
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 
-export function OpeningStockTable({ ingredients, entryItems, onInputChange }: Props) {
+export function OpeningStockTable({
+  ingredients,
+  entryItems,
+  onInputChange,
+  disabled = false,
+}: Props) {
   return (
     <div className="max-h-[600px] overflow-auto">
       <Table>
-        <TableHeader className="bg-muted/50 sticky top-0 z-10">
+        <TableHeader className="sticky top-0 z-10 bg-muted/50">
           <TableRow>
-            <TableHead className="w-[120px]">{OPENING_STOCK.COL_CODE}</TableHead>
+            <TableHead className="w-[160px]">{OPENING_STOCK.COL_CODE}</TableHead>
             <TableHead>{OPENING_STOCK.COL_NAME}</TableHead>
             <TableHead className="w-[100px]">{OPENING_STOCK.COL_UNIT}</TableHead>
             <TableHead className="w-[120px] text-right">{OPENING_STOCK.COL_CURRENT}</TableHead>
@@ -55,7 +61,7 @@ export function OpeningStockTable({ ingredients, entryItems, onInputChange }: Pr
               const rowTotal = (entryItem?.quantity || 0) * (entryItem?.costPrice || 0);
 
               return (
-                <TableRow key={item.ingredientId} className="hover:bg-muted/30 transition-colors">
+                <TableRow key={item.ingredientId} className="transition-colors hover:bg-muted/30">
                   <TableCell className="font-medium">
                     <Badge variant="outline" className="font-mono text-xs">
                       {item.code}
@@ -71,6 +77,7 @@ export function OpeningStockTable({ ingredients, entryItems, onInputChange }: Pr
                       type="number"
                       min="0"
                       className="h-9"
+                      disabled={disabled}
                       value={entryItem?.quantity ?? ""}
                       onChange={(e) => onInputChange(item.ingredientId, "quantity", e.target.value)}
                     />
@@ -80,6 +87,7 @@ export function OpeningStockTable({ ingredients, entryItems, onInputChange }: Pr
                       type="number"
                       min="0"
                       className="h-9"
+                      disabled={disabled}
                       value={entryItem?.costPrice ?? ""}
                       onChange={(e) =>
                         onInputChange(item.ingredientId, "costPrice", e.target.value)

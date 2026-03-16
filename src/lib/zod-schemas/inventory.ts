@@ -21,6 +21,7 @@ export const openingStockItemSchema = z.object({
 
 export const importOpeningStockSchema = z.object({
   items: z.array(openingStockItemSchema).min(1, "Phải có ít nhất 1 nguyên vật liệu"),
+  confirmOverwrite: z.boolean(),
 });
 
 export type ImportOpeningStockInput = z.infer<typeof importOpeningStockSchema>;
