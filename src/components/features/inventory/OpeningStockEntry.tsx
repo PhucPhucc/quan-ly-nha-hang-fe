@@ -141,7 +141,7 @@ export function OpeningStockEntry() {
           </div>
         ) : null}
 
-        <Card className="overflow-hidden border-border shadow-soft">
+        <Card className="overflow-hidden border-border p-0 shadow-soft">
           <CardContent className="p-0">
             <OpeningStockTable
               ingredients={filteredIngredients}

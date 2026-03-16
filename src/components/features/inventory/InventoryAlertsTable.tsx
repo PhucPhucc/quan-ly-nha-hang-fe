@@ -54,30 +54,38 @@ export function InventoryAlertsTable() {
   }
 
   return (
-    <div className="rounded-md border bg-card text-card-foreground shadow-sm p-4">
-      <div className="flex flex-col mb-4">
-        <h2 className="text-xl font-semibold mb-1">{UI_TEXT.INVENTORY.ALERTS_TITLE}</h2>
+    <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="mb-4 flex flex-col text-center">
+        <h2 className="mb-1 text-xl font-semibold text-slate-900">
+          {UI_TEXT.INVENTORY.ALERTS_TITLE}
+        </h2>
         <p className="text-muted-foreground text-sm">{UI_TEXT.INVENTORY.ALERTS_DESC}</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="low-stock" className="flex gap-2">
+        <TabsList className="mb-4 grid h-auto w-full grid-cols-2 rounded-xl bg-slate-100 p-1">
+          <TabsTrigger
+            value="low-stock"
+            className="flex items-center justify-center gap-2 rounded-lg"
+          >
             <AlertTriangle className="w-4 h-4" />
             {UI_TEXT.INVENTORY.ALERT_TAB_LOW_STOCK}
             <Badge
               variant="secondary"
-              className="ml-2 h-5 w-5 p-0 flex items-center justify-center rounded-full"
+              className="ml-2 flex h-5 w-5 items-center justify-center rounded-full p-0"
             >
               {lowStockItems.length}
             </Badge>
           </TabsTrigger>
-          <TabsTrigger value="expiring" className="flex gap-2">
+          <TabsTrigger
+            value="expiring"
+            className="flex items-center justify-center gap-2 rounded-lg"
+          >
             <Clock className="w-4 h-4" />
             {UI_TEXT.INVENTORY.ALERT_TAB_EXPIRING}
             <Badge
               variant="secondary"
-              className="ml-2 h-5 w-5 p-0 flex items-center justify-center rounded-full"
+              className="ml-2 flex h-5 w-5 items-center justify-center rounded-full p-0"
             >
               {expiringItems.length}
             </Badge>
@@ -92,31 +100,40 @@ export function InventoryAlertsTable() {
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_ITEM}</TableHead>
-                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_CATEGORY}</TableHead>
-                  <TableHead className="text-right">
+                <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+                    {UI_TEXT.INVENTORY.TABLE.COL_ITEM}
+                  </TableHead>
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+                    {UI_TEXT.INVENTORY.TABLE.COL_CATEGORY}
+                  </TableHead>
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
                     {UI_TEXT.INVENTORY.TABLE.COL_CURRENT_STOCK}
                   </TableHead>
-                  <TableHead className="text-right">
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
                     {UI_TEXT.INVENTORY.TABLE.COL_THRESHOLD}
                   </TableHead>
-                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+                    {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {lowStockItems.map((item, index) => (
-                  <TableRow key={getAlertRowKey(item, index)}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.category}</TableCell>
-                    <TableCell className="text-right text-destructive font-semibold">
+                  <TableRow
+                    key={getAlertRowKey(item, index)}
+                    className="border-slate-100 hover:bg-slate-50/50"
+                  >
+                    <TableCell className="text-center font-medium">{item.name}</TableCell>
+                    <TableCell className="text-center">{item.category}</TableCell>
+                    <TableCell className="text-center font-semibold text-destructive">
                       {item.currentStock} {item.unit}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       {item.lowStockThreshold} {item.unit}
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="destructive">
+                    <TableCell className="text-center">
+                      <Badge variant="destructive" className="min-w-24 justify-center">
                         {item.currentStock === 0
                           ? UI_TEXT.INVENTORY.STOCK.STATUS_OUT
                           : UI_TEXT.INVENTORY.STOCK.STATUS_LOW}
@@ -137,34 +154,45 @@ export function InventoryAlertsTable() {
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_ITEM}</TableHead>
-                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_BATCH}</TableHead>
-                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_EXPIRATION}</TableHead>
-                  <TableHead className="text-right">
+                <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+                    {UI_TEXT.INVENTORY.TABLE.COL_ITEM}
+                  </TableHead>
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+                    {UI_TEXT.INVENTORY.TABLE.COL_BATCH}
+                  </TableHead>
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+                    {UI_TEXT.INVENTORY.TABLE.COL_EXPIRATION}
+                  </TableHead>
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
                     {UI_TEXT.INVENTORY.TABLE.COL_REMAINING}
                   </TableHead>
-                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
+                  <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+                    {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {expiringItems.map((item, index) => (
-                  <TableRow key={getAlertRowKey(item, index)}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell className="text-muted-foreground">
+                  <TableRow
+                    key={getAlertRowKey(item, index)}
+                    className="border-slate-100 hover:bg-slate-50/50"
+                  >
+                    <TableCell className="text-center font-medium">{item.name}</TableCell>
+                    <TableCell className="text-center text-muted-foreground">
                       {UI_TEXT.INVENTORY.TABLE.HYPHEN}
                     </TableCell>{" "}
                     {/* Placeholder */}
-                    <TableCell>
+                    <TableCell className="text-center">
                       {item.expirationDate
                         ? new Date(item.expirationDate).toLocaleDateString()
                         : UI_TEXT.INVENTORY.TABLE.HYPHEN}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       {item.currentStock} {item.unit}
                     </TableCell>
-                    <TableCell>
-                      <Badge className="bg-warning text-warning-foreground">
+                    <TableCell className="text-center">
+                      <Badge className="min-w-24 justify-center bg-warning text-warning-foreground">
                         {UI_TEXT.INVENTORY.TABLE.EXPIRING_BADGE}
                       </Badge>
                     </TableCell>
@@ -178,7 +206,7 @@ export function InventoryAlertsTable() {
 
       {/* Pagination Footer */}
       {!isLoading && !isError && totalPages > 1 && (
-        <div className="mt-4 px-6 py-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0 rounded-b-md">
+        <div className="mt-4 flex items-center justify-between rounded-b-xl border-t border-slate-200 bg-slate-50 px-6 py-4">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-slate-500 mr-2">
               {UI_TEXT.INVENTORY.TABLE.PAGE}

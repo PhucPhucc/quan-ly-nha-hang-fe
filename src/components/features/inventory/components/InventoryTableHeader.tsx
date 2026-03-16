@@ -1,5 +1,6 @@
 import {
   Bell,
+  Boxes,
   EllipsisVertical,
   History,
   Package,
@@ -29,6 +30,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 
 import type { StatusFilter } from "../useInventoryTable";
 import { AddIngredientTrigger } from "./AddIngredientTrigger";
+import { CreateStockInTrigger } from "./CreateStockInTrigger";
 
 type Props = {
   searchQuery: string;
@@ -90,6 +92,7 @@ export function InventoryTableHeader({
       </div>
 
       <div className="flex items-center justify-end gap-2">
+        <CreateStockInTrigger />
         <AddIngredientTrigger />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -110,9 +113,15 @@ export function InventoryTableHeader({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild className="cursor-pointer">
-              <Link href="/manager/inventory/history" className="flex items-center gap-2">
-                <History className="h-4 w-4 text-blue-500" />
-                <span>{UI_TEXT.INVENTORY.HISTORY_BTN}</span>
+              <Link href="/manager/inventory/stock-in" className="flex items-center gap-2">
+                <Boxes className="h-4 w-4 text-primary" />
+                <span>{UI_TEXT.INVENTORY.STOCK_IN_TITLE}</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/manager/inventory/transactions" className="flex items-center gap-2">
+                <History className="h-4 w-4 text-indigo-500" />
+                <span>{UI_TEXT.INVENTORY.TABLE.TRANS_HISTORY}</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild className="cursor-pointer">

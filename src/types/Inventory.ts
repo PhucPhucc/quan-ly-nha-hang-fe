@@ -27,20 +27,8 @@ export interface Ingredient {
   isActive: boolean;
   updatedAt: string;
   stockStatus?: string;
-}
-
-export interface StockHistory {
-  id: string;
-  ingredientId: string;
-  ingredientName: string;
-  batchNumber: string;
-  quantityAdded: number;
-  costPerUnit: number;
-  totalCost: number;
-  supplierName: string;
-  receivedDate: string;
+  category?: string;
   expirationDate?: string;
-  receivedBy: string; // Employee Name
 }
 
 // Stats for dashboard
@@ -58,6 +46,26 @@ export interface InventorySettings {
   maxCostRecalcDays: number;
   openingStockStatus?: number | string;
   lockedAt?: string | null;
+}
+
+export enum InventoryTransactionType {
+  OpeningStock = 1,
+  StockIn = 2,
+  StockInReverse = 3,
+}
+
+export interface InventoryTransaction {
+  inventoryTransactionId: string;
+  ingredientId: string;
+  ingredientName: string;
+  ingredientCode: string;
+  transactionCode?: number;
+  transactionType: InventoryTransactionType;
+  quantity: number;
+  unitCost?: number | null;
+  balanceAfter: number;
+  reference?: string | null;
+  occurredAt: string;
 }
 
 export interface OpeningStockItem {

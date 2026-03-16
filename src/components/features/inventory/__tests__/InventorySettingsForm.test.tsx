@@ -112,10 +112,35 @@ describe("InventorySettingsForm", () => {
     const user = userEvent.setup();
     renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
 
-    await user.click(screen.getByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES }));
+    const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
+    await user.click(saveBtn);
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith("Cap nhat that bai");
+    });
+  });
+
+  it("should show success toast when update succeeds", async () => {
+    vi.mocked(inventoryService.updateInventorySettings).mockResolvedValue({
+      isSuccess: true,
+      data: {
+        expiryWarningDays: 14,
+        defaultLowStockThreshold: 3,
+        autoDeductOnCompleted: false,
+        costMethod: "FIFO",
+        maxCostRecalcDays: 45,
+      },
+    });
+
+    const user = userEvent.setup();
+    renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
+
+    const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
+    await user.click(saveBtn);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalled();
+      expect(toast.error).not.toHaveBeenCalledWith(UI_TEXT.API.NETWORK_ERROR);
     });
   });
 
@@ -127,10 +152,22 @@ describe("InventorySettingsForm", () => {
     const user = userEvent.setup();
     renderWithQueryClient(<InventorySettingsFormContainer initialValues={initialValues} />);
 
-    await user.click(screen.getByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES }));
+    const saveBtn = await screen.findByRole("button", { name: UI_TEXT.BUTTON.SAVE_CHANGES });
+    await user.click(saveBtn);
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(UI_TEXT.API.NETWORK_ERROR);
+    });
+  });
+
+  it("should fetch inventory settings on mount", async () => {
+    renderWithQueryClient(<InventorySettingsFormContainer />);
+
+    await waitFor(() => {
+      expect(inventoryService.getInventorySettings).toHaveBeenCalledTimes(1);
+      const inputs = screen.getAllByRole("spinbutton");
+      expect(inputs[0]).toHaveValue(10);
+      expect(inputs[1]).toHaveValue(5);
     });
   });
 });

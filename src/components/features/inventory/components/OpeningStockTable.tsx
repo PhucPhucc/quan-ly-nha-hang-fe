@@ -32,17 +32,31 @@ export function OpeningStockTable({
   disabled = false,
 }: Props) {
   return (
-    <div className="max-h-[600px] overflow-auto">
+    <div className="max-h-[600px] overflow-auto rounded-xl border border-slate-200 bg-white">
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-muted/50">
-          <TableRow>
-            <TableHead className="w-[160px]">{OPENING_STOCK.COL_CODE}</TableHead>
-            <TableHead>{OPENING_STOCK.COL_NAME}</TableHead>
-            <TableHead className="w-[100px]">{OPENING_STOCK.COL_UNIT}</TableHead>
-            <TableHead className="w-[120px] text-right">{OPENING_STOCK.COL_CURRENT}</TableHead>
-            <TableHead className="w-[160px]">{OPENING_STOCK.COL_INITIAL}</TableHead>
-            <TableHead className="w-[180px]">{OPENING_STOCK.COL_COST}</TableHead>
-            <TableHead className="w-[150px] text-right">{OPENING_STOCK.COL_TOTAL}</TableHead>
+        <TableHeader className="sticky top-0 z-10 bg-slate-50">
+          <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+            <TableHead className="w-[120px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {OPENING_STOCK.COL_CODE}
+            </TableHead>
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {OPENING_STOCK.COL_NAME}
+            </TableHead>
+            <TableHead className="w-[100px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {OPENING_STOCK.COL_UNIT}
+            </TableHead>
+            <TableHead className="w-[120px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {OPENING_STOCK.COL_CURRENT}
+            </TableHead>
+            <TableHead className="w-[160px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {OPENING_STOCK.COL_INITIAL}
+            </TableHead>
+            <TableHead className="w-[180px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {OPENING_STOCK.COL_COST}
+            </TableHead>
+            <TableHead className="w-[150px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+              {OPENING_STOCK.COL_TOTAL}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -61,22 +75,25 @@ export function OpeningStockTable({
               const rowTotal = (entryItem?.quantity || 0) * (entryItem?.costPrice || 0);
 
               return (
-                <TableRow key={item.ingredientId} className="transition-colors hover:bg-muted/30">
-                  <TableCell className="font-medium">
+                <TableRow
+                  key={item.ingredientId}
+                  className="border-slate-100 transition-colors hover:bg-slate-50/50"
+                >
+                  <TableCell className="text-center font-medium">
                     <Badge variant="outline" className="font-mono text-xs">
                       {item.code}
                     </Badge>
                   </TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">{item.name}</TableCell>
+                  <TableCell className="text-center">
                     <span className="text-muted-foreground">{item.unit}</span>
                   </TableCell>
-                  <TableCell className="text-right font-medium">{item.currentStock}</TableCell>
+                  <TableCell className="text-center font-medium">{item.currentStock}</TableCell>
                   <TableCell>
                     <Input
                       type="number"
                       min="0"
-                      className="h-9"
+                      className="h-9 text-center"
                       disabled={disabled}
                       value={entryItem?.quantity ?? ""}
                       onChange={(e) => onInputChange(item.ingredientId, "quantity", e.target.value)}
@@ -86,7 +103,7 @@ export function OpeningStockTable({
                     <Input
                       type="number"
                       min="0"
-                      className="h-9"
+                      className="h-9 text-center"
                       disabled={disabled}
                       value={entryItem?.costPrice ?? ""}
                       onChange={(e) =>
@@ -94,7 +111,7 @@ export function OpeningStockTable({
                       }
                     />
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-primary">
+                  <TableCell className="text-center font-semibold text-primary">
                     {formatCurrency(rowTotal)}
                   </TableCell>
                 </TableRow>

@@ -1,5 +1,6 @@
 import { Ban, Edit, RotateCcw } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -16,22 +17,33 @@ type Props = {
 
 export function InventoryRow({ item, onEdit, onDelete }: Props) {
   return (
-    <TableRow className="group transition-colors border-slate-50 hover:bg-slate-50/60">
-      <TableCell className="text-slate-500 text-sm text-center">{item.code}</TableCell>
-      <TableCell className="pl-4 font-semibold text-slate-800 text-sm">{item.name}</TableCell>
-      <TableCell className="text-right">
+    <TableRow className="border-slate-100 transition-colors hover:bg-slate-50/50">
+      <TableCell className="text-center">
+        <Badge
+          variant="outline"
+          className="min-w-20 justify-center rounded-md px-2 py-1 font-mono text-xs"
+        >
+          {item.code}
+        </Badge>
+      </TableCell>
+      <TableCell className="text-center font-semibold text-slate-800 text-sm">
+        {item.name}
+      </TableCell>
+      <TableCell className="text-center">
         <span className="font-semibold text-slate-800 text-sm">
           {item.currentStock} {item.unit}
         </span>
       </TableCell>
-      <TableCell className="text-right text-sm">
-        <span className="text-slate-400 mr-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
+      <TableCell className="text-center text-sm">
+        <span className="mr-0.5 text-slate-400">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
         <span className="font-semibold text-slate-800" aria-label="Average cost (read only)">
           {(item.costPrice ?? 0).toFixed(2)}
         </span>
       </TableCell>
-      <TableCell className="w-[140px]">
-        <StatusBadge status={item.status as AlertThresholdStatus} />
+      <TableCell className="w-[140px] text-center">
+        <div className="flex justify-center">
+          <StatusBadge status={item.status as AlertThresholdStatus} />
+        </div>
       </TableCell>
       <TableCell className="w-[120px] text-center">
         <div className="flex items-center gap-2 justify-center">
@@ -60,8 +72,8 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
           </span>
         </div>
       </TableCell>
-      <TableCell className="w-[140px] text-right">
-        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <TableCell className="w-[140px] text-center">
+        <div className="flex justify-center gap-1">
           <Button
             variant="ghost"
             size="icon"
@@ -79,7 +91,11 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
                 ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
                 : "text-muted-foreground hover:bg-muted/20"
             )}
-            title={item.isActive ? "Deactivate" : "Reactivate"}
+            title={
+              item.isActive
+                ? UI_TEXT.INVENTORY.DELETE.TITLE
+                : UI_TEXT.INVENTORY.DELETE.REACTIVATE_TITLE
+            }
             onClick={() => onDelete(item)}
           >
             {item.isActive ? <Ban className="h-4 w-4" /> : <RotateCcw className="h-4 w-4" />}

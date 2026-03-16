@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import type { InventorySettingsInput } from "@/lib/zod-schemas/inventory";
 import { inventoryService } from "@/services/inventory.service";
@@ -25,27 +26,32 @@ export function InventorySettingsFormContainer({
 }: Props) {
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [formValues, setFormValues] = useState<InventorySettingsInput>(initialValues);
 
   useEffect(() => {
-    let cancelled = false;
+    let mounted = true;
 
     const fetchSettings = async () => {
       try {
         const response = await inventoryService.getInventorySettings();
 
-        if (response.isSuccess && response.data && !cancelled) {
+        if (response.isSuccess && mounted) {
           setFormValues(getInventorySettingsFormValues(response.data));
         }
       } catch (error) {
         console.error("Failed to fetch inventory settings:", error);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchSettings();
 
     return () => {
-      cancelled = true;
+      mounted = false;
     };
   }, []);
 
@@ -72,6 +78,14 @@ export function InventorySettingsFormContainer({
       setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <Spinner className="size-8" />
+      </div>
+    );
+  }
 
   return (
     <InventorySettingsForm initialValues={formValues} onSubmit={handleSubmit} saving={saving} />

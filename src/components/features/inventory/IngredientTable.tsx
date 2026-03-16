@@ -71,7 +71,7 @@ export function IngredientTable() {
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-    deleteMutation,
+    toggleActivationMutation,
   } = useInventoryTable(pageSize);
 
   const { data: settings } = useQuery({
@@ -101,9 +101,17 @@ export function IngredientTable() {
     // Query invalidation is handled inside the hook mutations.
   };
 
-  const dialogTitle = UI_TEXT.INVENTORY.DELETE.TITLE;
-  const dialogDesc = UI_TEXT.INVENTORY.DELETE.DESC;
-  const confirmLabel = UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;
+  const isReactivating = deletingItem && !deletingItem.isActive;
+
+  const dialogTitle = isReactivating
+    ? UI_TEXT.INVENTORY.DELETE.REACTIVATE_TITLE
+    : UI_TEXT.INVENTORY.DELETE.TITLE;
+  const dialogDesc = isReactivating
+    ? UI_TEXT.INVENTORY.DELETE.REACTIVATE_DESC
+    : UI_TEXT.INVENTORY.DELETE.DESC;
+  const confirmLabel = isReactivating
+    ? UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM_REACTIVATE
+    : UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;
 
   const renderLoading = () => (
     <div className="space-y-4">
@@ -159,29 +167,29 @@ export function IngredientTable() {
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
         <Table>
           <TableHeader>
-            <TableRow className="border-slate-100 bg-slate-50/50 hover:bg-transparent">
-              <TableHead className="py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+            <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+              <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider text-center">
                 {UI_TEXT.INVENTORY.TABLE.COL_SKU}
               </TableHead>
-              <TableHead className="py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_NAME}
               </TableHead>
-              <TableHead className="py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
               </TableHead>
-              <TableHead className="py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
               </TableHead>
-              <TableHead className="w-[140px] py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
               </TableHead>
               <TableHead className="w-[120px] py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
               </TableHead>
-              <TableHead className="w-[140px] py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
               </TableHead>
             </TableRow>
@@ -252,25 +260,30 @@ export function IngredientTable() {
               variant="outline"
               className="rounded-lg"
               onClick={() => setIsDeleteOpen(false)}
-              disabled={deleteMutation.isPending}
+              disabled={toggleActivationMutation.isPending}
             >
               {UI_TEXT.INVENTORY.DELETE.BTN_CANCEL}
             </Button>
             <Button
-              variant="destructive"
+              variant={isReactivating ? "default" : "destructive"}
               className="rounded-lg"
               onClick={() =>
                 deletingItem &&
-                deleteMutation.mutate(deletingItem.ingredientId, {
-                  onSuccess: () => {
-                    setIsDeleteOpen(false);
-                    setDeletingItem(null);
-                  },
-                })
+                toggleActivationMutation.mutate(
+                  { id: deletingItem.ingredientId, isActive: deletingItem.isActive },
+                  {
+                    onSuccess: () => {
+                      setIsDeleteOpen(false);
+                      setDeletingItem(null);
+                    },
+                  }
+                )
               }
-              disabled={deleteMutation.isPending}
+              disabled={toggleActivationMutation.isPending}
             >
-              {deleteMutation.isPending ? UI_TEXT.INVENTORY.DELETE.BTN_DELETING : confirmLabel}
+              {toggleActivationMutation.isPending
+                ? UI_TEXT.INVENTORY.DELETE.BTN_DELETING
+                : confirmLabel}
             </Button>
           </DialogFooter>
         </DialogContent>
