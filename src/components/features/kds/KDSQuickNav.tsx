@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { logout } from "@/services/authService";
@@ -24,31 +25,6 @@ const NAV_ITEMS = [
   },
 ];
 
-/* --- Sub-components --- */
-
-interface KDSQuickNavToggleProps {
-  isExpanded: boolean;
-  onToggle: () => void;
-}
-
-const KDSQuickNavToggle = ({ isExpanded, onToggle }: KDSQuickNavToggleProps) => (
-  <Button
-    variant="ghost"
-    onClick={onToggle}
-    className={cn(
-      "rounded-b-0 transition-colors duration-200",
-      isExpanded ? "w-full h-8 hover:bg-muted/50 rounded-lg" : "w-full h-full"
-    )}
-    aria-label={isExpanded ? UI_TEXT.KDS.NAV.COLLAPSE : UI_TEXT.KDS.NAV.EXPAND}
-  >
-    {isExpanded ? (
-      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-    ) : (
-      <ChevronUp className="h-4 w-4 text-muted-foreground" />
-    )}
-  </Button>
-);
-
 interface KDSQuickNavItemProps {
   href: string;
   label: string;
@@ -60,14 +36,14 @@ const KDSQuickNavItem = ({ href, label, icon: Icon, isActive }: KDSQuickNavItemP
   <Link
     href={href}
     className={cn(
-      "flex items-center gap-2 px-5 py-2.5 rounded-2xl group whitespace-nowrap transition-all duration-200",
+      "flex items-center gap-2 px-3 py-2 rounded-full transition-colors border",
       isActive
-        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-        : "hover:bg-muted text-muted-foreground hover:text-foreground"
+        ? "bg-primary/10 text-primary border-primary/20"
+        : "hover:bg-muted text-muted-foreground border-transparent"
     )}
   >
     <Icon className="h-4 w-4 shrink-0" />
-    <span className="text-sm font-semibold tracking-tight">{label}</span>
+    <span className="text-sm font-semibold tracking-tight whitespace-nowrap">{label}</span>
   </Link>
 );
 
@@ -91,47 +67,45 @@ export function KDSQuickNav() {
   };
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50">
-      <div
-        className={cn(
-          "flex flex-col items-center bg-secondary/95 backdrop-blur-md shadow-2xl overflow-hidden transition-all duration-300",
-          isExpanded
-            ? "rounded-t-xl p-3 pb-6 gap-3 w-auto max-w-100  border border-b-0 border-muted-foreground/30"
-            : "rounded-t-2xl p-0 w-32 h-6 justify-center border border-b-0 border-muted-foreground/20 hover:bg-secondary"
-        )}
-      >
-        {/* Toggle Area / Notch */}
-        <KDSQuickNavToggle isExpanded={isExpanded} onToggle={() => setIsExpanded(!isExpanded)} />
-
-        {/* Dynamic content */}
-        <div
-          className={cn(
-            "flex items-center gap-1 transition-all duration-300",
-            isExpanded
-              ? "opacity-100 scale-100 h-auto"
-              : "opacity-0 scale-95 pointer-events-none absolute h-0"
-          )}
-        >
-          {NAV_ITEMS.map((item) => (
-            <KDSQuickNavItem
-              key={item.href}
-              href={item.href}
-              label={item.label}
-              icon={item.icon}
-              isActive={pathname === item.href}
-            />
-          ))}
+    <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
+      {isExpanded ? (
+        <Card className="inline-flex items-center gap-2 md:gap-3 px-3 py-2 shadow-lg">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
+            {NAV_ITEMS.map((item) => (
+              <KDSQuickNavItem
+                key={item.href}
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                isActive={pathname === item.href}
+              />
+            ))}
+            <Button variant="destructive" size="sm" className="gap-2" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
+              <span className="text-sm font-semibold tracking-tight">{UI_TEXT.AUTH.LOGOUT}</span>
+            </Button>
+          </div>
           <Button
-            variant="destructive"
-            size="sm"
-            className="rounded-2xl h-10 px-4 gap-2"
-            onClick={handleLogout}
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full border border-muted-foreground/20"
+            onClick={() => setIsExpanded(false)}
+            aria-label={UI_TEXT.KDS.NAV.COLLAPSE}
           >
-            <LogOut className="h-4 w-4" />
-            <span className="text-sm font-semibold tracking-tight">{UI_TEXT.AUTH.LOGOUT}</span>
+            <ChevronDown className="h-4 w-4" />
           </Button>
-        </div>
-      </div>
+        </Card>
+      ) : (
+        <Button
+          variant="secondary"
+          size="icon"
+          className="h-9 w-9 rounded-full shadow-md border border-muted-foreground/20"
+          onClick={() => setIsExpanded(true)}
+          aria-label={UI_TEXT.KDS.NAV.EXPAND}
+        >
+          <ChevronUp className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 }

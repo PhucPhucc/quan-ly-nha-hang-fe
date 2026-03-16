@@ -4,6 +4,7 @@ import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -26,7 +27,6 @@ interface KDSAuditLogData {
   orderCode: string;
   orderItems: string;
   reason: string;
-  // Assuming these new fields are part of the data structure for the diff
   oldValue?: string;
   newValue?: string;
 }
@@ -41,13 +41,10 @@ interface KDSAuditLogTableProps {
   onUndo?: (logId: string) => void;
 }
 
-/* --- Internal Helpers --- */
-
 const getActionBadgeVariant = (action: string) => {
-  // Normalize comparison to uppercase to match UI_TEXT constants
   const a = action.toUpperCase();
   if (a === UI_TEXT.KDS.AUDIT.ACTION_START) return "default";
-  if (a === UI_TEXT.KDS.AUDIT.ACTION_DONE) return "secondary"; // Fixed from "badge"
+  if (a === UI_TEXT.KDS.AUDIT.ACTION_DONE) return "secondary";
   if (a === UI_TEXT.KDS.AUDIT.ACTION_REJECT) return "destructive";
   return "outline";
 };
@@ -60,8 +57,6 @@ const getRoleInitialColor = (role: string) => {
       return "bg-gray-100 text-gray-600 border-gray-200";
   }
 };
-
-/* --- Sub-components --- */
 
 const KDSAuditLogTableHeader = () => (
   <TableHeader className="bg-muted/50 sticky top-0 z-10 backdrop-blur-sm">
@@ -78,10 +73,7 @@ const KDSAuditLogTableHeader = () => (
 
 const KDSAuditLogStatusRow = ({ message, className }: { message: string; className?: string }) => (
   <TableRow>
-    <TableCell
-      colSpan={6}
-      className={React.useMemo(() => `h-24 text-center ${className || ""}`, [className])}
-    >
+    <TableCell colSpan={6} className={`h-24 text-center ${className || ""}`}>
       {message}
     </TableCell>
   </TableRow>
@@ -144,8 +136,6 @@ const KDSAuditLogRow = ({ log, onUndo }: KDSAuditLogRowProps) => {
   );
 };
 
-/* --- Main Component --- */
-
 const KDSAuditLogTable = ({
   logs,
   loading,
@@ -156,27 +146,31 @@ const KDSAuditLogTable = ({
   onUndo,
 }: KDSAuditLogTableProps) => {
   return (
-    <div className="rounded-xl border border-border bg-card flex flex-col flex-1 overflow-hidden shadow-sm">
-      <div className="overflow-y-auto flex-1 custom-scrollbar">
-        <Table>
-          <KDSAuditLogTableHeader />
-          <TableBody>
-            {loading && <KDSAuditLogStatusRow message={UI_TEXT.COMMON.LOADING} />}
-            {error && <KDSAuditLogStatusRow message={error} className="text-destructive" />}
-            {!loading && logs.length === 0 && !error && (
-              <KDSAuditLogStatusRow
-                message={UI_TEXT.KDS.AUDIT.EMPTY}
-                className="text-muted-foreground"
-              />
-            )}
+    <Card className="flex flex-1 flex-col overflow-hidden">
+      <CardHeader className="border-b">
+        <CardTitle>{UI_TEXT.AUDIT_LOG.TITLE}</CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="overflow-y-auto flex-1 custom-scrollbar">
+          <Table>
+            <KDSAuditLogTableHeader />
+            <TableBody>
+              {loading && <KDSAuditLogStatusRow message={UI_TEXT.COMMON.LOADING} />}
+              {error && <KDSAuditLogStatusRow message={error} className="text-destructive" />}
+              {!loading && logs.length === 0 && !error && (
+                <KDSAuditLogStatusRow
+                  message={UI_TEXT.KDS.AUDIT.EMPTY}
+                  className="text-muted-foreground"
+                />
+              )}
 
-            {!loading &&
-              logs.map((log) => <KDSAuditLogRow key={log.logId} log={log} onUndo={onUndo} />)}
-          </TableBody>
-        </Table>
-      </div>
+              {!loading &&
+                logs.map((log) => <KDSAuditLogRow key={log.logId} log={log} onUndo={onUndo} />)}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
 
-      {/* Pagination Footer */}
       {!loading && !error && totalPages > 1 && (
         <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
           <div className="flex items-center gap-2">
@@ -205,7 +199,7 @@ const KDSAuditLogTable = ({
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

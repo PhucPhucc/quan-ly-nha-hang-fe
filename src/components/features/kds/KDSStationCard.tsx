@@ -1,77 +1,46 @@
 import { ArrowRight } from "lucide-react";
 import React from "react";
 
+import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
 
 interface KDSStationCardProps {
   title: string;
   icon: React.ReactNode;
   waitingItems: number;
-  statusText: string;
-  statusVariant: "critical" | "normal";
   onClick: () => void;
 }
 
-export const KDSStationCard = ({
-  title,
-  icon,
-  waitingItems,
-  statusText,
-  statusVariant,
-  onClick,
-}: KDSStationCardProps) => {
+export const KDSStationCard = ({ title, icon, waitingItems, onClick }: KDSStationCardProps) => {
   return (
     <div
-      className="group relative flex flex-col gap-6 rounded-xl bg-card p-6 shadow-sm hover:shadow-md border border-border hover:border-primary/30 transition-all duration-300 overflow-hidden cursor-pointer"
-      onClick={onClick}
       role="button"
       tabIndex={0}
+      onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onClick();
         }
       }}
+      className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card p-4 hover:border-primary/40 hover:shadow-sm transition-all duration-200 max-w-md"
     >
-      <div className="flex items-start justify-between z-10">
-        <div className="p-3 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+      <div className="flex items-center gap-3 pb-4">
+        <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/15">
           {icon}
         </div>
-        <span
-          className={cn(
-            "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border",
-            statusVariant === "critical"
-              ? "bg-red-50 text-danger border-danger-100 animate-pulse"
-              : "bg-success-50 text-success border-success-100"
-          )}
-        >
-          {statusText}
-        </span>
-      </div>
-
-      <div className="space-y-2 z-10">
-        <h3 className="text-xl font-bold text-foreground font-display">{title}</h3>
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <span className="material-symbols-outlined text-lg">{UI_TEXT.KDS.AUDIT.ICON}</span>
-          <p className="text-sm font-medium">
+        <div className="space-y-1">
+          <div className="text-lg font-bold leading-tight text-foreground">{title}</div>
+          <div className="text-sm font-semibold text-foreground">
             {waitingItems} {UI_TEXT.KDS.ITEM.WAITING_SUFFIX}
-          </p>
+          </div>
         </div>
       </div>
 
-      <div className="mt-auto pt-4 z-10 pointer-events-none">
-        <div className="w-full flex items-center justify-center gap-2 rounded-lg h-12 bg-primary group-hover:bg-primary-hover text-white text-sm font-bold tracking-wide transition-all duration-200 shadow-sm group-hover:shadow-md">
-          <span>{UI_TEXT.KDS.NAV.STATION}</span>
-          <ArrowRight className="h-5 w-5" />
-        </div>
-      </div>
-
-      <div
-        className={
-          "absolute top-0 right-0 w-32 h-32 rounded-bl-full pointer-events-none opacity-50 transition-opacity duration-300 group-hover:opacity-100"
-        }
-      ></div>
+      <Button className="w-full gap-2" variant="default">
+        <span>{UI_TEXT.KDS.NAV.STATION}</span>
+        <ArrowRight className="h-4 w-4" />
+      </Button>
     </div>
   );
 };

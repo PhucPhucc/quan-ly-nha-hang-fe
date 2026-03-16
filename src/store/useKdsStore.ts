@@ -9,17 +9,21 @@ import { Order, OrderItem } from "@/types/Order";
 /* ---------- helpers ---------- */
 
 const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Order[] => {
+  if (!items || !Array.isArray(items)) return [];
+
   const groups = new Map<string, Order>();
   items.forEach((item) => {
+    if (!item || !item.orderId) return;
+
     if (!groups.has(item.orderId)) {
       groups.set(item.orderId, {
         orderId: item.orderId,
-        orderCode: item.orderCode,
+        orderCode: item.orderCode || "N/A",
         orderType: 0,
         status: 1,
         totalAmount: 0,
-        isPriority: "priorityScore" in item ? item.priorityScore > 10 : false,
-        createdAt: item.createdAt,
+        isPriority: "priorityScore" in item ? (item.priorityScore ?? 0) > 10 : false,
+        createdAt: item.createdAt || new Date().toISOString(),
         orderItems: [],
       } as unknown as Order);
     }
@@ -28,14 +32,14 @@ const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Ord
     order.orderItems.push({
       orderItemId: item.orderItemId,
       orderId: item.orderId,
-      itemNameSnapshot: item.itemNameSnapshot,
+      itemNameSnapshot: item.itemNameSnapshot || "Unknown Item",
       stationSnapshot: item.stationSnapshot,
       status: item.status === "Cooking" ? OrderItemStatus.Cooking : OrderItemStatus.Preparing,
-      quantity: item.quantity,
+      quantity: item.quantity ?? 1,
       itemNote: item.itemNote,
-      itemOptions: item.itemOptions,
-      updatedAt: item.createdAt,
-      itemCodeSnapshot: item.itemNameSnapshot.substring(0, 3).toUpperCase(),
+      itemOptions: item.itemOptions || [],
+      updatedAt: item.createdAt || new Date().toISOString(),
+      itemCodeSnapshot: (item.itemNameSnapshot || "UNK").substring(0, 3).toUpperCase(),
       unitPriceSnapshot: 0,
     } as unknown as OrderItem);
   });

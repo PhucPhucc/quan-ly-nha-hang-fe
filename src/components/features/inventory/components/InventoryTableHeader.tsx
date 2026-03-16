@@ -48,13 +48,13 @@ export function InventoryTableHeader({
   onReset,
 }: Props) {
   return (
-    <div className="w-full rounded-2xl border border-slate-100 bg-white shadow-sm shadow-slate-100/60 px-4 py-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto] lg:items-center">
+    <div className="w-full rounded-2xl border border-border bg-card shadow-soft px-4 py-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto] lg:items-center">
       <div className="flex-1 min-w-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder={UI_TEXT.INVENTORY.TOOLBAR.SEARCH_PLACEHOLDER}
-            className="pl-10 h-11 rounded-2xl bg-slate-50 text-slate-700 placeholder:text-slate-400 border border-slate-100 focus-visible:ring-2 focus-visible:ring-slate-200"
+            className="pl-10 h-11 rounded-2xl bg-background text-foreground placeholder:text-muted-foreground border border-border focus-visible:ring-2 focus-visible:ring-muted"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
           />
@@ -63,8 +63,8 @@ export function InventoryTableHeader({
 
       <div className="flex items-center gap-2 justify-end">
         <Select value={statusFilter} onValueChange={(v) => onStatusChange(v as StatusFilter)}>
-          <SelectTrigger className="h-11 min-h-[44px] w-full sm:w-[200px] rounded-2xl bg-slate-50 border border-slate-100 text-slate-700">
-            <div className="flex items-center gap-2 text-slate-500">
+          <SelectTrigger className="h-11 min-h-[44px] w-full sm:w-[200px] rounded-2xl bg-background border border-border text-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground">
               <SlidersHorizontal className="h-4 w-4" />
               <SelectValue placeholder={UI_TEXT.INVENTORY.TOOLBAR.FILTER_STATUS} />
             </div>
@@ -80,7 +80,7 @@ export function InventoryTableHeader({
         <Button
           type="button"
           variant="ghost"
-          className="h-11 w-11 rounded-2xl text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+          className="h-11 w-11 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted/30"
           onClick={() => {
             onSearchChange("");
             onStatusChange("all");
@@ -99,7 +99,7 @@ export function InventoryTableHeader({
             <Button
               type="button"
               variant="ghost"
-              className="h-9 w-9 rounded-xl text-slate-500 hover:bg-slate-50"
+              className="h-9 w-9 rounded-xl text-muted-foreground hover:bg-muted/30"
               aria-label="Thao tác"
             >
               <EllipsisVertical className="h-4 w-4" />

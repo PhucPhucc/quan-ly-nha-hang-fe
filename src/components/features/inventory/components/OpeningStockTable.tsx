@@ -32,29 +32,29 @@ export function OpeningStockTable({
   disabled = false,
 }: Props) {
   return (
-    <div className="max-h-[600px] overflow-auto rounded-xl border border-slate-200 bg-white">
+    <div className="max-h-[600px] overflow-auto rounded-xl border border-border bg-card">
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-slate-50">
-          <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
-            <TableHead className="w-[120px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+        <TableHeader className="sticky top-0 z-10 bg-muted/50">
+          <TableRow className="border-border bg-muted/50 hover:bg-muted/50">
+            <TableHead className="w-[120px] text-center font-semibold uppercase text-[11px] tracking-wider text-muted-foreground">
               {OPENING_STOCK.COL_CODE}
             </TableHead>
-            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+            <TableHead className="text-center font-semibold uppercase text-[11px] tracking-wider text-muted-foreground">
               {OPENING_STOCK.COL_NAME}
             </TableHead>
-            <TableHead className="w-[100px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+            <TableHead className="w-[100px] text-center font-semibold uppercase text-[11px] tracking-wider text-muted-foreground">
               {OPENING_STOCK.COL_UNIT}
             </TableHead>
-            <TableHead className="w-[120px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+            <TableHead className="w-[120px] text-center font-semibold uppercase text-[11px] tracking-wider text-muted-foreground">
               {OPENING_STOCK.COL_CURRENT}
             </TableHead>
-            <TableHead className="w-[160px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+            <TableHead className="w-[160px] text-center font-semibold uppercase text-[11px] tracking-wider text-muted-foreground">
               {OPENING_STOCK.COL_INITIAL}
             </TableHead>
-            <TableHead className="w-[180px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+            <TableHead className="w-[180px] text-center font-semibold uppercase text-[11px] tracking-wider text-muted-foreground">
               {OPENING_STOCK.COL_COST}
             </TableHead>
-            <TableHead className="w-[150px] text-center font-semibold uppercase text-[11px] tracking-wider text-slate-700">
+            <TableHead className="w-[150px] text-center font-semibold uppercase text-[11px] tracking-wider text-muted-foreground">
               {OPENING_STOCK.COL_TOTAL}
             </TableHead>
           </TableRow>
@@ -77,18 +77,20 @@ export function OpeningStockTable({
               return (
                 <TableRow
                   key={item.ingredientId}
-                  className="border-slate-100 transition-colors hover:bg-slate-50/50"
+                  className="border-border transition-colors hover:bg-muted/50"
                 >
                   <TableCell className="text-center font-medium">
                     <Badge variant="outline" className="font-mono text-xs">
                       {item.code}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-center">{item.name}</TableCell>
+                  <TableCell className="text-center text-foreground">{item.name}</TableCell>
                   <TableCell className="text-center">
                     <span className="text-muted-foreground">{item.unit}</span>
                   </TableCell>
-                  <TableCell className="text-center font-medium">{item.currentStock}</TableCell>
+                  <TableCell className="text-center font-medium text-foreground">
+                    {item.currentStock}
+                  </TableCell>
                   <TableCell>
                     <Input
                       type="number"

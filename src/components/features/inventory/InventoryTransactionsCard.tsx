@@ -9,9 +9,9 @@ import { InventoryTransactionsTable } from "./InventoryTransactionsTable";
 
 export function InventoryTransactionsCard() {
   return (
-    <Card className="border-slate-200 shadow-sm">
+    <Card className="border-border shadow-soft bg-card">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-base font-semibold text-card-foreground">
           <History className="size-4 text-primary" />
           {UI_TEXT.INVENTORY.HISTORY_TITLE}
         </CardTitle>
