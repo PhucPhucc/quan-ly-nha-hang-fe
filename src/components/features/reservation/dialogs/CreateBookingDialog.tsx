@@ -71,7 +71,7 @@ export const CreateBookingDialog = ({
     if (open) fetchAreas();
   }, [open]);
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: string, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -135,10 +135,10 @@ export const CreateBookingDialog = ({
         console.error("[CreateReservation] API Error:", res.error || res.message);
         toast.error(res.message || res.error || UI_TEXT.RESERVATION.ERROR_CREATE_FAILED);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Log technical error (e.g. connection timeout)
       console.error("[CreateReservation] Connection Error:", error);
-      toast.error(error.message || UI_TEXT.RESERVATION.ERROR_CONNECTION);
+      toast.error(error instanceof Error ? error.message : UI_TEXT.RESERVATION.ERROR_CONNECTION);
     } finally {
       setLoading(false);
     }
@@ -161,7 +161,7 @@ export const CreateBookingDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-500px">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{UI_TEXT.RESERVATION.CREATE_DIALOG_TITLE}</DialogTitle>
@@ -193,7 +193,8 @@ export const CreateBookingDialog = ({
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="phone">
-                  {UI_TEXT.RESERVATION.FIELD_PHONE} <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
+                  {UI_TEXT.RESERVATION.FIELD_PHONE}{" "}
+                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
                   id="phone"
@@ -210,7 +211,8 @@ export const CreateBookingDialog = ({
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="date">
-                  {UI_TEXT.RESERVATION.FIELD_DATE} <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
+                  {UI_TEXT.RESERVATION.FIELD_DATE}{" "}
+                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
                   id="date"
@@ -224,7 +226,8 @@ export const CreateBookingDialog = ({
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="time">
-                  {UI_TEXT.RESERVATION.FIELD_TIME} <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
+                  {UI_TEXT.RESERVATION.FIELD_TIME}{" "}
+                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
                   id="time"

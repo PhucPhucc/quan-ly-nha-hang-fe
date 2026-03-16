@@ -8,6 +8,8 @@ import { ReservationFilter } from "./ReservationFilter";
 import { ReservationStatus } from "./ReservationStatus";
 import { ReservationTable } from "./ReservationTable";
 
+const NUMBERSTARTPAGE = 1;
+
 const TableBookingBoard = () => {
   const [data, setData] = useState<ReservationDto[]>([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -25,7 +27,7 @@ const TableBookingBoard = () => {
   const [status, setStatus] = useState("all");
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(NUMBERSTARTPAGE);
   const itemsPerPage = 8;
 
   const fetchReservations = useCallback(async () => {
@@ -81,10 +83,11 @@ const TableBookingBoard = () => {
   }, [dateStr]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchReservations();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchStats();
+    const fetchData = async () => {
+      await fetchReservations();
+      await fetchStats();
+    };
+    fetchData();
   }, [fetchReservations, fetchStats]);
 
   const handleRefresh = useCallback(() => {
@@ -92,14 +95,14 @@ const TableBookingBoard = () => {
     fetchStats();
   }, [fetchReservations, fetchStats]);
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+  const totalPages = Math.ceil(totalItems / itemsPerPage) || NUMBERSTARTPAGE;
 
   const resetFilters = () => {
     setSearch("");
     setDateStr(format(new Date(), "yyyy-MM-dd"));
     setArea("all");
     setStatus("all");
-    setCurrentPage(1);
+    setCurrentPage(NUMBERSTARTPAGE);
   };
 
   return (
