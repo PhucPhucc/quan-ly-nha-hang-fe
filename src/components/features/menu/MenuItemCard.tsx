@@ -53,12 +53,10 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
   const imageSrc = !item.imageUrl ? "/placeholderMenu.webp" : item.imageUrl;
 
   return (
-    <TableRow
-      className={`fh-table-row ${item.isOutOfStock ? "fh-table-row-muted opacity-75" : ""}`}
-    >
-      <TableCell className="fh-table-cell">
+    <TableRow className={item.isOutOfStock ? "table-row-muted opacity-75" : ""}>
+      <TableCell className="max-w-120">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 overflow-hidden rounded-2xl border border-table-border-soft bg-table-row-muted shrink-0">
+          <div className="h-12 w-12 overflow-hidden rounded-full border border-table-border-soft bg-table-row-muted shrink-0">
             <Image
               src={imageSrc}
               alt={item.name}
@@ -74,9 +72,9 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
         </div>
       </TableCell>
 
-      <TableCell className="fh-table-cell">
+      <TableCell>
         {item.categoryName ? (
-          <Badge variant="outline" className="fh-table-pill fh-table-pill-neutral border-0">
+          <Badge variant="outline" className="table-pill table-pill-neutral border-0">
             {item.categoryName}
           </Badge>
         ) : (
@@ -84,7 +82,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
         )}
       </TableCell>
 
-      <TableCell className="fh-table-cell">
+      <TableCell>
         <div className="text-sm font-semibold text-primary">
           {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
             item.price
@@ -92,7 +90,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
         </div>
       </TableCell>
 
-      <TableCell className="fh-table-cell">
+      <TableCell>
         <div className="flex items-center gap-2">
           <Switch
             checked={!item.isOutOfStock}
@@ -101,14 +99,14 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
           />
           <Badge
             variant="outline"
-            className={`fh-table-pill border-0 ${item.isOutOfStock ? "fh-table-pill-danger" : "fh-table-pill-success"}`}
+            className={`table-pill border-0 ${item.isOutOfStock ? "table-pill-danger" : "table-pill-success"}`}
           >
             {item.isOutOfStock ? UI_TEXT.MENU.STATUS_OUT_OF_STOCK : UI_TEXT.MENU.STATUS_IN_STOCK}
           </Badge>
         </div>
       </TableCell>
 
-      <TableCell className="fh-table-cell text-right">
+      <TableCell className="text-right">
         <div className="flex justify-end gap-2">
           <Button
             variant="outline"

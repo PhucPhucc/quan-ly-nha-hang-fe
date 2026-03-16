@@ -8,6 +8,7 @@ import { useMenuStore } from "@/store/useMenuStore";
 import { MenuFilterBar } from "./MenuFilterBar";
 import { MenuFormModal } from "./MenuFormModal";
 import { MenuList } from "./MenuList";
+import MenuPagination from "./MenuPagination";
 
 export const MenuManagement: React.FC = () => {
   const fetchMenuItems = useMenuStore((state) => state.fetchMenuItems);
@@ -41,6 +42,8 @@ export const MenuManagement: React.FC = () => {
       <MenuFilterBar categories={categories} />
 
       <MenuList />
+
+      <MenuPagination />
 
       <MenuFormModal categories={categories} />
     </div>
