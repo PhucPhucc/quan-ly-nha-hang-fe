@@ -10,9 +10,9 @@ import { KDS } from "../constants/ui_text/kds";
 import { LANDING } from "../constants/ui_text/landing";
 import { MENU } from "../constants/ui_text/menu";
 import { ORDER } from "../constants/ui_text/order";
+import { RESERVATION } from "../constants/ui_text/reservation";
 import { SALES_ANALYTICS } from "../constants/ui_text/salesAnalytics";
 import { TABLE } from "../constants/ui_text/table";
-import { RESERVATION } from "../constants/ui_text/reservation";
 export const UI_TEXT = {
   COMMON,
   SIDE_BAR,

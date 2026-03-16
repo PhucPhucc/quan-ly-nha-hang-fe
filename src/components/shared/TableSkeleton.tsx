@@ -6,6 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
@@ -25,14 +26,14 @@ export default function TableSkeleton({
   showMediaInFirstColumn = false,
 }: TableSkeletonProps) {
   return (
-    <div className={cn("fh-table-shell mt-4", className)}>
-      <Table className="fh-table">
+    <TableShell className={cn("mt-4", className)}>
+      <Table>
         <TableHeader>
-          <TableRow className="fh-table-header-row hover:bg-table-header-bg">
+          <TableRow variant="header">
             {Array.from({ length: columns }).map((_, index) => (
               <TableHead
                 key={`head-${index}`}
-                className={cn("fh-table-head", index === columns - 1 && "text-right")}
+                className={cn(index === columns - 1 && "text-right")}
               >
                 <Skeleton
                   className={cn(
@@ -48,11 +49,11 @@ export default function TableSkeleton({
         </TableHeader>
         <TableBody>
           {Array.from({ length: rows }).map((_, rowIndex) => (
-            <TableRow key={`row-${rowIndex}`} className="fh-table-row">
+            <TableRow key={`row-${rowIndex}`}>
               {Array.from({ length: columns }).map((_, columnIndex) => (
                 <TableCell
                   key={`cell-${rowIndex}-${columnIndex}`}
-                  className={cn("fh-table-cell", columnIndex === columns - 1 && "text-right")}
+                  className={cn(columnIndex === columns - 1 && "text-right")}
                 >
                   {showMediaInFirstColumn && columnIndex === 0 ? (
                     <div className="flex items-center gap-3">
@@ -85,6 +86,6 @@ export default function TableSkeleton({
           ))}
         </TableBody>
       </Table>
-    </div>
+    </TableShell>
   );
 }
