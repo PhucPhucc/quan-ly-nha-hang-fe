@@ -77,4 +77,33 @@ export const reservationService = {
   checkInReservation: (id: string): Promise<ApiResponse<string>> => {
     return apiFetch<string>(`/reservations/${id}/check-in`, { method: "POST" });
   },
+
+  getAreas: (): Promise<ApiResponse<{ id: string; name: string }[]>> => {
+    return apiFetch<{ id: string; name: string }[]>("/public/reservations/areas", {
+      method: "GET",
+    });
+  },
 };
+// export const reservationService = {
+//   getAvailableTables: (params: AvailableTablesParams): Promise<ApiResponse<TableResponse[]>> => {
+//     const query = new URLSearchParams({
+//       ReservationDate: params.reservationDate,
+//       ReservationTime: params.reservationTime,
+//       AreaId: params.areaId,
+//       GuestCount: params.guestCount.toString(),
+//     }).toString();
+
+//     return apiFetch<TableResponse[]>(`/public/reservations/available-tables?${query}`);
+//   },
+
+//   createReservation: (data: ReservationRequest): Promise<ApiResponse<string>> =>
+//     apiFetch<string>("/public/reservations", {
+//       method: "POST",
+//       body: data,
+//     }),
+//   getAreas: async () => {
+//     return await apiFetch<Area[]>("/public/reservations/areas", {
+//       method: "GET",
+//     });
+//   },
+// };
