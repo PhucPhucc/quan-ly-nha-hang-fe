@@ -189,7 +189,7 @@ export const INVENTORY = {
     SUCCESS_CREATE_PREFIX: "Đã tạo phiếu xuất",
     STOCK_EXCEEDED_PREFIX: "Số lượng xuất vượt tồn hiện tại của",
     STOCK_EXCEEDED_TOKEN: "(tồn",
-    ITEM_COUNT_LABEL: "Tổng số dòng NVL",
+    ITEM_COUNT_LABEL: "Số dòng NVL",
   },
   VOUCHER: {
     TYPE_IN: "Phiếu nhập",

@@ -42,7 +42,7 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
               <TableHead className="fh-table-head">
                 {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
               </TableHead>
-              <TableHead className="fh-table-head">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</TableHead>
+              <TableHead className="fh-table-head">{UI_TEXT.INVENTORY.STOCK_OUT.DATE}</TableHead>
               <TableHead className="fh-table-head">
                 {UI_TEXT.INVENTORY.STOCK_OUT.REASON_LABEL}
               </TableHead>

@@ -25,7 +25,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { StockInReceipt } from "@/types/StockIn";
 
 const REVERSE_RECEIPT_LABEL = UI_TEXT.INVENTORY.DELETE.BTN_CONFIRM;
-const RECEIPT_ITEM_COUNT_LABEL = "Số lượng hàng";
+const RECEIPT_ITEM_COUNT_LABEL = "Số dòng NVL";
 
 interface StockInTableProps {
   data: StockInReceipt[];

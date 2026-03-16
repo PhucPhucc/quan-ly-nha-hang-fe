@@ -36,6 +36,7 @@ export function NavMain({
   const path = usePathname();
 
   const isUrlActive = (url: string) => path === url;
+  const hasActivePrefix = (url: string) => path.startsWith(url);
 
   const isParentActive = (item: {
     title: string;
@@ -90,7 +91,10 @@ export function NavMain({
                     <SidebarMenuSub>
                       {item.items.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild isActive={isUrlActive(subItem.url)}>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={isUrlActive(subItem.url) || hasActivePrefix(subItem.url)}
+                          >
                             <Link href={subItem.url}>
                               {subItem.icon && (
                                 <subItem.icon className="size-4 text-muted-foreground" />
