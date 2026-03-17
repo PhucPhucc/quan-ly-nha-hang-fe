@@ -35,16 +35,11 @@ export function Navbar() {
           >
             {t.BLOG_TITLE}
           </Link>
-          <a
-            href="#reservation-form"
-            className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            {t.RESERVATION_BTN}
-          </a>
+
           {employee ? (
             <>
               <Link
-                href={`/${employee.role === EmployeeRole.MANAGER ? "manager/dashboard" : "order"}`}
+                href={`/${employee.role === EmployeeRole.MANAGER ? "manager/dashboard" : employee.role === EmployeeRole.CHEFBAR ? "kds/station" : "order"}`}
                 className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
               >
                 {t.DASHBOARD}
@@ -57,12 +52,20 @@ export function Navbar() {
               </button>
             </>
           ) : (
-            <Link
-              href="/login"
-              className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
-            >
-              {UI_TEXT.AUTH.LOGIN}
-            </Link>
+            <>
+              <a
+                href="#reservation-form"
+                className="flex items-center gap-2 rounded-xl border border-border px-5 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-primary/20 transition-all hover:bg-muted active:scale-95 cursor-pointer"
+              >
+                {t.RESERVATION_BTN}
+              </a>
+              <Link
+                href="/login"
+                className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
+              >
+                {UI_TEXT.AUTH.LOGIN}
+              </Link>
+            </>
           )}
         </div>
       </div>
