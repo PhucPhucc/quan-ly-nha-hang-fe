@@ -29,7 +29,7 @@ export const MenuList: React.FC = () => {
   }, [menuItems, searchQuery, categoryId]);
 
   if (isLoading) {
-    return <TableSkeleton columns={5} rows={6} showMediaInFirstColumn />;
+    return <TableSkeleton />;
   }
 
   if (filteredItems.length === 0) {

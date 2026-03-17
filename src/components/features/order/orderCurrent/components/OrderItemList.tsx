@@ -56,8 +56,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
   const nomalizedPrice = (price: number, quantity: number) => {
     return `${price.toLocaleString()}${UI_TEXT.COMMON.CURRENCY} x ${quantity} = ${(price * quantity).toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`;
   };
-  const BULLET = "• ";
-  const PLUS = "+";
+
   return (
     <ScrollArea className="flex-1 overflow-auto" type="always">
       <div className="py-4 space-y-4 px-2">
@@ -91,12 +90,12 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                               className="text-[10px] text-muted-foreground flex items-center justify-between"
                             >
                               <span>
-                                {BULLET}
+                                {UI_TEXT.COMMON.BULLET}
                                 {val.label}
                               </span>
                               {val.extraPrice > 0 && (
                                 <span>
-                                  {PLUS}
+                                  {UI_TEXT.COMMON.PLUS}
                                   {val.extraPrice.toLocaleString()}
                                   {UI_TEXT.COMMON.CURRENCY}
                                 </span>
@@ -121,7 +120,6 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                     <Trash2 className="size-4" />
                   </Button>
                 </div>
-
                 <div className="flex items-center justify-between mt-1">
                   <Badge
                     variant="ghost"
@@ -159,15 +157,21 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                 key={item.orderItemId}
                 className="group relative flex flex-col gap-2 p-3 rounded-xl border border-border/50 bg-secondary/20 transition-all"
               >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1 text-muted-foreground">
+                <div className="flex justify-between flex-1 text-muted-foreground">
+                  <div>
                     <h4 className="font-semibold text-sm leading-tight">{item.itemNameSnapshot}</h4>
-                    <p className="text-xs font-medium mt-1">
-                      {nomalizedPrice(item.unitPriceSnapshot, item.quantity)}
-                    </p>
+                    {item.itemOptions && (
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        {item.itemOptions.split(";").join(", ")}
+                      </p>
+                    )}
                     {item.itemNote && (
                       <p className="text-[10px] italic mt-1">{UI_TEXT.ORDER.NOTE(item.itemNote)}</p>
                     )}
+                  </div>
+                  <div className="text-sm font-medium text-right">
+                    <p>{item.unitPriceSnapshot.toLocaleString()}</p>
+                    <p>{UI_TEXT.ORDER.QUANTITY(item.quantity)}</p>
                   </div>
                 </div>
 
