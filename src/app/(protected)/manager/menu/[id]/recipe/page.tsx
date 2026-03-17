@@ -2,6 +2,7 @@ import { ChefHat } from "lucide-react";
 import React from "react";
 
 import { RecipeSetupForm } from "@/components/features/recipe/RecipeSetupForm";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 export default function RecipeSetupPage({ params }: { params: { id: string } }) {
   // In a real app we would fetch the raw menu item here
@@ -14,8 +15,10 @@ export default function RecipeSetupPage({ params }: { params: { id: string } }) 
           <ChefHat className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Recipe Mapping</h1>
-          <p className="text-muted-foreground">Setup ingredients needed to prepare this item.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {UI_TEXT.MENU.RECIPE.TITLE}
+          </h1>
+          <p className="text-muted-foreground">{UI_TEXT.MENU.RECIPE.DESCRIPTION}</p>
         </div>
       </div>
 

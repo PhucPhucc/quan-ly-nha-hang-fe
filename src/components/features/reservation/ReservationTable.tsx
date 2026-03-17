@@ -1,4 +1,12 @@
-import { CheckCircle2, Edit, MoreVertical, Trash2 } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Minus,
+  MoreVertical,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -77,7 +85,7 @@ export const ReservationTable = ({
   onPageChange,
   onRefresh,
 }: ReservationTableProps) => {
-  const [actionRow, setActionRow] = useState<any>(null);
+  const [actionRow, setActionRow] = useState<ReservationDto | null>(null);
   const [isStartOpen, setIsStartOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
@@ -104,7 +112,7 @@ export const ReservationTable = ({
         <Table>
           <TableHeader className="bg-[#fcf9f2] sticky top-0 z-10 border-b border-orange-100">
             <TableRow className="hover:bg-[#fcf9f2] border-none">
-              <TableHead className="pl-6 w-[120px] font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
+              <TableHead className="pl-6 w-30 font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.RESERVATION.COL_CODE}
               </TableHead>
               <TableHead className="font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
@@ -122,10 +130,10 @@ export const ReservationTable = ({
               <TableHead className="font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.RESERVATION.COL_PARTY_TYPE}
               </TableHead>
-              <TableHead className="w-[140px] font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
+              <TableHead className="w-35 font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.RESERVATION.COL_STATUS}
               </TableHead>
-              <TableHead className="pr-6 text-right w-[100px] font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
+              <TableHead className="pr-6 text-right w-25 font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
                 {UI_TEXT.RESERVATION.COL_ACTIONS}
               </TableHead>
             </TableRow>
@@ -140,7 +148,7 @@ export const ReservationTable = ({
                     "hover:bg-[#fcf9f2]/50"
                   )}
                 >
-                  <TableCell className="pl-6 font-semibold text-slate-600 text-[13px] w-[120px]">
+                  <TableCell className="pl-6 font-semibold text-slate-600 text-[13px] w-30">
                     {row.code}
                   </TableCell>
                   <TableCell>
@@ -168,10 +176,10 @@ export const ReservationTable = ({
                   <TableCell className="text-slate-600 text-[13px] font-semibold">
                     {row.partyType}
                   </TableCell>
-                  <TableCell className="w-[140px]">
+                  <TableCell className="w-35">
                     <StatusBadge status={row.status} />
                   </TableCell>
-                  <TableCell className="text-right pr-6 w-[100px]">
+                  <TableCell className="text-right pr-6 w-25">
                     <div className="flex justify-end items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       {row.status === "BOOKED" && (
                         <>
@@ -189,7 +197,7 @@ export const ReservationTable = ({
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-slate-400 hover:text-slate-600 rounded-lg rounded-full"
+                                className="h-8 w-8 text-slate-400 hover:text-slate-600 rounded-lg"
                               >
                                 <MoreVertical className="h-5 w-5" />
                               </Button>
@@ -230,7 +238,7 @@ export const ReservationTable = ({
           {UI_TEXT.RESERVATION.PAGINATION_SHOWING}{" "}
           <span className="font-bold text-slate-800">
             {totalItems > 0 ? startOffset : 0}
-            {"-"}
+            <Minus className="inline mx-1" />
             {endOffset}
           </span>{" "}
           {UI_TEXT.RESERVATION.PAGINATION_OF}{" "}
@@ -245,22 +253,8 @@ export const ReservationTable = ({
             disabled={currentPage <= 1}
             onClick={() => onPageChange(currentPage - 1)}
           >
-            <span className="sr-only">{"Previous page"}</span>
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 15 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-            >
-              <path
-                d="M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84182L5.43521 7.49991L8.86462 11.158C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z"
-                fill="currentColor"
-                fillRule="evenodd"
-                clipRule="evenodd"
-              ></path>
-            </svg>
+            {/* <span className="sr-only">{"Previous page"}</span> */}
+            <ChevronLeft className="h-4 w-4" />
           </Button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -286,22 +280,8 @@ export const ReservationTable = ({
             disabled={currentPage >= totalPages}
             onClick={() => onPageChange(currentPage + 1)}
           >
-            <span className="sr-only">{"Next page"}</span>
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 15 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-            >
-              <path
-                d="M6.1584 3.13508C5.95698 3.32394 5.94678 3.64036 6.13564 3.84182L9.56505 7.49991L6.13564 11.158C5.94678 11.3594 5.95698 11.6758 6.1584 11.8647C6.35981 12.0535 6.67623 12.0433 6.86509 11.8419L10.6151 7.84188C10.7954 7.64955 10.7954 7.35027 10.6151 7.15794L6.86509 3.15794C6.67623 2.95648 6.35981 2.94628 6.1584 3.13508Z"
-                fill="currentColor"
-                fillRule="evenodd"
-                clipRule="evenodd"
-              ></path>
-            </svg>
+            {/* <span className="sr-only">{"Next page"}</span> */}
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>

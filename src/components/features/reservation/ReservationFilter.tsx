@@ -1,4 +1,4 @@
-import { CalendarIcon, RotateCw, Search } from "lucide-react";
+import { CalendarIcon, Plus, RotateCw, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ export const ReservationFilter = ({
     <div className="flex flex-col gap-4 mb-6">
       <div className="flex flex-col md:flex-row gap-4 items-end justify-between">
         <div className="flex flex-1 flex-wrap gap-3 w-full items-end">
-          <div className="flex-1 min-w-[280px] max-w-sm">
+          <div className="flex-1 min-w-70 max-w-sm">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
@@ -74,7 +74,7 @@ export const ReservationFilter = ({
             </div>
           </div>
 
-          <div className="w-[180px]">
+          <div className="w-45">
             <div className="relative">
               <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
@@ -86,7 +86,7 @@ export const ReservationFilter = ({
             </div>
           </div>
 
-          <div className="w-[160px]">
+          <div className="w-40">
             <Select value={area} onValueChange={onAreaChange}>
               <SelectTrigger className="h-11 bg-white border-gray-200 text-[13px] rounded-full text-slate-600 shadow-sm">
                 <SelectValue placeholder={UI_TEXT.RESERVATION.AREA_FILTER} />
@@ -102,7 +102,7 @@ export const ReservationFilter = ({
             </Select>
           </div>
 
-          <div className="w-[160px]">
+          <div className="w-40">
             <Select value={status} onValueChange={onStatusChange}>
               <SelectTrigger className="h-11 bg-white border-gray-200 text-[13px] rounded-full text-slate-600 shadow-sm">
                 <SelectValue placeholder={UI_TEXT.RESERVATION.STATUS_FILTER} />
@@ -134,7 +134,8 @@ export const ReservationFilter = ({
           className="h-11 shrink-0 bg-primary hover:bg-primary/90 text-white font-bold rounded-full px-6 shadow-sm shadow-orange-200/50"
           onClick={() => setIsCreateOpen(true)}
         >
-          <span className="text-lg leading-none mr-2 font-light">{"+"}</span>{" "}
+          {/* <span className="text-lg leading-none mr-2 font-light">}</span>{" "} */}
+          <Plus className="h-4 w-4 mr-2" />
           {UI_TEXT.RESERVATION.CREATE_BTN}
         </Button>
       </div>

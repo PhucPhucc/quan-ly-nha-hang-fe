@@ -65,7 +65,10 @@ export default function AreaManagementTable({ areas, onEditClick, onToggleStatus
                 </td>
                 <td className={`px-4 py-3 ${!isActive ? "text-slate-500" : ""}`}>
                   {area.description ? (
-                    <p className="text-xs leading-snug text-slate-600 break-words" title={area.description}>
+                    <p
+                      className="text-xs leading-snug text-slate-600 break-words"
+                      title={area.description}
+                    >
                       {area.description}
                     </p>
                   ) : (

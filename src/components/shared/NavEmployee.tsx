@@ -211,7 +211,7 @@ function FeatureItem({
   );
 }
 
-function ListLink({ href, title, des }: { href: string; title: string; des: string }) {
+function ListLink({ href, title }: { href: string; title: string; des: string }) {
   return (
     <NavigationMenuLink href={href} className="block w-72">
       <div className="flex flex-col gap-1 text-sm">

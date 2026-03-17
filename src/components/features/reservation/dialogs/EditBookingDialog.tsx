@@ -1,3 +1,4 @@
+import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { RESERVATION_RULES } from "@/constants/reservation";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { reservationService } from "@/services/reservationService";
+import { ReservationDto, reservationService } from "@/services/reservationService";
 import { tableService } from "@/services/tableService";
 import { Area, AreaStatus, AreaType } from "@/types/Table-Layout";
 
@@ -75,12 +76,12 @@ export const EditBookingDialog = ({
         reservationTime: bookingData.time || "",
         guestCount: bookingData.people || 2,
         partyType: bookingData.partyType?.toLowerCase() || "normal",
-        areaId: bookingData.areaId || "all",
+        areaId: bookingData.area || "all",
       });
     }
   }, [bookingData, open]);
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: string, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -111,9 +112,9 @@ export const EditBookingDialog = ({
         console.error("[EditBooking] API Error:", res.error || res.message);
         toast.error(res.message || res.error || UI_TEXT.RESERVATION.ERROR_SAVE_FAILED);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("[EditBooking] Connection Error:", error);
-      toast.error(error.message || UI_TEXT.RESERVATION.ERROR_CONNECTION);
+      toast.error((error as Error).message || UI_TEXT.RESERVATION.ERROR_CONNECTION);
     } finally {
       setLoading(false);
     }
@@ -133,7 +134,7 @@ export const EditBookingDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{UI_TEXT.RESERVATION.EDIT_DIALOG_TITLE}</DialogTitle>
@@ -141,7 +142,7 @@ export const EditBookingDialog = ({
               {UI_TEXT.RESERVATION.EDIT_DIALOG_DESC || "Chỉnh sửa thông tin đơn đặt bàn hiện tại."}
               {requiresVipArea && (
                 <div className="mt-2 text-amber-600 font-medium text-sm flex items-center gap-1">
-                  <span>{"ℹ️"}</span> {UI_TEXT.RESERVATION.VALIDATION_VIP_REQUIRED}
+                  <Info /> {UI_TEXT.RESERVATION.VALIDATION_VIP_REQUIRED}
                 </div>
               )}
             </DialogDescription>
@@ -163,7 +164,8 @@ export const EditBookingDialog = ({
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="edit-phone">
-                  {UI_TEXT.RESERVATION.FIELD_PHONE} <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
+                  {UI_TEXT.RESERVATION.FIELD_PHONE}{" "}
+                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
                   id="edit-phone"
@@ -178,7 +180,8 @@ export const EditBookingDialog = ({
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="edit-date">
-                  {UI_TEXT.RESERVATION.FIELD_DATE} <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
+                  {UI_TEXT.RESERVATION.FIELD_DATE}{" "}
+                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
                   id="edit-date"
@@ -191,7 +194,8 @@ export const EditBookingDialog = ({
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="edit-time">
-                  {UI_TEXT.RESERVATION.FIELD_TIME} <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
+                  {UI_TEXT.RESERVATION.FIELD_TIME}{" "}
+                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
                   id="edit-time"

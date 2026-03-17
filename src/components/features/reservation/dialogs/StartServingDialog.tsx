@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { reservationService } from "@/services/reservationService";
-
 import { ReservationDto } from "@/services/reservationService";
 
 interface StartServingDialogProps {

@@ -18,7 +18,13 @@ interface Props {
   areaType: AreaType;
 }
 
-export default function EditTablePanel({ table, onClose, onUpdateInfo, onUpdateStatus, areaType }: Props) {
+export default function EditTablePanel({
+  table,
+  onClose,
+  onUpdateInfo,
+  onUpdateStatus,
+  areaType,
+}: Props) {
   const [capacity, setCapacity] = useState(table.capacity);
   const [showBelow, setShowBelow] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
