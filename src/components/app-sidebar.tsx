@@ -5,10 +5,14 @@ import {
   Boxes,
   CalendarDays,
   ChartColumn,
+  ClipboardList,
+  Flame,
   History,
   LayoutDashboard,
+  Martini,
   Package,
   Settings,
+  ShelvingUnit,
   SquareMenu,
   Table,
   Users,
@@ -98,7 +102,7 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
     {
       title: UI_TEXT.SIDE_BAR.ORDER,
       url: "/order",
-      icon: UtensilsCrossed,
+      icon: ClipboardList,
     },
     {
       title: UI_TEXT.SIDE_BAR.RESERVATION,
@@ -108,14 +112,19 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
     {
       title: UI_TEXT.SIDE_BAR.INVENTORY,
       url: "/table-booking",
-      icon: Table,
+      icon: ShelvingUnit,
     },
   ],
   [EmployeeRole.CHEFBAR]: [
     {
-      title: UI_TEXT.SIDE_BAR.ORDER,
-      url: "/kds/station",
-      icon: UtensilsCrossed,
+      title: UI_TEXT.SIDE_BAR.STATION_KITCHEN,
+      url: "/kds/kitchen",
+      icon: Flame,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.STATION_BAR,
+      url: "/kds/bar",
+      icon: Martini,
     },
   ],
   [EmployeeRole.WAITER]: [
@@ -153,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={routes[userRole as EmployeeRole]} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="mb-4">
         <NavUser />
       </SidebarFooter>
     </Sidebar>

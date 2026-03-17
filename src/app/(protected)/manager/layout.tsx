@@ -1,10 +1,16 @@
 import React from "react";
 
+import HeaderBar from "@/components/shared/HeaderBar";
 import RoleGuard from "@/components/shared/RoleGuard";
 import { EmployeeRole } from "@/types/Employee";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
-  return <RoleGuard allowedRoles={[EmployeeRole.MANAGER]}>{children}</RoleGuard>;
+  return (
+    <RoleGuard allowedRoles={[EmployeeRole.MANAGER]}>
+      <HeaderBar />
+      <div className="px-4 pb-4">{children}</div>
+    </RoleGuard>
+  );
 };
 
 export default layout;
