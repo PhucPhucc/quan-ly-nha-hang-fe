@@ -432,62 +432,29 @@
   }
 }
 
+/* ==========================================
+   Shared table components
+   (pill, feedback, status-dot, pagination)
+   Dùng CSS thuần vì cần color-mix / gradient
+   ========================================== */
 @layer components {
-  .fh-table-shell {
-    background: var(--table-shell-bg);
-    border: 1px solid var(--table-border-strong);
-    border-radius: calc(var(--radius) + 0.35rem);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-  }
-
-  .fh-table {
-    width: 100%;
-  }
-
-  .fh-table-header-row {
-    background: var(--table-header-bg);
-    border-color: var(--table-border-strong);
-  }
-
-  .fh-table-head {
-    height: 3.4rem;
-    padding: 0.95rem 1.5rem;
-    color: var(--table-heading);
-    font-size: 0.69rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  .fh-table-row {
-    border-color: var(--table-border-soft);
-  }
-
-  .fh-table-row:hover {
-    background: var(--table-row-hover);
-  }
-
-  .fh-table-row-muted {
+  /* ---------- Row muted (out-of-stock, etc.) ---------- */
+  .table-row-muted {
     background: var(--table-row-muted);
   }
 
-  .fh-table-cell {
-    padding: 1rem 1.5rem;
-    color: var(--table-text);
-    vertical-align: middle;
-  }
-
-  .fh-table-cell-strong {
+  /* ---------- Cell text variants ---------- */
+  .table-cell-strong {
     color: var(--table-text-strong);
     font-weight: 600;
   }
 
-  .fh-table-cell-muted {
+  .table-cell-muted {
     color: var(--table-text-muted);
   }
 
-  .fh-table-pill {
+  /* ---------- Pill / Badge ---------- */
+  .table-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -502,67 +469,69 @@
     white-space: nowrap;
   }
 
-  .fh-table-pill-primary {
+  .table-pill-primary {
     background: color-mix(in oklab, var(--primary) 12%, var(--card) 88%);
     border-color: color-mix(in oklab, var(--primary) 18%, var(--border) 82%);
     color: var(--primary-hover);
   }
 
-  .fh-table-pill-neutral {
+  .table-pill-neutral {
     background: color-mix(in oklab, var(--muted) 80%, var(--card) 20%);
     border-color: color-mix(in oklab, var(--border) 86%, var(--muted-foreground) 14%);
     color: var(--table-text-muted);
   }
 
-  .fh-table-pill-success {
+  .table-pill-success {
     background: color-mix(in oklab, var(--success) 14%, var(--card) 86%);
     border-color: color-mix(in oklab, var(--success) 22%, var(--border) 78%);
     color: color-mix(in oklab, var(--success) 78%, black 22%);
   }
 
-  .fh-table-pill-warning {
+  .table-pill-warning {
     background: color-mix(in oklab, var(--warning) 20%, var(--card) 80%);
     border-color: color-mix(in oklab, var(--warning) 24%, var(--border) 76%);
     color: color-mix(in oklab, var(--warning-foreground) 78%, black 22%);
   }
 
-  .fh-table-pill-danger {
+  .table-pill-danger {
     background: color-mix(in oklab, var(--danger) 12%, var(--card) 88%);
     border-color: color-mix(in oklab, var(--danger) 18%, var(--border) 82%);
     color: color-mix(in oklab, var(--danger) 82%, black 18%);
   }
 
-  .fh-table-pill-info {
+  .table-pill-info {
     background: color-mix(in oklab, var(--info) 14%, var(--card) 86%);
     border-color: color-mix(in oklab, var(--info) 20%, var(--border) 80%);
     color: color-mix(in oklab, var(--info) 78%, black 22%);
   }
 
-  .fh-table-status-dot {
+  /* ---------- Status dot ---------- */
+  .table-status-dot {
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 9999px;
     flex-shrink: 0;
   }
 
-  .fh-table-status-dot-active {
+  .table-status-dot-active {
     background: var(--success);
     box-shadow: 0 0 10px color-mix(in oklab, var(--success) 45%, transparent);
   }
 
-  .fh-table-status-dot-muted {
+  .table-status-dot-muted {
     background: var(--table-border-strong);
   }
 
-  .fh-table-status-text-active {
+  .table-status-text-active {
     color: color-mix(in oklab, var(--success) 80%, black 20%);
   }
 
-  .fh-table-status-text-muted {
+  .table-status-text-muted {
     color: var(--table-text-muted);
   }
 
-  .fh-table-feedback {
+  /* ---------- Feedback (empty / error state) ---------- */
+  .table-feedback {
     display: flex;
     min-height: 18rem;
     flex-direction: column;
@@ -574,7 +543,7 @@
     color: var(--table-text-muted);
   }
 
-  .fh-table-feedback-icon {
+  .table-feedback-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -585,12 +554,13 @@
     color: var(--primary);
   }
 
-  .fh-table-feedback-icon-danger {
+  .table-feedback-icon-danger {
     background: color-mix(in oklab, var(--danger) 12%, var(--card) 88%);
     color: var(--danger);
   }
 
-  .fh-table-pagination {
+  /* ---------- Pagination ---------- */
+  .table-pagination {
     display: flex;
     align-items: center;
     justify-content: space-between;

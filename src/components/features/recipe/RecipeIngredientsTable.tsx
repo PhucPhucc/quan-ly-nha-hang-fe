@@ -1,4 +1,4 @@
-import { DollarSign, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import React from "react";
 import { FieldArrayWithId, FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
@@ -57,12 +57,6 @@ export const RecipeIngredientsTable: React.FC<RecipeIngredientsTableProps> = ({
             >
               <TableCell>
                 <div className="font-medium text-neutral-900">{field.ingredientName}</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-1">
-                  <DollarSign className="w-3 h-3" />
-                  {field.costPerUnit.toLocaleString()}
-                  <span className="mx-1">{UI_TEXT.MENU.RECIPE.UNIT_SEPARATOR || "/"}</span>
-                  {field.unit}
-                </div>
               </TableCell>
               <TableCell>
                 <div className="flex items-center justify-center gap-2 max-w-[150px] mx-auto">

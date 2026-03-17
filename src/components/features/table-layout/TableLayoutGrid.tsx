@@ -69,6 +69,7 @@ export default function TableLayoutGrid({ area }: Props) {
             ))}
           </span>
         </div>
+        {area.description && <p className="text-xs text-slate-500">{area.description}</p>}
         <div className="flex items-center gap-6 text-xs font-medium text-slate-600">
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-3 rounded-sm border border-table-available bg-table-available/60" />
@@ -107,6 +108,8 @@ export default function TableLayoutGrid({ area }: Props) {
           </div>
           <div className="flex items-center gap-2">
             <AddTableDialog
+              areaType={area.type}
+              existingTableCount={tables.length}
               onCreate={async ({ capacity }) => {
                 await createTable(capacity, area.areaId);
               }}
@@ -131,6 +134,7 @@ export default function TableLayoutGrid({ area }: Props) {
                     onClose={() => setSelectedTable(null)}
                     onUpdateInfo={updateTableInfo}
                     onUpdateStatus={updateTableCurrentStatus}
+                    areaType={area.type}
                   />
                 )}
               </div>

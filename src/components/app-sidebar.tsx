@@ -3,9 +3,13 @@
 import {
   Bell,
   Boxes,
+  CalendarDays,
   ChartColumn,
+  ClipboardList,
+  Flame,
   History,
   LayoutDashboard,
+  Martini,
   Package,
   Settings,
   SquareMenu,
@@ -15,24 +19,20 @@ import {
 } from "lucide-react";
 import * as React from "react";
 
-import { NavMain } from "@/components/nav-main";
+import { NavMain, NavMainProps } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
-const data = {
-  team: {
-    name: "FoodHub",
-    logo: UtensilsCrossed,
-    plan: "Restaurant",
-  },
-  navMain: [
+const routes: Record<EmployeeRole, NavMainProps[]> = {
+  [EmployeeRole.MANAGER]: [
     {
       title: UI_TEXT.SIDE_BAR.DASHBOARD,
       url: "/manager/dashboard",
       icon: LayoutDashboard,
-      isActive: true,
     },
     {
       title: UI_TEXT.SIDE_BAR.MENU,
@@ -43,6 +43,11 @@ const data = {
       title: UI_TEXT.SIDE_BAR.TABLE,
       url: "/manager/table",
       icon: Table,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.RESERVATION,
+      url: "/manager/reservation",
+      icon: CalendarDays,
     },
     {
       title: UI_TEXT.SIDE_BAR.ORDER,
@@ -92,18 +97,71 @@ const data = {
       ],
     },
   ],
+  [EmployeeRole.CASHIER]: [
+    {
+      title: UI_TEXT.SIDE_BAR.ORDER,
+      url: "/order",
+      icon: ClipboardList,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.RESERVATION,
+      url: "/reservation",
+      icon: CalendarDays,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.TABLE,
+      url: "/table-booking",
+      icon: Table,
+    },
+  ],
+  [EmployeeRole.CHEFBAR]: [
+    {
+      title: UI_TEXT.SIDE_BAR.STATION_KITCHEN,
+      url: "/kds/kitchen",
+      icon: Flame,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.STATION_BAR,
+      url: "/kds/bar",
+      icon: Martini,
+    },
+  ],
+  [EmployeeRole.WAITER]: [
+    {
+      title: UI_TEXT.SIDE_BAR.ORDER,
+      url: "/waiter/order",
+      icon: UtensilsCrossed,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.TABLE,
+      url: "/waiter/table",
+      icon: Table,
+    },
+  ],
+};
+
+const data = {
+  team: {
+    name: "FoodHub",
+    logo: UtensilsCrossed,
+    plan: "Restaurant",
+  },
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const userRole = useAuthStore((state) => state.employee?.role);
+
+  if (!userRole) return null;
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher team={data.team} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={routes[userRole as EmployeeRole]} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="mb-4">
         <NavUser />
       </SidebarFooter>
     </Sidebar>

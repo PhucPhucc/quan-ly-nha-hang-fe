@@ -67,11 +67,11 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
             <h3 className="text-lg font-semibold text-foreground truncate">
               {item.itemNameSnapshot}
             </h3>
-            {item.itemOptions && (
+            {/* {item.itemOptions && (
               <p className="text-xs text-muted-foreground truncate">
                 {UI_TEXT.KDS.OPTION_LABEL} {item.itemOptions}
               </p>
-            )}
+            )} */}
             {item.itemNote && (
               <p className="text-xs text-muted-foreground truncate">
                 {UI_TEXT.KDS.NOTE_LABEL} {item.itemNote}
@@ -80,22 +80,21 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsRejectModalOpen(true)}
-            className="gap-2"
-          >
-            <RotateCcw className="size-4" />
-            {UI_TEXT.KDS.ITEM.RETURN}
-          </Button>
+        <div className="flex flex-col items-center gap-2">
           {!isReady && (
-            <Button size="sm" onClick={handleDone} className="gap-2">
+            <Button onClick={handleDone} className="gap-2">
               <Check className="size-4" />
               {UI_TEXT.KDS.ITEM.DONE}
             </Button>
           )}
+          <Button
+            variant="outline"
+            onClick={() => setIsRejectModalOpen(true)}
+            className="gap-2 w-full"
+          >
+            <RotateCcw className="size-4" />
+            {UI_TEXT.KDS.ITEM.RETURN}
+          </Button>
         </div>
       </div>
 

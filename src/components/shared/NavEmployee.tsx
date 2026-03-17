@@ -1,7 +1,7 @@
 "use client";
 
 import { PopoverClose } from "@radix-ui/react-popover";
-import { TableOfContents, X } from "lucide-react";
+import { ExternalLink, TableOfContents, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useTheme } from "@/store/ThemeContext";
 import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 import { ThemeMode } from "@/types/enums";
 
 import { Button } from "../ui/button";
@@ -30,11 +31,45 @@ import {
 } from "../ui/select";
 import { Separator } from "../ui/separator";
 
+const FeutureCashier = [
+  {
+    title: "Quản lý đặt bàn",
+    des: "Xem và quản lý các đặt bàn của khách hàng",
+    href: "/reservation",
+  },
+  {
+    title: "Quản lý doanh thu",
+    des: "Xem báo cáo doanh thu hàng ngày, hàng tuần, hàng tháng",
+    href: "/revenue",
+  },
+  {
+    title: "Xem nhật ký hoạt động",
+    des: "Theo dõi các hoạt động của nhân viên và hệ thống",
+    href: "/log",
+  },
+  {
+    title: "Quản lý đặt bàn",
+    des: "Xem và quản lý các đặt bàn của khách hàng",
+    href: "/reservation1",
+  },
+  {
+    title: "Quản lý doanh thu",
+    des: "Xem báo cáo doanh thu hàng ngày, hàng tuần, hàng tháng",
+    href: "/revenue1",
+  },
+  {
+    title: "Xem nhật ký hoạt động",
+    des: "Theo dõi các hoạt động của nhân viên và hệ thống",
+    href: "/log1",
+  },
+];
+
 const NavEmployee = () => {
   const [position, setPosition] = useState("bottom-left");
   const { theme, selectTheme } = useTheme();
   const employee = useAuthStore((state) => state.employee);
-  console.log(position);
+
+  const FeaturesRole = employee?.role === EmployeeRole.CASHIER ? FeutureCashier : [];
 
   let cssPosition = "";
   switch (position) {
@@ -73,7 +108,7 @@ const NavEmployee = () => {
           <Separator className="my-2" />
 
           <FeatureItem title="Thông tin nhân viên" des="Xem thông tin cá nhân và vai trò">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground text-right">
               <p className="">{employee?.username}</p>
               <p className="">{employee?.role}</p>
             </div>
@@ -90,21 +125,14 @@ const NavEmployee = () => {
                     {UI_TEXT.PREFERENCE.NAVIGATION_ACTION}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ListLink
-                      href="/reservation"
-                      title={UI_TEXT.PREFERENCE.NAVIGATION_RESERVATION}
-                      des={UI_TEXT.PREFERENCE.NAVIGATION_RESERVATION_DESC}
-                    />
-                    <ListLink
-                      href="/revenue"
-                      title={UI_TEXT.PREFERENCE.NAVIGATION_REVENUE}
-                      des={UI_TEXT.PREFERENCE.NAVIGATION_REVENUE_DESC}
-                    />
-                    <ListLink
-                      href="/log"
-                      title={UI_TEXT.PREFERENCE.NAVIGATION_LOG}
-                      des={UI_TEXT.PREFERENCE.NAVIGATION_LOG_DESC}
-                    />
+                    {FeaturesRole.map((feature) => (
+                      <ListLink
+                        key={feature.href}
+                        href={feature.href}
+                        title={feature.title}
+                        des={feature.des}
+                      />
+                    ))}
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               </NavigationMenuList>
@@ -116,7 +144,7 @@ const NavEmployee = () => {
               <SelectTrigger className="w-full max-w-32">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="text-xs">
+              <SelectContent className="text-xs" position="popper">
                 <SelectGroup>
                   <SelectItem value="bottom-left" onClick={() => console.log(123)}>
                     {UI_TEXT.PREFERENCE.POSITION_BOTTOM_LEFT}
@@ -183,12 +211,15 @@ function FeatureItem({
   );
 }
 
-function ListLink({ href, title, des }: { href: string; title: string; des: string }) {
+function ListLink({ href, title }: { href: string; title: string; des: string }) {
   return (
     <NavigationMenuLink href={href} className="block w-72">
       <div className="flex flex-col gap-1 text-sm">
-        <div className="leading-none font-medium">{title}</div>
-        <div className="line-clamp-2 text-muted-foreground">{des}</div>
+        <div className="flex items-start gap-2 leading-none font-medium">
+          <span>{title}</span>
+          <ExternalLink className="size-3 text-muted-foreground" />
+        </div>
+        {/* <div className="line-clamp-2 text-muted-foreground">{des}</div> */}
       </div>
     </NavigationMenuLink>
   );

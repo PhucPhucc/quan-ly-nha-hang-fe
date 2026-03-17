@@ -5,6 +5,7 @@ import { BlogSection } from "./components/BlogSection";
 import { Footer } from "./components/Footer";
 import { HeroSection } from "./components/HeroSection";
 import { Navbar } from "./components/Navbar";
+import { ReservationSection } from "./components/ReservationSection";
 import { ReviewsSection } from "./components/ReviewsSection";
 import { SolutionsSection } from "./components/SolutionsSection";
 
@@ -15,6 +16,7 @@ export function LandingPage() {
       <HeroSection />
       <AboutSection />
       <SolutionsSection />
+      <ReservationSection />
       <ReviewsSection />
       <BlogSection />
       <Footer />

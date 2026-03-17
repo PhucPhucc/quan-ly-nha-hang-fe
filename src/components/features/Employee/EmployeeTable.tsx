@@ -11,6 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -72,25 +73,25 @@ const EmployeeTable = () => {
   }
 
   return (
-    <div className="fh-table-shell mt-4">
-      <Table className="fh-table">
+    <TableShell className="mt-4">
+      <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow variant="header">
             <TableHead className="text-center">{UI_TEXT.EMPLOYEE.EMP_ID}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.EMPLOYEE_TITLE}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.CONTACT}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.ADDRESS}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.ROLE}</TableHead>
             <TableHead>{UI_TEXT.EMPLOYEE.STATUS}</TableHead>
-            <TableHead>{UI_TEXT.COMMON.ACTION}</TableHead>
+            <TableHead className="text-right">{UI_TEXT.COMMON.ACTION}</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {error && (
-            <TableRow className="fh-table-row">
-              <TableCell colSpan={7} className="fh-table-cell">
-                <div className="fh-table-feedback text-danger">
+            <TableRow>
+              <TableCell colSpan={7}>
+                <div className="table-feedback text-danger">
                   <span className="text-base font-semibold">{error}</span>
                   <Button
                     onClick={() => window.location.reload()}
@@ -105,9 +106,9 @@ const EmployeeTable = () => {
           )}
 
           {!error && employees.length === 0 && (
-            <TableRow className="fh-table-row">
-              <TableCell colSpan={7} className="fh-table-cell">
-                <div className="fh-table-feedback">
+            <TableRow>
+              <TableCell colSpan={7}>
+                <div className="table-feedback">
                   <span className="text-sm font-medium text-table-text-muted">
                     {UI_TEXT.EMPLOYEE.NOT_FOUND}
                   </span>
@@ -118,14 +119,11 @@ const EmployeeTable = () => {
 
           {!error &&
             employees.map((employee) => (
-              <TableRow
-                key={employee.employeeId}
-                className="group border-slate-50 transition-all duration-200 hover:bg-slate-50/80"
-              >
-                <TableCell className="text-center font-medium text-slate-500 text-xs">
+              <TableRow key={employee.employeeId} className="group">
+                <TableCell className="table-cell-muted text-center text-xs font-medium">
                   {employee.employeeCode}
                 </TableCell>
-                <TableCell className="fh-table-cell">
+                <TableCell>
                   <div className="flex flex-col gap-1">
                     <span className="text-sm font-semibold leading-tight text-table-text-strong">
                       {employee.fullName}
@@ -133,38 +131,36 @@ const EmployeeTable = () => {
                     <span className="text-xs text-table-text-muted">{employee.email}</span>
                   </div>
                 </TableCell>
-                <TableCell className="fh-table-cell hidden text-[13px] font-medium lg:table-cell">
+                <TableCell className="hidden text-sm font-medium lg:table-cell">
                   {employee.phone || UI_TEXT.COMMON.MINUS}
                 </TableCell>
-                <TableCell className="fh-table-cell hidden max-w-55 truncate text-xs xl:table-cell">
+                <TableCell className="hidden max-w-55 truncate text-xs xl:table-cell">
                   {employee.address || UI_TEXT.COMMON.MINUS}
                 </TableCell>
 
-                <TableCell className="fh-table-cell">
+                <TableCell>
                   <span
-                    className={`fh-table-pill border-0 ${
-                      isRoleActive(employee.role)
-                        ? "fh-table-pill-primary"
-                        : "fh-table-pill-neutral"
+                    className={`table-pill border-0 ${
+                      isRoleActive(employee.role) ? "table-pill-primary" : "table-pill-neutral"
                     }`}
                   >
                     {getRoleLabel(employee.role)}
                   </span>
                 </TableCell>
-                <TableCell className="fh-table-cell">
+                <TableCell>
                   <div className="flex items-center gap-2">
                     <div
-                      className={`fh-table-status-dot ${
+                      className={`table-status-dot ${
                         isStatusActive(employee.status)
-                          ? "fh-table-status-dot-active"
-                          : "fh-table-status-dot-muted"
+                          ? "table-status-dot-active"
+                          : "table-status-dot-muted"
                       }`}
                     />
                     <span
                       className={`text-xs font-medium ${
                         isStatusActive(employee.status)
-                          ? "fh-table-status-text-active"
-                          : "fh-table-status-text-muted"
+                          ? "table-status-text-active"
+                          : "table-status-text-muted"
                       }`}
                     >
                       {getStatusLabel(employee.status)}
@@ -172,7 +168,7 @@ const EmployeeTable = () => {
                   </div>
                 </TableCell>
 
-                <TableCell className="fh-table-cell pr-6 text-right">
+                <TableCell className="text-right">
                   <div className="flex justify-end opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                     <EmployeeAction employee={employee} />
                   </div>
@@ -181,7 +177,7 @@ const EmployeeTable = () => {
             ))}
         </TableBody>
       </Table>
-    </div>
+    </TableShell>
   );
 };
 

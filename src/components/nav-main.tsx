@@ -18,36 +18,25 @@ import {
 } from "@/components/ui/sidebar";
 import { UI_TEXT } from "@/lib/UI_Text";
 
-export function NavMain({
-  items,
-}: {
-  items: {
+export type NavMainProps = {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  items?: {
     title: string;
     url: string;
     icon?: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-      icon?: LucideIcon;
-    }[];
   }[];
-}) {
+};
+
+export function NavMain({ items }: { items: NavMainProps[] }) {
   const path = usePathname();
 
   const isUrlActive = (url: string) => path === url;
   const hasActivePrefix = (url: string) => path.startsWith(url);
 
-  const isParentActive = (item: {
-    title: string;
-    url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
-  }) => {
+  const isParentActive = (item: NavMainProps) => {
     if (isUrlActive(item.url)) return true;
     if (item.items) {
       return item.items.some((subItem) => isUrlActive(subItem.url));

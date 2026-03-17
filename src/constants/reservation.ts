@@ -1,0 +1,3 @@
+export const RESERVATION_RULES = {
+  VIP_MIN_GUEST_COUNT: 12,
+};

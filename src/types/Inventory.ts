@@ -19,6 +19,7 @@ export interface Ingredient {
   name: string;
   code: string;
   unit: InventoryUnit;
+  baseUnit?: string;
   currentStock: number;
   lowStockThreshold: number;
   costPrice: number;

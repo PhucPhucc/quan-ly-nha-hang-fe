@@ -48,8 +48,8 @@ export function AboutSection() {
           </div>
 
           <div className="relative order-1 md:order-2 group">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary to-orange-400 rounded-[2.5rem] rotate-3 opacity-20 group-hover:rotate-6 transition-transform duration-500" />
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] shadow-2xl transform transition-transform duration-500 group-hover:-translate-y-2">
+            <div className="absolute inset-0 bg-linear-to-tr from-primary to-orange-400 rounded-[2.5rem] rotate-3 opacity-20 group-hover:rotate-6 transition-transform duration-500" />
+            <div className="relative aspect-4/3 w-full overflow-hidden rounded-[2rem] shadow-2xl transform transition-transform duration-500 group-hover:-translate-y-2">
               <Image
                 src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1000&auto=format&fit=crop"
                 alt={t.ABOUT_IMG_ALT}

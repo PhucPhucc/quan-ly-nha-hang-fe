@@ -44,9 +44,9 @@ export default function AreaManagementDialog({ open, onClose, areas, onUpdate }:
     }
   };
 
-  const handleToggle = async (areaId: string, currentIsActive: boolean) => {
+  const handleToggle = async (areaId: string, shouldActivate: boolean) => {
     try {
-      const response = await tableService.updateAreaStatus(areaId, !currentIsActive);
+      const response = await tableService.updateAreaStatus(areaId, shouldActivate);
       if (response.isSuccess) {
         toast.success(UI_TEXT.COMMON.UPDATE_SUCCESS);
         await refreshAreas();
@@ -74,6 +74,7 @@ export default function AreaManagementDialog({ open, onClose, areas, onUpdate }:
 
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Toolbar */}
+
           <div className="flex items-center justify-between px-6 py-4">
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />

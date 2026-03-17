@@ -26,21 +26,21 @@ const OrderList = ({
           role="button"
           tabIndex={0}
           className={`
-            flex flex-col justify-between aspect-3/4 bg-white border border-slate-100 shadow-sm p-3 rounded-2xl 
+            flex flex-col justify-between aspect-3/4 bg-white border border-border shadow-sm p-3 rounded-2xl 
             hover:shadow-md hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50
             ${item.isOutOfStock ? "opacity-60 grayscale pointer-events-none" : ""}
           `}
         >
           <div className="flex-1 mb-2 rounded-xl overflow-hidden bg-slate-50 relative group">
             <Image
-              src={"https://placehold.co/200x200/png?text=No+Image"}
+              src={!item.imageUrl ? "/placeholderMenu.webp" : item.imageUrl}
               alt={item.name}
               fill
               className="object-cover group-hover:scale-110 transition-transform duration-500"
             />
             {item.isOutOfStock && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                <span className="text-white font-black uppercase text-xs tracking-widest border border-white px-2 py-1">
+                <span className="text-white font-black uppercase text-xs tracking-widest border border-border px-2 py-1">
                   {UI_TEXT.COMMON.OUT_OF_STOCK}
                 </span>
               </div>

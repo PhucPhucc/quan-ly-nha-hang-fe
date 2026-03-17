@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 import { KDSOrderGrid } from "@/components/features/kds/KDSOrderGrid";
@@ -9,9 +9,27 @@ import { useKdsSignalR } from "@/hooks/useKdsSignalR";
 import { useKdsStore } from "@/store/useKdsStore";
 import { KDSStation } from "@/types/enums";
 
+const getStationEnum = (str: string): KDSStation => {
+  if (!str) return KDSStation.Kitchen;
+
+  const normalized = str.toLowerCase();
+  switch (normalized) {
+    case "bar":
+      return KDSStation.Bar;
+    case "coldkitchen":
+      return KDSStation.ColdKitchen;
+    case "hotkitchen":
+      return KDSStation.HotKitchen;
+    case "kitchen":
+    default:
+      return KDSStation.Kitchen;
+  }
+};
+
 export function KDSDashboardClient() {
-  const searchParams = useSearchParams();
-  const station = (searchParams.get("station") || KDSStation.Kitchen) as KDSStation;
+  const params = useParams();
+  const stationParam = params.station as string;
+  const station = getStationEnum(stationParam);
 
   const setStation = useKdsStore((s) => s.setStation);
   const fetchKdsData = useKdsStore((s) => s.fetchKdsData);
@@ -21,17 +39,14 @@ export function KDSDashboardClient() {
 
   useEffect(() => {
     setStation(station);
-  }, [station, setStation]);
-
-  useEffect(() => {
     const fetchData = async () => {
-      await fetchKdsData();
+      await fetchKdsData(station);
     };
     fetchData();
-  }, [fetchKdsData]);
+  }, [station, setStation, fetchKdsData]);
 
   return (
-    <div className="flex w-full h-full overflow-hidden">
+    <div className="flex h-full overflow-x-hidden flex-1 min-w-0">
       <KDSQueueSidebar />
       <KDSOrderGrid />
     </div>

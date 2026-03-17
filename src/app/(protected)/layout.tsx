@@ -1,13 +1,22 @@
 import React from "react";
 
+import { AppSidebar } from "@/components/app-sidebar";
 import AuthGuard from "@/components/shared/AuthGuard";
-import { ThemeProvider } from "@/store/ThemeContext";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import QueryProvider from "@/providers/QueryProvider";
 
 const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
-    <ThemeProvider>
-      <AuthGuard>{children}</AuthGuard>
-    </ThemeProvider>
+    <AuthGuard>
+      <QueryProvider>
+        <SidebarProvider defaultOpen={false}>
+          <AppSidebar />
+          <SidebarInset>
+            <div className="flex flex-1 flex-col gap-4 min-h-0">{children}</div>
+          </SidebarInset>
+        </SidebarProvider>
+      </QueryProvider>
+    </AuthGuard>
   );
 };
 

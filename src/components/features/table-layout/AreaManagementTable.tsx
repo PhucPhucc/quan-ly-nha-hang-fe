@@ -1,10 +1,11 @@
+import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Area, AreaStatus, AreaType } from "@/types/Table-Layout";
 
 interface Props {
   areas: Area[];
   onEditClick: (area: Area) => void;
-  onToggleStatus: (areaId: string, currentIsActive: boolean) => void;
+  onToggleStatus: (areaId: string, shouldActivate: boolean) => void;
 }
 
 export default function AreaManagementTable({ areas, onEditClick, onToggleStatus }: Props) {
@@ -14,12 +15,13 @@ export default function AreaManagementTable({ areas, onEditClick, onToggleStatus
         <thead className="sticky top-0 z-10 bg-slate-50">
           <tr>
             {[
-              { label: "MÃ KHU VỰC", align: "" },
-              { label: "TÊN KHU VỰC", align: "" },
-              { label: "LOẠI", align: "" },
-              { label: "SỐ BÀN", align: "text-center" },
-              { label: "TRẠNG THÁI", align: "" },
-              { label: "THAO TÁC", align: "text-right" },
+              { label: UI_TEXT.TABLE.COL_CODE, align: "" },
+              { label: UI_TEXT.TABLE.COL_NAME, align: "" },
+              { label: UI_TEXT.TABLE.COL_TYPE, align: "" },
+              { label: UI_TEXT.TABLE.AREA_DESCRIPTION, align: "" },
+              { label: UI_TEXT.TABLE.COL_TABLE_COUNT, align: "text-center" },
+              { label: UI_TEXT.TABLE.COL_STATUS, align: "" },
+              { label: UI_TEXT.TABLE.COL_ACTION, align: "text-right" },
             ].map(({ label, align }) => (
               <th
                 key={label}
@@ -53,9 +55,25 @@ export default function AreaManagementTable({ areas, onEditClick, onToggleStatus
                     </span>
                   ) : (
                     <span
-                      className={`inline-flex items-center rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium ${isActive ? "text-slate-800" : "text-slate-600 opacity-70"}`}
+                      className={`inline-flex items-center rounded border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium ${
+                        isActive ? "text-slate-800" : "text-slate-600 opacity-70"
+                      }`}
                     >
                       {UI_TEXT.TABLE.TYPE_NORMAL}
+                    </span>
+                  )}
+                </td>
+                <td className={`px-4 py-3 ${!isActive ? "text-slate-500" : ""}`}>
+                  {area.description ? (
+                    <p
+                      className="text-xs leading-snug text-slate-600 break-words"
+                      title={area.description}
+                    >
+                      {area.description}
+                    </p>
+                  ) : (
+                    <span className="text-xs text-slate-400">
+                      {UI_TEXT.TABLE.AREA_DESCRIPTION_EMPTY}
                     </span>
                   )}
                 </td>
@@ -83,22 +101,12 @@ export default function AreaManagementTable({ areas, onEditClick, onToggleStatus
                     >
                       {UI_TEXT.BUTTON.EDIT.toUpperCase()}
                     </button>
-                    <span className="text-slate-300">{UI_TEXT.COMMON.PIPE}</span>
-                    {isActive ? (
-                      <button
-                        onClick={() => onToggleStatus(area.areaId, true)}
-                        className="text-xs font-medium uppercase tracking-wide text-danger transition-colors hover:text-red-700"
-                      >
-                        {UI_TEXT.TABLE.DEACTIVATE.toUpperCase()}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => onToggleStatus(area.areaId, false)}
-                        className="text-xs font-medium uppercase tracking-wide text-blue-600 transition-colors hover:text-blue-800"
-                      >
-                        {UI_TEXT.TABLE.ACTIVATE.toUpperCase()}
-                      </button>
-                    )}
+                    <Switch
+                      checked={isActive}
+                      onCheckedChange={(value) => onToggleStatus(area.areaId, value)}
+                      size="sm"
+                      aria-label={isActive ? "Deactivate area" : "Activate area"}
+                    />
                   </div>
                 </td>
               </tr>

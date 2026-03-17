@@ -80,19 +80,32 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
     }));
   };
 
+  const handleConfirmAdd = () => {
+    ingredients.forEach((ing) => {
+      const quantity = quantities[ing.ingredientId] || 0;
+      if (quantity > 0) {
+        onAdd(ing, quantity);
+      }
+    });
+    setQuantities({}); // Reset quantities after adding
+    onClose();
+  };
+
+  const hasSelectedIngredients = Object.values(quantities).some((q) => q > 0);
+
   const filteredIngredients = ingredients.filter((ing) => !excludeIds.includes(ing.ingredientId));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col p-6 rounded-xl overflow-hidden glassmorphism">
-        <DialogHeader className="mb-4">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col p-0 rounded-xl overflow-hidden glassmorphism">
+        <DialogHeader className="p-6 pb-0 mb-4">
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <Plus className="w-5 h-5 text-primary" />
             {UI_TEXT.MENU.RECIPE.ADD_INGREDIENT}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex gap-3 mb-6">
+        <div className="px-6 flex gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -119,19 +132,25 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
           </Button>
         </div>
 
-        <AddIngredientTable
-          loading={loading}
-          ingredients={filteredIngredients}
-          quantities={quantities}
-          onQuantityChange={handleQuantityChange}
-          onAdd={onAdd}
-        />
+        <div className="px-6 flex-1 overflow-hidden flex flex-col">
+          <AddIngredientTable
+            loading={loading}
+            ingredients={filteredIngredients}
+            quantities={quantities}
+            onQuantityChange={handleQuantityChange}
+            onAdd={onAdd}
+          />
+        </div>
 
-        <DialogFooter className="mt-6 gap-2">
+        <DialogFooter className="p-6 bg-neutral-50 border-t mt-4 gap-2">
           <Button variant="outline" onClick={onClose} className="h-11 px-8 rounded-lg">
             {UI_TEXT.COMMON.CLOSE}
           </Button>
-          <Button className="h-11 px-8 rounded-lg shadow-lg shadow-primary/20">
+          <Button
+            onClick={handleConfirmAdd}
+            disabled={!hasSelectedIngredients}
+            className="h-11 px-8 rounded-lg shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white"
+          >
             {UI_TEXT.MENU.RECIPE.CONFIRM_ADD_BUTTON}
           </Button>
         </DialogFooter>

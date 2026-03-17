@@ -1,5 +1,6 @@
 import { ClipboardList, Image as ImageIcon, Utensils } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -23,8 +24,15 @@ interface MenuFormModalProps {
 }
 
 export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
-  const { isModalOpen, setModalOpen, editingItem, setEditingItem, addMenuItem, updateMenuItem } =
-    useMenuStore();
+  const {
+    isModalOpen,
+    setModalOpen,
+    editingItem,
+    setEditingItem,
+    addMenuItem,
+    updateMenuItem,
+    fetchMenuItems,
+  } = useMenuStore();
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -60,9 +68,9 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
         }
       } catch (error) {
         console.error("Image upload failed", error);
+        toast.error(error instanceof Error ? error.message : "Image upload failed");
       }
     }
-
     const menuItemData: Partial<MenuItem> = {
       ...data,
       imageUrl: finalImageUrl,
@@ -77,6 +85,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
       handleClose();
     } catch (error) {
       console.error("Failed to save menu item", error);
+      toast.error(error instanceof Error ? error.message : "Failed to save menu item");
     } finally {
       setIsUploading(false);
     }
@@ -94,9 +103,10 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent
-        className={`overflow-y-auto max-h-[95vh] p-0 border-none rounded-xl bg-neutral-50 shadow-2xl transition-all duration-300 ${activeTab === "recipe" ? "sm:max-w-7xl" : "sm:max-w-2xl"}`}
+        className={`flex flex-col p-0 border-none overflow-hidden rounded-xl bg-neutral-50 shadow-2xl transition-all duration-300 ${activeTab === "recipe" ? "sm:max-w-7xl h-[90vh]" : "sm:max-w-2xl max-h-[90vh]"}`}
       >
-        <div className="bg-white p-6 border-b sticky top-0 z-30">
+        {/* Fixed Header */}
+        <div className="bg-white p-6 border-b shrink-0 z-30">
           <DialogHeader className="mb-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -152,7 +162,8 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
           </Tabs>
         </div>
 
-        <div className="p-6">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsContent value="details" className="mt-0">
               <MenuDetailsTab
@@ -168,7 +179,10 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
               <TabsContent value="recipe" className="mt-0">
                 <RecipeSetupForm
                   menuItemId={editingItem.menuItemId}
-                  onSuccess={() => setActiveTab("details")}
+                  onSuccess={() => {
+                    fetchMenuItems();
+                    setActiveTab("details");
+                  }}
                   onCancel={handleClose}
                 />
               </TabsContent>

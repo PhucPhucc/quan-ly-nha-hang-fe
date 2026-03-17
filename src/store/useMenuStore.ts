@@ -1,4 +1,5 @@
 // Assuming sonner is used for toasts based on typical shadcn projects, if not, adjust later. Replace if not needed.
+import { toast } from "sonner";
 import { create } from "zustand";
 
 import { menuService } from "@/services/menuService";
@@ -94,6 +95,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
         set({ menuItems: [response.data, ...currentItems] });
       }
     } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to add menu item");
       console.error("Failed to add menu item:", error);
     } finally {
       set({ isLoading: false });
@@ -113,6 +115,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
         }));
       }
     } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update menu item");
       console.error("Failed to update menu item:", error);
     } finally {
       set({ isLoading: false });

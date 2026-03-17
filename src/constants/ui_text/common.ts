@@ -97,6 +97,7 @@ export const COMMON = {
   CLEAR_FILTER: "Xóa lọc",
   HYPHEN: " - ",
   LOCALE_VI: "vi-VN",
+  VALIDATION_ERROR: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.",
 };
 
 export const SIDE_BAR = {
@@ -107,6 +108,12 @@ export const SIDE_BAR = {
   EMPLOYEE: "Nhân viên",
   AUDIT_LOG: "Lịch sử",
   INVENTORY: "Kho hàng",
+  RESERVATION: "Đặt bàn",
+  STATION: "Trạm",
+  STATION_KITCHEN: "Quầy Bếp",
+  STATION_BAR: "Quầy Bar",
+  SETTINGS: "Cài đặt",
+  LOGOUT: "Đăng xuất",
 };
 
 export const FORM = {

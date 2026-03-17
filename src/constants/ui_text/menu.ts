@@ -128,18 +128,20 @@ export const MENU = {
     IS_OPTIONAL: "Không bắt buộc",
     INGREDIENTS_LIST: "Danh sách nguyên liệu",
     EMPTY_MAPPED: "Chưa có nguyên liệu nào. Nhấn Thêm nguyên liệu để bắt đầu.",
-    SAVING: "Đang lưu...",
+    SAVING: "Đang lưu công thức...",
+    SAVE_SUCCESS: "Đã lưu công thức thành công!",
+    SAVE_ERROR: "Lưu công thức thất bại. Vui lòng thử lại!",
+    LOADING: "Đang tải dữ liệu công thức...",
     SAVE_RECIPE: "Lưu định lượng",
     DISCARD: "Hủy bỏ",
     QUANTITY_MIN_ERROR: "Số lượng phải lớn hơn 0",
-    AT_LEAST_ONE_ERROR: "Cần ít nhất một nguyên liệu",
+    AT_LEAST_ONE_ERROR: "Cần nhất một nguyên liệu",
     INSTRUCTIONS_PLACEHOLDER: "Mô tả quy trình chế biến món ăn...",
     PREP_TIME_PLACEHOLDER: "VD: 15",
-  },
-
-  CATEGORY: {
-    COFFEE: "Cà phê",
-    SOUP: "Món nước",
-    TEA: "Trà",
+    // Titles from second definition
+    TITLE: "Chi tiết công thức",
+    DESCRIPTION: "Xem và chỉnh sửa nguyên liệu cần thiết để chuẩn bị món ăn này.",
+    INGREDIENT: "Nguyên liệu",
+    INSTRUCTION: "Hướng dẫn chế biến",
   },
 };

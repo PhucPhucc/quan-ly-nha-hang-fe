@@ -38,7 +38,7 @@ export const LANDING = {
   KITCHEN_INTEL: "Trí tuệ nhà bếp",
   KDS_PREVIEW: "Giao diện KDS Terminal 01",
   TECH_REDUCING: "Giảm trung bình 24% thời gian lên món",
-
+  RESERVATION_BTN: "Đặt bàn ngay",
   ABOUT_TITLE: "Về FoodHub",
   ABOUT_DESC:
     "FoodHub là đối tác tin cậy của hơn 500 nhà hàng lớn nhỏ, cung cấp hệ sinh thái quản lý toàn diện giúp nâng tầm trải nghiệm thực khách.",
@@ -48,7 +48,10 @@ export const LANDING = {
   AWARDS_VAL: "50+",
   CUSTOMERS_VAL: "500+",
   ABOUT_IMG_ALT: "Restaurant Business",
-
+  RESERVATION_TITLE: "Đặt bàn FoodHub",
+  RESERVATION_DESC:
+    "Chọn ngày, giờ và số lượng khách để đặt bàn tại nhà hàng đối tác của chúng tôi.",
+  CONFIRM_RESERVATION: "Xác nhận đặt bàn",
   BLOG_TITLE: "Tin tức & Sự nghiệp",
   BLOG_DESC: "Cập nhật những xu hướng công nghệ nhà hàng và tin tức nội bộ mới nhất từ FoodHub.",
   BLOG_INSIGHT: "Insight",
@@ -75,4 +78,43 @@ export const LANDING = {
       content: "Phần mềm ổn định, giao diện hiện đại và rất dễ để đào tạo nhân viên mới.",
     },
   ],
+  RESERVATION: {
+    SUBTITLE: "Reservations",
+    TITLE_MAIN: "Giữ chỗ cho",
+    TITLE_ITALIC: "Trải Nghiệm",
+    TITLE_SUFFIX: "của bạn.",
+    DESCRIPTION:
+      "Đừng để những khoảnh khắc quý giá phải chờ đợi. FoodHub cam kết mang đến không gian chuẩn mực nhất.",
+    HOTLINE_LABEL: "Hotline hỗ trợ 24/7",
+    HOTLINE_NUMBER: "1900 6868",
+    FORM: {
+      NAME_LABEL: "Họ tên quý khách",
+      NAME_PLACEHOLDER: "Nguyễn Văn A",
+      PHONE_LABEL: "Số điện thoại",
+      PHONE_PLACEHOLDER: "09xx xxx xxx",
+      DATE_LABEL: "Ngày dùng bữa",
+      DATE_PICKER_EMPTY: "Chọn ngày",
+      TIME_LABEL: "Giờ nhận bàn",
+      TIME_PLACEHOLDER: "Chọn giờ",
+      TIME_EMPTY: "Hết giờ",
+      GUESTS_LABEL: "Số lượng khách",
+      AREA_LABEL: "Khu vực",
+      AREA_PLACEHOLDER: "Chọn vị trí",
+      MENU_LABEL: "Hình thức",
+      MENU_PLACEHOLDER: "Chọn thực đơn",
+      NOTE_LABEL: "Lời nhắn (Không quá 200 ký tự)",
+      NOTE_PLACEHOLDER: "Yêu cầu đặc biệt (Sinh nhật, dị ứng...)",
+      SUBMIT_BUTTON: "Xác nhận đặt bàn",
+      SUBMIT_DISABLED: "Ngừng nhận khách",
+      FOOTER_NOTE: "Xác nhận tức thì • Miễn phí hủy bàn (Trước 45p)",
+    },
+    AREAS: [
+      { value: 0, label: "Phòng Thường" },
+      { value: 1, label: "Phòng VIP" },
+    ],
+    MENU_TYPES: [
+      { value: "alacarte", label: "Gọi món (A la carte)" },
+      { value: "combo", label: "Dùng Combo / Set menu" },
+    ],
+  },
 };

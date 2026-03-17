@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useKdsStore } from "@/store/useKdsStore";
 
@@ -31,24 +32,27 @@ export function KDSQueueSidebar() {
   }, []);
 
   return (
-    <aside className="w-72 h-full shrink-0 z-10 border-r bg-background">
-      <div className="p-4 border-b space-y-2">
+    <aside className="xl:w-72 w-64 h-full shrink-0 z-10 border-r bg-background">
+      <div className="p-4 pl-2 pt-2 border-b space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            {UI_TEXT.KDS.QUEUE}
-          </span>
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-muted-foreground">
+          <div className="flex items-center">
+            <SidebarTrigger className="size-8" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              {UI_TEXT.KDS.QUEUE}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 text-xs">
+            <span className=" text-muted-foreground">
               {UI_TEXT.KDS.TOTAL_ORDERS}
               {UI_TEXT.COMMON.COLON}
             </span>
-            <Badge variant="outline" className="text-[11px] font-semibold px-2 py-1">
+            <span className="flex items-center justify-center text-[10px] size-5 border font-semibold p-1 rounded-full">
               {orders.length}
-            </Badge>
+            </span>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-sm text-foreground">
-          <Timer className="w-4 h-4 text-muted-foreground" />
+        <div className="flex items-center pl-2 gap-2 text-foreground">
+          <Timer className="size-5 text-muted-foreground" />
           <span className="font-mono font-semibold">{currentTime}</span>
         </div>
       </div>
@@ -56,11 +60,7 @@ export function KDSQueueSidebar() {
       <ScrollArea className="h-[calc(100%-92px)] p-3">
         <div className="space-y-2">
           {orders.length === 0 ? (
-            <EmptyState
-              title={UI_TEXT.KDS.ORDER.EMPTY_QUEUE}
-              icon={Timer}
-              className="min-h-[200px]"
-            />
+            <EmptyState title={UI_TEXT.KDS.ORDER.EMPTY_QUEUE} icon={Timer} className="min-h-50" />
           ) : (
             orders.map((order) => {
               const orderNumber = order.orderCode.split("-").pop() || order.orderCode;
@@ -75,7 +75,7 @@ export function KDSQueueSidebar() {
                       startCooking(itemIds[0]);
                     }
                   }}
-                  className="w-full justify-between rounded-lg text-left px-4 py-3"
+                  className="w-full justify-between text-left p-3"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">

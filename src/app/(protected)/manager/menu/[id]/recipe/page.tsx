@@ -25,9 +25,9 @@ export default async function RecipeSetupPage({ params }: { params: { id: string
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            {UI_TEXT.MENU.RECIPE.SETUP_TITLE}
+            {UI_TEXT.MENU.RECIPE.TITLE}
           </h1>
-          <p className="text-muted-foreground">{UI_TEXT.MENU.HELPER_INGREDIENTS}</p>
+          <p className="text-muted-foreground">{UI_TEXT.MENU.RECIPE.DESCRIPTION}</p>
         </div>
       </div>
 

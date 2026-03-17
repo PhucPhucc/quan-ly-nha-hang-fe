@@ -61,7 +61,7 @@ interface KdsState {
 
   // actions
   setStation: (station: KDSStation) => void;
-  fetchKdsData: () => Promise<void>;
+  fetchKdsData: (targetStation?: KDSStation) => Promise<void>;
   startCooking: (orderItemId: string) => Promise<void>;
   markItemReady: (orderItemId: string) => Promise<void>;
   rejectItem: (orderItemId: string, reason: string) => Promise<void>;
@@ -79,12 +79,12 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
     // ---------- actions ----------
     setStation: (station) => set({ station }),
 
-    fetchKdsData: async () => {
-      const { station } = get();
+    fetchKdsData: async (targetStation?: KDSStation) => {
+      const currentStation = targetStation || get().station;
       try {
         const [itemsRes, queueRes] = await Promise.all([
-          kdsService.getKdsItems(station),
-          kdsService.getKdsQueue(station),
+          kdsService.getKdsItems(currentStation),
+          kdsService.getKdsQueue(currentStation),
         ]);
 
         const newActiveItems =
