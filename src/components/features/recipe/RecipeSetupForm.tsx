@@ -207,7 +207,7 @@ export function RecipeSetupForm({ menuItemId }: RecipeSetupFormProps) {
             {UI_TEXT.MENU.RECIPE.DISCARD}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? UI_TEXT.MENU.RECIPE.SAVING : UI_TEXT.MENU.RECIPE.SAVE_RECIPE}
+            {isSubmitting ? UI_TEXT.BUTTON.SAVE_CHANGES : UI_TEXT.MENU.RECIPE.SAVE_RECIPE}
           </Button>
         </div>
       </form>

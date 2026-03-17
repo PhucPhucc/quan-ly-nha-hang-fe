@@ -1,4 +1,5 @@
 import { ApiResponse } from "@/types/Api";
+import { Area } from "@/types/Table-Layout";
 
 import { apiFetch } from "./api";
 
@@ -78,8 +79,8 @@ export const reservationService = {
     return apiFetch<string>(`/reservations/${id}/check-in`, { method: "POST" });
   },
 
-  getAreas: (): Promise<ApiResponse<{ id: string; name: string }[]>> => {
-    return apiFetch<{ id: string; name: string }[]>("/public/reservations/areas", {
+  getAreas: (): Promise<ApiResponse<Area[]>> => {
+    return apiFetch<Area[]>("/public/reservations/areas", {
       method: "GET",
     });
   },

@@ -105,7 +105,7 @@ describe("InventorySettingsForm", () => {
   it("should show error toast when update returns unsuccessful response", async () => {
     vi.mocked(inventoryService.updateInventorySettings).mockResolvedValue({
       isSuccess: false,
-      data: false,
+      data: initialValues,
       message: "Cap nhat that bai",
     });
 
