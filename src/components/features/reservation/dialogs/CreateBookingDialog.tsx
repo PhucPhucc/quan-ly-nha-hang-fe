@@ -207,8 +207,6 @@ export const CreateBookingDialog = ({
                 <Label htmlFor="phone">
                   {UI_TEXT.RESERVATION.FIELD_PHONE}{" "}
                   <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
-                  {UI_TEXT.RESERVATION.FIELD_PHONE}
-                  <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
                 <Input
                   id="phone"

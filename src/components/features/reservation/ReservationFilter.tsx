@@ -131,7 +131,7 @@ export const ReservationFilter = ({
         </div>
 
         <Button
-          className="h-11 shrink-0 bg-primary hover:bg-primary/90 text-white font-bold rounded-full px-6 shadow-sm shadow-orange-200/50"
+          className="h-11 shrink-0 bg-primary hover:bg-primary/90 text-white font-bold px-6 shadow-sm shadow-orange-200/50"
           onClick={() => setIsCreateOpen(true)}
         >
           {/* <span className="text-lg leading-none mr-2 font-light">}</span>{" "} */}

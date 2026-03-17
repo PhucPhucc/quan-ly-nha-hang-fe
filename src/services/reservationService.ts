@@ -55,23 +55,23 @@ export const reservationService = {
     if (query.areaId && query.areaId !== "all") params.append("AreaId", query.areaId);
     if (query.status && query.status !== "all") params.append("Status", query.status);
 
-    return apiFetch<PagedResult<ReservationDto>>(`/public/reservations?${params.toString()}`);
+    return apiFetch<PagedResult<ReservationDto>>(`/reservations?${params.toString()}`);
   },
 
   createReservation: (data: CreateInternalReservationCommand): Promise<ApiResponse<string>> => {
     console.log(123);
-    return apiFetch<string>("/public/reservations", { method: "POST", body: data });
+    return apiFetch<string>("/reservations", { method: "POST", body: data });
   },
 
   updateReservation: (
     id: string,
     data: CreateInternalReservationCommand
   ): Promise<ApiResponse<string>> => {
-    return apiFetch<string>(`/public/reservations/${id}`, { method: "PUT", body: data });
+    return apiFetch<string>(`/reservations/${id}`, { method: "PUT", body: data });
   },
 
   cancelReservation: (id: string): Promise<ApiResponse<string>> => {
-    return apiFetch<string>(`/public/reservations/${id}/cancel`, { method: "POST" });
+    return apiFetch<string>(`/reservations/${id}/cancel`, { method: "POST" });
   },
 
   checkInReservation: (id: string): Promise<ApiResponse<string>> => {
