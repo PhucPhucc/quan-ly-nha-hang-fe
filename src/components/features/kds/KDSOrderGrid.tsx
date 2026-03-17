@@ -1,7 +1,6 @@
 "use client";
 
 import { ChefHat } from "lucide-react";
-import React from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -14,7 +13,6 @@ import { KDSItemCard } from "./KDSItemCard";
 export function KDSOrderGrid() {
   const orders = useKdsStore((s) => s.activeOrders);
 
-  // Flatten order items to get a list of items to display
   const allOrderItems = orders.flatMap((order) =>
     (order.orderItems || []).map((item) => ({
       ...order,
@@ -22,7 +20,6 @@ export function KDSOrderGrid() {
     }))
   );
 
-  // We only display the first 4 items in the grid columns based on the requirement
   const itemsToDisplay = allOrderItems.slice(0, 4);
 
   if (allOrderItems.length === 0) {
@@ -42,11 +39,7 @@ export function KDSOrderGrid() {
   }
 
   return (
-    <main className="flex-1 w-full bg-background flex flex-col overflow-hidden">
-      <div className="px-6 py-4 border-b flex items-center">
-        <h2 className="text-lg font-semibold text-foreground">{UI_TEXT.KDS.STATION_PREFIX}</h2>
-      </div>
-
+    <main className="flex-1 bg-background flex flex-col overflow-hidden min-w-0">
       <ScrollArea className="flex-1 w-full p-3">
         <div className="flex flex-col gap-2.5">
           {itemsToDisplay.map((virtualOrder) => {
