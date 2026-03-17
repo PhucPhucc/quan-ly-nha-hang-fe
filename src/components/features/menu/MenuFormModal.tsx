@@ -1,30 +1,22 @@
+import { ClipboardList, Image as ImageIcon, Utensils } from "lucide-react";
 import React, { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { uploadImage } from "@/services/imageService";
 import { useMenuStore } from "@/store/useMenuStore";
-import { Station } from "@/types/enums";
 import { MenuItem } from "@/types/Menu";
+
+import { RecipeSetupForm } from "../recipe/RecipeSetupForm";
+import { MenuDetailsTab } from "./MenuDetailsTab";
+import { MenuMediaTab } from "./MenuMediaTab";
 
 interface MenuFormModalProps {
   categories: { id: string; name: string }[];
@@ -36,22 +28,26 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState("details");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const price = Number(formData.get("price"));
-    const costPrice = Number(formData.get("cost"));
-    const categoryId = formData.get("categoryId") as string;
-    const station = Number(formData.get("station"));
-    const expectedTime = Number(formData.get("expectedTime"));
+    const data: Partial<MenuItem> = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      price: Number(formData.get("price")),
+      costPrice: Number(formData.get("cost")),
+      categoryId: formData.get("categoryId") as string,
+      station: Number(formData.get("station")),
+      expectedTime: Number(formData.get("expectedTime")),
+      imageUrl: formData.get("imageUrl") as string,
+    };
 
-    let imageUrl = formData.get("imageUrl") as string;
+    setIsUploading(true);
+    let finalImageUrl = data.imageUrl;
 
     if (selectedImage) {
-      setIsUploading(true);
       try {
         const uploadRes = await uploadImage(selectedImage);
         if (
@@ -60,193 +56,128 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
           typeof uploadRes.data === "object" &&
           "imageUrl" in uploadRes.data
         ) {
-          imageUrl = (uploadRes.data as { imageUrl: string }).imageUrl;
+          finalImageUrl = (uploadRes.data as { imageUrl: string }).imageUrl;
         }
       } catch (error) {
         console.error("Image upload failed", error);
-      } finally {
-        setIsUploading(false);
       }
     }
 
     const menuItemData: Partial<MenuItem> = {
-      name,
-      description,
-      price,
-      costPrice,
-      imageUrl,
-      categoryId,
-      expectedTime,
-      station,
+      ...data,
+      imageUrl: finalImageUrl,
     };
-    console.log(menuItemData);
-    if (editingItem) {
-      await updateMenuItem(editingItem.menuItemId, menuItemData);
-    } else {
-      await addMenuItem(menuItemData);
+
+    try {
+      if (editingItem) {
+        await updateMenuItem(editingItem.menuItemId, menuItemData);
+      } else {
+        await addMenuItem(menuItemData);
+      }
+      handleClose();
+    } catch (error) {
+      console.error("Failed to save menu item", error);
+    } finally {
+      setIsUploading(false);
     }
-    handleClose();
   };
 
   const handleClose = () => {
     setModalOpen(false);
     setEditingItem(null);
     setSelectedImage(null);
+    setActiveTab("details");
   };
 
   const isEditing = !!editingItem;
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-150 overflow-y-auto max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">
-            {isEditing ? UI_TEXT.MENU.MODAL_EDIT_TITLE : UI_TEXT.MENU.MODAL_ADD_TITLE}
-          </DialogTitle>
-          <DialogDescription>
-            {isEditing ? UI_TEXT.MENU.MODAL_EDIT_DESC : UI_TEXT.MENU.MODAL_ADD_DESC}
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit} className="space-y-6 py-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2 col-span-2">
-              <Label htmlFor="name" className="text-right">
-                {UI_TEXT.MENU.LABEL_NAME}{" "}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                defaultValue={editingItem?.name || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_NAME}
-                required
-              />
-            </div>
-
-            <div className="space-y-2 col-span-2">
-              <Label htmlFor="description" className="text-right">
-                {UI_TEXT.MENU.LABEL_DESC}
-              </Label>
-              <Textarea
-                id="description"
-                name="description"
-                defaultValue={editingItem?.description || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_DESC}
-                className="min-h-25"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="price" className="text-right">
-                {UI_TEXT.MENU.LABEL_PRICE}{" "}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                min="0"
-                defaultValue={editingItem?.price || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_PRICE}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="cost" className="text-right">
-                {UI_TEXT.MENU.LABEL_COST}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="cost"
-                name="cost"
-                type="number"
-                min="0"
-                defaultValue={editingItem?.costPrice || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_COST}
-                required
-              />
-            </div>
-
-            <div className="space-y-2 col-span-2 md:col-span-1">
-              <Label htmlFor="categoryId" className="text-right">
-                {UI_TEXT.MENU.LABEL_CATEGORY}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Select name="categoryId" defaultValue={editingItem?.categoryId || "null"} required>
-                <SelectTrigger id="categoryId">
-                  <SelectValue placeholder={UI_TEXT.MENU.PLACEHOLDER_CATEGORY} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="null">{UI_TEXT.MENU.OPTION_SELECT_DEFAULT}</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2 col-span-2 md:col-span-1">
-              <Label htmlFor="station" className="text-right">
-                {UI_TEXT.MENU.LABEL_STATION}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Select
-                name="station"
-                defaultValue={editingItem?.station?.toString() || "null"}
-                required
-              >
-                <SelectTrigger id="station">
-                  <SelectValue placeholder={UI_TEXT.MENU.PLACEHOLDER_STATION} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="null">{UI_TEXT.MENU.OPTION_SELECT_DEFAULT}</SelectItem>
-                  <SelectItem value={Station.HOT_KITCHEN.toString()}>
-                    {UI_TEXT.MENU.STATION.HOTKITCHEN}
-                  </SelectItem>
-                  <SelectItem value={Station.COLD_KITCHEN.toString()}>
-                    {UI_TEXT.MENU.STATION.COLDKITCHEN}
-                  </SelectItem>
-                  <SelectItem value={Station.BAR.toString()}>
-                    {UI_TEXT.MENU.STATION.DRINKS}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2 col-span-2">
-              <Label htmlFor="expectedTime" className="text-right">
-                {UI_TEXT.MENU.LABEL_EXPECTED_TIME}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="expectedTime"
-                name="expectedTime"
-                type="number"
-                min="1"
-                defaultValue={editingItem?.expectedTime || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_EXPECTED_TIME}
-                required
-              />
-            </div>
-
-            <div className="space-y-2 col-span-2">
-              <Label htmlFor="imageFile" className="text-right">
-                {UI_TEXT.MENU.LABEL_IMAGE_VIEW}
-                {isUploading && (
-                  <span className="text-muted-foreground ml-2 text-sm">
-                    {UI_TEXT.MENU.LOADING_IMAGE}
+      <DialogContent
+        className={`overflow-y-auto max-h-[95vh] p-0 border-none rounded-xl bg-neutral-50 shadow-2xl transition-all duration-300 ${activeTab === "recipe" ? "sm:max-w-7xl" : "sm:max-w-2xl"}`}
+      >
+        <div className="bg-white p-6 border-b sticky top-0 z-30">
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <Utensils className="w-6 h-6" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl font-bold tracking-tight">
+                  {isEditing
+                    ? editingItem?.name || UI_TEXT.MENU.MODAL_EDIT_TITLE
+                    : UI_TEXT.MENU.MODAL_ADD_TITLE}
+                </DialogTitle>
+                <DialogDescription className="text-neutral-500 font-medium">
+                  {isEditing ? UI_TEXT.MENU.MODAL_EDIT_DESC : UI_TEXT.MENU.MODAL_ADD_DESC}
+                </DialogDescription>
+              </div>
+              {isEditing && (
+                <div className="ml-auto">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800 border">
+                    {UI_TEXT.MENU.MODAL_ID_PREFIX} {editingItem.menuItemId.substring(0, 8)}
+                    {UI_TEXT.COMMON.ELLIPSIS}
                   </span>
-                )}
-              </Label>
-              <Input
-                id="imageFile"
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
+                </div>
+              )}
+            </div>
+          </DialogHeader>
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-neutral-100/50 p-1 rounded-lg border border-neutral-200">
+              <TabsTrigger
+                value="details"
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+              >
+                <ClipboardList className="w-4 h-4" />
+                {UI_TEXT.MENU.TAB_DETAILS}
+              </TabsTrigger>
+              {isEditing && (
+                <TabsTrigger
+                  value="recipe"
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                >
+                  <Utensils className="w-4 h-4" />
+                  {UI_TEXT.MENU.TAB_RECIPE}
+                </TabsTrigger>
+              )}
+              <TabsTrigger
+                value="media"
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+              >
+                <ImageIcon className="w-4 h-4" />
+                {UI_TEXT.MENU.TAB_MEDIA}
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <div className="p-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsContent value="details" className="mt-0">
+              <MenuDetailsTab
+                editingItem={editingItem}
+                categories={categories}
+                isUploading={isUploading}
+                onSubmit={handleSubmit}
+                onCancel={handleClose}
+              />
+            </TabsContent>
+
+            {isEditing && (
+              <TabsContent value="recipe" className="mt-0">
+                <RecipeSetupForm
+                  menuItemId={editingItem.menuItemId}
+                  onSuccess={() => setActiveTab("details")}
+                  onCancel={handleClose}
+                />
+              </TabsContent>
+            )}
+
+            <TabsContent value="media" className="mt-0">
+              <MenuMediaTab
+                editingItem={editingItem}
+                onFileChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
                     setSelectedImage(e.target.files[0]);
                   } else {
@@ -254,41 +185,9 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
                   }
                 }}
               />
-              <p className="text-xs text-muted-foreground mt-1">{UI_TEXT.MENU.LABEL_IMAGE_URL}</p>
-              <Input
-                id="imageUrl"
-                name="imageUrl"
-                className="mt-1"
-                defaultValue={editingItem?.imageUrl || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_IMAGE_URL}
-              />
-            </div>
-
-            <div className="flex items-center space-x-2 col-span-2 mt-2 bg-gray-50 p-4 rounded-md border text-sm">
-              <Switch
-                id="isOutOfStock"
-                name="isOutOfStock"
-                defaultChecked={editingItem?.isOutOfStock || false}
-              />
-              <Label htmlFor="isOutOfStock" className="cursor-pointer font-medium pt-1">
-                {UI_TEXT.MENU.LABEL_MARK_OUT_OF_STOCK}
-              </Label>
-            </div>
-          </div>
-
-          <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isUploading}>
-              {UI_TEXT.MENU.BUTTON_CANCEL}
-            </Button>
-            <Button type="submit" disabled={isUploading}>
-              {isUploading
-                ? "Đang xử lý..."
-                : isEditing
-                  ? UI_TEXT.MENU.BUTTON_UPDATE
-                  : UI_TEXT.MENU.BUTTON_CREATE}
-            </Button>
-          </DialogFooter>
-        </form>
+            </TabsContent>
+          </Tabs>
+        </div>
       </DialogContent>
     </Dialog>
   );

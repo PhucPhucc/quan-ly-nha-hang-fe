@@ -2,10 +2,20 @@ import { ChefHat } from "lucide-react";
 import React from "react";
 
 import { RecipeSetupForm } from "@/components/features/recipe/RecipeSetupForm";
+import { UI_TEXT } from "@/lib/UI_Text";
+import { recipeService } from "@/services/recipeService";
 
-export default function RecipeSetupPage({ params }: { params: { id: string } }) {
-  // In a real app we would fetch the raw menu item here
-  // and pass its name down, but RecipeSetupForm fetches Recipe logic
+export default async function RecipeSetupPage({ params }: { params: { id: string } }) {
+  let initialData = null;
+
+  try {
+    const response = await recipeService.getByMenuItemId(params.id);
+    if (response.isSuccess) {
+      initialData = response.data;
+    }
+  } catch (error) {
+    console.error("Failed to fetch recipe on server:", error);
+  }
 
   return (
     <div className="flex h-full flex-col gap-6 p-4 max-w-5xl mx-auto w-full">
@@ -14,12 +24,14 @@ export default function RecipeSetupPage({ params }: { params: { id: string } }) 
           <ChefHat className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Recipe Mapping</h1>
-          <p className="text-muted-foreground">Setup ingredients needed to prepare this item.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {UI_TEXT.MENU.RECIPE.SETUP_TITLE}
+          </h1>
+          <p className="text-muted-foreground">{UI_TEXT.MENU.HELPER_INGREDIENTS}</p>
         </div>
       </div>
 
-      <RecipeSetupForm menuItemId={params.id} />
+      <RecipeSetupForm menuItemId={params.id} initialData={initialData} />
     </div>
   );
 }
