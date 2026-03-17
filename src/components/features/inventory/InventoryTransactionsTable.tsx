@@ -4,7 +4,6 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -17,6 +16,8 @@ import {
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { InventoryTransaction, InventoryTransactionType } from "@/types/Inventory";
+
+import { InventoryPagination } from "./components/InventoryPagination";
 
 function formatType(type: InventoryTransactionType) {
   switch (type) {
@@ -60,17 +61,17 @@ export function InventoryTransactionsTable() {
 
   if (!transactions.length) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-muted-foreground">
+      <div className="rounded-xl border border-border bg-card p-6 text-center text-muted-foreground">
         {UI_TEXT.INVENTORY.TABLE.EMPTY_ALERT}
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white">
+    <div className="rounded-xl border border-border bg-card">
       <div className="p-4">
         <div className="mb-4">
-          <h2 className="text-lg font-semibold text-slate-900">
+          <h2 className="text-lg font-semibold text-card-foreground">
             {UI_TEXT.INVENTORY.HISTORY_TITLE}
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -80,58 +81,58 @@ export function InventoryTransactionsTable() {
 
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-50">
-              <TableHead className="text-xs font-semibold uppercase text-slate-600">
+            <TableRow className="bg-muted/50">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground">
                 {UI_TEXT.INVENTORY.TABLE.COL_SKU}
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase text-slate-600">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground">
                 {UI_TEXT.INVENTORY.TABLE.COL_NAME}
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase text-slate-600 text-center">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-center">
                 {UI_TEXT.INVENTORY.TABLE.COL_TYPE}
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase text-slate-600 text-right">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-right">
                 {UI_TEXT.INVENTORY.TABLE.COL_QTY}
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase text-slate-600 text-right">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-right">
                 {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase text-slate-600 text-right">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-right">
                 {UI_TEXT.INVENTORY.TABLE.COL_BALANCE}
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase text-slate-600 text-center">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-center">
                 {UI_TEXT.INVENTORY.TABLE.COL_REFERENCE}
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase text-slate-600 text-center">
+              <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-center">
                 {UI_TEXT.INVENTORY.TABLE.COL_DATE}
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {transactions.map((item: InventoryTransaction) => (
-              <TableRow key={item.inventoryTransactionId} className="hover:bg-slate-50/70">
-                <TableCell className="font-mono text-sm text-slate-700">
+              <TableRow key={item.inventoryTransactionId} className="hover:bg-muted/60">
+                <TableCell className="font-mono text-sm text-foreground/80">
                   {item.ingredientCode}
                 </TableCell>
-                <TableCell className="font-medium text-slate-800">{item.ingredientName}</TableCell>
+                <TableCell className="font-medium text-foreground">{item.ingredientName}</TableCell>
                 <TableCell className="text-center">
                   <Badge variant="secondary" className="px-3 py-1 rounded-full text-xs">
                     {formatType(item.transactionType)}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right font-semibold text-slate-800">
+                <TableCell className="text-right font-semibold text-foreground">
                   {item.quantity}
                 </TableCell>
-                <TableCell className="text-right text-slate-700">
+                <TableCell className="text-right text-foreground/80">
                   {item.unitCost ?? UI_TEXT.COMMON.DASH}
                 </TableCell>
                 <TableCell className="text-right font-semibold text-primary">
                   {item.balanceAfter}
                 </TableCell>
-                <TableCell className="text-center text-slate-600">
+                <TableCell className="text-center text-muted-foreground">
                   {item.reference || UI_TEXT.COMMON.DASH}
                 </TableCell>
-                <TableCell className="text-center text-slate-600">
+                <TableCell className="text-center text-muted-foreground">
                   {new Date(item.occurredAt).toLocaleString("vi-VN")}
                 </TableCell>
               </TableRow>
@@ -140,29 +141,12 @@ export function InventoryTransactionsTable() {
         </Table>
       </div>
 
-      <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-        <span>
-          {UI_TEXT.INVENTORY.TABLE.PAGE} {page} {UI_TEXT.INVENTORY.TABLE.SLASH} {totalPages}
-        </span>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            className="h-8 shadow-none"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            {UI_TEXT.COMMON.PREVIOUS}
-          </Button>
-          <Button
-            variant="outline"
-            className="h-8 shadow-none"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            {UI_TEXT.COMMON.NEXT}
-          </Button>
-        </div>
-      </div>
+      <InventoryPagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPrev={() => setPage((p) => Math.max(1, p - 1))}
+        onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+      />
     </div>
   );
 }

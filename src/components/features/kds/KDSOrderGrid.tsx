@@ -3,6 +3,9 @@
 import { ChefHat } from "lucide-react";
 import React from "react";
 
+import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useKdsStore } from "@/store/useKdsStore";
 
@@ -24,54 +27,53 @@ export function KDSOrderGrid() {
 
   if (allOrderItems.length === 0) {
     return (
-      <main className="flex-1 w-full bg-border-subtle overflow-hidden flex items-center justify-center">
-        <div className="text-text-secondary text-2xl font-black font-display opacity-50 uppercase tracking-tighter">
-          {UI_TEXT.KDS.ORDER.EMPTY_GRID}
-        </div>
+      <main className="flex-1 w-full bg-background overflow-hidden flex items-center justify-center p-6">
+        <Card className="w-full max-w-xl">
+          <CardContent>
+            <EmptyState
+              title={UI_TEXT.KDS.ORDER.EMPTY_GRID}
+              description={UI_TEXT.KDS.ORDER.EMPTY}
+              icon={ChefHat}
+            />
+          </CardContent>
+        </Card>
       </main>
     );
   }
 
   return (
     <main className="flex-1 w-full bg-background flex flex-col overflow-hidden">
-      {/* WIP Information Bar - Simplified */}
-      <div className="px-10 py-4 flex items-center justify-between border-b border-border-subtle shadow-sm z-10">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary p-2 rounded-lg backdrop-blur-sm border border-border">
-            <ChefHat className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <h2 className="text-xl font-bold tracking-tight text-secondary-foreground flex items-center">
-            {UI_TEXT.KDS.STATION_PREFIX}
-          </h2>
-        </div>
+      <div className="px-6 py-4 border-b flex items-center">
+        <h2 className="text-lg font-semibold text-foreground">{UI_TEXT.KDS.STATION_PREFIX}</h2>
       </div>
 
-      <div className="flex-1 w-full overflow-hidden flex flex-col custom-scrollbar overflow-y-auto p-4 gap-4">
-        {itemsToDisplay.map((virtualOrder) => {
-          const item = virtualOrder.orderItems[0];
-          return (
-            <div
-              key={`${virtualOrder.orderId}-${item.orderItemId}`}
-              className="shrink-0 flex flex-col bg-card rounded-xl shadow-sm border border-border-subtle overflow-hidden"
-            >
-              <KDSItemCard
-                item={item}
-                orderCode={virtualOrder.orderCode}
-                orderType={virtualOrder.orderType}
+      <ScrollArea className="flex-1 w-full p-3">
+        <div className="flex flex-col gap-2.5">
+          {itemsToDisplay.map((virtualOrder) => {
+            const item = virtualOrder.orderItems[0];
+            return (
+              <Card
+                key={`${virtualOrder.orderId}-${item.orderItemId}`}
+                className="overflow-hidden border-border-subtle rounded-lg p-0"
+              >
+                <KDSItemCard
+                  item={item}
+                  orderCode={virtualOrder.orderCode}
+                  orderType={virtualOrder.orderType}
+                />
+              </Card>
+            );
+          })}
+
+          {itemsToDisplay.length < 4 &&
+            Array.from({ length: 4 - itemsToDisplay.length }).map((_, idx) => (
+              <Card
+                key={`empty-col-${idx}`}
+                className="bg-muted border-dashed border-border-subtle min-h-24 rounded-lg p-0"
               />
-            </div>
-          );
-        })}
-
-        {/* Fill empty rows to maintain the 4-row look if there are fewer than 4 items */}
-        {itemsToDisplay.length < 4 &&
-          Array.from({ length: 4 - itemsToDisplay.length }).map((_, idx) => (
-            <div
-              key={`empty-col-${idx}`}
-              className="shrink-0 flex flex-col bg-gray-50/50 rounded-xl border border-dashed border-border-subtle min-h-35"
-            ></div>
-          ))}
-      </div>
+            ))}
+        </div>
+      </ScrollArea>
     </main>
   );
 }

@@ -86,7 +86,7 @@ export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSReje
               <Textarea
                 id="reject-reason"
                 placeholder={UI_TEXT.KDS.AUDIT.REJECT_MODAL.PLACEHOLDER}
-                value={reason || "Hết nguyên liệu chính"}
+                value={reason}
                 onChange={(e) => {
                   if (e.target.value.length <= MAX_CHARS) {
                     setReason(e.target.value);

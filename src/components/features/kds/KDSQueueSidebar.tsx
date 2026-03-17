@@ -3,6 +3,10 @@
 import { Timer } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useKdsStore } from "@/store/useKdsStore";
 
@@ -27,67 +31,75 @@ export function KDSQueueSidebar() {
   }, []);
 
   return (
-    <aside
-      className="w-64 h-full bg-background-50 border-r border-border-subtle 
-      flex flex-col shrink-0 z-10"
-    >
-      {/* Header Area */}
-      <div className="p-4 border-b border-border flex flex-col gap-2">
-        <div className="flex items-center justify-between pointer-events-none">
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+    <aside className="w-72 h-full shrink-0 z-10 border-r bg-background">
+      <div className="p-4 border-b space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             {UI_TEXT.KDS.QUEUE}
           </span>
           <div className="flex items-center gap-1">
-            <span className="text-[10px] font-medium text-slate-300">
-              {UI_TEXT.COMMON.PAREN_LEFT}
+            <span className="text-[10px] text-muted-foreground">
+              {UI_TEXT.KDS.TOTAL_ORDERS}
+              {UI_TEXT.COMMON.COLON}
             </span>
-            <span className="text-[10px] font-bold text-slate-500">{orders.length}</span>
-            <span className="text-[10px] font-medium text-slate-300">
-              {UI_TEXT.COMMON.PAREN_RIGHT}
-            </span>
+            <Badge variant="outline" className="text-[11px] font-semibold px-2 py-1">
+              {orders.length}
+            </Badge>
           </div>
         </div>
-        <div className="flex items-center gap-2 mt-1">
-          <Timer className="w-4 h-4 text-sky-500" />
-          <span className="font-mono font-bold text-lg text-text-main">{currentTime}</span>
+        <div className="flex items-center gap-2 text-sm text-foreground">
+          <Timer className="w-4 h-4 text-muted-foreground" />
+          <span className="font-mono font-semibold">{currentTime}</span>
         </div>
       </div>
 
-      {/* Queue List Area */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
-        {orders.length === 0 ? (
-          <div className="text-sm text-text-secondary/50 text-center py-4">
-            {UI_TEXT.KDS.ORDER.EMPTY_QUEUE}
-          </div>
-        ) : (
-          orders.map((order) => {
-            const orderNumber = order.orderCode.split("-").pop() || order.orderCode;
-            const itemIds = order.orderItems.map((i) => i.orderItemId);
+      <ScrollArea className="h-[calc(100%-92px)] p-3">
+        <div className="space-y-2">
+          {orders.length === 0 ? (
+            <EmptyState
+              title={UI_TEXT.KDS.ORDER.EMPTY_QUEUE}
+              icon={Timer}
+              className="min-h-[200px]"
+            />
+          ) : (
+            orders.map((order) => {
+              const orderNumber = order.orderCode.split("-").pop() || order.orderCode;
+              const itemIds = order.orderItems.map((i) => i.orderItemId);
 
-            return (
-              <div
-                key={order.orderId}
-                onClick={() => {
-                  if (itemIds.length > 0) {
-                    startCooking(itemIds[0]); // Start first item in the order
-                  }
-                }}
-                className="bg-white px-4 py-3 rounded-xl border border-border-subtle shadow-sm hover:border-sky-200 hover:shadow-md transition-all cursor-pointer group flex items-center justify-between"
-              >
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-text-secondary/50 uppercase tracking-widest">
-                    {UI_TEXT.KDS.ORDER_LABEL}
-                  </span>
-                  <span className="font-mono font-black text-lg text-text-main group-hover:text-sky-600 transition-colors">
-                    {UI_TEXT.COMMON.HASH}
-                    {orderNumber}
-                  </span>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
+              return (
+                <Button
+                  key={order.orderId}
+                  variant="outline"
+                  onClick={() => {
+                    if (itemIds.length > 0) {
+                      startCooking(itemIds[0]);
+                    }
+                  }}
+                  className="w-full justify-between rounded-lg text-left px-4 py-3"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                      {UI_TEXT.KDS.ORDER_LABEL}
+                    </span>
+                    <span className="font-mono text-lg font-bold text-foreground">
+                      {UI_TEXT.COMMON.HASH}
+                      {orderNumber}
+                    </span>
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="text-[11px] font-semibold"
+                    title="Số loại món trong đơn"
+                  >
+                    {UI_TEXT.KDS.ITEM.ITEMS_IN_ORDER_LABEL}
+                    {UI_TEXT.COMMON.COLON} {order.orderItems.length}
+                  </Badge>
+                </Button>
+              );
+            })
+          )}
+        </div>
+      </ScrollArea>
     </aside>
   );
 }
