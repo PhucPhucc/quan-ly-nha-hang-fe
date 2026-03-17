@@ -108,6 +108,11 @@ export const SIDE_BAR = {
   AUDIT_LOG: "Lịch sử",
   INVENTORY: "Kho hàng",
   RESERVATION: "Đặt bàn",
+  STATION: "Trạm",
+  STATION_KITCHEN: "Quầy Bếp",
+  STATION_BAR: "Quầy Bar",
+  SETTINGS: "Cài đặt",
+  LOGOUT: "Đăng xuất",
 };
 
 export const FORM = {
