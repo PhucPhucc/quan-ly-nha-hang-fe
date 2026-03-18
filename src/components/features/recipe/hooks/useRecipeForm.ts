@@ -17,19 +17,17 @@ import { Ingredient } from "@/types/Inventory";
 import { Recipe, RecipeIngredient } from "@/types/Recipe";
 
 const recipeSchema = z.object({
-  ingredients: z
-    .array(
-      z.object({
-        ingredientId: z.string(),
-        ingredientName: z.string(),
-        quantity: z.coerce.number().min(0.001, UI_TEXT.MENU.RECIPE.QUANTITY_MIN_ERROR),
-        unit: z.string(),
-        costPerUnit: z.coerce.number(),
-        totalCost: z.coerce.number(),
-        isOptional: z.boolean().optional(),
-      })
-    )
-    .min(1, UI_TEXT.MENU.RECIPE.AT_LEAST_ONE_ERROR),
+  ingredients: z.array(
+    z.object({
+      ingredientId: z.string(),
+      ingredientName: z.string(),
+      quantity: z.coerce.number().min(0.001, UI_TEXT.MENU.RECIPE.QUANTITY_MIN_ERROR),
+      unit: z.string(),
+      costPerUnit: z.coerce.number(),
+      totalCost: z.coerce.number(),
+      isOptional: z.boolean().optional(),
+    })
+  ),
   instructions: z.string().optional(),
   prepTimeMinutes: z.coerce.number().min(0).optional(),
 });
