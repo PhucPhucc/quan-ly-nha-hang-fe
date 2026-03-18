@@ -14,11 +14,26 @@ import { useMenuStore } from "@/store/useMenuStore";
 
 import { MenuItemCard } from "./MenuItemCard";
 
-export const MenuList: React.FC = () => {
-  const { menuItems, isLoading, searchQuery, categoryId } = useMenuStore();
+interface MenuListProps {
+  categories: { id: string; name: string; type: number }[];
+}
+
+export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
+  const { menuItems, setMenus, isLoading, searchQuery, categoryId } = useMenuStore();
 
   const filteredItems = useMemo(() => {
-    return menuItems.filter((item) => {
+    const isComboCategorySelected = categories.find((c) => c.id === categoryId)?.type === 2;
+
+    if (isComboCategorySelected) {
+      return setMenus.filter((item) => {
+        const matchSearch =
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchSearch;
+      });
+    }
+
+    const filteredMenuItems = menuItems.filter((item) => {
       const matchSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -26,7 +41,19 @@ export const MenuList: React.FC = () => {
 
       return matchSearch && matchCategory;
     });
-  }, [menuItems, searchQuery, categoryId]);
+
+    if (categoryId === "all") {
+      const filteredSetMenus = setMenus.filter((item) => {
+        const matchSearch =
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchSearch;
+      });
+      return [...filteredMenuItems, ...filteredSetMenus];
+    }
+
+    return filteredMenuItems;
+  }, [menuItems, setMenus, searchQuery, categoryId, categories]);
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -60,7 +87,10 @@ export const MenuList: React.FC = () => {
         </TableHeader>
         <TableBody>
           {filteredItems.map((item) => (
-            <MenuItemCard key={item.menuItemId} item={item} />
+            <MenuItemCard
+              key={"setMenuId" in item ? item.setMenuId : item.menuItemId}
+              item={item}
+            />
           ))}
         </TableBody>
       </Table>

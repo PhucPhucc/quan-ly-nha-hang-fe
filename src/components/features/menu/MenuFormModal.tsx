@@ -1,5 +1,5 @@
 import { ClipboardList, Image as ImageIcon, Utensils } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -12,15 +12,21 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { uploadImage } from "@/services/imageService";
+import { menuService } from "@/services/menuService";
+import { optionService } from "@/services/optionService";
 import { useMenuStore } from "@/store/useMenuStore";
-import { MenuItem } from "@/types/Menu";
+import { MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
 
 import { RecipeSetupForm } from "../recipe/RecipeSetupForm";
 import { MenuDetailsTab } from "./MenuDetailsTab";
 import { MenuMediaTab } from "./MenuMediaTab";
 
+type SetMenuApiRes = SetMenu & {
+  items?: { menuItemId: string; quantity: number }[];
+};
+
 interface MenuFormModalProps {
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; type: number }[];
 }
 
 export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
@@ -31,31 +37,117 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
     setEditingItem,
     addMenuItem,
     updateMenuItem,
+    addSetMenu,
+    updateSetMenu,
+    menuItems,
     fetchMenuItems,
   } = useMenuStore();
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [comboItems, setComboItems] = useState<{ menuItemId: string; quantity: number }[]>([]);
+  const [isFetchingCombo, setIsFetchingCombo] = useState(false);
+  const [optionGroups, setOptionGroups] = useState<Partial<OptionGroup>[]>([]);
+  const [isFetchingOptions, setIsFetchingOptions] = useState(false);
+  const [deletedGroupIds, setDeletedGroupIds] = useState<string[]>([]);
+  const [deletedItemIds, setDeletedItemIds] = useState<string[]>([]);
+
+  const isEditing = !!editingItem;
+  const isSetMenu = isEditing && editingItem && "setMenuId" in editingItem;
+  const itemId = editingItem
+    ? isSetMenu
+      ? (editingItem as SetMenu).setMenuId
+      : (editingItem as MenuItem).menuItemId
+    : null;
+  const isSetMenuCategory = categories.find((c) => c.id === selectedCategoryId)?.type === 2;
+
+  useEffect(() => {
+    if (isModalOpen) {
+      if (editingItem) {
+        if ("categoryId" in editingItem && editingItem.categoryId) {
+          setSelectedCategoryId(editingItem.categoryId);
+        } else {
+          const defaultCatId =
+            categories.find((c) => c.type === (isSetMenu ? 2 : 1))?.id || categories[0]?.id || "";
+          setSelectedCategoryId(defaultCatId);
+        }
+
+        if (isSetMenu && itemId) {
+          setIsFetchingCombo(true);
+          menuService
+            .getSetMenuById(itemId)
+            .then((res) => {
+              if (res.isSuccess && res.data) {
+                const setMenuData = res.data as SetMenuApiRes;
+                if ("categoryId" in setMenuData && setMenuData.categoryId !== undefined) {
+                  setSelectedCategoryId(setMenuData.categoryId as string);
+                }
+
+                if (setMenuData.items) {
+                  setComboItems(
+                    setMenuData.items.map((i) => ({
+                      menuItemId: i.menuItemId,
+                      quantity: i.quantity,
+                    }))
+                  );
+                }
+              }
+            })
+            .finally(() => setIsFetchingCombo(false));
+        } else {
+          setComboItems([]);
+        }
+
+        if (!isSetMenu && itemId) {
+          setIsFetchingOptions(true);
+          optionService
+            .getOptionGroupsByMenuItem(itemId)
+            .then((res) => {
+              if (res.isSuccess && res.data) {
+                setOptionGroups(res.data);
+              }
+            })
+            .finally(() => setIsFetchingOptions(false));
+        } else {
+          setOptionGroups([]);
+        }
+      } else {
+        setSelectedCategoryId(categories[0]?.id || "");
+        setComboItems([]);
+        setOptionGroups([]);
+        setDeletedGroupIds([]);
+        setDeletedItemIds([]);
+      }
+    }
+  }, [editingItem, categories, isModalOpen, isSetMenu, itemId]);
+
+  const addComboItem = () => setComboItems([...comboItems, { menuItemId: "", quantity: 1 }]);
+  const updateComboItem = (
+    index: number,
+    field: "menuItemId" | "quantity",
+    value: string | number
+  ) => {
+    const newItems = [...comboItems];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setComboItems(newItems);
+  };
+  const removeComboItem = (index: number) =>
+    setComboItems(comboItems.filter((_, i) => i !== index));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data: Partial<MenuItem> = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      price: Number(formData.get("price")),
-      costPrice: Number(formData.get("cost")),
-      categoryId: formData.get("categoryId") as string,
-      station: Number(formData.get("station")),
-      expectedTime: Number(formData.get("expectedTime")),
-      imageUrl: formData.get("imageUrl") as string,
-    };
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    const price = Number(formData.get("price"));
+    const costPrice = Number(formData.get("cost"));
+    const categoryId = selectedCategoryId;
 
-    setIsUploading(true);
-    let finalImageUrl = data.imageUrl;
-
+    let imageUrl = formData.get("imageUrl") as string;
     if (selectedImage) {
+      setIsUploading(true);
       try {
         const uploadRes = await uploadImage(selectedImage);
         if (
@@ -64,30 +156,122 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
           typeof uploadRes.data === "object" &&
           "imageUrl" in uploadRes.data
         ) {
-          finalImageUrl = (uploadRes.data as { imageUrl: string }).imageUrl;
+          imageUrl = (uploadRes.data as { imageUrl: string }).imageUrl;
         }
       } catch (error) {
         console.error("Image upload failed", error);
         toast.error(error instanceof Error ? error.message : "Image upload failed");
+      } finally {
+        setIsUploading(false);
       }
     }
-    const menuItemData: Partial<MenuItem> = {
-      ...data,
-      imageUrl: finalImageUrl,
-    };
+
+    if (isEditing && !itemId) {
+      toast.error("Không tìm thấy ID món cần cập nhật");
+      return;
+    }
 
     try {
-      if (editingItem) {
-        await updateMenuItem(editingItem.menuItemId, menuItemData);
+      if (isSetMenuCategory) {
+        const setMenuData: Partial<SetMenu> & {
+          categoryId: string;
+          items: typeof comboItems;
+        } = {
+          name,
+          description,
+          price,
+          costPrice,
+          imageUrl,
+          categoryId,
+          items: comboItems.filter((i) => i.menuItemId && i.quantity > 0),
+        };
+        if (isEditing && isSetMenu) {
+          await updateSetMenu(itemId!, setMenuData);
+        } else {
+          await addSetMenu(setMenuData);
+        }
       } else {
-        await addMenuItem(menuItemData);
+        const station = Number(formData.get("station"));
+        const expectedTime = Number(formData.get("expectedTime"));
+        const menuItemData: Partial<MenuItem> = {
+          name,
+          description,
+          price,
+          costPrice,
+          imageUrl,
+          categoryId,
+          expectedTime,
+          station,
+        };
+
+        let savedMenuItemId = itemId;
+
+        if (isEditing && !isSetMenu) {
+          await updateMenuItem(itemId!, menuItemData);
+        } else {
+          const newItem = await addMenuItem(menuItemData);
+          if (newItem) {
+            savedMenuItemId = newItem.menuItemId;
+          }
+        }
+
+        if (savedMenuItemId) {
+          for (const gId of deletedGroupIds) {
+            await optionService.deleteOptionGroup(gId);
+          }
+          for (const iId of deletedItemIds) {
+            await optionService.deleteOptionItem(iId);
+          }
+
+          for (const group of optionGroups) {
+            let currentGroupId = group.optionGroupId;
+            const isNewGroup = !currentGroupId || currentGroupId.startsWith("temp-");
+
+            if (isNewGroup) {
+              const groupRes = await optionService.createOptionGroup({
+                menuItemId: savedMenuItemId,
+                name: group.name,
+                optionType: group.optionType,
+                isRequired: group.isRequired,
+              });
+              if (groupRes.isSuccess && groupRes.data) {
+                currentGroupId = groupRes.data;
+              }
+            } else if (currentGroupId) {
+              await optionService.updateOptionGroup(currentGroupId, {
+                name: group.name,
+                optionType: group.optionType,
+                isRequired: group.isRequired,
+              });
+            }
+
+            if (currentGroupId && group.optionItems) {
+              for (const item of group.optionItems) {
+                const currentItemId = item.optionItemId;
+                const isNewItem = !currentItemId || currentItemId.startsWith("temp-");
+
+                if (isNewItem) {
+                  await optionService.createOptionItem({
+                    optionGroupId: currentGroupId,
+                    label: item.label,
+                    extraPrice: item.extraPrice,
+                  });
+                } else {
+                  await optionService.updateOptionItem(currentItemId, {
+                    label: item.label,
+                    extraPrice: item.extraPrice,
+                  });
+                }
+              }
+            }
+          }
+        }
       }
+      toast.success(UI_TEXT.MENU.SAVE_SUCCESS);
       handleClose();
     } catch (error) {
       console.error("Failed to save menu item", error);
       toast.error(error instanceof Error ? error.message : "Failed to save menu item");
-    } finally {
-      setIsUploading(false);
     }
   };
 
@@ -96,16 +280,17 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
     setEditingItem(null);
     setSelectedImage(null);
     setActiveTab("details");
+    setComboItems([]);
+    setOptionGroups([]);
+    setDeletedGroupIds([]);
+    setDeletedItemIds([]);
   };
-
-  const isEditing = !!editingItem;
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent
         className={`flex flex-col p-0 border-none overflow-hidden rounded-xl bg-neutral-50 shadow-2xl transition-all duration-300 ${activeTab === "recipe" ? "sm:max-w-7xl h-[90vh]" : "sm:max-w-2xl max-h-[90vh]"}`}
       >
-        {/* Fixed Header */}
         <div className="bg-white p-6 border-b shrink-0 z-30">
           <DialogHeader className="mb-6">
             <div className="flex items-center gap-3">
@@ -125,7 +310,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
               {isEditing && (
                 <div className="ml-auto">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800 border">
-                    {UI_TEXT.MENU.MODAL_ID_PREFIX} {editingItem.menuItemId.substring(0, 8)}
+                    {UI_TEXT.MENU.MODAL_ID_PREFIX} {itemId?.substring(0, 8)}
                     {UI_TEXT.COMMON.ELLIPSIS}
                   </span>
                 </div>
@@ -142,7 +327,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
                 <ClipboardList className="w-4 h-4" />
                 {UI_TEXT.MENU.TAB_DETAILS}
               </TabsTrigger>
-              {isEditing && (
+              {isEditing && !isSetMenuCategory && (
                 <TabsTrigger
                   value="recipe"
                   className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
@@ -162,7 +347,6 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
           </Tabs>
         </div>
 
-        {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsContent value="details" className="mt-0">
@@ -172,13 +356,27 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
                 isUploading={isUploading}
                 onSubmit={handleSubmit}
                 onCancel={handleClose}
+                selectedCategoryId={selectedCategoryId}
+                setSelectedCategoryId={setSelectedCategoryId}
+                isSetMenuCategory={isSetMenuCategory}
+                comboItems={comboItems}
+                menuItems={menuItems}
+                isFetchingCombo={isFetchingCombo}
+                addComboItem={addComboItem}
+                updateComboItem={updateComboItem}
+                removeComboItem={removeComboItem}
+                optionGroups={optionGroups}
+                setOptionGroups={setOptionGroups}
+                isFetchingOptions={isFetchingOptions}
+                setDeletedGroupIds={setDeletedGroupIds}
+                setDeletedItemIds={setDeletedItemIds}
               />
             </TabsContent>
 
-            {isEditing && (
+            {isEditing && !isSetMenuCategory && (
               <TabsContent value="recipe" className="mt-0">
                 <RecipeSetupForm
-                  menuItemId={editingItem.menuItemId}
+                  menuItemId={itemId as string}
                   onSuccess={() => {
                     fetchMenuItems();
                     setActiveTab("details");

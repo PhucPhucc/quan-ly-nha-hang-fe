@@ -23,6 +23,7 @@ export const INVENTORY = {
   ADD_DESC: "Thêm một nguyên liệu mới vào kho. Hệ thống sẽ cảnh báo khi tồn kho dưới mức này.",
   EDIT_TITLE: "Cập nhật nguyên liệu",
   EDIT_DESC: "Chỉnh sửa thông tin của nguyên liệu hiện có trong hệ thống.",
+  CREATED_BY: "Người Xuất",
   DELETE: {
     TITLE: "Xóa nguyên liệu",
     DESC: "Bạn có chắc chắn muốn xóa nguyên liệu này không? Hành động này không thể hoàn tác.",
@@ -101,6 +102,7 @@ export const INVENTORY = {
     COL_QTY: "Số lượng",
     COL_TOTAL_COST: "Tổng chi phí",
     COL_RECEIVER: "Người tạo",
+    COL_STOCK_OUT_BY: "Người xuất",
     COL_TYPE: "Loại giao dịch",
     COL_BALANCE: "Tồn sau giao dịch",
     COL_REFERENCE: "Tham chiếu",
@@ -158,6 +160,7 @@ export const INVENTORY = {
     COL_NAME: "Tên nguyên vật liệu",
     COL_UNIT: "Đơn vị",
     COL_CURRENT: "Tồn hiện tại",
+    COL_QTY: "Số lượng",
     COL_INITIAL: "Số lượng ban đầu",
     COL_COST: "Đơn giá nhập",
     COL_TOTAL: "Thành tiền",

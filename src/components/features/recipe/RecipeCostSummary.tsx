@@ -37,10 +37,7 @@ export const RecipeCostSummary: React.FC<RecipeCostSummaryProps> = ({ totalCost,
               {UI_TEXT.MENU.UNIT_VND}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground">
-            {UI_TEXT.MENU.RECIPE.COST_HELPER ||
-              "Dựa trên giá nhập gần nhất của các nguyên liệu trong định lượng."}
-          </p>
+          <p className="text-xs text-muted-foreground">{UI_TEXT.MENU.RECIPE.TOTAL_COST_DESC}</p>
 
           <Separator className="my-4" />
 

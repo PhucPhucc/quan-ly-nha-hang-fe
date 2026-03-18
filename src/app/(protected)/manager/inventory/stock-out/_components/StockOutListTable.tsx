@@ -54,7 +54,7 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
               {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
             </TableHead>
             <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
-              {UI_TEXT.INVENTORY.TABLE.COL_SENDER}
+              {UI_TEXT.INVENTORY.CREATED_BY}
             </TableHead>
             <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
               {UI_TEXT.INVENTORY.FORM.DESCRIPTION}
@@ -79,7 +79,7 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                     {item.receiptCode}
                   </TableCell>
                   <TableCell className="text-slate-600">
-                    {new Date(item.receiptDate).toLocaleDateString("vi-VN")}
+                    {new Date(item.stockOutDate).toLocaleDateString("vi-VN")}
                   </TableCell>
                   <TableCell className="text-center font-medium">
                     <Badge

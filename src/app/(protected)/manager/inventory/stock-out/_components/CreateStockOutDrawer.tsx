@@ -128,7 +128,7 @@ export const CreateStockOutDrawer = ({
     try {
       const request: CreateStockOutRequest = {
         stockOutDate,
-        reason: reason || undefined,
+        reason,
         items: validItems,
       };
 

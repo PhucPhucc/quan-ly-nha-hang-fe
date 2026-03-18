@@ -8,7 +8,7 @@ export const ORDER = {
   FETCH_ERROR: "Không thể tải danh sách đơn hàng",
   DESCRIPTION_DETAIL: (tableNumber: string, total: number) => `${tableNumber} • Tổng ${total} món`,
   NOTE: (note: string) => `Ghi chú: ${note}`,
-  QUANTITY: (quantity: number) => `SL: ${quantity}`,
+  QUANTITY: (quantity: number) => `Số Lượng: ${quantity}`,
   BOARD: {
     TABLE_ZONE: "Khu vực bàn",
     TAKEAWAY_ORDERS: "Đơn mang đi",

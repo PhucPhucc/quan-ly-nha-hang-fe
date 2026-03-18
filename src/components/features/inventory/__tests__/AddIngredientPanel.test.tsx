@@ -67,15 +67,16 @@ describe("AddIngredientPanel", () => {
     const mockAdd = vi.mocked(inventoryService.addIngredient).mockResolvedValue({
       isSuccess: true,
       data: {
-        id: "new-1",
+        ingredientId: "new-1",
         name: "Apple",
-        sku: "APPLE-AUTO",
+        code: "APPLE-AUTO",
         unit: InventoryUnit.KG,
         currentStock: 0,
         lowStockThreshold: 3,
-        costPerUnit: 0,
+        costPrice: 0,
         status: AlertThresholdStatus.NORMAL,
         updatedAt: "",
+        isActive: true,
       },
     });
 

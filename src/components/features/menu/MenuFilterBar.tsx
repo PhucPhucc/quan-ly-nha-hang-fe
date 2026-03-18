@@ -14,7 +14,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { useMenuStore } from "@/store/useMenuStore";
 
 interface MenuFilterBarProps {
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; type: number }[];
 }
 
 export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
@@ -32,14 +32,14 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
   };
 
   return (
-    <div className="w-full rounded-2xl border border-slate-100 bg-white shadow-sm shadow-slate-100/60 px-4 py-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto] lg:items-center">
+    <div className=" w-full rounded-xl border border-border bg-card shadow-sm shadow-slate-100/60 px-4 py-3 grid gap-2 lg:grid-cols-[1fr_auto_auto] justify-between lg:items-center">
       <div className="flex-1 min-w-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" />
           <Input
             type="text"
             placeholder={UI_TEXT.MENU.PLACEHOLDER_SEARCH}
-            className="pl-10 h-11 rounded-2xl bg-slate-50 text-slate-700 placeholder:text-slate-400 border border-slate-100 focus-visible:ring-2 focus-visible:ring-slate-200"
+            className="pl-10 bg-card text-foreground placeholder:text-slate-400 border border-border focus-visible:ring-2 focus-visible:ring-slate-200"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -47,8 +47,8 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
       </div>
 
       <Select value={categoryId || "all"} onValueChange={setCategoryId}>
-        <SelectTrigger className="h-11 min-h-[44px] w-full sm:w-[200px] rounded-2xl bg-slate-50 border border-slate-100 text-slate-700">
-          <div className="flex items-center gap-2 text-slate-500">
+        <SelectTrigger className="w-full sm:w-50rounded-2xl bg-card border border-border text-foreground">
+          <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4" />
             <SelectValue placeholder={UI_TEXT.MENU.FILTER_ALL_CATEGORY} />
           </div>
@@ -68,7 +68,7 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
           type="button"
           variant="ghost"
           size="icon"
-          className="h-11 w-11 rounded-2xl text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+          className="p-2 rounded-full text-foreground hover:bg-card-foreground/5 transition-colors duration-300"
           onClick={handleReset}
           title={UI_TEXT.COMMON.RESET}
         >
@@ -76,9 +76,9 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
         </Button>
         <Button
           onClick={handleAddNew}
-          className="h-11 rounded-2xl shadow-lg hover:shadow-primary/20 transition-all font-semibold"
+          className="shadow-lg hover:shadow-primary/20 transition-all font-semibold"
         >
-          <Plus className="h-5 w-5 mr-2" /> {UI_TEXT.MENU.ADD_NEW_ITEM}
+          <Plus className="h-5 w-5" /> {UI_TEXT.MENU.ADD_NEW_ITEM}
         </Button>
       </div>
     </div>

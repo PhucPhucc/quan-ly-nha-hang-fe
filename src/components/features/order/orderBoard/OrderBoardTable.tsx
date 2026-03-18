@@ -67,7 +67,7 @@ export default function OrderBoardTable({
   onRetry,
 }: OrderBoardTableProps) {
   if (loading) {
-    return <TableSkeleton columns={6} rows={6} className="mt-4" />;
+    return <TableSkeleton />;
   }
 
   return (
