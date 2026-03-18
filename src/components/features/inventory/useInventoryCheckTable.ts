@@ -1,17 +1,18 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
+import { DateRange } from "react-day-picker";
 
 import { inventoryService } from "@/services/inventory.service";
 
 export function useInventoryCheckTable(pageSize = 10) {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   const backendFilters = {
     status: statusFilter === "all" ? undefined : parseInt(statusFilter),
-    fromDate: dateRange.from?.toISOString(),
-    toDate: dateRange.to?.toISOString(),
+    fromDate: dateRange?.from?.toISOString(),
+    toDate: dateRange?.to?.toISOString(),
   };
 
   const { data, isLoading, isError, error } = useQuery({
@@ -25,7 +26,7 @@ export function useInventoryCheckTable(pageSize = 10) {
     setCurrentPage(1);
   }, []);
 
-  const handleDateRangeChange = useCallback((range: { from?: Date; to?: Date }) => {
+  const handleDateRangeChange = useCallback((range: DateRange | undefined) => {
     setDateRange(range);
     setCurrentPage(1);
   }, []);

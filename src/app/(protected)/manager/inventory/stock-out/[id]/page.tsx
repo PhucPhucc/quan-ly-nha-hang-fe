@@ -4,13 +4,12 @@ import { useRouter } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { StockOutDetailView } from "@/components/features/inventory/StockOutDetailView";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { stockOutService } from "@/services/stock-out.service";
 import { StockOutReceipt } from "@/types/StockOut";
-
-import { StockOutDetailView } from "../_components/StockOutDetailView";
 
 export default function StockOutDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();

@@ -11,11 +11,14 @@ export function AddIngredientTrigger() {
   return (
     <AddIngredientPanel
       trigger={
-        <Button className="bg-[#cc0000] hover:bg-[#aa0000] shadow-md shadow-red-100 gap-2.5 px-6 font-semibold rounded-2xl uppercase tracking-wider text-[11px] h-11 w-full md:w-auto transition-all active:scale-95 border-none">
-          <div className="flex items-center justify-center size-5 bg-white/20 rounded-lg">
-            <PackagePlus className="size-3.5 text-white" strokeWidth={2.5} />
+        <Button
+          variant="outline"
+          className="h-10 w-full gap-2 rounded-xl border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 md:w-auto"
+        >
+          <div className="flex size-5 items-center justify-center rounded-lg bg-primary/10">
+            <PackagePlus className="size-3.5 text-primary" strokeWidth={2.5} />
           </div>
-          <span>{UI_TEXT.INVENTORY.ADD_TITLE}</span>
+          <span className="whitespace-nowrap">{UI_TEXT.INVENTORY.ADD_TITLE}</span>
         </Button>
       }
     />

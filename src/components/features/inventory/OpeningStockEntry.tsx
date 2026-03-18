@@ -103,45 +103,48 @@ export function OpeningStockEntry() {
 
   return (
     <>
-      <div className="flex h-full min-h-0 flex-col gap-4 p-4 pt-6">
-        <div className="flex shrink-0 flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={OPENING_STOCK.SEARCH_PLACEHOLDER}
-              className="h-8 pl-8 text-xs"
-              value={search}
-              disabled={isLocked}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+      <div className="flex h-full min-h-0 flex-col gap-3 p-4 pt-6">
+        <div className="shrink-0 rounded-xl border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100/60">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative w-full max-w-lg">
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+              <Input
+                placeholder={OPENING_STOCK.SEARCH_PLACEHOLDER}
+                className="h-9 rounded-xl border-slate-200 bg-slate-50 pl-9 text-sm shadow-none placeholder:text-slate-400 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-primary/15"
+                value={search}
+                disabled={isLocked}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <OpeningStockSummary totalValue={totalValue} />
+              <Button
+                onClick={handlePrimarySave}
+                disabled={saving || isLocked}
+                size="sm"
+                className="h-9 rounded-xl bg-primary px-3 text-xs text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary-hover"
+              >
+                {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-3.5 w-3.5" />}
+                {OPENING_STOCK.BTN_SAVE}
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <OpeningStockSummary totalValue={totalValue} />
-            <Button
-              onClick={handlePrimarySave}
-              disabled={saving || isLocked}
-              size="sm"
-              className="bg-primary hover:bg-primary-hover h-8 px-3 text-xs"
-            >
-              {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-3.5 w-3.5" />}
-              {OPENING_STOCK.BTN_SAVE}
-            </Button>
-          </div>
+
+          {isLocked ? (
+            <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+              <p className="font-semibold">{OPENING_STOCK.LOCKED_TITLE}</p>
+              <p className="mt-0.5 leading-relaxed">
+                {OPENING_STOCK.LOCKED_DESC}
+                {lockedAt
+                  ? ` ${OPENING_STOCK.LOCKED_TIME} ${new Date(lockedAt).toLocaleString()}.`
+                  : ""}
+              </p>
+            </div>
+          ) : null}
         </div>
 
-        {isLocked ? (
-          <div className="shrink-0 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs text-amber-900">
-            <p className="font-semibold">{OPENING_STOCK.LOCKED_TITLE}</p>
-            <p>
-              {OPENING_STOCK.LOCKED_DESC}
-              {lockedAt
-                ? ` ${OPENING_STOCK.LOCKED_TIME} ${new Date(lockedAt).toLocaleString()}.`
-                : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft mt-2">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft">
           <OpeningStockTable
             ingredients={filteredIngredients}
             entryItems={entryItems}
@@ -149,7 +152,6 @@ export function OpeningStockEntry() {
             onInputChange={handleInputChange}
           />
         </div>
-        <OpeningStockSummary totalValue={totalValue} mobile />
       </div>
 
       <Dialog open={isOverwriteDialogOpen} onOpenChange={setIsOverwriteDialogOpen}>

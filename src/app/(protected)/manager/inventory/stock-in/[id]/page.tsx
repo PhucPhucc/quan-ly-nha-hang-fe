@@ -4,13 +4,12 @@ import { useRouter } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { StockInDetailView } from "@/components/features/inventory/StockInDetailView";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { stockInService } from "@/services/stock-in.service";
 import { StockInReceipt } from "@/types/StockIn";
-
-import { StockInDetailView } from "../_components/StockInDetailView";
 
 export default function StockInDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();

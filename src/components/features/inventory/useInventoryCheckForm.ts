@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { CreateInventoryCheckRequest, InventoryCheckItem } from "@/types/Inventory";
 
@@ -89,7 +90,7 @@ export function useInventoryCheckForm(id?: string) {
     mutationFn: (data: CreateInventoryCheckRequest) => inventoryService.createInventoryCheck(data),
     onSuccess: (res) => {
       if (res.isSuccess) {
-        toast.success("Đã lưu phiếu kiểm kê nháp");
+        toast.success(UI_TEXT.INVENTORY.CHECK.CREATE.SUCCESS_SAVE);
         queryClient.invalidateQueries({ queryKey: ["inventory-checks"] });
         router.push("/manager/inventory/check");
       }
@@ -100,7 +101,7 @@ export function useInventoryCheckForm(id?: string) {
     mutationFn: (id: string) => inventoryService.processInventoryCheck(id),
     onSuccess: (res) => {
       if (res.isSuccess) {
-        toast.success("Đã hoàn tất cân bằng kho");
+        toast.success(UI_TEXT.INVENTORY.CHECK.CREATE.SUCCESS_PROCESS);
         queryClient.invalidateQueries({ queryKey: ["inventory-checks"] });
         queryClient.invalidateQueries({ queryKey: ["ingredients"] });
         router.push("/manager/inventory/check");
