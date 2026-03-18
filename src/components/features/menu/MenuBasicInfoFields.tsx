@@ -58,6 +58,15 @@ export const MenuBasicInfoFields: React.FC<MenuBasicInfoFieldsProps> = ({
         />
       </Field>
 
+      <Input
+        type="hidden"
+        id="imageUrl"
+        name="imageUrl"
+        defaultValue={editingItem?.imageUrl || ""}
+        placeholder={UI_TEXT.MENU.PLACEHOLDER_IMAGE_URL}
+        className="h-11"
+      />
+
       <Field className="space-y-2">
         <Label htmlFor="price" className="text-right">
           {UI_TEXT.MENU.LABEL_PRICE}{" "}

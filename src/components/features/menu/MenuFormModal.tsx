@@ -1,6 +1,5 @@
 import { ClipboardList, Image as ImageIcon, Utensils } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
+import React from "react";
 
 import {
   Dialog,
@@ -10,288 +9,26 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMenuForm } from "@/hooks/useMenuForm";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { uploadImage } from "@/services/imageService";
-import { menuService } from "@/services/menuService";
-import { optionService } from "@/services/optionService";
-import { useMenuStore } from "@/store/useMenuStore";
-import { MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
 
 import { RecipeSetupForm } from "../recipe/RecipeSetupForm";
 import { MenuDetailsTab } from "./MenuDetailsTab";
 import { MenuMediaTab } from "./MenuMediaTab";
-
-type SetMenuApiRes = SetMenu & {
-  items?: { menuItemId: string; quantity: number }[];
-};
 
 interface MenuFormModalProps {
   categories: { id: string; name: string; type: number }[];
 }
 
 export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
-  const {
-    isModalOpen,
-    setModalOpen,
-    editingItem,
-    setEditingItem,
-    addMenuItem,
-    updateMenuItem,
-    addSetMenu,
-    updateSetMenu,
-    menuItems,
-    fetchMenuItems,
-  } = useMenuStore();
-
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [activeTab, setActiveTab] = useState("details");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
-  const [comboItems, setComboItems] = useState<{ menuItemId: string; quantity: number }[]>([]);
-  const [isFetchingCombo, setIsFetchingCombo] = useState(false);
-  const [optionGroups, setOptionGroups] = useState<Partial<OptionGroup>[]>([]);
-  const [isFetchingOptions, setIsFetchingOptions] = useState(false);
-  const [deletedGroupIds, setDeletedGroupIds] = useState<string[]>([]);
-  const [deletedItemIds, setDeletedItemIds] = useState<string[]>([]);
-
-  const isEditing = !!editingItem;
-  const isSetMenu = isEditing && editingItem && "setMenuId" in editingItem;
-  const itemId = editingItem
-    ? isSetMenu
-      ? (editingItem as SetMenu).setMenuId
-      : (editingItem as MenuItem).menuItemId
-    : null;
-  const isSetMenuCategory = categories.find((c) => c.id === selectedCategoryId)?.type === 2;
-
-  useEffect(() => {
-    if (isModalOpen) {
-      if (editingItem) {
-        if ("categoryId" in editingItem && editingItem.categoryId) {
-          setSelectedCategoryId(editingItem.categoryId);
-        } else {
-          const defaultCatId =
-            categories.find((c) => c.type === (isSetMenu ? 2 : 1))?.id || categories[0]?.id || "";
-          setSelectedCategoryId(defaultCatId);
-        }
-
-        if (isSetMenu && itemId) {
-          setIsFetchingCombo(true);
-          menuService
-            .getSetMenuById(itemId)
-            .then((res) => {
-              if (res.isSuccess && res.data) {
-                const setMenuData = res.data as SetMenuApiRes;
-                if ("categoryId" in setMenuData && setMenuData.categoryId !== undefined) {
-                  setSelectedCategoryId(setMenuData.categoryId as string);
-                }
-
-                if (setMenuData.items) {
-                  setComboItems(
-                    setMenuData.items.map((i) => ({
-                      menuItemId: i.menuItemId,
-                      quantity: i.quantity,
-                    }))
-                  );
-                }
-              }
-            })
-            .finally(() => setIsFetchingCombo(false));
-        } else {
-          setComboItems([]);
-        }
-
-        if (!isSetMenu && itemId) {
-          setIsFetchingOptions(true);
-          optionService
-            .getOptionGroupsByMenuItem(itemId)
-            .then((res) => {
-              if (res.isSuccess && res.data) {
-                setOptionGroups(res.data);
-              }
-            })
-            .finally(() => setIsFetchingOptions(false));
-        } else {
-          setOptionGroups([]);
-        }
-      } else {
-        setSelectedCategoryId(categories[0]?.id || "");
-        setComboItems([]);
-        setOptionGroups([]);
-        setDeletedGroupIds([]);
-        setDeletedItemIds([]);
-      }
-    }
-  }, [editingItem, categories, isModalOpen, isSetMenu, itemId]);
-
-  const addComboItem = () => setComboItems([...comboItems, { menuItemId: "", quantity: 1 }]);
-  const updateComboItem = (
-    index: number,
-    field: "menuItemId" | "quantity",
-    value: string | number
-  ) => {
-    const newItems = [...comboItems];
-    newItems[index] = { ...newItems[index], [field]: value };
-    setComboItems(newItems);
-  };
-  const removeComboItem = (index: number) =>
-    setComboItems(comboItems.filter((_, i) => i !== index));
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const price = Number(formData.get("price"));
-    const costPrice = Number(formData.get("cost"));
-    const categoryId = selectedCategoryId;
-
-    let imageUrl = formData.get("imageUrl") as string;
-    if (selectedImage) {
-      setIsUploading(true);
-      try {
-        const uploadRes = await uploadImage(selectedImage);
-        if (
-          uploadRes.isSuccess &&
-          uploadRes.data &&
-          typeof uploadRes.data === "object" &&
-          "imageUrl" in uploadRes.data
-        ) {
-          imageUrl = (uploadRes.data as { imageUrl: string }).imageUrl;
-        }
-      } catch (error) {
-        console.error("Image upload failed", error);
-        toast.error(error instanceof Error ? error.message : "Image upload failed");
-      } finally {
-        setIsUploading(false);
-      }
-    }
-
-    if (isEditing && !itemId) {
-      toast.error("Không tìm thấy ID món cần cập nhật");
-      return;
-    }
-
-    try {
-      if (isSetMenuCategory) {
-        const setMenuData: Partial<SetMenu> & {
-          categoryId: string;
-          items: typeof comboItems;
-        } = {
-          name,
-          description,
-          price,
-          costPrice,
-          imageUrl,
-          categoryId,
-          items: comboItems.filter((i) => i.menuItemId && i.quantity > 0),
-        };
-        if (isEditing && isSetMenu) {
-          await updateSetMenu(itemId!, setMenuData);
-        } else {
-          await addSetMenu(setMenuData);
-        }
-      } else {
-        const station = Number(formData.get("station"));
-        const expectedTime = Number(formData.get("expectedTime"));
-        const menuItemData: Partial<MenuItem> = {
-          name,
-          description,
-          price,
-          costPrice,
-          imageUrl,
-          categoryId,
-          expectedTime,
-          station,
-        };
-
-        let savedMenuItemId = itemId;
-
-        if (isEditing && !isSetMenu) {
-          await updateMenuItem(itemId!, menuItemData);
-        } else {
-          const newItem = await addMenuItem(menuItemData);
-          if (newItem) {
-            savedMenuItemId = newItem.menuItemId;
-          }
-        }
-
-        if (savedMenuItemId) {
-          for (const gId of deletedGroupIds) {
-            await optionService.deleteOptionGroup(gId);
-          }
-          for (const iId of deletedItemIds) {
-            await optionService.deleteOptionItem(iId);
-          }
-
-          for (const group of optionGroups) {
-            let currentGroupId = group.optionGroupId;
-            const isNewGroup = !currentGroupId || currentGroupId.startsWith("temp-");
-
-            if (isNewGroup) {
-              const groupRes = await optionService.createOptionGroup({
-                menuItemId: savedMenuItemId,
-                name: group.name,
-                optionType: group.optionType,
-                isRequired: group.isRequired,
-              });
-              if (groupRes.isSuccess && groupRes.data) {
-                currentGroupId = groupRes.data;
-              }
-            } else if (currentGroupId) {
-              await optionService.updateOptionGroup(currentGroupId, {
-                name: group.name,
-                optionType: group.optionType,
-                isRequired: group.isRequired,
-              });
-            }
-
-            if (currentGroupId && group.optionItems) {
-              for (const item of group.optionItems) {
-                const currentItemId = item.optionItemId;
-                const isNewItem = !currentItemId || currentItemId.startsWith("temp-");
-
-                if (isNewItem) {
-                  await optionService.createOptionItem({
-                    optionGroupId: currentGroupId,
-                    label: item.label,
-                    extraPrice: item.extraPrice,
-                  });
-                } else {
-                  await optionService.updateOptionItem(currentItemId, {
-                    label: item.label,
-                    extraPrice: item.extraPrice,
-                  });
-                }
-              }
-            }
-          }
-        }
-      }
-      toast.success(UI_TEXT.MENU.SAVE_SUCCESS);
-      handleClose();
-    } catch (error) {
-      console.error("Failed to save menu item", error);
-      toast.error(error instanceof Error ? error.message : "Failed to save menu item");
-    }
-  };
-
-  const handleClose = () => {
-    setModalOpen(false);
-    setEditingItem(null);
-    setSelectedImage(null);
-    setActiveTab("details");
-    setComboItems([]);
-    setOptionGroups([]);
-    setDeletedGroupIds([]);
-    setDeletedItemIds([]);
-  };
+  const form = useMenuForm(categories);
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleClose}>
+    <Dialog open={form.isModalOpen} onOpenChange={form.handleClose}>
       <DialogContent
-        className={`flex flex-col p-0 border-none overflow-hidden rounded-xl bg-neutral-50 shadow-2xl transition-all duration-300 ${activeTab === "recipe" ? "sm:max-w-7xl h-[90vh]" : "sm:max-w-2xl max-h-[90vh]"}`}
+        className={`flex flex-col gap-0 p-0 border-none overflow-hidden rounded-xl bg-background shadow-2xl transition-all duration-300 ${form.activeTab === "recipe" ? "sm:max-w-7xl h-[90vh]" : "sm:max-w-2xl max-h-[90vh]"}`}
       >
-        <div className="bg-white p-6 border-b shrink-0 z-30">
+        <div className="bg-card p-6 border-b shrink-0 z-30">
           <DialogHeader className="mb-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -299,18 +36,18 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
               </div>
               <div>
                 <DialogTitle className="text-2xl font-bold tracking-tight">
-                  {isEditing
-                    ? editingItem?.name || UI_TEXT.MENU.MODAL_EDIT_TITLE
+                  {form.isEditing
+                    ? form.editingItem?.name || UI_TEXT.MENU.MODAL_EDIT_TITLE
                     : UI_TEXT.MENU.MODAL_ADD_TITLE}
                 </DialogTitle>
-                <DialogDescription className="text-neutral-500 font-medium">
-                  {isEditing ? UI_TEXT.MENU.MODAL_EDIT_DESC : UI_TEXT.MENU.MODAL_ADD_DESC}
+                <DialogDescription className="text-foreground font-medium">
+                  {form.isEditing ? UI_TEXT.MENU.MODAL_EDIT_DESC : UI_TEXT.MENU.MODAL_ADD_DESC}
                 </DialogDescription>
               </div>
-              {isEditing && (
+              {form.isEditing && (
                 <div className="ml-auto">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800 border">
-                    {UI_TEXT.MENU.MODAL_ID_PREFIX} {itemId?.substring(0, 8)}
+                    {UI_TEXT.MENU.MODAL_ID_PREFIX} {form.itemId?.substring(0, 8)}
                     {UI_TEXT.COMMON.ELLIPSIS}
                   </span>
                 </div>
@@ -318,19 +55,19 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
             </div>
           </DialogHeader>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-neutral-100/50 p-1 rounded-lg border border-neutral-200">
+          <Tabs value={form.activeTab} onValueChange={form.setActiveTab} className="w-full">
+            <TabsList className="bg-background p-1 rounded-lg border border-border">
               <TabsTrigger
                 value="details"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                className="data-[state=active]:bg-card-foreground/10 data-[state=active]:shadow-sm px-6 py-2 gap-2"
               >
                 <ClipboardList className="w-4 h-4" />
                 {UI_TEXT.MENU.TAB_DETAILS}
               </TabsTrigger>
-              {isEditing && !isSetMenuCategory && (
+              {form.isEditing && !form.isSetMenuCategory && (
                 <TabsTrigger
                   value="recipe"
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                  className="data-[state=active]:bg-card-foreground/10 data-[state=active]:shadow-sm px-6 py-2 gap-2"
                 >
                   <Utensils className="w-4 h-4" />
                   {UI_TEXT.MENU.TAB_RECIPE}
@@ -338,7 +75,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
               )}
               <TabsTrigger
                 value="media"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                className="data-[state=active]:bg-card-foreground/10 data-[state=active]:shadow-sm px-6 py-2 gap-2"
               >
                 <ImageIcon className="w-4 h-4" />
                 {UI_TEXT.MENU.TAB_MEDIA}
@@ -348,52 +85,32 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs value={form.activeTab} onValueChange={form.setActiveTab} className="w-full">
             <TabsContent value="details" className="mt-0">
-              <MenuDetailsTab
-                editingItem={editingItem}
-                categories={categories}
-                isUploading={isUploading}
-                onSubmit={handleSubmit}
-                onCancel={handleClose}
-                selectedCategoryId={selectedCategoryId}
-                setSelectedCategoryId={setSelectedCategoryId}
-                isSetMenuCategory={isSetMenuCategory}
-                comboItems={comboItems}
-                menuItems={menuItems}
-                isFetchingCombo={isFetchingCombo}
-                addComboItem={addComboItem}
-                updateComboItem={updateComboItem}
-                removeComboItem={removeComboItem}
-                optionGroups={optionGroups}
-                setOptionGroups={setOptionGroups}
-                isFetchingOptions={isFetchingOptions}
-                setDeletedGroupIds={setDeletedGroupIds}
-                setDeletedItemIds={setDeletedItemIds}
-              />
+              <MenuDetailsTab form={form} categories={categories} />
             </TabsContent>
 
-            {isEditing && !isSetMenuCategory && (
+            {form.isEditing && !form.isSetMenuCategory && (
               <TabsContent value="recipe" className="mt-0">
                 <RecipeSetupForm
-                  menuItemId={itemId as string}
+                  menuItemId={form.itemId as string}
                   onSuccess={() => {
-                    fetchMenuItems();
-                    setActiveTab("details");
+                    form.fetchMenuItems();
+                    form.setActiveTab("details");
                   }}
-                  onCancel={handleClose}
+                  onCancel={form.handleClose}
                 />
               </TabsContent>
             )}
 
             <TabsContent value="media" className="mt-0">
               <MenuMediaTab
-                editingItem={editingItem}
+                editingItem={form.editingItem}
                 onFileChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
-                    setSelectedImage(e.target.files[0]);
+                    form.setSelectedImage(e.target.files[0]);
                   } else {
-                    setSelectedImage(null);
+                    form.setSelectedImage(null);
                   }
                 }}
               />

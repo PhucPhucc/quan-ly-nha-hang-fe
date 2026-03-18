@@ -2,8 +2,8 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useMenuForm } from "@/hooks/useMenuForm";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
 
 import { MenuBasicInfoFields } from "./MenuBasicInfoFields";
 import { MenuComboItems } from "./MenuComboItems";
@@ -11,86 +11,43 @@ import { MenuOptionGroups } from "./MenuOptionGroups";
 import { MenuStationTimeFields } from "./MenuStationTimeFields";
 
 interface MenuDetailsTabProps {
-  editingItem: MenuItem | SetMenu | null;
+  form: ReturnType<typeof useMenuForm>;
   categories: { id: string; name: string; type: number }[];
-  isUploading: boolean;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  onCancel: () => void;
-  selectedCategoryId: string;
-  setSelectedCategoryId: (id: string) => void;
-  isSetMenuCategory: boolean;
-  comboItems: { menuItemId: string; quantity: number }[];
-  menuItems: MenuItem[];
-  isFetchingCombo: boolean;
-  addComboItem: () => void;
-  updateComboItem: (
-    index: number,
-    field: "menuItemId" | "quantity",
-    value: string | number
-  ) => void;
-  removeComboItem: (index: number) => void;
-  optionGroups: Partial<OptionGroup>[];
-  setOptionGroups: React.Dispatch<React.SetStateAction<Partial<OptionGroup>[]>>;
-  isFetchingOptions: boolean;
-  setDeletedGroupIds: React.Dispatch<React.SetStateAction<string[]>>;
-  setDeletedItemIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({
-  editingItem,
-  categories,
-  isUploading,
-  onSubmit,
-  onCancel,
-  selectedCategoryId,
-  setSelectedCategoryId,
-  isSetMenuCategory,
-  comboItems,
-  menuItems,
-  isFetchingCombo,
-  addComboItem,
-  updateComboItem,
-  removeComboItem,
-  optionGroups,
-  setOptionGroups,
-  isFetchingOptions,
-  setDeletedGroupIds,
-  setDeletedItemIds,
-}) => {
-  const isEditing = !!editingItem;
-
+export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({ form, categories }) => {
   return (
-    <form onSubmit={onSubmit} className="flex flex-col h-full bg-neutral-50/50">
-      <div className="flex-1 p-6 space-y-6">
-        <Card className="border-none shadow-sm bg-white overflow-hidden">
+    <form onSubmit={form.handleSubmit} className="flex flex-col h-full ">
+      <div className="flex-1 px-2 space-y-6">
+        <Card className="border-none overflow-hidden bg-background shadow-none">
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-2 gap-6">
               <MenuBasicInfoFields
-                editingItem={editingItem}
+                editingItem={form.editingItem}
                 categories={categories}
-                selectedCategoryId={selectedCategoryId}
-                setSelectedCategoryId={setSelectedCategoryId}
+                selectedCategoryId={form.selectedCategoryId}
+                setSelectedCategoryId={form.setSelectedCategoryId}
               />
 
-              {!isSetMenuCategory ? (
+              {!form.isSetMenuCategory ? (
                 <>
-                  <MenuStationTimeFields editingItem={editingItem} />
+                  <MenuStationTimeFields editingItem={form.editingItem} />
                   <MenuOptionGroups
-                    optionGroups={optionGroups}
-                    setOptionGroups={setOptionGroups}
-                    isFetchingOptions={isFetchingOptions}
-                    onDeleteGroup={(id) => setDeletedGroupIds((prev) => [...prev, id])}
-                    onDeleteItem={(id) => setDeletedItemIds((prev) => [...prev, id])}
+                    optionGroups={form.optionGroups}
+                    setOptionGroups={form.setOptionGroups}
+                    isFetchingOptions={form.isFetchingOptions}
+                    onDeleteGroup={(id) => form.setDeletedGroupIds((prev) => [...prev, id])}
+                    onDeleteItem={(id) => form.setDeletedItemIds((prev) => [...prev, id])}
                   />
                 </>
               ) : (
                 <MenuComboItems
-                  comboItems={comboItems}
-                  menuItems={menuItems}
-                  isFetchingCombo={isFetchingCombo}
-                  addComboItem={addComboItem}
-                  updateComboItem={updateComboItem}
-                  removeComboItem={removeComboItem}
+                  comboItems={form.comboItems}
+                  menuItems={form.menuItems}
+                  isFetchingCombo={form.isFetchingCombo}
+                  addComboItem={form.addComboItem}
+                  updateComboItem={form.updateComboItem}
+                  removeComboItem={form.removeComboItem}
                 />
               )}
             </div>
@@ -102,20 +59,20 @@ export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({
         <Button
           type="button"
           variant="ghost"
-          onClick={onCancel}
-          disabled={isUploading}
+          onClick={form.handleClose}
+          disabled={form.isUploading}
           className="h-11 px-8"
         >
           {UI_TEXT.MENU.BUTTON_CANCEL}
         </Button>
         <Button
           type="submit"
-          disabled={isUploading}
+          disabled={form.isUploading}
           className="h-11 px-10 shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white transition-all active:scale-95"
         >
-          {isUploading
+          {form.isUploading
             ? UI_TEXT.MENU.UPLOADING_IMAGE
-            : isEditing
+            : form.isEditing
               ? UI_TEXT.MENU.BUTTON_UPDATE
               : UI_TEXT.MENU.BUTTON_CREATE}
         </Button>

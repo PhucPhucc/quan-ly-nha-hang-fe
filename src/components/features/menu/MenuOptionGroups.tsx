@@ -125,7 +125,7 @@ export const MenuOptionGroups: React.FC<MenuOptionGroupsProps> = ({
         {optionGroups.map((group, groupIdx) => (
           <div
             key={group.optionGroupId}
-            className="p-4 border border-border rounded-xl space-y-4 bg-slate-50/50 dark:bg-slate-900/50"
+            className="p-4 border border-border rounded-xl space-y-4 bg-card"
           >
             <div className="flex gap-4 items-end">
               <div className="space-y-2 flex-1">
@@ -140,10 +140,10 @@ export const MenuOptionGroups: React.FC<MenuOptionGroupsProps> = ({
               <div className="space-y-2 w-1/4">
                 <Label>{UI_TEXT.MENU.OPTIONS.TYPE}</Label>
                 <Select
-                  value={String(group.optionType)}
+                  value={String(group.optionType) || String(OptionType.SINGLE_SELECT)}
                   onValueChange={(val) => handleUpdateGroup(groupIdx, "optionType", Number(val))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="m-0">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -156,9 +156,10 @@ export const MenuOptionGroups: React.FC<MenuOptionGroupsProps> = ({
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2 flex flex-col items-center">
-                <Label className="mb-2">{UI_TEXT.MENU.OPTIONS.REQUIRED_LABEL}</Label>
+              <div className="space-y-2 flex items-center gap-2">
+                <Label className="m-0">{UI_TEXT.MENU.OPTIONS.REQUIRED_LABEL}</Label>
                 <Switch
+                  className="m-0"
                   checked={group.isRequired}
                   onCheckedChange={(checked) => handleUpdateGroup(groupIdx, "isRequired", checked)}
                 />

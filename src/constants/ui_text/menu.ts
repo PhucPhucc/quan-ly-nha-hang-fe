@@ -63,7 +63,7 @@ export const MENU = {
   LABEL_PRICE: "Giá bán (VNĐ)",
   LABEL_COST: "Giá vốn (VNĐ)",
   LABEL_CATEGORY: "Danh mục",
-  LABEL_IMAGE_URL: "Hoặc nhập URL hình ảnh trực tiếp ở dưới (nếu không tải file):",
+  LABEL_IMAGE_URL: "Hình ảnh (URL)",
   LABEL_MARK_OUT_OF_STOCK: "Đánh dấu là Hết Hàng (Không bán)",
   LABEL_EXPECTED_TIME: "Thời gian chuẩn bị (phút)",
   LABEL_IMAGE_VIEW: "Xem hình ảnh",
