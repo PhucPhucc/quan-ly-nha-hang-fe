@@ -23,9 +23,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
+import { ReservationDto } from "@/services/reservationService";
 
 import { CancelBookingDialog } from "./dialogs/CancelBookingDialog";
 import { EditBookingDialog } from "./dialogs/EditBookingDialog";
@@ -66,8 +68,6 @@ const StatusBadge = ({ status }: { status: string }) => {
   }
 };
 
-import { ReservationDto } from "@/services/reservationService";
-
 interface ReservationTableProps {
   data: ReservationDto[];
   totalItems: number;
@@ -91,15 +91,15 @@ export const ReservationTable = ({
   const [isCancelOpen, setIsCancelOpen] = useState(false);
 
   const handleStartServing = (row: ReservationDto) => {
-    setActionRow(row as ReservationDto);
+    setActionRow(row);
     setIsStartOpen(true);
   };
   const handleEdit = (row: ReservationDto) => {
-    setActionRow(row as ReservationDto);
+    setActionRow(row);
     setIsEditOpen(true);
   };
   const handleCancel = (row: ReservationDto) => {
-    setActionRow(row as ReservationDto);
+    setActionRow(row);
     setIsCancelOpen(true);
   };
 
@@ -107,33 +107,21 @@ export const ReservationTable = ({
   const endOffset = Math.min(currentPage * 8, totalItems);
 
   return (
-    <div className="relative w-full overflow-hidden bg-white rounded-2xl border-2 border-orange-50 shadow-sm flex-1 flex flex-col">
+    // Thay thẻ div bên ngoài bằng TableShell giống MenuList
+    <TableShell className="mt-0 flex-1 flex flex-col overflow-hidden">
       <div className="flex-1 overflow-auto">
         <Table>
-          <TableHeader className="bg-[#fcf9f2] sticky top-0 z-10 border-b border-orange-100">
-            <TableRow className="hover:bg-[#fcf9f2] border-none">
-              <TableHead className="pl-6 w-30 font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
-                {UI_TEXT.RESERVATION.COL_CODE}
-              </TableHead>
-              <TableHead className="font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
-                {UI_TEXT.RESERVATION.COL_CUSTOMER}
-              </TableHead>
-              <TableHead className="font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
-                {UI_TEXT.RESERVATION.COL_DATETIME}
-              </TableHead>
-              <TableHead className="font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
-                {UI_TEXT.RESERVATION.COL_AREA}
-              </TableHead>
-              <TableHead className="font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
-                {UI_TEXT.RESERVATION.COL_PEOPLE}
-              </TableHead>
-              <TableHead className="font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
-                {UI_TEXT.RESERVATION.COL_PARTY_TYPE}
-              </TableHead>
-              <TableHead className="w-35 font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
-                {UI_TEXT.RESERVATION.COL_STATUS}
-              </TableHead>
-              <TableHead className="pr-6 text-right w-25 font-bold text-slate-700 h-12 uppercase text-[11px] tracking-wider">
+          <TableHeader>
+            {/* Sử dụng variant="header" giống MenuList */}
+            <TableRow variant="header">
+              <TableHead className="pl-6 w-30">{UI_TEXT.RESERVATION.COL_CODE}</TableHead>
+              <TableHead>{UI_TEXT.RESERVATION.COL_CUSTOMER}</TableHead>
+              <TableHead>{UI_TEXT.RESERVATION.COL_DATETIME}</TableHead>
+              <TableHead>{UI_TEXT.RESERVATION.COL_AREA}</TableHead>
+              <TableHead>{UI_TEXT.RESERVATION.COL_PEOPLE}</TableHead>
+              <TableHead>{UI_TEXT.RESERVATION.COL_PARTY_TYPE}</TableHead>
+              <TableHead className="w-35">{UI_TEXT.RESERVATION.COL_STATUS}</TableHead>
+              <TableHead className="pr-6 text-right w-25">
                 {UI_TEXT.RESERVATION.COL_ACTIONS}
               </TableHead>
             </TableRow>
@@ -233,6 +221,7 @@ export const ReservationTable = ({
         </Table>
       </div>
 
+      {/* Phần Pagination giữ nguyên style cũ nhưng nằm trong TableShell */}
       <div className="flex items-center justify-between px-6 py-4 border-t border-orange-50 bg-white">
         <div className="text-sm font-medium text-slate-500">
           {UI_TEXT.RESERVATION.PAGINATION_SHOWING}{" "}
@@ -253,7 +242,6 @@ export const ReservationTable = ({
             disabled={currentPage <= 1}
             onClick={() => onPageChange(currentPage - 1)}
           >
-            {/* <span className="sr-only">{"Previous page"}</span> */}
             <ChevronLeft className="h-4 w-4" />
           </Button>
 
@@ -280,32 +268,30 @@ export const ReservationTable = ({
             disabled={currentPage >= totalPages}
             onClick={() => onPageChange(currentPage + 1)}
           >
-            {/* <span className="sr-only">{"Next page"}</span> */}
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
+      {/* Dialogs giữ nguyên */}
       <StartServingDialog
         open={isStartOpen}
         onOpenChange={setIsStartOpen}
         onSuccess={onRefresh}
         bookingData={actionRow}
       />
-
       <EditBookingDialog
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
         bookingData={actionRow}
         onSuccess={onRefresh}
       />
-
       <CancelBookingDialog
         open={isCancelOpen}
         onOpenChange={setIsCancelOpen}
         onSuccess={onRefresh}
         bookingData={actionRow}
       />
-    </div>
+    </TableShell>
   );
 };

@@ -49,14 +49,17 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
   const handleToggleStock = (checked: boolean) => {
     toggleMenuItemStock(item.menuItemId, !checked);
   };
+  let imageSrc = "/placeholderMenu.webp";
 
-  const imageSrc = !item.imageUrl ? "/placeholderMenu.webp" : item.imageUrl;
-
+  if (item.imageUrl.startsWith("http://res.cloudinary.com/")) {
+    imageSrc = item.imageUrl;
+  }
+  console.log("MenuItemCard render", { imageSrc });
   return (
     <TableRow className={item.isOutOfStock ? "table-row-muted opacity-75" : ""}>
-      <TableCell className="max-w-120">
+      <TableCell className="max-w-120 py-1">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 overflow-hidden rounded-full border border-table-border-soft bg-table-row-muted shrink-0">
+          <div className="h-9 w-9 overflow-hidden rounded-full border border-table-border-soft bg-table-row-muted shrink-0">
             <Image
               src={imageSrc}
               alt={item.name}

@@ -14,9 +14,16 @@ import { useMenuStore } from "@/store/useMenuStore";
 
 import { MenuItemCard } from "./MenuItemCard";
 
-export const MenuList: React.FC = () => {
+// Định nghĩa interface để nhận props từ MenuManagement
+interface MenuListProps {
+  currentPage: number;
+  itemsPerPage: number;
+}
+
+export const MenuList: React.FC<MenuListProps> = ({ currentPage, itemsPerPage }) => {
   const { menuItems, isLoading, searchQuery, categoryId } = useMenuStore();
 
+  // 1. Lọc dữ liệu theo search và category (Giữ nguyên logic của bạn)
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
       const matchSearch =
@@ -28,8 +35,14 @@ export const MenuList: React.FC = () => {
     });
   }, [menuItems, searchQuery, categoryId]);
 
+  // 2. CHÍNH LÀ ĐÂY: Cắt mảng để chỉ lấy 8 món của trang hiện tại
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredItems, currentPage, itemsPerPage]);
+
   if (isLoading) {
-    return <TableSkeleton columns={5} rows={6} showMediaInFirstColumn />;
+    return <TableSkeleton columns={5} rows={6} />;
   }
 
   if (filteredItems.length === 0) {
@@ -59,7 +72,7 @@ export const MenuList: React.FC = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredItems.map((item) => (
+          {paginatedItems.map((item) => (
             <MenuItemCard key={item.menuItemId} item={item} />
           ))}
         </TableBody>
