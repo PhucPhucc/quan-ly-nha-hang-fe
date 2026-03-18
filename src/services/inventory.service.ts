@@ -1,9 +1,14 @@
 import { apiFetch } from "@/services/api";
 import { ApiResponse, PaginationResult, QueryParams } from "@/types/Api";
 import {
+  CreateInventoryCheckRequest,
   ImportOpeningStockRequest,
   ImportOpeningStockResponse,
   Ingredient,
+  InventoryCheck,
+  InventoryCheckDetail,
+  InventoryLedgerItem,
+  InventoryReportItem,
   InventorySettings,
   InventoryStats,
   InventoryTransaction,
@@ -195,6 +200,71 @@ export const inventoryService = {
 
     return apiFetch<PaginationResult<InventoryTransaction>>(
       `/inventory/transactions?${params.toString()}`
+    );
+  },
+
+  // Inventory Check
+  getInventoryChecks: async (
+    page: number = 1,
+    pageSize: number = 10,
+    filters?: QueryParams
+  ): Promise<ApiResponse<PaginationResult<InventoryCheck>>> => {
+    const params = new URLSearchParams();
+    params.set("pageNumber", page.toString());
+    params.set("pageSize", pageSize.toString());
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          params.append(key, value.toString());
+        }
+      });
+    }
+
+    return apiFetch<PaginationResult<InventoryCheck>>(`/inventory/checks?${params.toString()}`);
+  },
+
+  getInventoryCheckDetail: async (id: string): Promise<ApiResponse<InventoryCheckDetail>> => {
+    return apiFetch<InventoryCheckDetail>(`/inventory/checks/${id}`);
+  },
+
+  createInventoryCheck: async (
+    data: CreateInventoryCheckRequest
+  ): Promise<ApiResponse<InventoryCheck>> => {
+    return apiFetch<InventoryCheck>("/inventory/checks", {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  processInventoryCheck: async (id: string): Promise<ApiResponse<boolean>> => {
+    return apiFetch<boolean>(`/inventory/checks/${id}/process`, {
+      method: "POST",
+    });
+  },
+
+  // Inventory Report
+  getInventoryReport: async (
+    fromDate: string,
+    toDate: string,
+    ingredientId?: string
+  ): Promise<ApiResponse<InventoryReportItem[]>> => {
+    const params = new URLSearchParams({ fromDate, toDate });
+    if (ingredientId) params.set("ingredientId", ingredientId);
+
+    return apiFetch<InventoryReportItem[]>(`/inventory/reports?${params.toString()}`);
+  },
+
+  getInventoryLedger: async (
+    ingredientId: string,
+    fromDate: string,
+    toDate: string,
+    transactionType?: number
+  ): Promise<ApiResponse<InventoryLedgerItem[]>> => {
+    const params = new URLSearchParams({ fromDate, toDate });
+    if (transactionType) params.set("transactionType", transactionType.toString());
+
+    return apiFetch<InventoryLedgerItem[]>(
+      `/ingredients/${ingredientId}/ledger?${params.toString()}`
     );
   },
 };
