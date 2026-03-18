@@ -138,23 +138,25 @@ export function IngredientTable() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex min-h-0 flex-1 flex-col space-y-6 pt-2">
       {shouldShowOpeningStockReminder(settings) ? (
-        <div className="flex items-start justify-between gap-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-950">
-          <div className="flex items-start gap-3">
-            <CircleAlert className="mt-0.5 h-5 w-5 shrink-0" />
-            <div className="space-y-1">
-              <p className="font-semibold">{OPENING_STOCK_REMINDER.title}</p>
-              <p className="text-sm text-amber-900/90">{OPENING_STOCK_REMINDER.description}</p>
+        <div className="flex items-start justify-between gap-2 rounded-xl border border-amber-300 bg-amber-50 p-2 text-amber-950">
+          <div className="flex items-start gap-2">
+            <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+            <div className="space-y-0.5">
+              <p className="text-[13px] font-semibold">{OPENING_STOCK_REMINDER.title}</p>
+              <p className="text-[11px] text-amber-900/90 leading-tight">
+                {OPENING_STOCK_REMINDER.description}
+              </p>
             </div>
           </div>
-          <Button asChild className="shrink-0">
+          <Button asChild size="sm" className="h-8 px-3 shrink-0 text-xs">
             <Link href="/manager/inventory/opening-stock">{OPENING_STOCK_REMINDER.action}</Link>
           </Button>
         </div>
       ) : null}
 
-      <div className="grid gap-3">
+      <div className="shrink-0">
         <InventoryTableHeader
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -167,29 +169,29 @@ export function IngredientTable() {
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <Table>
-          <TableHeader>
-            <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
-              <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider text-center">
+      <div className="flex min-h-0 h-fit flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft mt-2">
+        <Table containerClassName="max-h-[460px] overflow-auto">
+          <TableHeader className="sticky top-0 z-20 bg-slate-50 shadow-sm border-b">
+            <TableRow className="border-slate-200 hover:bg-slate-50 bg-slate-50">
+              <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider text-center bg-slate-50">
                 {UI_TEXT.INVENTORY.TABLE.COL_SKU}
               </TableHead>
-              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
                 {UI_TEXT.INVENTORY.TABLE.COL_NAME}
               </TableHead>
-              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
                 {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
               </TableHead>
-              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
                 {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
               </TableHead>
-              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
                 {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
               </TableHead>
-              <TableHead className="w-[120px] py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className="w-[120px] py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800 bg-slate-50">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
               </TableHead>
-              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider">
+              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
               </TableHead>
             </TableRow>
@@ -202,24 +204,34 @@ export function IngredientTable() {
                 </TableCell>
               </TableRow>
             ) : (
-              ingredients.map((item) => (
-                <InventoryRow
-                  key={item.ingredientId}
-                  item={item}
-                  onEdit={handleEdit}
-                  onDelete={handleDeleteClick}
-                />
-              ))
+              <>
+                {ingredients.map((item) => (
+                  <InventoryRow
+                    key={item.ingredientId}
+                    item={item}
+                    onEdit={handleEdit}
+                    onDelete={handleDeleteClick}
+                  />
+                ))}
+                {pageSize > ingredients.length &&
+                  Array.from({ length: pageSize - ingredients.length }).map((_, i) => (
+                    <TableRow key={`empty-${i}`} className="h-[52px]">
+                      <TableCell colSpan={8} />
+                    </TableRow>
+                  ))}
+              </>
             )}
           </TableBody>
         </Table>
 
-        <InventoryPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPrev={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-          onNext={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-        />
+        <div className="shrink-0 border-t border-slate-200 bg-white">
+          <InventoryPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPrev={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            onNext={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+          />
+        </div>
       </div>
 
       <AddIngredientPanel

@@ -128,8 +128,8 @@ export default function StockInPage() {
         title="Xác nhận hủy phiếu"
         description="Bạn có chắc chắn muốn hủy phiếu này không? Hành động này sẽ hoàn tác các thay đổi tồn kho liên quan."
       />
-      <div className="space-y-4 p-6 pb-0">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="space-y-4 p-4 pb-0 pt-6">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <Tabs
             value={receiptType}
             onValueChange={(v) => {
@@ -138,16 +138,16 @@ export default function StockInPage() {
             }}
             className="w-full lg:w-auto"
           >
-            <TabsList className="grid w-full max-w-[320px] grid-cols-2 rounded-2xl bg-slate-100">
+            <TabsList className="grid h-9 w-full max-w-[280px] grid-cols-2 rounded-xl bg-slate-100/80 p-0.5">
               <TabsTrigger
                 value="in"
-                className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow"
+                className="h-8 rounded-lg text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 {UI_TEXT.INVENTORY.VOUCHER.TYPE_IN}
               </TabsTrigger>
               <TabsTrigger
                 value="out"
-                className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow"
+                className="h-8 rounded-lg text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 {UI_TEXT.INVENTORY.VOUCHER.TYPE_OUT}
               </TabsTrigger>
@@ -156,13 +156,13 @@ export default function StockInPage() {
           <CreateStockInTrigger onSuccess={fetchData} />
         </div>
 
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-          <div className="relative flex-1 min-w-[240px]">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <div className="flex flex-col gap-2 xl:flex-row xl:items-center">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
             <Input
               id="receipt-search"
               placeholder={SEARCH_RECEIPT_PLACEHOLDER}
-              className="h-11 rounded-2xl border-slate-100 bg-white pl-10 focus-visible:ring-primary/20"
+              className="h-9 rounded-xl border-slate-100 bg-white pl-9 text-sm focus-visible:ring-primary/20"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -170,10 +170,10 @@ export default function StockInPage() {
               }}
             />
           </div>
-          <div className="flex items-center gap-2 lg:w-[250px]">
+          <div className="flex items-center gap-2 lg:w-[220px]">
             <Label
               htmlFor="receipt-start-date"
-              className="shrink-0 text-sm font-medium text-slate-600"
+              className="shrink-0 text-xs font-medium text-slate-600"
             >
               {START_DATE_LABEL}
             </Label>
@@ -181,7 +181,7 @@ export default function StockInPage() {
               id="receipt-start-date"
               type="date"
               aria-label={START_DATE_LABEL}
-              className="h-11 rounded-2xl border-slate-100 bg-white focus-visible:ring-primary/20"
+              className="h-9 rounded-xl border-slate-100 bg-white text-sm focus-visible:ring-primary/20"
               value={startDate}
               onChange={(e) => {
                 setStartDate(e.target.value);
@@ -189,10 +189,10 @@ export default function StockInPage() {
               }}
             />
           </div>
-          <div className="flex items-center gap-2 lg:w-[250px]">
+          <div className="flex items-center gap-2 lg:w-[220px]">
             <Label
               htmlFor="receipt-end-date"
-              className="shrink-0 text-sm font-medium text-slate-600"
+              className="shrink-0 text-xs font-medium text-slate-600"
             >
               {END_DATE_LABEL}
             </Label>
@@ -200,7 +200,7 @@ export default function StockInPage() {
               id="receipt-end-date"
               type="date"
               aria-label={END_DATE_LABEL}
-              className="h-11 rounded-2xl border-slate-100 bg-white focus-visible:ring-primary/20"
+              className="h-9 rounded-xl border-slate-100 bg-white text-sm focus-visible:ring-primary/20"
               value={endDate}
               onChange={(e) => {
                 setEndDate(e.target.value);
@@ -210,7 +210,7 @@ export default function StockInPage() {
           </div>
           <Button
             variant="outline"
-            className="h-11 w-11 shrink-0 rounded-2xl border-slate-100 p-0"
+            className="h-9 w-9 shrink-0 rounded-xl border-slate-100 p-0"
             onClick={() => {
               setStartDate("");
               setEndDate("");
@@ -224,34 +224,34 @@ export default function StockInPage() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col space-y-6 overflow-auto p-6">
-        <div className="flex flex-1 flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm shadow-slate-100/60">
-          <div className="min-h-[400px] flex-1 overflow-auto">
-            {loading ? (
-              <div className="flex h-full items-center justify-center text-slate-400">
-                {UI_TEXT.COMMON.LOADING}
-              </div>
-            ) : receiptType === "in" ? (
-              <StockInListTable
-                data={stockInData}
-                onViewDetail={handleViewDetail}
-                onDelete={handleDeleteTrigger}
-              />
-            ) : (
-              <StockOutListTable
-                data={stockOutData}
-                onViewDetail={handleViewDetail}
-                onDelete={handleDeleteTrigger}
-              />
-            )}
-          </div>
+      <div className="flex min-h-0 h-fit flex-col px-4 pb-4 pt-3">
+        <div className="flex min-h-0 h-fit flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft">
+          {loading ? (
+            <div className="flex h-[500px] items-center justify-center text-slate-400 font-medium">
+              {UI_TEXT.COMMON.LOADING}
+            </div>
+          ) : receiptType === "in" ? (
+            <StockInListTable
+              data={stockInData}
+              onViewDetail={handleViewDetail}
+              onDelete={handleDeleteTrigger}
+            />
+          ) : (
+            <StockOutListTable
+              data={stockOutData}
+              onViewDetail={handleViewDetail}
+              onDelete={handleDeleteTrigger}
+            />
+          )}
 
-          <InventoryPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPrev={() => setCurrentPage((page) => Math.max(1, page - 1))}
-            onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-          />
+          <div className="shrink-0 border-t border-slate-100 bg-white">
+            <InventoryPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPrev={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -83,14 +83,14 @@ export default function InventoryTransactionsPage() {
   const missingRows = Math.max(0, pageSize - transactions.length);
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+    <div className="flex h-full min-h-0 flex-col gap-4 p-4 pt-6">
+      <div className="shrink-0 rounded-xl border border-border bg-card p-3 shadow-soft">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative flex-1 min-w-[260px]">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <div className="relative flex-1 min-w-[240px]">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder={UI_TEXT.INVENTORY.TOOLBAR.SEARCH_PLACEHOLDER}
-              className="h-11 rounded-2xl border-border bg-background pl-10 focus-visible:ring-primary/20"
+              className="h-9 rounded-xl border-slate-100 bg-white pl-9 text-sm focus-visible:ring-primary/20"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -100,8 +100,8 @@ export default function InventoryTransactionsPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 min-w-[220px]">
-              <span className="text-sm font-medium text-slate-600">
+            <div className="flex items-center gap-2 min-w-[180px]">
+              <span className="text-xs font-medium text-slate-600">
                 {UI_TEXT.INVENTORY.TABLE.COL_TYPE}
               </span>
               <Select
@@ -111,10 +111,10 @@ export default function InventoryTransactionsPage() {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="h-11 rounded-2xl border-border bg-background">
+                <SelectTrigger className="h-9 rounded-xl border-slate-100 bg-white text-sm">
                   <SelectValue placeholder={UI_TEXT.COMMON.ALL} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl">
                   <SelectItem value="all">{UI_TEXT.COMMON.ALL}</SelectItem>
                   <SelectItem value={String(InventoryTransactionType.OpeningStock)}>
                     {UI_TEXT.INVENTORY.TABLE.TRANS_TYPE_OPENING}
@@ -129,9 +129,9 @@ export default function InventoryTransactionsPage() {
               </Select>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 min-w-[200px]">
-                <span className="text-sm font-medium text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-[170px]">
+                <span className="text-xs font-medium text-slate-600">
                   {UI_TEXT.INVENTORY.TABLE.COL_SORT}
                 </span>
                 <Select
@@ -141,10 +141,10 @@ export default function InventoryTransactionsPage() {
                     setPage(1);
                   }}
                 >
-                  <SelectTrigger className="h-11 rounded-2xl border-border bg-background">
+                  <SelectTrigger className="h-9 rounded-xl border-slate-100 bg-white text-sm">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl">
                     <SelectItem value="-occurredAt">
                       {UI_TEXT.INVENTORY.TABLE.SORT_NEWEST}
                     </SelectItem>
@@ -156,8 +156,8 @@ export default function InventoryTransactionsPage() {
               </div>
 
               <Button
-                variant="ghost"
-                className="h-10 w-10 shrink-0 rounded-full border border-border text-muted-foreground"
+                variant="outline"
+                className="h-9 w-9 shrink-0 rounded-xl border-slate-100 p-0"
                 onClick={() => {
                   setSearch("");
                   setTypeFilter("all");
@@ -166,50 +166,50 @@ export default function InventoryTransactionsPage() {
                 }}
                 title={UI_TEXT.COMMON.RESET}
               >
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-4 w-4 text-slate-500" />
               </Button>
             </div>
 
             {isFetching && (
-              <span className="text-xs text-muted-foreground">{UI_TEXT.COMMON.LOADING}</span>
+              <span className="text-[10px] text-slate-400">{UI_TEXT.COMMON.LOADING}</span>
             )}
           </div>
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card shadow-soft">
+      <div className="mt-2 flex min-h-0 h-fit flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft">
         {isLoading ? (
-          <div className="space-y-2 p-4">
-            {Array.from({ length: 6 }).map((_, i) => (
+          <div className="max-h-[460px] space-y-2 overflow-auto p-4">
+            {Array.from({ length: 10 }).map((_, i) => (
               <Skeleton key={i} className="h-10 w-full" />
             ))}
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground">
+          <Table containerClassName="max-h-[460px] overflow-auto">
+            <TableHeader className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 shadow-sm">
+              <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.TABLE.COL_SKU}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground">
+                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.TABLE.COL_NAME}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-center">
+                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.TABLE.COL_TYPE}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-right">
+                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.TABLE.COL_QTY}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-right">
+                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-right">
+                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.TABLE.COL_BALANCE}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-center">
+                <TableHead className="w-[120px] bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.TABLE.COL_REFERENCE}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase text-muted-foreground text-center">
+                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
                   {UI_TEXT.INVENTORY.TABLE.COL_DATE}
                 </TableHead>
               </TableRow>
@@ -224,38 +224,46 @@ export default function InventoryTransactionsPage() {
               ) : (
                 <>
                   {transactions.map((item: InventoryTransaction) => (
-                    <TableRow key={item.inventoryTransactionId} className="hover:bg-muted/60">
-                      <TableCell className="font-mono text-sm text-foreground/80">
+                    <TableRow
+                      key={item.inventoryTransactionId}
+                      className="h-[52px] hover:bg-slate-50/80"
+                    >
+                      <TableCell className="font-mono text-sm text-slate-600">
                         {item.ingredientCode}
                       </TableCell>
-                      <TableCell className="font-medium text-foreground">
+                      <TableCell className="font-medium text-slate-900 border-l border-slate-50/50">
                         {item.ingredientName}
                       </TableCell>
                       <TableCell className="text-center">
-                        <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground/80">
+                        <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium text-slate-600 border border-slate-200/50">
                           {formatType(item.transactionType)}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right font-semibold text-foreground">
+                      <TableCell className="text-right font-semibold text-slate-900">
                         {item.quantity}
                       </TableCell>
-                      <TableCell className="text-right text-foreground/80">
+                      <TableCell className="text-right text-slate-600">
                         {item.unitCost ?? UI_TEXT.COMMON.DASH}
                       </TableCell>
-                      <TableCell className="text-right font-semibold text-primary">
+                      <TableCell className="text-right font-semibold text-primary/90">
                         {item.balanceAfter}
                       </TableCell>
-                      <TableCell className="text-center text-muted-foreground">
-                        {item.reference || UI_TEXT.COMMON.DASH}
+                      <TableCell className="w-[120px] text-center text-slate-500 text-xs">
+                        <div
+                          className="mx-auto max-w-[110px] truncate"
+                          title={item.reference || ""}
+                        >
+                          {item.reference || UI_TEXT.COMMON.DASH}
+                        </div>
                       </TableCell>
-                      <TableCell className="text-center text-muted-foreground">
+                      <TableCell className="text-center text-slate-500 text-[10px]">
                         {new Date(item.occurredAt).toLocaleString("vi-VN")}
                       </TableCell>
                     </TableRow>
                   ))}
                   {missingRows > 0 &&
                     Array.from({ length: missingRows }).map((_, index) => (
-                      <TableRow key={`placeholder-${index}`} className="h-11">
+                      <TableRow key={`placeholder-${index}`} className="h-[52px]">
                         <TableCell colSpan={8} className="p-0" />
                       </TableRow>
                     ))}
@@ -265,12 +273,14 @@ export default function InventoryTransactionsPage() {
           </Table>
         )}
 
-        <InventoryPagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPrev={() => setPage((p) => Math.max(1, p - 1))}
-          onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
-        />
+        <div className="shrink-0 border-t border-slate-200 bg-white">
+          <InventoryPagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPrev={() => setPage((p) => Math.max(1, p - 1))}
+            onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+          />
+        </div>
       </div>
     </div>
   );

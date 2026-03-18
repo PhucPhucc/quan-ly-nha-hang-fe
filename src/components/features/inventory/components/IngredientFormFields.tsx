@@ -88,7 +88,6 @@ export function IngredientFormFields({
               errors.unit && "border-destructive"
             )}
           >
-            <option value="">{UI_TEXT.INVENTORY.FORM.SELECT_UNIT}</option>
             {Object.values(InventoryUnit).map((u) => (
               <option key={u} value={u}>
                 {u}

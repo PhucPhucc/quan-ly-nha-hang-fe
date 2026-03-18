@@ -7,8 +7,10 @@ import { EmployeeRole } from "@/types/Employee";
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <RoleGuard allowedRoles={[EmployeeRole.MANAGER]}>
-      <HeaderBar />
-      <div className="px-4 pb-4">{children}</div>
+      <div className="flex h-screen flex-col overflow-hidden">
+        <HeaderBar />
+        <main className="min-h-0 flex-1 overflow-hidden px-3 pb-3">{children}</main>
+      </div>
     </RoleGuard>
   );
 };
