@@ -4,12 +4,13 @@ import { toast } from "sonner";
 
 import { reservationService } from "@/services/reservationService";
 import { ReservationRequest } from "@/types/Reservation";
-interface Area {
-  areaId: string;
-  name: string;
-  description: string;
-  type: string | number;
-}
+import { Area } from "@/types/Table-Layout";
+// interface Area {
+//   areaId: string;
+//   name: string;
+//   description: string;
+//   type: string;
+// }
 interface ReservationFormState {
   customerName: string;
   customerPhone: string;
@@ -86,9 +87,9 @@ export function useReservation(initialDate: Date | undefined) {
     const fetchAreas = async () => {
       try {
         const res = await reservationService.getAreas();
-        const areaData = res.data as Area[];
+        const areaData = res.data;
 
-        if (res.isSuccess && areaData) {
+        if (areaData) {
           setAreas(areaData);
           if (areaData.length > 0) {
             updateField("areaId", areaData[0].areaId);

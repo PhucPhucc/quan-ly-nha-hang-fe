@@ -69,7 +69,7 @@ const EmployeeTable = () => {
   };
 
   if (loading) {
-    return <TableSkeleton columns={7} rows={6} className="mt-4" />;
+    return <TableSkeleton />;
   }
 
   return (

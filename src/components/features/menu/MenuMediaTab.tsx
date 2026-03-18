@@ -5,10 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { MenuItem } from "@/types/Menu";
+import { MenuItem, SetMenu } from "@/types/Menu";
 
 interface MenuMediaTabProps {
-  editingItem: MenuItem | null;
+  editingItem: MenuItem | SetMenu | null;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

@@ -6,7 +6,7 @@ export const ingredientSchema = z.object({
   name: z.string().min(1, "Tên không được để trống"),
   code: z.string().min(1, "Mã không được để trống"),
   unit: z.nativeEnum(InventoryUnit, {
-    errorMap: () => ({ message: "Vui lòng chọn đơn vị tính" }),
+    error: "Vui lòng chọn đơn vị tính",
   }),
   // Stock and cost are system-managed; keep for display only.
   currentStock: z.number().min(0, "Số lượng phải lớn hơn hoặc bằng 0"),

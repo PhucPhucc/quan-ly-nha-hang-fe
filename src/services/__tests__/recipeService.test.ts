@@ -35,7 +35,7 @@ describe("recipeService", () => {
       data: null,
     });
 
-    const ingredients = [{ ingredientId: "ing-1", quantityPerServing: 0.5 }];
+    const ingredients = [{ ingredientId: "ing-1", quantityPerServing: 0.5, baseUnit: "kg" }];
     await recipeService.upsertRecipe("menu-123", ingredients);
 
     expect(apiFetch).toHaveBeenCalledWith("/recipes/menu-123", {

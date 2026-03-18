@@ -8,18 +8,24 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { cn } from "@/lib/utils";
 import { useMenuStore } from "@/store/useMenuStore";
-import { MenuItem } from "@/types/Menu";
+import { MenuItem, SetMenu } from "@/types/Menu";
 
 interface MenuItemCardProps {
-  item: MenuItem;
+  item: MenuItem | SetMenu;
 }
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
   const deleteMenuItem = useMenuStore((state) => state.deleteMenuItem);
+  const deleteSetMenu = useMenuStore((state) => state.deleteSetMenu);
   const setEditingItem = useMenuStore((state) => state.setEditingItem);
   const setModalOpen = useMenuStore((state) => state.setModalOpen);
   const toggleMenuItemStock = useMenuStore((state) => state.toggleMenuItemStock);
+  const toggleSetMenuStock = useMenuStore((state) => state.toggleSetMenuStock);
+
+  const isSetMenu = "setMenuId" in item;
+  // const itemId = isSetMenu ? item.setMenuId : item.menuItemId;
 
   const handleEdit = () => {
     setEditingItem(item);
@@ -28,7 +34,11 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
 
   const handleDelete = () => {
     const confirmDelete = async () => {
-      await deleteMenuItem(item.menuItemId);
+      if (isSetMenu) {
+        await deleteSetMenu(item.setMenuId);
+      } else {
+        await deleteMenuItem(item.menuItemId);
+      }
       toast.dismiss();
     };
 
@@ -47,16 +57,20 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
   };
 
   const handleToggleStock = (checked: boolean) => {
-    toggleMenuItemStock(item.menuItemId, !checked);
+    if (isSetMenu) {
+      toggleSetMenuStock(item.setMenuId, !checked);
+    } else {
+      toggleMenuItemStock(item.menuItemId, !checked);
+    }
   };
 
   const imageSrc = !item.imageUrl ? "/placeholderMenu.webp" : item.imageUrl;
 
   return (
-    <TableRow className={item.isOutOfStock ? "table-row-muted opacity-75" : ""}>
+    <TableRow className={cn(item.isOutOfStock && "table-row-muted opacity-75")}>
       <TableCell className="max-w-120">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 overflow-hidden rounded-full border border-table-border-soft bg-table-row-muted shrink-0">
+          <div className="overflow-hidden rounded-full border border-table-border-soft bg-table-row-muted shrink-0">
             <Image
               src={imageSrc}
               alt={item.name}
@@ -73,7 +87,11 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
       </TableCell>
 
       <TableCell>
-        {item.categoryName ? (
+        {isSetMenu ? (
+          <Badge variant="outline" className="table-pill table-pill-neutral border-0">
+            {UI_TEXT.MENU.TAB_COMBO}
+          </Badge>
+        ) : "categoryName" in item && item.categoryName ? (
           <Badge variant="outline" className="table-pill table-pill-neutral border-0">
             {item.categoryName}
           </Badge>

@@ -45,7 +45,7 @@ export function OpeningStockTable({
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_UNIT}
           </TableHead>
           <TableHead className="w-[140px] py-3 text-right font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
-            {UI_TEXT.INVENTORY.OPENING_STOCK.COL_QTY}
+            {UI_TEXT.INVENTORY.OPENING_STOCK.COL_QTY?.toUpperCase()}
           </TableHead>
           <TableHead className="w-[160px] py-3 text-right font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}

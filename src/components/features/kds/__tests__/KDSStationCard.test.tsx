@@ -54,7 +54,7 @@ describe("KDSStationCard", () => {
     expect(badStatus).toHaveClass("bg-red-50 text-red-700");
 
     // Normal state should have green styling
-    rerender(<KDSStationCard {...defaultProps} statusText="Normal" statusVariant="normal" />);
+    rerender(<KDSStationCard {...defaultProps} />);
 
     const goodStatus = screen.getByText("Normal");
     expect(goodStatus).toHaveClass("bg-green-50 text-green-700");

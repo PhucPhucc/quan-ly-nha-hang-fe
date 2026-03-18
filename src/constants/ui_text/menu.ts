@@ -5,7 +5,7 @@ export const MENU = {
   TAB_ITEM: "Món lẻ",
   TAB_COMBO: "Combo / Set Menu",
   ADD_ITEM: "+ Thêm món lẻ",
-  ADD_COMBO: "+ Thêm Combo",
+  ADD_COMBO: "Thêm Combo",
   EMPTY_COMBO: "Chưa có dữ liệu Combo...",
   ID_NOT_FOUND: "Lỗi: Không tìm thấy ID món ăn!",
   DELETE_SUCCESS: "Xóa thành công!",
@@ -15,6 +15,10 @@ export const MENU = {
   DELETE_DEFAULT_ERROR:
     "Món ăn này đã có trong hóa đơn, không thể xóa. Hãy tắt trạng thái bán thay vì xóa!",
   OPTIONS: {
+    TITLE: "Tuỳ chọn món ăn",
+    MENU_FAILED: "Không thể tải tuỳ chọn cho món ăn này!",
+    NAME_GROUP: "Tên nhóm tuỳ chọn",
+    TYPE: "Loại tuỳ chọn",
     REQUIRED_MARK: "*",
     CHOOSE_ONE: "Chọn 1",
     MAXIMUM: "Tối đa",
@@ -23,6 +27,11 @@ export const MENU = {
     NEED_SELECT: "Cần chọn",
     ADD_TO_ORDER: "Thêm vào đơn -",
     ITEM_NOTE: "Ghi chú món",
+    PRICE_EXTRA: "Giá cộng thêm",
+    PLACEHOLDER_OPTION_NAME: "VD: Size M",
+    PLACEHOLDER_EXTRA_PRICE: "VD: 10000",
+    COMBO_ITEMS: "Các lựa chọn trong nhóm",
+    EMPTY_COMBO: "Chưa có lựa chọn nào. Nhấp vào Thêm để tạo.",
   },
   // Table Columns
   COL_ITEM_NAME: "Món ăn",
@@ -58,6 +67,7 @@ export const MENU = {
   LABEL_MARK_OUT_OF_STOCK: "Đánh dấu là Hết Hàng (Không bán)",
   LABEL_EXPECTED_TIME: "Thời gian chuẩn bị (phút)",
   LABEL_IMAGE_VIEW: "Xem hình ảnh",
+  LABEL_COMBO_ITEMS: "Các món trong Combo",
   PLACEHOLDER_NAME: "VD: Phở Bò Chín",
   PLACEHOLDER_DESC: "Mô tả chi tiết về món ăn...",
   PLACEHOLDER_STATION: "Chọn khu vực",
@@ -94,6 +104,11 @@ export const MENU = {
   FILTER_OUT_OF_STOCK: "Hết hàng",
 
   // Management Page
+  CATEGORY: {
+    COFFEE: "Cà phê",
+    SOUP: "Món nước",
+    TEA: "Trà",
+  },
   MENU_PAGE_SUBTITLE: "Thêm, sửa, xóa và quản lý trạng thái món ăn trong nhà hàng.",
   LIST_TITLE: "Danh sách món ăn",
   TAB_DETAILS: "Chi tiết món",
@@ -103,6 +118,14 @@ export const MENU = {
   MEDIA_MANAGEMENT_TITLE: "Quản lý Media",
   MEDIA_MANAGEMENT_DESC: "Tải lên hình ảnh hoặc video cho món ăn này.",
   OR: "HOẶC",
+  RECEIPT: {
+    TITLE: "Chi tiết hóa đơn",
+    DISCOUNT: "Giảm giá",
+    SUBTOTAL: "Tạm tính",
+    TAX: "Thuế",
+    TOTAL: "Tổng cộng",
+  },
+
   RECIPE: {
     SETUP_TITLE: "Thiết lập định lượng",
     SETUP_DESC: "Xác định các nguyên liệu và số lượng cần thiết cho món ăn này.",
@@ -138,10 +161,11 @@ export const MENU = {
     AT_LEAST_ONE_ERROR: "Cần nhất một nguyên liệu",
     INSTRUCTIONS_PLACEHOLDER: "Mô tả quy trình chế biến món ăn...",
     PREP_TIME_PLACEHOLDER: "VD: 15",
-    // Titles from second definition
     TITLE: "Chi tiết công thức",
     DESCRIPTION: "Xem và chỉnh sửa nguyên liệu cần thiết để chuẩn bị món ăn này.",
     INGREDIENT: "Nguyên liệu",
     INSTRUCTION: "Hướng dẫn chế biến",
+    CURRENCY: "$",
+    TOTAL_COST_DESC: "Dựa trên giá nhập gần nhất của các nguyên liệu trong định lượng.",
   },
 };
