@@ -1,216 +1,187 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import { GripVertical, Plus, Trash2 } from "lucide-react";
-import React, { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import * as z from "zod";
+import { AlertCircle, Loader2, Plus, Save } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { recipeService } from "@/services/recipeService";
+import { Ingredient } from "@/types/Inventory";
+import { Recipe } from "@/types/Recipe";
 
-const ingredientLineSchema = z.object({
-  ingredientId: z.string().min(1, "Select ingredient"),
-  ingredientName: z.string(),
-  quantity: z.number().min(0.01),
-  unit: z.string(),
-  costPerUnit: z.number(),
-  totalCost: z.number(),
-});
-
-const recipeSchema = z.object({
-  prepTimeMinutes: z.number().min(0),
-  instructions: z.string().optional(),
-  ingredients: z.array(ingredientLineSchema).min(1, "At least one ingredient required"),
-});
-
-type RecipeFormValues = z.infer<typeof recipeSchema>;
+import { AddIngredientModal } from "./AddIngredientModal";
+import { useRecipeForm } from "./hooks/useRecipeForm";
+import { RecipeCostSummary } from "./RecipeCostSummary";
+import { RecipeIngredientsTable } from "./RecipeIngredientsTable";
 
 interface RecipeSetupFormProps {
   menuItemId: string;
+  initialData?: Recipe | null;
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
-export function RecipeSetupForm({ menuItemId }: RecipeSetupFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export const RecipeSetupForm: React.FC<RecipeSetupFormProps> = ({
+  menuItemId,
+  initialData: propInitialData,
+  onSuccess,
+  onCancel,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recipeData, setRecipeData] = useState<Recipe | null>(propInitialData || null);
+  const [isLoading, setIsLoading] = useState(!propInitialData);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["recipe", menuItemId],
-    queryFn: () => recipeService.getByMenuItemId(menuItemId),
-  });
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      if (propInitialData) {
+        setRecipeData(propInitialData);
+        setIsLoading(false);
+        return;
+      }
 
-  const recipe = data?.data;
+      setIsLoading(true);
+      try {
+        const response = await recipeService.getByMenuItemId(menuItemId);
+        if (response.isSuccess) {
+          setRecipeData(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch recipe:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecipe();
+  }, [menuItemId, propInitialData]);
 
   const {
     register,
-    control,
     handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<RecipeFormValues>({
-    resolver: zodResolver(recipeSchema),
-    values: {
-      prepTimeMinutes: recipe?.prepTimeMinutes || 15,
-      instructions: recipe?.instructions || "",
-      ingredients: recipe?.ingredients || [],
-    },
+    fields,
+    remove,
+    setValue,
+    watchedIngredients,
+    totalCost,
+    errors,
+    isSubmitting,
+    handleAddIngredient,
+  } = useRecipeForm({
+    menuItemId,
+    initialData: recipeData,
+    onSuccess,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "ingredients",
-  });
-
-  const ingredientsWatch = watch("ingredients");
-  const totalCost = ingredientsWatch.reduce((acc, curr) => acc + (curr.totalCost || 0), 0);
-
-  const onSubmit = async (data: RecipeFormValues) => {
-    setIsSubmitting(true);
-    try {
-      await recipeService.updateRecipe(recipe?.id || "new", {
-        ...data,
-        menuItemId,
-        totalRecipeCost: totalCost,
-      });
-      // display success toast here
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleModalAdd = (ingredient: Ingredient, quantity: number) => {
+    handleAddIngredient(ingredient, quantity);
   };
 
   if (isLoading) {
-    return <Skeleton className="w-full h-[400px]" />;
+    return (
+      <div className="flex flex-col items-center justify-center p-20 space-y-4">
+        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <p className="text-neutral-500 font-medium">{UI_TEXT.COMMON.LOADING}</p>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6">
-      <div className="flex flex-col mb-6 pb-6 border-b">
-        <h2 className="text-2xl font-semibold mb-2">{UI_TEXT.MENU.RECIPE.SETUP_TITLE}</h2>
-        <p className="text-muted-foreground">{UI_TEXT.MENU.RECIPE.SETUP_DESC}</p>
+    <form onSubmit={handleSubmit} className="flex flex-col h-full">
+      <div className="flex-1 p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="border-none shadow-xl shadow-neutral-200/50 overflow-hidden bg-white/80 backdrop-blur-sm">
+              <CardHeader className="bg-neutral-50/50 border-b border-neutral-100 flex flex-row items-center justify-between pb-4">
+                <div className="space-y-1">
+                  <CardTitle className="text-xl font-bold flex items-center gap-2">
+                    {UI_TEXT.MENU.RECIPE.INGREDIENTS_LIST}
+                    <Badge
+                      variant="secondary"
+                      className="font-normal bg-primary/10 text-primary border-none"
+                    >
+                      {UI_TEXT.MENU.INGREDIENTS_COUNT(fields.length)}
+                    </Badge>
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">{UI_TEXT.MENU.HELPER_INGREDIENTS}</p>
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 transition-all active:scale-95"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  {UI_TEXT.MENU.RECIPE.ADD_INGREDIENT}
+                </Button>
+              </CardHeader>
+              <CardContent className="p-0">
+                {fields.length === 0 ? (
+                  <div className="py-20 text-center space-y-4">
+                    <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto text-neutral-400">
+                      <AlertCircle className="w-8 h-8" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-neutral-900">
+                        {UI_TEXT.MENU.RECIPE.EMPTY_MAPPED}
+                      </h3>
+                    </div>
+                    <Button variant="outline" type="button" onClick={() => setIsModalOpen(true)}>
+                      {UI_TEXT.MENU.ADD_NOW}
+                    </Button>
+                  </div>
+                ) : (
+                  <RecipeIngredientsTable
+                    fields={fields}
+                    register={register}
+                    remove={remove}
+                    setValue={setValue}
+                    watchedIngredients={watchedIngredients}
+                    errors={errors}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <RecipeCostSummary totalCost={totalCost} register={register} />
+        </div>
       </div>
 
-      <form id="recipe-form" onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <div className="gap-6 grid lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-4">
-            <div className="flex justify-between items-center bg-muted/30 p-4 rounded-lg border">
-              <h3 className="font-medium">{UI_TEXT.MENU.RECIPE.INGREDIENTS_LIST}</h3>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  append({
-                    ingredientId: "",
-                    ingredientName: "",
-                    quantity: 1,
-                    unit: "kg",
-                    costPerUnit: 0,
-                    totalCost: 0,
-                  })
-                }
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                {UI_TEXT.MENU.RECIPE.ADD_INGREDIENT}
-              </Button>
+      <div className="sticky bottom-0 bg-white border-t border-neutral-200 p-4 px-6 flex items-center justify-end gap-3 z-20 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+        <Button
+          variant="ghost"
+          type="button"
+          onClick={onCancel}
+          className="h-11 px-8 text-neutral-600 hover:bg-neutral-100"
+        >
+          {UI_TEXT.MENU.RECIPE.DISCARD}
+        </Button>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="h-11 px-10 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 active:scale-95 transition-all"
+        >
+          {isSubmitting ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              {UI_TEXT.MENU.RECIPE.SAVING}
             </div>
-
-            {fields.length === 0 && (
-              <div className="p-8 text-center text-muted-foreground border border-dashed rounded-lg">
-                {UI_TEXT.MENU.RECIPE.EMPTY_MAPPED}
-              </div>
-            )}
-
-            <div className="space-y-3">
-              {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="flex items-center gap-3 p-3 bg-background border rounded-lg group"
-                >
-                  <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
-
-                  {/* Select Mock - would use real generic Select in prod */}
-                  <div className="flex-1">
-                    <Input
-                      {...register(`ingredients.${index}.ingredientName`)}
-                      placeholder="Type ingredient name (Mock)"
-                      className="bg-transparent"
-                    />
-                  </div>
-
-                  <div className="w-24">
-                    <Input
-                      type="number"
-                      step="0.01"
-                      {...register(`ingredients.${index}.quantity`, { valueAsNumber: true })}
-                      placeholder="Qty"
-                    />
-                  </div>
-
-                  <div className="w-20 text-sm text-muted-foreground text-center">{field.unit}</div>
-
-                  <div className="w-24 text-right font-medium">
-                    {UI_TEXT.MENU.RECIPE.CURRENCY}
-                    {(
-                      ingredientsWatch[index]?.costPerUnit * ingredientsWatch[index]?.quantity || 0
-                    ).toFixed(2)}
-                  </div>
-
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => remove(index)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
+          ) : (
+            <div className="flex items-center gap-2">
+              <Save className="w-4 h-4" />
+              {UI_TEXT.MENU.RECIPE.SAVE_RECIPE}
             </div>
-            {errors.ingredients?.root && (
-              <div className="text-sm text-destructive">{errors.ingredients.root.message}</div>
-            )}
-          </div>
+          )}
+        </Button>
+      </div>
 
-          <div className="space-y-6">
-            <div className="bg-primary/5 p-6 rounded-lg border border-primary/10">
-              <h3 className="text-lg font-medium mb-1">{UI_TEXT.MENU.RECIPE.TOTAL_COST}</h3>
-              <div className="text-3xl font-bold text-primary">
-                {UI_TEXT.MENU.RECIPE.CURRENCY}
-                {totalCost.toFixed(2)}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">{UI_TEXT.MENU.RECIPE.PREP_TIME}</label>
-                <Input type="number" {...register("prepTimeMinutes", { valueAsNumber: true })} />
-              </div>
-
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">{UI_TEXT.MENU.RECIPE.INSTRUCTIONS}</label>
-                <textarea
-                  {...register("instructions")}
-                  className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Step by step preparation instructions..."
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-end gap-3 pt-6 border-t">
-          <Button type="button" variant="outline">
-            {UI_TEXT.MENU.RECIPE.DISCARD}
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? UI_TEXT.BUTTON.SAVE_CHANGES : UI_TEXT.MENU.RECIPE.SAVE_RECIPE}
-          </Button>
-        </div>
-      </form>
-    </div>
+      <AddIngredientModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAdd={handleModalAdd}
+        excludeIds={watchedIngredients.map((i) => i.ingredientId)}
+      />
+    </form>
   );
-}
+};

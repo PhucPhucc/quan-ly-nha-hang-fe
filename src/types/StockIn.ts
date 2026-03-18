@@ -6,7 +6,7 @@ export interface StockInReceiptItem {
   ingredientCode?: string;
   ingredientName?: string;
   quantity: number;
-  unit?: InventoryUnit | string;
+  baseUnit?: InventoryUnit | string;
   unitPrice?: number;
   totalAmount: number;
   expirationDate?: string | null;
@@ -30,6 +30,7 @@ export interface CreateStockInRequest {
   items: {
     ingredientId: string;
     quantity: number;
+    baseUnit: string;
     unitPrice?: number;
     expirationDate?: string | null;
     batchCode?: string | null;

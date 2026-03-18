@@ -32,6 +32,7 @@ interface ReceiptItemEntry {
   ingredientId: string;
   quantity: number;
   unitPrice: number;
+  baseUnit: string;
   batchCode?: string | null;
   expirationDate?: string | null;
 }
@@ -64,17 +65,21 @@ export const CreateStockInDrawer = ({
       fetchIngredients();
       setNote("");
       setReceivedDate(new Date().toISOString().split("T")[0]);
-      setItems([{ ingredientId: "", quantity: 1, unitPrice: 0 }]);
+      setItems([{ ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "" }]);
     }
   }, [open]);
 
   const addItem = () => {
-    setItems([...items, { ingredientId: "", quantity: 1, unitPrice: 0 }]);
+    setItems([...items, { ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "" }]);
   };
 
   const removeItem = (index: number) => {
     const newItems = items.filter((_, i) => i !== index);
-    setItems(newItems.length > 0 ? newItems : [{ ingredientId: "", quantity: 1, unitPrice: 0 }]);
+    setItems(
+      newItems.length > 0
+        ? newItems
+        : [{ ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "" }]
+    );
   };
 
   const updateItem = <K extends keyof ReceiptItemEntry>(
@@ -87,8 +92,11 @@ export const CreateStockInDrawer = ({
     // Auto-fill price if ingredient is selected and price is not set
     if (field === "ingredientId") {
       const ingredient = ingredients.find((ing) => ing.ingredientId === value);
-      if (ingredient && newItems[index].unitPrice === 0) {
-        newItems[index].unitPrice = ingredient.costPrice;
+      if (ingredient) {
+        if (newItems[index].unitPrice === 0) {
+          newItems[index].unitPrice = ingredient.costPrice;
+        }
+        newItems[index].baseUnit = ingredient.unit;
       }
     }
     setItems(newItems);

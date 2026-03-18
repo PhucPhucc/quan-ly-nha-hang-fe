@@ -4,7 +4,6 @@ import { Save, Search, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -104,33 +103,34 @@ export function OpeningStockEntry() {
 
   return (
     <>
-      <div className="space-y-6 p-4 pb-10 md:p-6 md:pb-12">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex h-full min-h-0 flex-col gap-4 p-4 pt-6">
+        <div className="flex shrink-0 flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={OPENING_STOCK.SEARCH_PLACEHOLDER}
-              className="pl-9"
+              className="h-8 pl-8 text-xs"
               value={search}
               disabled={isLocked}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <OpeningStockSummary totalValue={totalValue} />
             <Button
               onClick={handlePrimarySave}
               disabled={saving || isLocked}
-              className="bg-primary hover:bg-primary-hover"
+              size="sm"
+              className="bg-primary hover:bg-primary-hover h-8 px-3 text-xs"
             >
-              {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-4 w-4" />}
+              {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-3.5 w-3.5" />}
               {OPENING_STOCK.BTN_SAVE}
             </Button>
           </div>
         </div>
 
         {isLocked ? (
-          <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <div className="shrink-0 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs text-amber-900">
             <p className="font-semibold">{OPENING_STOCK.LOCKED_TITLE}</p>
             <p>
               {OPENING_STOCK.LOCKED_DESC}
@@ -141,16 +141,14 @@ export function OpeningStockEntry() {
           </div>
         ) : null}
 
-        <Card className="overflow-hidden border-border p-0 shadow-soft">
-          <CardContent className="p-0">
-            <OpeningStockTable
-              ingredients={filteredIngredients}
-              entryItems={entryItems}
-              disabled={isLocked}
-              onInputChange={handleInputChange}
-            />
-          </CardContent>
-        </Card>
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft mt-2">
+          <OpeningStockTable
+            ingredients={filteredIngredients}
+            entryItems={entryItems}
+            disabled={isLocked}
+            onInputChange={handleInputChange}
+          />
+        </div>
         <OpeningStockSummary totalValue={totalValue} mobile />
       </div>
 

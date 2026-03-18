@@ -176,7 +176,7 @@ export function AddIngredientPanel({
       const payload: Partial<Ingredient> = {
         name: data.name,
         code: data.code,
-        unit: data.unit,
+        baseUnit: data.unit,
         lowStockThreshold: data.lowStockThreshold,
         description: data.description,
         isActive: data.isActive,

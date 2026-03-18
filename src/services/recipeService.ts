@@ -1,49 +1,91 @@
+import { apiFetch } from "@/services/api";
 import { ApiResponse } from "@/types/Api";
-import { Recipe } from "@/types/Recipe";
+import { Recipe, RecipeIngredient } from "@/types/Recipe";
+
+interface GetRecipeItemBackend {
+  ingredientId: string;
+  ingredientName: string;
+  baseUnit: string;
+  quantityPerServing: number;
+  costPrice: number;
+  totalCost: number;
+}
+
+interface GetRecipeBackendResponse {
+  menuItemId: string;
+  instructions?: string;
+  prepTimeMinutes: number;
+  totalCost: number;
+  items: GetRecipeItemBackend[];
+}
 
 export const recipeService = {
   // Lấy công thức theo Menu Item ID
   getByMenuItemId: async (menuItemId: string): Promise<ApiResponse<Recipe>> => {
-    // TODO: Bỏ comment khi có backend
-    // return apiFetch<Recipe>(`/recipes/menu-item/${menuItemId}`);
+    const response = await apiFetch<GetRecipeBackendResponse>(`/inventory/recipes/${menuItemId}`);
 
-    // Mock response
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          isSuccess: true,
-          data: {
-            id: `recipe-${menuItemId}`,
-            menuItemId: menuItemId,
-            menuItemName: "Mock Item",
-            ingredients: [
-              {
-                ingredientId: "ing-1",
-                ingredientName: "Beef",
-                quantity: 0.5,
-                unit: "kg",
-                costPerUnit: 20,
-                totalCost: 10,
-              },
-            ],
-            totalRecipeCost: 10,
-            prepTimeMinutes: 15,
-            instructions: "Cook well.",
-            updatedAt: new Date().toISOString(),
-          },
-        });
-      }, 500);
-    });
+    if (!response.isSuccess || !response.data) {
+      return {
+        ...response,
+        data: {
+          id: `recipe-${menuItemId}`,
+          menuItemId: menuItemId,
+          menuItemName: "",
+          ingredients: [],
+          totalRecipeCost: 0,
+          updatedAt: new Date().toISOString(),
+        } as Recipe,
+      };
+    }
+
+    const data = response.data;
+    const ingredients: RecipeIngredient[] = (data.items || []).map((item) => ({
+      ingredientId: item.ingredientId,
+      ingredientName: item.ingredientName,
+      quantity: item.quantityPerServing,
+      unit: item.baseUnit,
+      costPerUnit: item.costPrice,
+      totalCost: item.totalCost,
+      isOptional: false,
+    }));
+
+    const recipe: Recipe = {
+      id: `recipe-${menuItemId}`,
+      menuItemId: menuItemId,
+      menuItemName: "",
+      ingredients: ingredients,
+      totalRecipeCost: data.totalCost || 0,
+      instructions: data.instructions,
+      prepTimeMinutes: data.prepTimeMinutes,
+      updatedAt: new Date().toISOString(),
+    };
+
+    return {
+      ...response,
+      data: recipe,
+    };
   },
 
-  // Cập nhật công thức
-  updateRecipe: async (id: string, data: Partial<Recipe>): Promise<ApiResponse<Recipe>> => {
-    // return apiFetch<Recipe>(`/recipes/${id}`, {
-    //   method: "PUT",
-    //   body: data,
-    // });
-    return new Promise((resolve) =>
-      setTimeout(() => resolve({ isSuccess: true, data: { ...data, id } as Recipe }), 500)
-    );
+  // Cập nhật công thức (Upsert)
+  upsertRecipe: async (
+    menuItemId: string,
+    ingredients: { ingredientId: string; quantityPerServing: number; baseUnit: string }[],
+    instructions?: string,
+    prepTimeMinutes?: number
+  ): Promise<ApiResponse<void>> => {
+    const payload = ingredients.map((item) => ({
+      ingredientId: item.ingredientId,
+      quantityPerServing: item.quantityPerServing,
+      baseUnit: item.baseUnit,
+    }));
+
+    return apiFetch<void>(`/inventory/recipes/${menuItemId}`, {
+      method: "PUT",
+      body: {
+        items: payload,
+        instructions,
+        prepTimeMinutes,
+      },
+    });
   },
 };

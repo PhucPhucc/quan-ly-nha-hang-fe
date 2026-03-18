@@ -107,7 +107,7 @@ export const StockInDetailView = ({
                       </TableCell>
                       <TableCell className="text-center text-slate-600">
                         {item.quantity}{" "}
-                        <span className="text-[10px] text-slate-400">{item.unit}</span>
+                        <span className="text-[10px] text-slate-400">{item.baseUnit}</span>
                       </TableCell>
                       <TableCell className="text-right text-slate-600">
                         {formatCurrency(item.unitPrice || 0)}

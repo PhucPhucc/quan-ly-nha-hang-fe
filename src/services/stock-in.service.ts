@@ -17,7 +17,7 @@ interface StockInReceiptItemDto {
   ingredientId: string;
   ingredientCode: string;
   ingredientName: string;
-  unit: string;
+  baseUnit: string;
   quantity: number;
   unitCost?: number | null;
   lineAmount: number;
@@ -63,7 +63,7 @@ function mapReceipt(
         ingredientCode: item.ingredientCode,
         ingredientName: item.ingredientName,
         quantity: item.quantity,
-        unit: item.unit,
+        unit: item.baseUnit,
         unitPrice: item.unitCost ?? undefined,
         totalAmount: item.lineAmount,
         expirationDate: item.expiryDate ?? null,
@@ -79,7 +79,8 @@ function mapCreateRequest(data: CreateStockInRequest) {
     items: data.items.map((item) => ({
       ingredientId: item.ingredientId,
       quantity: item.quantity,
-      unitCost: item.unitPrice,
+      baseUnit: item.baseUnit,
+      unitPrice: item.unitPrice,
       expiryDate: item.expirationDate,
       batchCode: item.batchCode,
     })),

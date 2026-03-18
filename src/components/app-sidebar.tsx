@@ -12,7 +12,6 @@ import {
   Martini,
   Package,
   Settings,
-  ShelvingUnit,
   SquareMenu,
   Table,
   Users,
@@ -110,9 +109,9 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
       icon: CalendarDays,
     },
     {
-      title: UI_TEXT.SIDE_BAR.INVENTORY,
+      title: UI_TEXT.SIDE_BAR.TABLE,
       url: "/table-booking",
-      icon: ShelvingUnit,
+      icon: Table,
     },
   ],
   [EmployeeRole.CHEFBAR]: [

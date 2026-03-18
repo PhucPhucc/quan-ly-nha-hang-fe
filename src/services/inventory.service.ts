@@ -7,6 +7,7 @@ import {
   InventorySettings,
   InventoryStats,
   InventoryTransaction,
+  InventoryUnit,
 } from "@/types/Inventory";
 
 function buildFallbackIngredientCode(name: string): string {
@@ -57,15 +58,34 @@ export const inventoryService = {
       });
     }
 
-    return apiFetch<PaginationResult<Ingredient>>(`/ingredients?${params.toString()}`);
+    const response = await apiFetch<PaginationResult<Ingredient>>(
+      `/ingredients?${params.toString()}`
+    );
+
+    // Map baseUnit from backend to unit for frontend
+    if (response.isSuccess && response.data) {
+      response.data.items = response.data.items.map((item: Ingredient) => ({
+        ...item,
+        unit: item.unit || (item.baseUnit as unknown as InventoryUnit),
+      }));
+    }
+
+    return response;
   },
 
   // Thêm nguyên liệu mới
   addIngredient: async (data: Partial<Ingredient>): Promise<ApiResponse<Ingredient>> => {
-    return apiFetch<Ingredient>("/ingredients", {
+    const response = await apiFetch<Ingredient>("/ingredients", {
       method: "POST",
       body: data,
     });
+
+    if (response.isSuccess && response.data) {
+      response.data.unit =
+        response.data.unit || (response.data.baseUnit as unknown as InventoryUnit);
+    }
+
+    return response;
   },
 
   generateIngredientCode: async (name: string): Promise<ApiResponse<string>> => {
@@ -101,10 +121,17 @@ export const inventoryService = {
     id: string,
     data: Partial<Ingredient>
   ): Promise<ApiResponse<Ingredient>> => {
-    return apiFetch<Ingredient>(`/ingredients/${id}`, {
+    const response = await apiFetch<Ingredient>(`/ingredients/${id}`, {
       method: "PUT",
       body: data,
     });
+
+    if (response.isSuccess && response.data) {
+      response.data.unit =
+        response.data.unit || (response.data.baseUnit as unknown as InventoryUnit);
+    }
+
+    return response;
   },
 
   // Ngừng sử dụng nguyên liệu
