@@ -1,41 +1,145 @@
-import React, { useState } from "react";
+import { ClipboardList, ImageIcon, Utensils } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { FieldGroup } from "@/components/ui/field";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { uploadImage } from "@/services/imageService";
+import { menuService } from "@/services/menuService";
+import { optionService } from "@/services/optionService";
 import { useMenuStore } from "@/store/useMenuStore";
-import { Station } from "@/types/enums";
-import { MenuItem } from "@/types/Menu";
+import { MenuItem, SetMenu } from "@/types/Menu";
+import { OptionGroup } from "@/types/Menu";
+
+import { MenuBasicInfoFields } from "./MenuBasicInfoFields";
+import { MenuComboItems } from "./MenuComboItems";
+import { MenuImageUpload } from "./MenuImageUpload";
+import { MenuOptionGroups } from "./MenuOptionGroups";
+import { MenuStationTimeFields } from "./MenuStationTimeFields";
+
+type SetMenuApiRes = SetMenu & {
+  items?: { menuItemId: string; quantity: number }[];
+};
+
 interface MenuFormModalProps {
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; type: number }[];
 }
 
 export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
-  const { isModalOpen, setModalOpen, editingItem, setEditingItem, addMenuItem, updateMenuItem } =
-    useMenuStore();
+  const {
+    isModalOpen,
+    setModalOpen,
+    editingItem,
+    setEditingItem,
+    addMenuItem,
+    updateMenuItem,
+    addSetMenu,
+    updateSetMenu,
+    menuItems,
+  } = useMenuStore();
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [comboItems, setComboItems] = useState<{ menuItemId: string; quantity: number }[]>([]);
+  const [isFetchingCombo, setIsFetchingCombo] = useState(false);
+  const [optionGroups, setOptionGroups] = useState<Partial<OptionGroup>[]>([]);
+  const [isFetchingOptions, setIsFetchingOptions] = useState(false);
+  const [deletedGroupIds, setDeletedGroupIds] = useState<string[]>([]);
+  const [deletedItemIds, setDeletedItemIds] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState("details");
+
+  const isEditing = !!editingItem;
+  const isSetMenu = isEditing && editingItem && "setMenuId" in editingItem;
+  const itemId = editingItem
+    ? isSetMenu
+      ? (editingItem as SetMenu).setMenuId
+      : (editingItem as MenuItem).menuItemId
+    : null;
+  const isSetMenuCategory = categories.find((c) => c.id === selectedCategoryId)?.type === 2;
+
+  useEffect(() => {
+    if (isModalOpen) {
+      if (editingItem) {
+        if ("categoryId" in editingItem && editingItem.categoryId) {
+          setSelectedCategoryId(editingItem.categoryId);
+        } else {
+          const defaultCatId =
+            categories.find((c) => c.type === (isSetMenu ? 2 : 1))?.id || categories[0]?.id || "";
+          setSelectedCategoryId(defaultCatId);
+        }
+
+        if (isSetMenu && itemId) {
+          setIsFetchingCombo(true);
+          menuService
+            .getSetMenuById(itemId)
+            .then((res) => {
+              if (res.isSuccess && res.data) {
+                const setMenuData = res.data as SetMenuApiRes;
+                if ("categoryId" in setMenuData && setMenuData.categoryId !== undefined) {
+                  setSelectedCategoryId(setMenuData.categoryId as string);
+                }
+
+                if (setMenuData.items) {
+                  setComboItems(
+                    setMenuData.items.map((i) => ({
+                      menuItemId: i.menuItemId,
+                      quantity: i.quantity,
+                    }))
+                  );
+                }
+              }
+            })
+            .finally(() => setIsFetchingCombo(false));
+        } else {
+          setComboItems([]);
+        }
+
+        if (!isSetMenu && itemId) {
+          setIsFetchingOptions(true);
+          optionService
+            .getOptionGroupsByMenuItem(itemId)
+            .then((res) => {
+              if (res.isSuccess && res.data) {
+                setOptionGroups(res.data);
+              }
+            })
+            .finally(() => setIsFetchingOptions(false));
+        } else {
+          setOptionGroups([]);
+        }
+      } else {
+        setSelectedCategoryId(categories[0]?.id || "");
+        setComboItems([]);
+        setOptionGroups([]);
+        setDeletedGroupIds([]);
+        setDeletedItemIds([]);
+      }
+    }
+  }, [editingItem, categories, isModalOpen, isSetMenu, itemId]);
+
+  const addComboItem = () => setComboItems([...comboItems, { menuItemId: "", quantity: 1 }]);
+  const updateComboItem = (
+    index: number,
+    field: "menuItemId" | "quantity",
+    value: string | number
+  ) => {
+    const newItems = [...comboItems];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setComboItems(newItems);
+  };
+  const removeComboItem = (index: number) =>
+    setComboItems(comboItems.filter((_, i) => i !== index));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,9 +148,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
     const description = formData.get("description") as string;
     const price = Number(formData.get("price"));
     const costPrice = Number(formData.get("cost"));
-    const categoryId = formData.get("categoryId") as string;
-    const station = Number(formData.get("station"));
-    const expectedTime = Number(formData.get("expectedTime"));
+    const categoryId = selectedCategoryId;
 
     let imageUrl = formData.get("imageUrl") as string;
     if (selectedImage) {
@@ -68,21 +170,111 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
         setIsUploading(false);
       }
     }
-    const menuItemData: Partial<MenuItem> = {
-      name,
-      description,
-      price,
-      costPrice,
-      imageUrl,
-      categoryId,
-      expectedTime,
-      station,
-    };
-    if (editingItem) {
-      await updateMenuItem(editingItem.menuItemId, menuItemData);
-    } else {
-      await addMenuItem(menuItemData);
+
+    if (isEditing && !itemId) {
+      toast.error("Không tìm thấy ID món cần cập nhật");
+      return;
     }
+
+    if (isSetMenuCategory) {
+      const setMenuData: Partial<SetMenu> & {
+        categoryId: string;
+        items: typeof comboItems;
+      } = {
+        name,
+        description,
+        price,
+        costPrice,
+        imageUrl,
+        categoryId,
+        items: comboItems.filter((i) => i.menuItemId && i.quantity > 0),
+      };
+      if (isEditing && isSetMenu) {
+        await updateSetMenu(itemId!, setMenuData);
+      } else {
+        await addSetMenu(setMenuData);
+      }
+    } else {
+      const station = Number(formData.get("station"));
+      const expectedTime = Number(formData.get("expectedTime"));
+      const menuItemData: Partial<MenuItem> = {
+        name,
+        description,
+        price,
+        costPrice,
+        imageUrl,
+        categoryId,
+        expectedTime,
+        station,
+      };
+
+      let savedMenuItemId = itemId;
+
+      if (isEditing && !isSetMenu) {
+        await updateMenuItem(itemId!, menuItemData);
+      } else {
+        const newItem = await addMenuItem(menuItemData);
+        if (newItem) {
+          savedMenuItemId = newItem.menuItemId;
+        }
+      }
+
+      if (savedMenuItemId) {
+        // DELETIONS
+        for (const gId of deletedGroupIds) {
+          await optionService.deleteOptionGroup(gId);
+        }
+        for (const iId of deletedItemIds) {
+          await optionService.deleteOptionItem(iId);
+        }
+
+        // CREATIONS & UPDATES
+        for (const group of optionGroups) {
+          let currentGroupId = group.optionGroupId;
+          const isNewGroup = !currentGroupId || currentGroupId.startsWith("temp-");
+
+          if (isNewGroup) {
+            const groupRes = await optionService.createOptionGroup({
+              menuItemId: savedMenuItemId,
+              name: group.name,
+              optionType: group.optionType,
+              isRequired: group.isRequired,
+            });
+            if (groupRes.isSuccess && groupRes.data) {
+              currentGroupId = groupRes.data;
+            }
+          } else {
+            await optionService.updateOptionGroup(currentGroupId, {
+              name: group.name,
+              optionType: group.optionType,
+              isRequired: group.isRequired,
+            });
+          }
+          console.log(123123);
+          if (currentGroupId && group.optionItems) {
+            for (const item of group.optionItems) {
+              const currentItemId = item.optionItemId;
+              const isNewItem = !currentItemId || currentItemId.startsWith("temp-");
+              console.log(isNewItem);
+              if (isNewItem) {
+                console.log(currentGroupId);
+                await optionService.createOptionItem({
+                  optionGroupId: currentGroupId,
+                  label: item.label,
+                  extraPrice: item.extraPrice,
+                });
+              } else {
+                await optionService(currentItemId, {
+                  label: item.label,
+                  extraPrice: item.extraPrice,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+    toast.success(UI_TEXT.MENU.SAVE_SUCCESS);
     handleClose();
   };
 
@@ -90,182 +282,110 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
     setModalOpen(false);
     setEditingItem(null);
     setSelectedImage(null);
+    setComboItems([]);
+    setOptionGroups([]);
+    setDeletedGroupIds([]);
+    setDeletedItemIds([]);
   };
 
-  const isEditing = !!editingItem;
-
   return (
-    <Sheet open={isModalOpen} onOpenChange={handleClose}>
-      <SheetContent className="px-6 overflow-auto ">
-        <SheetHeader className="px-0">
-          <SheetTitle className="text-2xl">
-            {isEditing ? UI_TEXT.MENU.MODAL_EDIT_TITLE : UI_TEXT.MENU.MODAL_ADD_TITLE}
-          </SheetTitle>
-          <SheetDescription>
-            {isEditing ? UI_TEXT.MENU.MODAL_EDIT_DESC : UI_TEXT.MENU.MODAL_ADD_DESC}
-          </SheetDescription>
-        </SheetHeader>
-
-        <form onSubmit={handleSubmit} className="py-2 ">
-          <FieldGroup className="grid grid-cols-2 gap-4">
-            <Field className="space-y-2 col-span-2">
-              <Label htmlFor="name" className="text-right">
-                {UI_TEXT.MENU.LABEL_NAME}{" "}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                defaultValue={editingItem?.name || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_NAME}
-                required
-              />
-            </Field>
-
-            <Field className="space-y-2 col-span-2">
-              <Label htmlFor="description" className="text-right">
-                {UI_TEXT.MENU.LABEL_DESC}
-              </Label>
-              <Textarea
-                id="description"
-                name="description"
-                maxLength={50}
-                defaultValue={editingItem?.description || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_DESC}
-                className="min-h-25"
-              />
-            </Field>
-
-            <Field className="space-y-2">
-              <Label htmlFor="price" className="text-right">
-                {UI_TEXT.MENU.LABEL_PRICE}{" "}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                min="0"
-                defaultValue={editingItem?.price || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_PRICE}
-                required
-              />
-            </Field>
-
-            <Field className="space-y-2">
-              <Label htmlFor="cost" className="text-right">
-                {UI_TEXT.MENU.LABEL_COST}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="cost"
-                name="cost"
-                type="number"
-                min="0"
-                defaultValue={editingItem?.costPrice || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_COST}
-                required
-              />
-            </Field>
-
-            <Field className="space-y-2 col-span-2 md:col-span-1">
-              <Label htmlFor="categoryId" className="text-right">
-                {UI_TEXT.MENU.LABEL_CATEGORY}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Select
-                name="categoryId"
-                defaultValue={editingItem?.categoryId || categories[0]?.id || ""}
-              >
-                <SelectTrigger id="categoryId">
-                  <SelectValue placeholder={UI_TEXT.MENU.PLACEHOLDER_CATEGORY} />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field className="space-y-2 col-span-2 md:col-span-1">
-              <Label htmlFor="station" className="text-right">
-                {UI_TEXT.MENU.LABEL_STATION}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Select
-                name="station"
-                defaultValue={
-                  editingItem?.station?.toString() || Station.HOT_KITCHEN.toString() || "null"
-                }
-                required
-              >
-                <SelectTrigger id="station">
-                  <SelectValue placeholder={UI_TEXT.MENU.PLACEHOLDER_STATION} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={Station.HOT_KITCHEN.toString()}>
-                    {UI_TEXT.MENU.STATION.HOTKITCHEN}
-                  </SelectItem>
-                  <SelectItem value={Station.COLD_KITCHEN.toString()}>
-                    {UI_TEXT.MENU.STATION.COLDKITCHEN}
-                  </SelectItem>
-                  <SelectItem value={Station.BAR.toString()}>
-                    {UI_TEXT.MENU.STATION.DRINKS}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field className="space-y-2 col-span-2">
-              <Label htmlFor="expectedTime" className="text-right">
-                {UI_TEXT.MENU.LABEL_EXPECTED_TIME}
-                <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-              </Label>
-              <Input
-                id="expectedTime"
-                name="expectedTime"
-                type="number"
-                min="1"
-                defaultValue={editingItem?.expectedTime || ""}
-                placeholder={UI_TEXT.MENU.PLACEHOLDER_EXPECTED_TIME}
-                required
-              />
-            </Field>
-
-            <Field className="space-y-2 col-span-2">
-              <Label htmlFor="imageFile" className="text-right">
-                {UI_TEXT.MENU.LABEL_IMAGE_VIEW}
-                {isUploading && (
-                  <span className="text-muted-foreground ml-2 text-sm">
-                    {UI_TEXT.MENU.LOADING_IMAGE}
+    <Dialog open={isModalOpen} onOpenChange={handleClose}>
+      <DialogContent className="px-6 overflow-auto ">
+        <div className="p-6 border-b shrink-0 z-30">
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <Utensils className="w-6 h-6" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl font-bold tracking-tight">
+                  {isEditing
+                    ? editingItem?.name || UI_TEXT.MENU.MODAL_EDIT_TITLE
+                    : UI_TEXT.MENU.MODAL_ADD_TITLE}
+                </DialogTitle>
+                <DialogDescription className="text-neutral-500 font-medium">
+                  {isEditing ? UI_TEXT.MENU.MODAL_EDIT_DESC : UI_TEXT.MENU.MODAL_ADD_DESC}
+                </DialogDescription>
+              </div>
+              {isEditing && (
+                <div className="ml-auto">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800 border">
+                    {UI_TEXT.MENU.MODAL_ID_PREFIX} {itemId?.substring(0, 8)}
+                    {UI_TEXT.COMMON.ELLIPSIS}
                   </span>
-                )}
-              </Label>
-              <Input
-                id="imageFile"
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setSelectedImage(e.target.files[0]);
-                  } else {
-                    setSelectedImage(null);
-                  }
-                }}
+                </div>
+              )}
+            </div>
+          </DialogHeader>
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-neutral-100/50 p-1 rounded-lg border border-neutral-200">
+              <TabsTrigger
+                value="details"
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+              >
+                <ClipboardList className="w-4 h-4" />
+                {UI_TEXT.MENU.TAB_DETAILS}
+              </TabsTrigger>
+              {isEditing && (
+                <TabsTrigger
+                  value="recipe"
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                >
+                  <Utensils className="w-4 h-4" />
+                  {UI_TEXT.MENU.TAB_RECIPE}
+                </TabsTrigger>
+              )}
+              <TabsTrigger
+                value="media"
+                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+              >
+                <ImageIcon className="w-4 h-4" />
+                {UI_TEXT.MENU.TAB_MEDIA}
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <form onSubmit={handleSubmit} className="py-2">
+          <FieldGroup className="grid grid-cols-2 gap-4">
+            <MenuBasicInfoFields
+              editingItem={editingItem}
+              categories={categories}
+              selectedCategoryId={selectedCategoryId}
+              setSelectedCategoryId={setSelectedCategoryId}
+            />
+
+            {!isSetMenuCategory ? (
+              <>
+                <MenuStationTimeFields editingItem={editingItem} />
+                <MenuOptionGroups
+                  optionGroups={optionGroups}
+                  setOptionGroups={setOptionGroups}
+                  isFetchingOptions={isFetchingOptions}
+                  onDeleteGroup={(id) => setDeletedGroupIds((prev) => [...prev, id])}
+                  onDeleteItem={(id) => setDeletedItemIds((prev) => [...prev, id])}
+                />
+              </>
+            ) : (
+              <MenuComboItems
+                comboItems={comboItems}
+                menuItems={menuItems}
+                isFetchingCombo={isFetchingCombo}
+                addComboItem={addComboItem}
+                updateComboItem={updateComboItem}
+                removeComboItem={removeComboItem}
               />
-              <Input
-                id="imageUrl"
-                name="imageUrl"
-                type="hidden"
-                defaultValue={editingItem?.imageUrl || "/placeholderMenu.webp"}
-              />
-            </Field>
+            )}
+
+            <MenuImageUpload
+              editingItem={editingItem}
+              isUploading={isUploading}
+              setSelectedImage={setSelectedImage}
+            />
           </FieldGroup>
 
-          <SheetFooter className="pt-4 px-0 flex flex-row gap-2 justify-between">
+          <DialogFooter className="pt-4 px-0 flex flex-row gap-2 justify-between">
             <Button
               type="button"
               variant="outline"
@@ -282,9 +402,9 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
                   ? UI_TEXT.MENU.BUTTON_UPDATE
                   : UI_TEXT.MENU.BUTTON_CREATE}
             </Button>
-          </SheetFooter>
+          </DialogFooter>
         </form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 };

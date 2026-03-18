@@ -12,10 +12,12 @@ import MenuPagination from "./MenuPagination";
 
 export const MenuManagement: React.FC = () => {
   const fetchMenuItems = useMenuStore((state) => state.fetchMenuItems);
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+  const fetchSetMenus = useMenuStore((state) => state.fetchSetMenus);
+  const [categories, setCategories] = useState<{ id: string; name: string; type: number }[]>([]);
 
   useEffect(() => {
     fetchMenuItems();
+    fetchSetMenus();
 
     const fetchCategories = async () => {
       try {
@@ -26,6 +28,7 @@ export const MenuManagement: React.FC = () => {
             .map((c) => ({
               id: c.categoryId,
               name: c.name,
+              type: c.type,
             }));
           setCategories(activeCategories);
         }
@@ -35,13 +38,13 @@ export const MenuManagement: React.FC = () => {
     };
 
     fetchCategories();
-  }, [fetchMenuItems]);
+  }, [fetchMenuItems, fetchSetMenus]);
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto animate-in fade-in duration-500">
+    <div className="px-4 space-y-6 animate-in fade-in duration-500">
       <MenuFilterBar categories={categories} />
 
-      <MenuList />
+      <MenuList categories={categories} />
 
       <MenuPagination />
 

@@ -16,7 +16,7 @@ interface MenuState {
   categoryId: string;
   showOutOfStock: boolean;
   isModalOpen: boolean;
-  editingItem: MenuItem | null;
+  editingItem: MenuItem | SetMenu | null;
 
   // Actions
   setFilter: (filter: Partial<MenuFilter>) => void;
@@ -24,11 +24,11 @@ interface MenuState {
   setCategoryId: (id: string) => void;
   setShowOutOfStock: (show: boolean) => void;
   setModalOpen: (isOpen: boolean) => void;
-  setEditingItem: (item: MenuItem | null) => void;
+  setEditingItem: (item: MenuItem | SetMenu | null) => void;
   fetchMenuItems: (page?: number, pageSize?: number) => Promise<void>;
   fetchSetMenus: (page?: number, pageSize?: number) => Promise<void>;
-  addMenuItem: (item: Partial<MenuItem>) => Promise<void>;
-  updateMenuItem: (id: string, item: Partial<MenuItem>) => Promise<void>;
+  addMenuItem: (item: Partial<MenuItem>) => Promise<MenuItem | undefined>;
+  updateMenuItem: (id: string, item: Partial<MenuItem>) => Promise<MenuItem | undefined>;
   deleteMenuItem: (id: string) => Promise<void>;
   toggleMenuItemStock: (id: string, isOutOfStock: boolean) => Promise<void>;
 
@@ -93,6 +93,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
         // Re-fetch to ensure consistency, or optimistic update
         const currentItems = get().menuItems;
         set({ menuItems: [response.data, ...currentItems] });
+        return response.data;
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to add menu item");
@@ -113,6 +114,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
             m.menuItemId === id ? { ...m, ...updatedItem } : m
           ),
         }));
+        return updatedItem;
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to update menu item");
@@ -200,7 +202,6 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   },
 
   toggleSetMenuStock: async (id, isOutOfStock) => {
-    set({ isLoading: true });
     try {
       const response = await menuService.updateSetMenuStock(id, isOutOfStock);
       if (response.isSuccess) {
@@ -211,7 +212,6 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     } catch (error) {
       console.error("Failed to toggle set menu stock:", error);
     } finally {
-      set({ isLoading: false });
     }
   },
 }));
