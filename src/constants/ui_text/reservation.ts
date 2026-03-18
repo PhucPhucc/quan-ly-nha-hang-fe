@@ -104,4 +104,17 @@ export const RESERVATION = {
   ERROR_SAVE_FAILED: "Lưu thông tin thất bại",
   ERROR_CONNECTION: "Không thể kết nối đến máy chủ",
   ERROR_UNKNOWN: "Đã xảy ra lỗi không xác định",
+
+  // Switch Area Dialog
+  SWITCH_AREA_TITLE: "Chuyển khu vực",
+  SWITCH_AREA_DESC:
+    "Khu vực cũ đã hết bàn vì khách đang sử dụng. Vui lòng chọn bàn ở khu vực khác.",
+  SWITCH_AREA_SELECT_LABEL: "Chọn khu vực",
+  SWITCH_AREA_SELECT_PLACEHOLDER: "Chọn khu vực...",
+  SWITCH_TABLE_SELECT_LABEL: "Chọn bàn trống",
+  SWITCH_TABLE_PLACEHOLDER_SELECT_AREA: "Hãy chọn khu vực trước",
+  SWITCH_TABLE_PLACEHOLDER_NO_TABLE: "Hết bàn trống phù hợp",
+  SWITCH_TABLE_PLACEHOLDER_SELECT_TABLE: "Chọn bàn...",
+  BTN_CONFIRM_SWITCH_CHECKIN: "Xác nhận đổi & Check-in",
+  MSG_SWITCH_INFO: "Vui lòng chọn bàn khác ở khu vực còn trống.",
 };
