@@ -1,21 +1,31 @@
 import { OptionType, SetMenuType, Station } from "./enums";
 
+/**
+ * Reusable Option Group (Master Data)
+ * Definition of what can be selected.
+ */
 export interface OptionGroup {
   optionGroupId: string;
-  menuItemId: string;
   name: string;
   optionType: OptionType;
-  isRequired: boolean;
-  minSelect: number;
-  maxSelect: number;
-  sortOrder: number;
   isActive: boolean;
   optionItems?: OptionItem[];
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string | null;
+
+  // Counts for UI display
+  usageCount?: number;
+
+  // --- LEGACY FIELDS (Staged Refactor) ---
+  menuItemId?: string;
+  isRequired?: boolean;
 }
 
+/**
+ * Values within an Option Group.
+ * Part of the Master Data.
+ */
 export interface OptionItem {
   optionItemId: string;
   optionGroupId: string;
@@ -24,17 +34,31 @@ export interface OptionItem {
   extraPrice: number;
   sortOrder: number;
   isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string | null;
 }
+
+/**
+ * Mapping between MenuItem and OptionGroup.
+ * Contains per-item configurations.
+ */
+export interface MenuItemOptionGroup {
+  menuItemOptionGroupId: string;
+  menuItemId: string;
+  optionGroupId: string;
+  optionGroup?: OptionGroup; // Populated for UI
+
+  // Specific rules for this menu item
+  isRequired: boolean;
+  minSelect: number;
+  maxSelect: number;
+  sortOrder: number;
+  isVisible: boolean;
+}
+
 export interface Category {
   categoryId: string;
   name: string;
   codePrefix: string;
   type: number;
-  createdAt?: string;
-  updatedAt?: string;
   isActive: boolean;
 }
 
@@ -51,8 +75,9 @@ export interface MenuItem {
   categoryId: string;
   categoryName?: string;
   isOutOfStock: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+
+  // New relationship
+  menuItemOptionGroups?: MenuItemOptionGroup[];
 }
 
 export interface SetMenu {
@@ -65,8 +90,6 @@ export interface SetMenu {
   price: number;
   costPrice: number;
   isOutOfStock: boolean;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface MenuFilter {

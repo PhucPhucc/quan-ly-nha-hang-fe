@@ -1,4 +1,4 @@
-import { ClipboardList, Image as ImageIcon, Utensils } from "lucide-react";
+import { ClipboardList, Image as ImageIcon, Plus, Utensils } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -15,11 +15,12 @@ import { uploadImage } from "@/services/imageService";
 import { menuService } from "@/services/menuService";
 import { optionService } from "@/services/optionService";
 import { useMenuStore } from "@/store/useMenuStore";
-import { MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
+import { MenuItem, MenuItemOptionGroup, SetMenu } from "@/types/Menu";
 
 import { RecipeSetupForm } from "../recipe/RecipeSetupForm";
 import { MenuDetailsTab } from "./MenuDetailsTab";
 import { MenuMediaTab } from "./MenuMediaTab";
+import { MenuItemOptionAssignment } from "./options/MenuItemOptionAssignment";
 
 type SetMenuApiRes = SetMenu & {
   items?: { menuItemId: string; quantity: number }[];
@@ -49,10 +50,9 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [comboItems, setComboItems] = useState<{ menuItemId: string; quantity: number }[]>([]);
   const [isFetchingCombo, setIsFetchingCombo] = useState(false);
-  const [optionGroups, setOptionGroups] = useState<Partial<OptionGroup>[]>([]);
-  const [isFetchingOptions, setIsFetchingOptions] = useState(false);
-  const [deletedGroupIds, setDeletedGroupIds] = useState<string[]>([]);
-  const [deletedItemIds, setDeletedItemIds] = useState<string[]>([]);
+  // -- NEW STATE FOR REUSABLE OPTIONS --
+  const [optionAssignments, setOptionAssignments] = useState<MenuItemOptionGroup[]>([]);
+  const [isFetchingAssignments, setIsFetchingAssignments] = useState(false);
 
   const isEditing = !!editingItem;
   const isSetMenu = isEditing && editingItem && "setMenuId" in editingItem;
@@ -101,24 +101,22 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
         }
 
         if (!isSetMenu && itemId) {
-          setIsFetchingOptions(true);
+          // Fetch new reusable assignments
+          setIsFetchingAssignments(true);
           optionService
-            .getOptionGroupsByMenuItem(itemId)
+            .getAssignmentsByMenuItem(itemId)
             .then((res) => {
               if (res.isSuccess && res.data) {
-                setOptionGroups(res.data);
+                setOptionAssignments(res.data);
               }
             })
-            .finally(() => setIsFetchingOptions(false));
+            .finally(() => setIsFetchingAssignments(false));
         } else {
-          setOptionGroups([]);
+          setOptionAssignments([]);
         }
       } else {
         setSelectedCategoryId(categories[0]?.id || "");
         setComboItems([]);
-        setOptionGroups([]);
-        setDeletedGroupIds([]);
-        setDeletedItemIds([]);
       }
     }
   }, [editingItem, categories, isModalOpen, isSetMenu, itemId]);
@@ -216,53 +214,24 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
         }
 
         if (savedMenuItemId) {
-          for (const gId of deletedGroupIds) {
-            await optionService.deleteOptionGroup(gId);
-          }
-          for (const iId of deletedItemIds) {
-            await optionService.deleteOptionItem(iId);
-          }
-
-          for (const group of optionGroups) {
-            let currentGroupId = group.optionGroupId;
-            const isNewGroup = !currentGroupId || currentGroupId.startsWith("temp-");
-
-            if (isNewGroup) {
-              const groupRes = await optionService.createOptionGroup({
-                menuItemId: savedMenuItemId,
-                name: group.name,
-                optionType: group.optionType,
-                isRequired: group.isRequired,
+          // --- SAVE REUSABLE ASSIGNMENTS ---
+          for (const assignment of optionAssignments) {
+            if (assignment.menuItemOptionGroupId.startsWith("temp-")) {
+              await optionService.assignToMenuItem({
+                menuItemId: savedMenuItemId!,
+                optionGroupId: assignment.optionGroupId,
+                isRequired: assignment.isRequired,
+                minSelect: assignment.minSelect,
+                maxSelect: assignment.maxSelect,
+                sortOrder: assignment.sortOrder,
               });
-              if (groupRes.isSuccess && groupRes.data) {
-                currentGroupId = groupRes.data;
-              }
-            } else if (currentGroupId) {
-              await optionService.updateOptionGroup(currentGroupId, {
-                name: group.name,
-                optionType: group.optionType,
-                isRequired: group.isRequired,
+            } else {
+              await optionService.updateAssignment(assignment.menuItemOptionGroupId, {
+                isRequired: assignment.isRequired,
+                minSelect: assignment.minSelect,
+                maxSelect: assignment.maxSelect,
+                sortOrder: assignment.sortOrder,
               });
-            }
-
-            if (currentGroupId && group.optionItems) {
-              for (const item of group.optionItems) {
-                const currentItemId = item.optionItemId;
-                const isNewItem = !currentItemId || currentItemId.startsWith("temp-");
-
-                if (isNewItem) {
-                  await optionService.createOptionItem({
-                    optionGroupId: currentGroupId,
-                    label: item.label,
-                    extraPrice: item.extraPrice,
-                  });
-                } else {
-                  await optionService.updateOptionItem(currentItemId, {
-                    label: item.label,
-                    extraPrice: item.extraPrice,
-                  });
-                }
-              }
             }
           }
         }
@@ -281,9 +250,6 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
     setSelectedImage(null);
     setActiveTab("details");
     setComboItems([]);
-    setOptionGroups([]);
-    setDeletedGroupIds([]);
-    setDeletedItemIds([]);
   };
 
   return (
@@ -329,6 +295,15 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
               </TabsTrigger>
               {isEditing && !isSetMenuCategory && (
                 <TabsTrigger
+                  value="options"
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  {UI_TEXT.MENU.OPTIONS.TITLE}
+                </TabsTrigger>
+              )}
+              {isEditing && !isSetMenuCategory && (
+                <TabsTrigger
                   value="recipe"
                   className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
                 >
@@ -365,11 +340,15 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
                 addComboItem={addComboItem}
                 updateComboItem={updateComboItem}
                 removeComboItem={removeComboItem}
-                optionGroups={optionGroups}
-                setOptionGroups={setOptionGroups}
-                isFetchingOptions={isFetchingOptions}
-                setDeletedGroupIds={setDeletedGroupIds}
-                setDeletedItemIds={setDeletedItemIds}
+              />
+            </TabsContent>
+
+            <TabsContent value="options" className="mt-0 p-6">
+              <MenuItemOptionAssignment
+                assignments={optionAssignments}
+                setAssignments={setOptionAssignments}
+                menuItemId={itemId as string}
+                isFetching={isFetchingAssignments}
               />
             </TabsContent>
 

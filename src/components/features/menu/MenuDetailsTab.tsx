@@ -3,11 +3,10 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
+import { MenuItem, SetMenu } from "@/types/Menu";
 
 import { MenuBasicInfoFields } from "./MenuBasicInfoFields";
 import { MenuComboItems } from "./MenuComboItems";
-import { MenuOptionGroups } from "./MenuOptionGroups";
 import { MenuStationTimeFields } from "./MenuStationTimeFields";
 
 interface MenuDetailsTabProps {
@@ -29,11 +28,6 @@ interface MenuDetailsTabProps {
     value: string | number
   ) => void;
   removeComboItem: (index: number) => void;
-  optionGroups: Partial<OptionGroup>[];
-  setOptionGroups: React.Dispatch<React.SetStateAction<Partial<OptionGroup>[]>>;
-  isFetchingOptions: boolean;
-  setDeletedGroupIds: React.Dispatch<React.SetStateAction<string[]>>;
-  setDeletedItemIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({
@@ -51,11 +45,6 @@ export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({
   addComboItem,
   updateComboItem,
   removeComboItem,
-  optionGroups,
-  setOptionGroups,
-  isFetchingOptions,
-  setDeletedGroupIds,
-  setDeletedItemIds,
 }) => {
   const isEditing = !!editingItem;
 
@@ -75,13 +64,6 @@ export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({
               {!isSetMenuCategory ? (
                 <>
                   <MenuStationTimeFields editingItem={editingItem} />
-                  <MenuOptionGroups
-                    optionGroups={optionGroups}
-                    setOptionGroups={setOptionGroups}
-                    isFetchingOptions={isFetchingOptions}
-                    onDeleteGroup={(id) => setDeletedGroupIds((prev) => [...prev, id])}
-                    onDeleteItem={(id) => setDeletedItemIds((prev) => [...prev, id])}
-                  />
                 </>
               ) : (
                 <MenuComboItems
@@ -101,7 +83,7 @@ export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({
       <div className="sticky bottom-0 bg-white border-t border-neutral-200 p-4 px-8 flex justify-end gap-3 z-20 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           onClick={onCancel}
           disabled={isUploading}
           className="h-11 px-8"

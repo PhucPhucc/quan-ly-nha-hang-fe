@@ -9,6 +9,7 @@ import {
   Flame,
   History,
   LayoutDashboard,
+  Library,
   Martini,
   Package,
   Settings,
@@ -38,6 +39,13 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
       title: UI_TEXT.SIDE_BAR.MENU,
       url: "/manager/menu",
       icon: SquareMenu,
+      items: [
+        {
+          title: UI_TEXT.MENU.OPTIONS.REUSABLE_TITLE,
+          url: "/manager/menu/options",
+          icon: Library,
+        },
+      ],
     },
     {
       title: UI_TEXT.SIDE_BAR.TABLE,

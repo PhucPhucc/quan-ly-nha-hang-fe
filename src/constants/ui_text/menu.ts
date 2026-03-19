@@ -15,10 +15,10 @@ export const MENU = {
   DELETE_DEFAULT_ERROR:
     "Món ăn này đã có trong hóa đơn, không thể xóa. Hãy tắt trạng thái bán thay vì xóa!",
   OPTIONS: {
-    TITLE: "Tuỳ chọn món ăn",
-    MENU_FAILED: "Không thể tải tuỳ chọn cho món ăn này!",
-    NAME_GROUP: "Tên nhóm tuỳ chọn",
-    TYPE: "Loại tuỳ chọn",
+    TITLE: "Tùy chọn món ăn",
+    MENU_FAILED: "Không thể tải tùy chọn cho món ăn này!",
+    NAME_GROUP: "Tên nhóm tùy chọn",
+    TYPE: "Loại tùy chọn",
     REQUIRED_MARK: "*",
     CHOOSE_ONE: "Chọn 1",
     MAXIMUM: "Tối đa",
@@ -32,27 +32,65 @@ export const MENU = {
     PLACEHOLDER_EXTRA_PRICE: "VD: 10000",
     COMBO_ITEMS: "Các lựa chọn trong nhóm",
     EMPTY_COMBO: "Chưa có lựa chọn nào. Nhấp vào Thêm để tạo.",
+    ADD_FROM_LIBRARY: "Thêm nhóm tùy chọn",
+    REUSABLE_TITLE: "Danh sách tùy chọn",
+    SEARCH_PLACEHOLDER: "Tìm tên nhóm...",
+    MIN_SELECT: "Chọn tối thiểu",
+    MAX_SELECT: "Chọn tối đa",
+    ASSIGNED_OPTIONS: "Tùy chọn đã gán",
+    CREATE_NEW_GROUP: "Tạo nhóm mới",
+    USAGE_COUNT: (count: number) => `Sử dụng trong ${count} món`,
+    VIEW_ITEMS: (count: number) => `Xem ${count} lựa chọn`,
+    ASSIGN_DESC: "Cấu hình các quy tắc cho từng nhóm tùy chọn trên món ăn này.",
+    LIBRARY_DESC: "Gán các nhóm tùy chọn đã thiết lập cho món ăn này.",
+    EMPTY_ASSIGNED: "Chưa có tùy chọn nào được gán. Nhấn 'Thêm nhóm tùy chọn' để bắt đầu.",
+    EMPTY_LIBRARY: "Chưa có dữ liệu nhóm mẫu.",
+    MASTER_DESC: "Hệ thống quản lý nhóm tùy chọn dùng chung trên toàn bộ thực đơn.",
+    FILTER_ALL_TYPES: "Tất cả loại",
+    TYPE_SINGLE: "Chọn 1",
+    TYPE_MULTI: "Chọn nhiều",
+    ASSIGNED_TO_ITEMS: "Gán cho món",
+    EMPTY_MASTER: "Không tìm thấy dữ liệu nhóm tùy chọn nào.",
+    // -- Form Modal --
+    CREATE_GROUP_TITLE: "Tạo nhóm tùy chọn mới",
+    CREATE_GROUP_DESC: "Thiết lập thông tin và các lựa chọn bên trong nhóm.",
+    EDIT_GROUP_TITLE: "Chỉnh sửa nhóm tùy chọn",
+    EDIT_GROUP_DESC: "Cập nhật thông tin và danh sách lựa chọn.",
+    SECTION_GROUP_INFO: "Thông tin nhóm",
+    PLACEHOLDER_GROUP_NAME: "VD: Kích cỡ, Độ ngọ, Topping...",
+    TYPE_SINGLE_HINT: "Khách chỉ được chọn đúng 1 lựa chọn (radio).",
+    TYPE_MULTI_HINT: "Khách được chọn nhiều lựa chọn (checkbox).",
+    IS_ACTIVE_LABEL: "Hiển thị",
+    STATUS_HIDDEN: "Ẩn",
+    ADD_ITEM_BTN: "Thêm lựa chọn",
+    ITEM_LABEL_COL: "Tên lựa chọn",
+    ITEMS_HINT: "Các tùy chọn khách sẽ thấy khi đặt món.",
+    ITEMS_COUNT_SUFFIX: "lựa chọn",
+    // Validation
+    VALIDATE_NAME_REQUIRED: "Vui lòng nhập tên nhóm tùy chọn.",
+    VALIDATE_ITEMS_MIN: "Cần ít nhất 1 lựa chọn trong nhóm.",
+    VALIDATE_ITEM_LABEL: "Tên lựa chọn không được bỏ trống.",
+    // Toast
+    CREATE_SUCCESS: "Tạo nhóm tùy chọn thành công!",
+    EDIT_SUCCESS: "Cập nhật nhóm tùy chọn thành công!",
+    DELETE_SUCCESS: "Xóa nhóm tùy chọn thành công!",
+    DELETE_CONFIRM: (name: string) =>
+      `Bạn có chắc chắn muốn xóa nhóm “${name}” không? Thao tác này không thể hoàn tác.`,
+    DELETE_IN_USE_ERROR: "Nhóm này đang được dùng trong món ăn, không thể xóa.",
   },
-  // Table Columns
   COL_ITEM_NAME: "Món ăn",
   COL_CATEGORY: "Danh mục",
   COL_PRICE: "Giá",
   COL_STATUS: "Trạng thái",
   COL_ACTION: "Hành động",
-
-  // Status and Tooltips
   STATUS_OUT_OF_STOCK: "Hết hàng",
   STATUS_IN_STOCK: "Còn hàng",
   NO_CATEGORY: "Không có",
   TOOLTIP_CHANGE_STATUS: "Đổi trạng thái",
   TOOLTIP_EDIT: "Sửa",
   TOOLTIP_DELETE: "Xóa",
-
-  // Not Found
   NOT_FOUND_TITLE: "Không tìm thấy món ăn nào!",
   NOT_FOUND_DESC: "Hãy kiểm tra lại bộ lọc hoặc thêm món ăn mới.",
-
-  // Form Modal
   MODAL_EDIT_TITLE: "Chỉnh sửa món ăn",
   MODAL_ADD_TITLE: "Thêm món ăn mới",
   MODAL_EDIT_DESC: "Cập nhật thông tin chi tiết của món ăn.",
@@ -75,19 +113,16 @@ export const MENU = {
   PLACEHOLDER_COST: "VD: 30000",
   PLACEHOLDER_CATEGORY: "Chọn danh mục",
   PLACEHOLDER_IMAGE_URL: "https://example.com/image.jpg",
-
   PLACEHOLDER_EXPECTED_TIME: "VD: 15",
   OPTION_SELECT_DEFAULT: "-- Chọn --",
   BUTTON_CANCEL: "Hủy",
   BUTTON_UPDATE: "Cập nhật",
   BUTTON_CREATE: "Tạo mới",
-
   STATION: {
     HOTKITCHEN: "Bếp nóng",
     COLDKITCHEN: "Bếp lạnh",
     DRINKS: "Pha chế",
   },
-
   LOADING_IMAGE: "Đang tải hình ảnh...",
   UPLOADING_IMAGE: "Đang xử lý hình ảnh...",
   FETCHING_RECIPE: "Đang tải dữ liệu công thức...",
@@ -97,20 +132,15 @@ export const MENU = {
     "Khi món ăn này được hoàn thành (Completed) trên KDS, hệ thống sẽ tự động trừ kho nguyên liệu dựa trên định lượng này. Đảm bảo dữ liệu chính xác để báo cáo tồn kho đúng.",
   ADD_NOW: "Thêm ngay",
   INGREDIENTS_COUNT: (count: number) => `${count} nguyên liệu`,
-
-  // Filter Bar
   PLACEHOLDER_SEARCH: "Tìm kiếm tên món ăn...",
   FILTER_ALL_CATEGORY: "Tất cả danh mục",
   FILTER_OUT_OF_STOCK: "Hết hàng",
-
-  // Management Page
   CATEGORY: {
     COFFEE: "Cà phê",
     SOUP: "Món nước",
     TEA: "Trà",
   },
   MENU_PAGE_SUBTITLE: "Thêm, sửa, xóa và quản lý trạng thái món ăn trong nhà hàng.",
-  LIST_TITLE: "Danh sách món ăn",
   TAB_DETAILS: "Chi tiết món",
   TAB_RECIPE: "Định lượng nguyên liệu",
   TAB_MEDIA: "Hình ảnh & Media",
@@ -125,7 +155,6 @@ export const MENU = {
     TAX: "Thuế",
     TOTAL: "Tổng cộng",
   },
-
   RECIPE: {
     SETUP_TITLE: "Thiết lập định lượng",
     SETUP_DESC: "Xác định các nguyên liệu và số lượng cần thiết cho món ăn này.",
@@ -158,7 +187,7 @@ export const MENU = {
     SAVE_RECIPE: "Lưu định lượng",
     DISCARD: "Hủy bỏ",
     QUANTITY_MIN_ERROR: "Số lượng phải lớn hơn 0",
-    AT_LEAST_ONE_ERROR: "Cần nhất một nguyên liệu",
+    AT_LEAST_ONE_ERROR: "Cần ít nhất một nguyên liệu",
     INSTRUCTIONS_PLACEHOLDER: "Mô tả quy trình chế biến món ăn...",
     PREP_TIME_PLACEHOLDER: "VD: 15",
     TITLE: "Chi tiết công thức",
