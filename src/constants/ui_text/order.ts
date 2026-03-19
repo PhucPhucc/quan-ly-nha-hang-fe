@@ -38,6 +38,11 @@ export const ORDER = {
     PAGE_PREV: "Trang trước",
     PAGE_NEXT: "Trang tiếp",
     FETCH_ERROR: "Lỗi khi lấy danh sách đơn hàng.",
+    CONTEXT_MENU: {
+      BACK: "Quay lại",
+      FORWARD: "Tiếp theo",
+      RELOAD: "Làm mới",
+    },
   },
   CURRENT: {
     TOTAL_AMOUNT: "Tổng thanh toán",
@@ -51,6 +56,7 @@ export const ORDER = {
     SUBTOTAL: "Tạm tính",
     TAX: "Thuế (VAT 10%)",
     PAY: "Thanh toán",
+    PRINT_TEMP: "In tạm tính",
     EMPTY: "Chưa có món nào trong đơn hàng",
     CONFIRM_PAYMENT: "Xác nhận thanh toán",
     CHECKOUT_TITLE: "Thanh toán đơn hàng",

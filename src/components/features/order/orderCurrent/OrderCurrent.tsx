@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
@@ -18,12 +18,11 @@ const OrderCurrent = () => {
 
   const fetchOrderDetails = useOrderBoardStore((s) => s.fetchOrderDetails);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedOrderId) {
       fetchOrderDetails(selectedOrderId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedOrderId]);
+  }, [selectedOrderId, fetchOrderDetails]);
 
   const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
   const tableName = activeOrder

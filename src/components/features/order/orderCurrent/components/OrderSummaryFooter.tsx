@@ -114,19 +114,10 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           </div>
         </div>
       </div>
-      <div className="w-full flex gap-2">
+      <div className="w-full grid grid-cols-2 gap-2">
+        <Button variant="outline">{UI_TEXT.ORDER.CURRENT.PRINT_TEMP}</Button>
+
         <Button
-          variant="outline"
-          size="sm"
-          className="flex-1 font-bold text-xs h-9 bg-success text-success-foreground hover:bg-success/80 border-success"
-          onClick={() => setIsCheckoutOpen(true)}
-          disabled={isSubmitting || !selectedOrderId}
-        >
-          {UI_TEXT.ORDER.CURRENT.PAY}
-        </Button>
-        <Button
-          size="sm"
-          className="flex-1 font-bold shadow-sm hover:bg-primary/90 transition-all text-xs h-9"
           onClick={handleSendRequest}
           disabled={
             isSubmitting || !selectedOrderId || (cartData[selectedOrderId] || []).length === 0
@@ -140,6 +131,14 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           ) : (
             UI_TEXT.MENU.OPTIONS.ADD_TO_ORDER.replace(" -", "")
           )}
+        </Button>
+        <Button
+          variant="outline"
+          className="col-span-2 font-bold bg-success text-success-foreground hover:bg-success/80 border-success"
+          onClick={() => setIsCheckoutOpen(true)}
+          disabled={isSubmitting || !selectedOrderId}
+        >
+          {UI_TEXT.ORDER.CURRENT.PAY}
         </Button>
       </div>
 
