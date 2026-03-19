@@ -16,8 +16,10 @@ import OrderList from "./OrderList";
 
 const CardMenu = () => {
   const menuItems = useMenuStore((state) => state.menuItems);
+  const setMenus = useMenuStore((state) => state.setMenus);
   const isLoading = useMenuStore((state) => state.isLoading);
   const fetchMenuItems = useMenuStore((state) => state.fetchMenuItems);
+  const fetchSetMenus = useMenuStore((state) => state.fetchSetMenus);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeTab, setActiveTab] = useState("all");
@@ -26,23 +28,62 @@ const CardMenu = () => {
 
   useEffect(() => {
     fetchMenuItems();
-    const fetchCats = async () => {
+    fetchSetMenus();
+
+    const fetchCategories = async () => {
       try {
         const response = await categoryService.getAll();
-        if (response.isSuccess && response.data) {
-          setCategories(response.data.items.filter((c) => c.isActive));
+        if (response.isSuccess && response.data && response.data.items) {
+          const activeCategories = response.data.items
+            .filter((c) => c.isActive)
+            .map((c) => ({
+              categoryId: c.categoryId,
+              name: c.name,
+              type: c.type,
+            }));
+          setCategories(activeCategories);
         }
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }
     };
-    fetchCats();
-  }, [fetchMenuItems]);
+
+    fetchCategories();
+  }, [fetchMenuItems, fetchSetMenus]);
+
+  const comboCategory = useMemo(() => {
+    return categories.find(
+      (c) =>
+        c.type === 2 ||
+        c.name.toLowerCase().includes("combo") ||
+        c.name.toLowerCase().includes("set")
+    );
+  }, [categories]);
+
+  const mappedSetMenus = useMemo<MenuItem[]>(() => {
+    return setMenus.map((sm) => ({
+      menuItemId: sm.setMenuId,
+      name: sm.name,
+      code: sm.code,
+      description: sm.description || "",
+      price: sm.price,
+      costPrice: sm.costPrice,
+      expectedTime: 15,
+      imageUrl: sm.imageUrl || "",
+      station: 1, // Default Station
+      categoryId: comboCategory?.categoryId || "combo-category-id",
+      categoryName: comboCategory?.name || "Combo",
+      isOutOfStock: sm.isOutOfStock,
+      createdAt: sm.createdAt,
+      updatedAt: sm.updatedAt,
+    }));
+  }, [setMenus, comboCategory]);
 
   const filteredItems = useMemo(() => {
-    if (activeTab === "all") return menuItems;
-    return menuItems.filter((item) => item.categoryId === activeTab);
-  }, [menuItems, activeTab]);
+    const combinedItems = [...menuItems, ...mappedSetMenus];
+    if (activeTab === "all") return combinedItems;
+    return combinedItems.filter((item) => item.categoryId === activeTab);
+  }, [menuItems, mappedSetMenus, activeTab]);
 
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);

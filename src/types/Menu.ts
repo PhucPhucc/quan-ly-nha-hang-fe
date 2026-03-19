@@ -31,11 +31,11 @@ export interface OptionItem {
 export interface Category {
   categoryId: string;
   name: string;
-  codePrefix: string;
+  codePrefix?: string;
   type: number;
   createdAt?: string;
   updatedAt?: string;
-  isActive: boolean;
+  isActive?: boolean;
 }
 
 export interface MenuItem {

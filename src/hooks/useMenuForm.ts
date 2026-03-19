@@ -6,13 +6,13 @@ import { uploadImage } from "@/services/imageService";
 import { menuService } from "@/services/menuService";
 import { optionService } from "@/services/optionService";
 import { useMenuStore } from "@/store/useMenuStore";
-import { MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
+import { Category, MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
 
 type SetMenuApiRes = SetMenu & {
   items?: { menuItemId: string; quantity: number }[];
 };
 
-export const useMenuForm = (categories: { id: string; name: string; type: number }[]) => {
+export const useMenuForm = (categories: Category[]) => {
   const {
     isModalOpen,
     setModalOpen,
@@ -44,7 +44,7 @@ export const useMenuForm = (categories: { id: string; name: string; type: number
       ? (editingItem as SetMenu).setMenuId
       : (editingItem as MenuItem).menuItemId
     : null;
-  const isSetMenuCategory = categories.find((c) => c.id === selectedCategoryId)?.type === 2;
+  const isSetMenuCategory = categories.find((c) => c.categoryId === selectedCategoryId)?.type === 2;
 
   useEffect(() => {
     if (isModalOpen) {
@@ -53,7 +53,9 @@ export const useMenuForm = (categories: { id: string; name: string; type: number
           setSelectedCategoryId(editingItem.categoryId);
         } else {
           const defaultCatId =
-            categories.find((c) => c.type === (isSetMenu ? 2 : 1))?.id || categories[0]?.id || "";
+            categories.find((c) => c.type === (isSetMenu ? 2 : 1))?.categoryId ||
+            categories[0]?.categoryId ||
+            "";
           setSelectedCategoryId(defaultCatId);
         }
 
@@ -97,7 +99,7 @@ export const useMenuForm = (categories: { id: string; name: string; type: number
           setOptionGroups([]);
         }
       } else {
-        setSelectedCategoryId(categories[0]?.id || "");
+        setSelectedCategoryId(categories[0]?.categoryId || "");
         setComboItems([]);
         setOptionGroups([]);
         setDeletedGroupIds([]);

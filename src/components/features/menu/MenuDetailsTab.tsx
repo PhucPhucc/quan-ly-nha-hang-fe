@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useMenuForm } from "@/hooks/useMenuForm";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { Category } from "@/types/Menu";
 
 import { MenuBasicInfoFields } from "./MenuBasicInfoFields";
 import { MenuComboItems } from "./MenuComboItems";
@@ -12,7 +13,7 @@ import { MenuStationTimeFields } from "./MenuStationTimeFields";
 
 interface MenuDetailsTabProps {
   form: ReturnType<typeof useMenuForm>;
-  categories: { id: string; name: string; type: number }[];
+  categories: Category[];
 }
 
 export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({ form, categories }) => {

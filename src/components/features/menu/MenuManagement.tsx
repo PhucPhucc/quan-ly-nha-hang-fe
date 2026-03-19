@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { categoryService } from "@/services/categoryService";
 import { useMenuStore } from "@/store/useMenuStore";
+import { Category } from "@/types/Menu";
 
 import { MenuFilterBar } from "./MenuFilterBar";
 import { MenuFormModal } from "./MenuFormModal";
@@ -13,7 +14,7 @@ import MenuPagination from "./MenuPagination";
 export const MenuManagement: React.FC = () => {
   const fetchMenuItems = useMenuStore((state) => state.fetchMenuItems);
   const fetchSetMenus = useMenuStore((state) => state.fetchSetMenus);
-  const [categories, setCategories] = useState<{ id: string; name: string; type: number }[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     fetchMenuItems();
@@ -26,7 +27,7 @@ export const MenuManagement: React.FC = () => {
           const activeCategories = response.data.items
             .filter((c) => c.isActive)
             .map((c) => ({
-              id: c.categoryId,
+              categoryId: c.categoryId,
               name: c.name,
               type: c.type,
             }));
