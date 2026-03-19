@@ -163,6 +163,9 @@ export const BUTTON = {
   HISTORY: "Lịch sử",
   CONFIRM_DELETE: "Đồng ý xóa",
   PREFERENCE: "Tùy chọn",
+  FEATURE: "Tính năng",
+  BACK: "Quay lại",
+  NEXT: "Tiếp theo",
 };
 
 export const API = {

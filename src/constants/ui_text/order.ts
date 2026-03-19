@@ -38,10 +38,16 @@ export const ORDER = {
     PAGE_PREV: "Trang trước",
     PAGE_NEXT: "Trang tiếp",
     FETCH_ERROR: "Lỗi khi lấy danh sách đơn hàng.",
-    CONTEXT_MENU: {
-      BACK: "Quay lại",
-      FORWARD: "Tiếp theo",
-      RELOAD: "Làm mới",
+    DROPDOWN_FEATURE: {
+      MERGE: "Gộp đơn",
+      LABEL_MERGE: "Chọn đơn hàng để gộp",
+      SPLIT: "Tách đơn",
+      MOVE_TABLE: "Chuyển bàn",
+      MOVE_TABLE_LABEL: "Chọn bàn để chuyển",
+      MOVE_TABLE_ORIGIN: "Bàn nguồn",
+      MOVE_TABLE_DESTINATION: "Bàn đích",
+      MOVE_TABLE_SUCCESS: "Chuyển bàn thành công",
+      MOVE_TABLE_ERROR: "Chuyển bàn thất bại",
     },
   },
   CURRENT: {
