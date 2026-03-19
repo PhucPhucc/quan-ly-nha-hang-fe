@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { InventoryLedgerItem, InventoryTransactionType } from "@/types/Inventory";
@@ -241,12 +242,14 @@ export function InventoryLedgerTable() {
                       </div>
                     </TableCell>
                     <TableCell
-                      className={`text-right font-black tabular-nums text-lg ${item.quantityDelta > 0 ? "text-emerald-500 bg-emerald-500/5" : "text-destructive bg-destructive/5"}`}
+                      className={`text-right font-black tabular-nums text-lg ${normalizeInventoryQuantity(item.quantityDelta) > 0 ? "text-emerald-500 bg-emerald-500/5" : "text-destructive bg-destructive/5"}`}
                     >
-                      {item.quantityDelta > 0 ? `+${item.quantityDelta}` : item.quantityDelta}
+                      {normalizeInventoryQuantity(item.quantityDelta) > 0
+                        ? `+${formatInventoryQuantity(item.quantityDelta)}`
+                        : formatInventoryQuantity(item.quantityDelta)}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-foreground/90 bg-muted/5">
-                      {item.balanceAfter}
+                      {formatInventoryQuantity(item.balanceAfter)}
                     </TableCell>
                   </TableRow>
                 ))

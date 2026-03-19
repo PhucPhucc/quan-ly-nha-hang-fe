@@ -27,8 +27,8 @@ export const INVENTORY_DATE_BUTTON_CLASS =
 
 export const INVENTORY_PAGE_CLASS = "flex h-full min-h-0 flex-col gap-4 bg-slate-50/30 p-4 pt-6";
 
-// Table behavior - container scroll + height
-export const INVENTORY_TABLE_CONTAINER_CLASS = "max-h-[600px] overflow-auto relative";
+// Table behavior - container scroll + height (shorter to leave room for pagination)
+export const INVENTORY_TABLE_CONTAINER_CLASS = "max-h-[540px] overflow-auto relative";
 
 // Table header wrapper - sticky background
 export const INVENTORY_THEAD_CLASS =
@@ -45,10 +45,12 @@ export const INVENTORY_TH_CLASS =
 export const INVENTORY_TROW_CLASS = "h-[52px] border-border/60 hover:bg-muted/10 transition-colors";
 
 // Detail card surface
-export const INVENTORY_DETAIL_CARD_CLASS = "rounded-3xl border-border/60 shadow-sm overflow-hidden";
+export const INVENTORY_DETAIL_CARD_CLASS =
+  "rounded-3xl border-border/60 shadow-sm overflow-hidden py-0 gap-0";
 
 // Detail card header
-export const INVENTORY_DETAIL_CARD_HEADER_CLASS = "bg-muted/30 border-b border-border/60 px-6 py-4";
+export const INVENTORY_DETAIL_CARD_HEADER_CLASS =
+  "bg-muted/30 border-b border-border/60 px-6 py-4 pb-4! [.border-b]:pb-4!";
 
 // Creator avatar
 export const INVENTORY_AVATAR_CLASS =

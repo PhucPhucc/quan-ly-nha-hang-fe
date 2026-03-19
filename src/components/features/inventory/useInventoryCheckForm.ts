@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import {
@@ -63,12 +64,12 @@ export function useInventoryCheckForm(id?: string) {
     setItems((prev) =>
       prev.map((item) => {
         if (item.ingredientId === ingredientId) {
-          const physicalQuantity = val;
-          const bookQuantity = item.bookQuantity || 0;
+          const physicalQuantity = normalizeInventoryQuantity(val);
+          const bookQuantity = normalizeInventoryQuantity(item.bookQuantity || 0);
           return {
             ...item,
             physicalQuantity,
-            differenceQuantity: physicalQuantity - bookQuantity,
+            differenceQuantity: normalizeInventoryQuantity(physicalQuantity - bookQuantity),
           };
         }
         return item;
@@ -132,7 +133,7 @@ export function useInventoryCheckForm(id?: string) {
       note,
       items: items.map((i) => ({
         ingredientId: i.ingredientId!,
-        physicalQuantity: i.physicalQuantity || 0,
+        physicalQuantity: normalizeInventoryQuantity(i.physicalQuantity || 0),
         reason: i.reason,
       })),
     };
@@ -148,7 +149,7 @@ export function useInventoryCheckForm(id?: string) {
         note,
         items: items.map((i) => ({
           ingredientId: i.ingredientId!,
-          physicalQuantity: i.physicalQuantity || 0,
+          physicalQuantity: normalizeInventoryQuantity(i.physicalQuantity || 0),
           reason: i.reason,
         })),
       });

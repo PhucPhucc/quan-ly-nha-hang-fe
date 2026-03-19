@@ -1,3 +1,4 @@
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { apiFetch } from "@/services/api";
 import { ApiResponse, PaginationResult, QueryParams } from "@/types/Api";
 import {
@@ -152,9 +153,9 @@ function mapInventoryCheckDetail(dto: InventoryCheckDetailDto): InventoryCheckDe
       ingredientName: item.ingredientName,
       ingredientCode: item.ingredientCode,
       unit: item.unit,
-      bookQuantity: item.bookQuantity,
-      physicalQuantity: item.physicalQuantity,
-      differenceQuantity: item.differenceQuantity,
+      bookQuantity: normalizeInventoryQuantity(item.bookQuantity),
+      physicalQuantity: normalizeInventoryQuantity(item.physicalQuantity),
+      differenceQuantity: normalizeInventoryQuantity(item.differenceQuantity),
       reason: item.reason ?? undefined,
     })),
   };
@@ -168,8 +169,8 @@ function mapInventoryCheckCreateFormItem(
     ingredientName: dto.ingredientName,
     ingredientCode: dto.ingredientCode,
     unit: dto.baseUnit,
-    bookQuantity: dto.bookQuantity,
-    physicalQuantity: dto.bookQuantity,
+    bookQuantity: normalizeInventoryQuantity(dto.bookQuantity),
+    physicalQuantity: normalizeInventoryQuantity(dto.bookQuantity),
     differenceQuantity: 0,
     reason: "",
   };
@@ -180,6 +181,14 @@ function mapInventoryReportItem(dto: InventoryReportItem): InventoryReportItem {
     ...dto,
     ingredientCode: dto.ingredientCode || "",
     unit: dto.unit || "",
+    openingStock: normalizeInventoryQuantity(dto.openingStock),
+    totalStockIn: normalizeInventoryQuantity(dto.totalStockIn),
+    totalStockOut: normalizeInventoryQuantity(dto.totalStockOut),
+    totalSaleDeduction: normalizeInventoryQuantity(dto.totalSaleDeduction),
+    totalOutbound: normalizeInventoryQuantity(dto.totalOutbound),
+    closingStock: normalizeInventoryQuantity(dto.closingStock),
+    averageUnitCost: normalizeInventoryQuantity(dto.averageUnitCost, 2),
+    closingStockValue: normalizeInventoryQuantity(dto.closingStockValue, 2),
   };
 }
 
@@ -215,9 +224,18 @@ function mapInventoryLedgerItem(dto: InventoryLedgerItem): InventoryLedgerItem {
     occurredAt: dto.occurredAt,
     transactionType: parseInventoryTransactionType(dto.transactionType as number | string),
     referenceNo: dto.referenceNo,
-    quantityDelta: dto.quantityDelta,
-    balanceAfter: dto.balanceAfter,
+    quantityDelta: normalizeInventoryQuantity(dto.quantityDelta),
+    balanceAfter: normalizeInventoryQuantity(dto.balanceAfter),
     note: dto.note,
+  };
+}
+
+function mapInventoryTransaction(item: InventoryTransaction): InventoryTransaction {
+  return {
+    ...item,
+    quantity: normalizeInventoryQuantity(item.quantity),
+    unitCost: item.unitCost == null ? null : normalizeInventoryQuantity(item.unitCost, 2),
+    balanceAfter: normalizeInventoryQuantity(item.balanceAfter),
   };
 }
 
@@ -265,6 +283,8 @@ export const inventoryService = {
     if (response.isSuccess && response.data) {
       response.data.items = response.data.items.map((item: Ingredient) => ({
         ...item,
+        currentStock: normalizeInventoryQuantity(item.currentStock),
+        costPrice: normalizeInventoryQuantity(item.costPrice, 2),
         unit: item.unit || (item.baseUnit as unknown as InventoryUnit),
       }));
     }
@@ -392,9 +412,21 @@ export const inventoryService = {
       options.filters.forEach((f) => params.append("filters", f));
     }
 
-    return apiFetch<PaginationResult<InventoryTransaction>>(
+    const response = await apiFetch<PaginationResult<InventoryTransaction>>(
       `/inventory/transactions?${params.toString()}`
     );
+
+    if (response.isSuccess && response.data) {
+      return {
+        ...response,
+        data: {
+          ...response.data,
+          items: response.data.items.map(mapInventoryTransaction),
+        },
+      };
+    }
+
+    return response;
   },
 
   // Inventory Check

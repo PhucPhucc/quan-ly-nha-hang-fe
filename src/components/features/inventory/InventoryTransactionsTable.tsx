@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { InventoryTransaction, InventoryTransactionType } from "@/types/Inventory";
@@ -126,7 +127,7 @@ export function InventoryTransactionsTable() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right font-black tabular-nums text-foreground/90">
-                  {item.quantity}
+                  {formatInventoryQuantity(item.quantity)}
                 </TableCell>
                 <TableCell className="text-right font-medium text-muted-foreground tabular-nums">
                   {item.unitCost
@@ -134,7 +135,7 @@ export function InventoryTransactionsTable() {
                     : UI_TEXT.COMMON.DASH}
                 </TableCell>
                 <TableCell className="text-right font-black tabular-nums text-primary/80 bg-primary/5">
-                  {item.balanceAfter}
+                  {formatInventoryQuantity(item.balanceAfter)}
                 </TableCell>
                 <TableCell className="text-center font-bold text-[10px] text-muted-foreground/40 italic">
                   {item.reference || UI_TEXT.COMMON.DASH}

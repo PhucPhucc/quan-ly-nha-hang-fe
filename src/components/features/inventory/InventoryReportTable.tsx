@@ -22,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { InventoryReportItem } from "@/types/Inventory";
@@ -86,7 +87,7 @@ export function InventoryReportTable() {
                 {UI_TEXT.INVENTORY.REPORT.TOTAL_VALUE_LABEL}
               </span>
               <span className="text-xl font-black text-primary tabular-nums">
-                {totalInventoryValue.toLocaleString()}{" "}
+                {totalInventoryValue.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}{" "}
                 <span className="text-xs font-bold opacity-60 ml-0.5">
                   {UI_TEXT.INVENTORY.TABLE.CURRENCY}
                 </span>
@@ -175,24 +176,24 @@ export function InventoryReportTable() {
                       </div>
                     </TableCell>
                     <TableCell className="text-right font-bold tabular-nums text-muted-foreground/60">
-                      {item.openingStock}
+                      {formatInventoryQuantity(item.openingStock)}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-emerald-500 bg-emerald-500/5">
                       {UI_TEXT.INVENTORY.TABLE.PLUS_SIGN}
-                      {item.totalStockIn}
+                      {formatInventoryQuantity(item.totalStockIn)}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-destructive bg-destructive/5">
                       {UI_TEXT.INVENTORY.TABLE.MINUS_SIGN}
-                      {item.totalOutbound}
+                      {formatInventoryQuantity(item.totalOutbound)}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-foreground/90 bg-muted/5">
-                      {item.closingStock}
+                      {formatInventoryQuantity(item.closingStock)}
                     </TableCell>
                     <TableCell className="text-right text-[11px] font-medium text-muted-foreground/50 tabular-nums">
-                      {item.averageUnitCost.toLocaleString()}
+                      {item.averageUnitCost.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-primary pr-6">
-                      {item.closingStockValue.toLocaleString()}
+                      {item.closingStockValue.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
                     </TableCell>
                     <TableCell className="pr-8 text-right">
                       <Button

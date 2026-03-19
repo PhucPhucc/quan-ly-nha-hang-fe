@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Ingredient } from "@/types/Inventory";
 
@@ -95,7 +96,7 @@ export function OpeningStockTable({
                       type="number"
                       value={entry.quantity || ""}
                       min={0}
-                      step={0.01}
+                      step={0.001}
                       disabled={disabled}
                       placeholder="0"
                       className="h-8 text-right font-semibold rounded-lg border-slate-100 focus:ring-primary/20"
@@ -108,6 +109,7 @@ export function OpeningStockTable({
                         type="number"
                         value={entry.costPrice || ""}
                         min={0}
+                        step={0.01}
                         disabled={disabled}
                         placeholder="0"
                         className="h-8 text-right pr-6 font-semibold rounded-lg border-slate-100 focus:ring-primary/20"
@@ -121,7 +123,7 @@ export function OpeningStockTable({
                     </div>
                   </TableCell>
                   <TableCell className="text-right font-bold text-primary/90">
-                    {rowTotal.toLocaleString("vi-VN")}
+                    {formatInventoryQuantity(rowTotal, 2)}
                     {UI_TEXT.COMMON.CURRENCY}
                   </TableCell>
                 </TableRow>

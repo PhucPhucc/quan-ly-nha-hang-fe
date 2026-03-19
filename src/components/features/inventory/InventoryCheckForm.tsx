@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryCheckStatus } from "@/types/Inventory";
 
@@ -156,7 +157,7 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
                 </TableHeader>
                 <TableBody>
                   {items.map((item) => {
-                    const diff = item.differenceQuantity || 0;
+                    const diff = normalizeInventoryQuantity(item.differenceQuantity || 0);
                     const diffColor =
                       diff > 0
                         ? "text-emerald-500"
@@ -180,11 +181,12 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
                           </div>
                         </TableCell>
                         <TableCell className="text-center font-black tabular-nums text-foreground/80">
-                          {item.bookQuantity}
+                          {formatInventoryQuantity(item.bookQuantity || 0)}
                         </TableCell>
                         <TableCell className="px-4 py-3">
                           <Input
                             type="number"
+                            step="0.001"
                             disabled={isProcessed || isSaving}
                             value={item.physicalQuantity}
                             onChange={(e) =>
@@ -196,7 +198,9 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
                         <TableCell
                           className={`text-center font-black tabular-nums text-lg ${diffColor} bg-muted/5`}
                         >
-                          {diff > 0 ? `${UI_TEXT.INVENTORY.TABLE.PLUS_SIGN}${diff}` : diff}
+                          {diff > 0
+                            ? `${UI_TEXT.INVENTORY.TABLE.PLUS_SIGN}${formatInventoryQuantity(diff)}`
+                            : formatInventoryQuantity(diff)}
                         </TableCell>
                         <TableCell className="pr-8">
                           <Input

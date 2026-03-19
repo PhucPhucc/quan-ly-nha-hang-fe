@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
 import { StockOutReceipt } from "@/types/StockOut";
@@ -95,7 +96,7 @@ export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetail
                         <div className="font-bold text-foreground/80">{item.ingredientName}</div>
                       </TableCell>
                       <TableCell className="text-center font-medium">
-                        {item.quantity}{" "}
+                        {formatInventoryQuantity(item.quantity)}{" "}
                         <span className="text-[10px] text-muted-foreground uppercase font-bold">
                           {item.unit}
                         </span>
@@ -121,7 +122,7 @@ export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetail
                 {UI_TEXT.INVENTORY.SETTINGS.GENERAL_INFO}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-5 space-y-4">
               <div className="space-y-4 text-sm font-medium">
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
@@ -166,7 +167,7 @@ export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetail
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-dashed">
+              <div className="pt-4 border-t border-dashed">
                 <div className="bg-destructive/5 rounded-3xl p-5 text-center border border-destructive/10">
                   <p className="text-[10px] text-destructive/60 font-black uppercase tracking-widest mb-1.5">
                     {UI_TEXT.INVENTORY.OPENING_STOCK.TOTAL_VALUE}
@@ -178,7 +179,7 @@ export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetail
               </div>
 
               {receipt.note && (
-                <div className="pt-6 border-t border-dashed">
+                <div className="pt-4 border-t border-dashed">
                   <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-2.5">
                     {UI_TEXT.INVENTORY.FORM.DESCRIPTION}
                   </p>

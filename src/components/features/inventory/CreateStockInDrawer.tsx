@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { stockInService } from "@/services/stock-in.service";
@@ -107,7 +108,10 @@ export const CreateStockInDrawer = ({
   };
 
   const calculateTotal = () => {
-    return items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
+    return normalizeInventoryQuantity(
+      items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0),
+      2
+    );
   };
 
   const handleSubmit = async () => {
@@ -246,11 +250,15 @@ export const CreateStockInDrawer = ({
                           <Input
                             type="number"
                             min="0"
-                            step="0.1"
+                            step="0.001"
                             className="h-9 rounded-lg"
                             value={item.quantity}
                             onChange={(e) =>
-                              updateItem(index, "quantity", parseFloat(e.target.value) || 0)
+                              updateItem(
+                                index,
+                                "quantity",
+                                normalizeInventoryQuantity(parseFloat(e.target.value) || 0)
+                              )
                             }
                           />
                           <span className="text-xs font-semibold text-muted-foreground shrink-0 w-8">
@@ -265,10 +273,15 @@ export const CreateStockInDrawer = ({
                         <Input
                           type="number"
                           min="0"
+                          step="0.01"
                           className="h-9 rounded-lg text-right"
                           value={item.unitPrice}
                           onChange={(e) =>
-                            updateItem(index, "unitPrice", parseFloat(e.target.value) || 0)
+                            updateItem(
+                              index,
+                              "unitPrice",
+                              normalizeInventoryQuantity(parseFloat(e.target.value) || 0, 2)
+                            )
                           }
                         />
                       </div>
@@ -291,7 +304,7 @@ export const CreateStockInDrawer = ({
                         {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
                       </span>
                       <span className="text-sm font-bold text-primary">
-                        {(item.quantity * item.unitPrice).toLocaleString("vi-VN")}
+                        {formatInventoryQuantity(item.quantity * item.unitPrice, 2)}
                         <span className="text-[10px] ml-1">{UI_TEXT.COMMON.CURRENCY}</span>
                       </span>
                     </div>
@@ -309,7 +322,7 @@ export const CreateStockInDrawer = ({
             </span>
             <div className="text-right">
               <span className="text-2xl font-black text-primary tracking-tighter">
-                {calculateTotal().toLocaleString("vi-VN")}
+                {formatInventoryQuantity(calculateTotal(), 2)}
               </span>
               <span className="text-sm font-bold text-primary ml-1 uppercase">
                 {UI_TEXT.COMMON.CURRENCY}
