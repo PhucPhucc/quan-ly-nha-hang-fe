@@ -4,6 +4,16 @@ import { Order } from "@/types/Order";
 
 import { apiFetch } from "./api";
 
+export interface PayOsQrResponse {
+  checkoutUrl?: string;
+  qrCode?: string;
+  accountName?: string;
+  accountNumber?: string;
+  bin?: string;
+  amount?: number;
+  description?: string;
+}
+
 // Requests
 export interface CreateOrderRequest {
   tableId?: string;
@@ -130,5 +140,10 @@ export const orderService = {
     apiFetch<string>(`/billing/orders/${orderId}/checkout`, {
       method: "POST",
       body: { orderId, paymentMethod, amountReceived },
+    }),
+
+  createPayOsQr: (orderId: string): Promise<ApiResponse<PayOsQrResponse | string>> =>
+    apiFetch<PayOsQrResponse | string>(`/billing/orders/${orderId}/payos-qr`, {
+      method: "POST",
     }),
 };
