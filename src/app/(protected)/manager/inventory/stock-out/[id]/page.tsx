@@ -1,9 +1,11 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { invalidateInventoryQueries } from "@/components/features/inventory/inventoryQueryInvalidation";
 import { StockOutDetailView } from "@/components/features/inventory/StockOutDetailView";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -13,6 +15,7 @@ import { StockOutReceipt } from "@/types/StockOut";
 
 export default function StockOutDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { id } = use(params);
   const [receipt, setReceipt] = useState<StockOutReceipt | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,6 +44,7 @@ export default function StockOutDetailPage({ params }: { params: Promise<{ id: s
     try {
       const response = await stockOutService.deleteReceipt(receipt.id);
       if (response.isSuccess) {
+        await invalidateInventoryQueries(queryClient);
         toast.success("Đã xóa phiếu xuất kho thành công");
         router.push("/manager/inventory/stock-out");
       }

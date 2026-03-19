@@ -8,6 +8,7 @@ import {
   InventoryCheck,
   InventoryCheckDetail,
   InventoryCheckItem,
+  InventoryCheckStatus,
   InventoryLedgerItem,
   InventoryReportItem,
   InventorySettings,
@@ -45,13 +46,16 @@ function extractGeneratedIngredientCode(payload: unknown): string | null {
 
 function formatDateOnly(value: string | Date): string {
   const date = value instanceof Date ? value : new Date(value);
-  return date.toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 interface InventoryCheckListDto {
   inventoryCheckId: string;
   checkDate: string;
-  status: number;
+  status: number | string;
   createdByName?: string | null;
   totalItems: number;
 }
@@ -84,7 +88,22 @@ interface InventoryCheckCreateFormDto {
 
 interface InventoryCheckProcessDto {
   inventoryCheckId: string;
-  status: number;
+  status: number | string;
+  processedAt?: string | null;
+  stockInReceiptId?: string | null;
+  stockInReceiptCode?: string | null;
+  stockOutReceiptId?: string | null;
+  stockOutReceiptCode?: string | null;
+}
+
+export interface ProcessInventoryCheckResult {
+  inventoryCheckId: string;
+  status: InventoryCheckStatus;
+  processedAt?: string | null;
+  stockInReceiptId?: string | null;
+  stockInReceiptCode?: string | null;
+  stockOutReceiptId?: string | null;
+  stockOutReceiptCode?: string | null;
 }
 
 interface PaginationEnvelope<T> {
@@ -96,11 +115,25 @@ interface PaginationEnvelope<T> {
   totalPages: number;
 }
 
+function parseInventoryCheckStatus(status: number | string): InventoryCheckStatus {
+  if (typeof status === "number") {
+    return status;
+  }
+
+  switch (status.toLowerCase()) {
+    case "processed":
+      return InventoryCheckStatus.Processed;
+    case "draft":
+    default:
+      return InventoryCheckStatus.Draft;
+  }
+}
+
 function mapInventoryCheck(dto: InventoryCheckListDto): InventoryCheck {
   return {
     inventoryCheckId: dto.inventoryCheckId,
     checkDate: dto.checkDate,
-    status: dto.status,
+    status: parseInventoryCheckStatus(dto.status),
     createdBy: dto.createdByName ?? undefined,
     totalItems: dto.totalItems,
     createdAt:
@@ -150,10 +183,37 @@ function mapInventoryReportItem(dto: InventoryReportItem): InventoryReportItem {
   };
 }
 
+function parseInventoryTransactionType(type: number | string): InventoryTransactionType {
+  if (typeof type === "number") {
+    return type;
+  }
+
+  switch (type.toLowerCase()) {
+    case "openingstock":
+      return InventoryTransactionType.OpeningStock;
+    case "stockin":
+      return InventoryTransactionType.StockIn;
+    case "stockinreverse":
+      return InventoryTransactionType.StockInReverse;
+    case "stockout":
+      return InventoryTransactionType.StockOut;
+    case "stockoutreverse":
+      return InventoryTransactionType.StockOutReverse;
+    case "salededuction":
+      return InventoryTransactionType.SaleDeduction;
+    case "inventorycheck":
+      return InventoryTransactionType.InventoryCheck;
+    default:
+      return InventoryTransactionType.InventoryCheck;
+  }
+}
+
 function mapInventoryLedgerItem(dto: InventoryLedgerItem): InventoryLedgerItem {
   return {
+    ingredientId: dto.ingredientId,
+    ingredientName: dto.ingredientName,
     occurredAt: dto.occurredAt,
-    transactionType: dto.transactionType as InventoryTransactionType,
+    transactionType: parseInventoryTransactionType(dto.transactionType as number | string),
     referenceNo: dto.referenceNo,
     quantityDelta: dto.quantityDelta,
     balanceAfter: dto.balanceAfter,
@@ -161,9 +221,13 @@ function mapInventoryLedgerItem(dto: InventoryLedgerItem): InventoryLedgerItem {
   };
 }
 
-function normalizePagination<T>(data: PaginationEnvelope<T>): PaginationResult<T> {
+function normalizePagination<T>(
+  data: PaginationEnvelope<T>,
+  mapper?: (item: T) => T
+): PaginationResult<T> {
+  const items = mapper ? data.items.map(mapper) : data.items;
   return {
-    items: data.items,
+    items: items as T[],
     totalCount: data.totalCount,
     pageSize: data.pageSize,
     currentPage: data.currentPage ?? data.pageNumber ?? 1,
@@ -188,7 +252,7 @@ export const inventoryService = {
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {
-          params.append("filters", `${key}=${value}`);
+          params.append("filters", `${key}:${value}`);
         }
       });
     }
@@ -398,14 +462,22 @@ export const inventoryService = {
     };
   },
 
-  processInventoryCheck: async (id: string): Promise<ApiResponse<boolean>> => {
+  processInventoryCheck: async (id: string): Promise<ApiResponse<ProcessInventoryCheckResult>> => {
     const response = await apiFetch<InventoryCheckProcessDto>(`/inventory/check/${id}/process`, {
       method: "POST",
     });
 
     return {
       ...response,
-      data: response.data.status > 0,
+      data: {
+        inventoryCheckId: response.data.inventoryCheckId,
+        status: parseInventoryCheckStatus(response.data.status),
+        processedAt: response.data.processedAt ?? null,
+        stockInReceiptId: response.data.stockInReceiptId ?? null,
+        stockInReceiptCode: response.data.stockInReceiptCode ?? null,
+        stockOutReceiptId: response.data.stockOutReceiptId ?? null,
+        stockOutReceiptCode: response.data.stockOutReceiptCode ?? null,
+      },
     };
   },
 
@@ -439,27 +511,27 @@ export const inventoryService = {
   },
 
   getInventoryLedger: async (
-    ingredientId: string,
+    ingredientId: string | undefined,
     fromDate: string,
     toDate: string,
     transactionType?: number
-  ): Promise<ApiResponse<InventoryLedgerItem[]>> => {
+  ): Promise<ApiResponse<PaginationResult<InventoryLedgerItem>>> => {
     const params = new URLSearchParams({
-      ingredientId,
       fromDate: formatDateOnly(fromDate),
       toDate: formatDateOnly(toDate),
     });
+    if (ingredientId) params.set("ingredientId", ingredientId);
     if (transactionType !== undefined) {
       params.set("transactionType", transactionType.toString());
     }
 
-    const response = await apiFetch<InventoryLedgerItem[]>(
+    const response = await apiFetch<PaginationResult<InventoryLedgerItem>>(
       `/inventory/ledger?${params.toString()}`
     );
 
     return {
       ...response,
-      data: response.data.map(mapInventoryLedgerItem),
+      data: normalizePagination(response.data, mapInventoryLedgerItem),
     };
   },
 };

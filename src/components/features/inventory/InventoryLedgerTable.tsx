@@ -1,9 +1,10 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { History, LucideTags } from "lucide-react";
 import React from "react";
 
-import { DateRangePicker } from "@/components/shared/DateRangePicker";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -21,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { inventoryService } from "@/services/inventory.service";
 import { InventoryLedgerItem, InventoryTransactionType } from "@/types/Inventory";
 
 import {
@@ -39,13 +41,24 @@ import { useInventoryLedger } from "./useInventoryLedger";
 export function InventoryLedgerTable() {
   const {
     ledger,
-    dateRange,
-    setDateRange,
+    fromDate,
+    toDate,
+    setFromDate,
+    setToDate,
     transactionType,
     setTransactionType,
+    ingredientId,
     ingredientName,
+    setIngredient,
     isLoading,
   } = useInventoryLedger();
+
+  const { data: ingredientsData } = useQuery({
+    queryKey: ["inventory-ledger-ingredients"],
+    queryFn: () => inventoryService.getIngredients(1, 1000),
+  });
+
+  const ingredients = ingredientsData?.data?.items ?? [];
 
   if (isLoading) {
     return (
@@ -63,9 +76,43 @@ export function InventoryLedgerTable() {
   return (
     <div className="space-y-6">
       <InventoryToolbar>
-        <div className="[&_button]:h-11 [&_button]:rounded-xl [&_button]:bg-muted/30 [&_button]:border-none shadow-none">
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
-        </div>
+        <DatePicker value={fromDate} onChange={setFromDate} placeholder="Từ ngày" />
+        <DatePicker value={toDate} onChange={setToDate} placeholder="Đến ngày" />
+
+        <Select
+          value={ingredientId || "all"}
+          onValueChange={(value) => {
+            if (value === "all") {
+              setIngredient("", "");
+              return;
+            }
+
+            const selectedIngredient = ingredients.find(
+              (ingredient) => ingredient.ingredientId === value
+            );
+            setIngredient(value, selectedIngredient?.name);
+          }}
+        >
+          <SelectTrigger
+            className={`${INVENTORY_SELECT_TRIGGER_CLASS} h-11 w-full sm:w-64 rounded-xl border-none bg-muted/30 font-bold`}
+          >
+            <SelectValue placeholder={UI_TEXT.INVENTORY.REPORT.SELECT_MATERIAL} />
+          </SelectTrigger>
+          <SelectContent className="rounded-2xl border-border/40 shadow-2xl p-1.5">
+            <SelectItem value="all" className="rounded-xl px-3 py-2 text-xs font-bold">
+              {UI_TEXT.INVENTORY.REPORT.CATEGORY_ALL}
+            </SelectItem>
+            {ingredients.map((ingredient) => (
+              <SelectItem
+                key={ingredient.ingredientId}
+                value={ingredient.ingredientId}
+                className="rounded-xl px-3 py-2 text-xs font-bold"
+              >
+                {ingredient.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <Select
           value={transactionType?.toString() ?? "all"}
@@ -116,7 +163,9 @@ export function InventoryLedgerTable() {
 
       <div className={`${INVENTORY_TABLE_SURFACE_CLASS} flex flex-col overflow-hidden`}>
         <div className="bg-muted/5 border-b border-border/40 px-6 py-4 flex flex-col gap-1">
-          <p className="text-lg font-black tracking-tight text-foreground/80">{ingredientName}</p>
+          <p className="text-lg font-black tracking-tight text-foreground/80">
+            {ingredientName || UI_TEXT.INVENTORY.REPORT.SELECT_MATERIAL}
+          </p>
           <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground/40">
             {UI_TEXT.INVENTORY.TABLE.HISTORY_DESC_FULL}
           </p>
@@ -129,6 +178,11 @@ export function InventoryLedgerTable() {
                 <TableHead className={`${INVENTORY_TH_CLASS} pl-8 w-[200px]`}>
                   {UI_TEXT.INVENTORY.REPORT.LEDGER_COL_TIME}
                 </TableHead>
+                {!ingredientId && (
+                  <TableHead className={INVENTORY_TH_CLASS}>
+                    {UI_TEXT.INVENTORY.TABLE.COL_NAME}
+                  </TableHead>
+                )}
                 <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                   {UI_TEXT.INVENTORY.TABLE.COL_TYPE}
                 </TableHead>
@@ -141,16 +195,13 @@ export function InventoryLedgerTable() {
                 <TableHead className={`${INVENTORY_TH_CLASS} text-right`}>
                   {UI_TEXT.INVENTORY.TABLE.COL_BALANCE}
                 </TableHead>
-                <TableHead className={`${INVENTORY_TH_CLASS} pr-8`}>
-                  {UI_TEXT.INVENTORY.REPORT.LEDGER_COL_NOTE}
-                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {ledger.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={ingredientId ? 6 : 7}
                     className="h-40 text-center text-muted-foreground font-bold italic tracking-tight opacity-30"
                   >
                     {UI_TEXT.INVENTORY.OPENING_STOCK.EMPTY_SEARCH}
@@ -168,6 +219,13 @@ export function InventoryLedgerTable() {
                         minute: "2-digit",
                       })}
                     </TableCell>
+                    {!ingredientId && (
+                      <TableCell>
+                        <span className="text-sm font-black text-foreground/80">
+                          {item.ingredientName}
+                        </span>
+                      </TableCell>
+                    )}
                     <TableCell className="text-center py-3">
                       <Badge
                         variant="secondary"
@@ -189,9 +247,6 @@ export function InventoryLedgerTable() {
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-foreground/90 bg-muted/5">
                       {item.balanceAfter}
-                    </TableCell>
-                    <TableCell className="max-w-[200px] truncate pr-8 text-[11px] font-medium italic text-muted-foreground/50">
-                      {item.note || UI_TEXT.COMMON.DASH}
                     </TableCell>
                   </TableRow>
                 ))

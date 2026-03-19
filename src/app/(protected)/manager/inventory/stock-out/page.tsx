@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { RotateCcw, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -12,6 +13,7 @@ import {
 } from "@/components/features/inventory/components/inventoryStyles";
 import { InventoryToolbar } from "@/components/features/inventory/components/InventoryToolbar";
 import { CreateStockOutDrawer } from "@/components/features/inventory/CreateStockOutDrawer";
+import { invalidateInventoryQueries } from "@/components/features/inventory/inventoryQueryInvalidation";
 import { StockOutListTable } from "@/components/features/inventory/StockOutListTable";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,7 @@ const RESET_FILTER_LABEL = "Reset";
 
 export default function StockOutPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [data, setData] = useState<StockOutReceipt[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -83,6 +86,7 @@ export default function StockOutPage() {
 
     try {
       await stockOutService.deleteReceipt(receiptToDelete);
+      await invalidateInventoryQueries(queryClient);
       toast.success("Đã xóa phiếu xuất kho thành công");
       await fetchData();
     } catch (error) {

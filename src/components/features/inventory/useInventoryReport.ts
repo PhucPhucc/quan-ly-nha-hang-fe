@@ -1,39 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { useCallback, useState } from "react";
-import { DateRange } from "react-day-picker";
 
 import { inventoryService } from "@/services/inventory.service";
 
 export function useInventoryReport() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => ({
-    from: startOfMonth(new Date()),
-    to: endOfMonth(new Date()),
-  }));
+  const [fromDate, setFromDate] = useState<Date>(() => startOfMonth(new Date()));
+  const [toDate, setToDate] = useState<Date>(() => endOfMonth(new Date()));
   const [ingredientId, setIngredientId] = useState<string | undefined>();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["inventory-report", dateRange, ingredientId, page, pageSize],
+    queryKey: ["inventory-report", fromDate, toDate, ingredientId, page, pageSize],
     queryFn: () =>
       inventoryService.getInventoryReport(
-        dateRange?.from?.toISOString() ?? startOfMonth(new Date()).toISOString(),
-        dateRange?.to?.toISOString() ?? endOfMonth(new Date()).toISOString(),
+        fromDate.toISOString(),
+        toDate.toISOString(),
         ingredientId,
         page,
         pageSize
       ),
   });
 
-  const handleDateRangeChange: (range: DateRange | undefined) => void = useCallback((range) => {
-    if (range?.from && range?.to) {
-      setDateRange({ from: range.from, to: range.to });
-      setPage(1);
-    } else {
-      setDateRange(undefined);
-      setPage(1);
-    }
+  const handleFromDateChange = useCallback((value: Date | undefined) => {
+    if (!value) return;
+    setFromDate(value);
+    setToDate((previous) => (previous < value ? value : previous));
+    setPage(1);
+  }, []);
+
+  const handleToDateChange = useCallback((value: Date | undefined) => {
+    if (!value) return;
+    setToDate(value);
+    setFromDate((previous) => (previous > value ? value : previous));
+    setPage(1);
+  }, []);
+
+  const handleIngredientChange = useCallback((value: string | undefined) => {
+    setIngredientId(value);
+    setPage(1);
   }, []);
 
   return {
@@ -51,10 +57,12 @@ export function useInventoryReport() {
     isLoading,
     isError,
     error,
-    dateRange,
-    setDateRange: handleDateRangeChange,
+    fromDate,
+    toDate,
+    setFromDate: handleFromDateChange,
+    setToDate: handleToDateChange,
     ingredientId,
-    setIngredientId,
+    setIngredientId: handleIngredientChange,
     page,
     setPage,
     pageSize,

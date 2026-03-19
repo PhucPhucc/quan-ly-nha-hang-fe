@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -22,6 +23,8 @@ import { stockInService } from "@/services/stock-in.service";
 import { Ingredient } from "@/types/Inventory";
 import { CreateStockInRequest } from "@/types/StockIn";
 
+import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
+
 interface CreateStockInDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -42,6 +45,7 @@ export const CreateStockInDrawer = ({
   onOpenChange,
   onSuccess,
 }: CreateStockInDrawerProps) => {
+  const queryClient = useQueryClient();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [items, setItems] = useState<ReceiptItemEntry[]>([]);
   const [note, setNote] = useState("");
@@ -119,6 +123,7 @@ export const CreateStockInDrawer = ({
       };
       const response = await stockInService.createReceipt(request);
       if (response.isSuccess) {
+        await invalidateInventoryQueries(queryClient);
         toast.success(`Đã tạo phiếu nhập ${response.data.receiptCode}`);
         onSuccess();
         onOpenChange(false);

@@ -15,9 +15,24 @@ interface DateRangePickerProps {
   value?: DateRange;
   onChange?: (date: DateRange | undefined) => void;
   className?: string;
+  numberOfMonths?: number;
+  yearRange?: {
+    from: number;
+    to: number;
+  };
 }
 
-export function DateRangePicker({ value, onChange, className }: DateRangePickerProps) {
+export function DateRangePicker({
+  value,
+  onChange,
+  className,
+  numberOfMonths = 2,
+  yearRange,
+}: DateRangePickerProps) {
+  const today = new Date();
+  const fromYear = yearRange?.from ?? today.getFullYear() - 5;
+  const toYear = yearRange?.to ?? today.getFullYear() + 5;
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -52,7 +67,10 @@ export function DateRangePicker({ value, onChange, className }: DateRangePickerP
             defaultMonth={value?.from}
             selected={value}
             onSelect={onChange}
-            numberOfMonths={2}
+            numberOfMonths={numberOfMonths}
+            captionLayout={numberOfMonths === 1 ? "dropdown" : "label"}
+            fromYear={fromYear}
+            toYear={toYear}
             className="rounded-xl border shadow-xl bg-background"
           />
         </PopoverContent>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -23,6 +24,7 @@ import { Ingredient } from "@/types/Inventory";
 import { CreateStockOutRequest, StockOutReason } from "@/types/StockOut";
 
 import { INVENTORY_INPUT_CLASS } from "./components/inventoryStyles";
+import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
 
 interface CreateStockOutDrawerProps {
   open: boolean;
@@ -41,6 +43,7 @@ export const CreateStockOutDrawer = ({
   open,
   onOpenChange,
 }: CreateStockOutDrawerProps) => {
+  const queryClient = useQueryClient();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [items, setItems] = useState<ReceiptItemEntry[]>([]);
   const [reason, setReason] = useState<string>(UI_TEXT.INVENTORY.STOCK_OUT.REASON_PRESETS[0]);
@@ -134,6 +137,7 @@ export const CreateStockOutDrawer = ({
 
       const response = await stockOutService.createReceipt(request);
       if (response.isSuccess) {
+        await invalidateInventoryQueries(queryClient);
         toast.success(
           `${UI_TEXT.INVENTORY.STOCK_OUT.SUCCESS_CREATE_PREFIX} ${response.data.receiptCode}`
         );

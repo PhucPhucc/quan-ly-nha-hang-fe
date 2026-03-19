@@ -1,11 +1,19 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { History, LucideListTree, Wallet } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-import { DateRangePicker } from "@/components/shared/DateRangePicker";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -15,6 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { inventoryService } from "@/services/inventory.service";
 import { InventoryReportItem } from "@/types/Inventory";
 
 import {
@@ -30,7 +39,23 @@ import { InventoryToolbar } from "./components/InventoryToolbar";
 import { useInventoryReport } from "./useInventoryReport";
 
 export function InventoryReportTable() {
-  const { report, dateRange, setDateRange, isLoading } = useInventoryReport();
+  const {
+    report,
+    fromDate,
+    toDate,
+    setFromDate,
+    setToDate,
+    ingredientId,
+    setIngredientId,
+    isLoading,
+  } = useInventoryReport();
+
+  const { data: ingredientsData } = useQuery({
+    queryKey: ["inventory-report-ingredients"],
+    queryFn: () => inventoryService.getIngredients(1, 1000),
+  });
+
+  const ingredients = ingredientsData?.data?.items ?? [];
 
   if (isLoading) {
     return (
@@ -70,9 +95,25 @@ export function InventoryReportTable() {
           </div>
         }
       >
-        <div className="[&_button]:h-11 [&_button]:rounded-xl [&_button]:bg-muted/30 [&_button]:border-none shadow-none">
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
-        </div>
+        <DatePicker value={fromDate} onChange={setFromDate} placeholder="Từ ngày" />
+        <DatePicker value={toDate} onChange={setToDate} placeholder="Đến ngày" />
+
+        <Select
+          value={ingredientId ?? "all"}
+          onValueChange={(value) => setIngredientId(value === "all" ? undefined : value)}
+        >
+          <SelectTrigger className="h-11 w-full rounded-xl border-none bg-muted/30 font-bold sm:w-[240px]">
+            <SelectValue placeholder={UI_TEXT.INVENTORY.REPORT.SELECT_MATERIAL} />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all">{UI_TEXT.INVENTORY.REPORT.CATEGORY_ALL}</SelectItem>
+            {ingredients.map((ingredient) => (
+              <SelectItem key={ingredient.ingredientId} value={ingredient.ingredientId}>
+                {ingredient.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </InventoryToolbar>
 
       <div className={`${INVENTORY_TABLE_SURFACE_CLASS} flex flex-col overflow-hidden shadow-none`}>
@@ -95,9 +136,6 @@ export function InventoryReportTable() {
                 <TableHead className={`${INVENTORY_TH_CLASS} text-right text-destructive`}>
                   {UI_TEXT.INVENTORY.REPORT.COL_OUT}
                 </TableHead>
-                <TableHead className={`${INVENTORY_TH_CLASS} text-right text-orange-600`}>
-                  {UI_TEXT.INVENTORY.REPORT.COL_SALE}
-                </TableHead>
                 <TableHead className={`${INVENTORY_TH_CLASS} text-right`}>
                   {UI_TEXT.INVENTORY.REPORT.COL_CLOSING}
                 </TableHead>
@@ -114,7 +152,7 @@ export function InventoryReportTable() {
               {report.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={10}
+                    colSpan={9}
                     className="h-40 text-center text-muted-foreground/30 font-bold italic"
                   >
                     {UI_TEXT.INVENTORY.OPENING_STOCK.EMPTY_SEARCH}
@@ -145,11 +183,7 @@ export function InventoryReportTable() {
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-destructive bg-destructive/5">
                       {UI_TEXT.INVENTORY.TABLE.MINUS_SIGN}
-                      {item.totalStockOut}
-                    </TableCell>
-                    <TableCell className="text-right font-black tabular-nums text-orange-500 bg-orange-500/5">
-                      {UI_TEXT.INVENTORY.TABLE.MINUS_SIGN}
-                      {item.totalSaleDeduction}
+                      {item.totalOutbound}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-foreground/90 bg-muted/5">
                       {item.closingStock}

@@ -150,6 +150,8 @@ export interface InventoryReportItem {
 }
 
 export interface InventoryLedgerItem {
+  ingredientId: string;
+  ingredientName?: string;
   occurredAt: string;
   transactionType: InventoryTransactionType;
   referenceNo: string;

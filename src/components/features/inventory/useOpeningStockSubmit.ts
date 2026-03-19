@@ -6,6 +6,7 @@ import { importOpeningStockSchema } from "@/lib/zod-schemas/inventory";
 import { inventoryService } from "@/services/inventory.service";
 
 import type { OpeningStockEntryValues } from "./components/openingStockEntry.types";
+import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
 import { buildImportOpeningStockInput } from "./openingStockEntry.utils";
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
@@ -60,10 +61,7 @@ export function useOpeningStockSubmit() {
         lockedAt: new Date().toISOString(),
       }));
 
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["inventory-settings"] }),
-        queryClient.invalidateQueries({ queryKey: ["opening-stock-ingredients"] }),
-      ]);
+      await invalidateInventoryQueries(queryClient);
       toast.success(OPENING_STOCK.SUCCESS_IMPORT);
     },
     onError: (error) => {

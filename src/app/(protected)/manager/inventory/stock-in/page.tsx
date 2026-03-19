@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { RotateCcw, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -12,6 +13,7 @@ import {
   INVENTORY_INPUT_CLASS,
 } from "@/components/features/inventory/components/inventoryStyles";
 import { InventoryToolbar } from "@/components/features/inventory/components/InventoryToolbar";
+import { invalidateInventoryQueries } from "@/components/features/inventory/inventoryQueryInvalidation";
 import { StockInListTable } from "@/components/features/inventory/StockInListTable";
 import { StockOutListTable } from "@/components/features/inventory/StockOutListTable";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
@@ -34,6 +36,7 @@ type ReceiptType = "in" | "out";
 
 export default function StockInPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [receiptType, setReceiptType] = useState<ReceiptType>("in");
   const [stockInData, setStockInData] = useState<StockInReceipt[]>([]);
   const [stockOutData, setStockOutData] = useState<StockOutReceipt[]>([]);
@@ -116,6 +119,7 @@ export default function StockInPage() {
         await stockOutService.deleteReceipt(receiptToDelete);
         toast.success("Đã xóa phiếu xuất kho thành công");
       }
+      await invalidateInventoryQueries(queryClient);
       await fetchData();
     } catch (error) {
       console.error("Failed to reverse receipt:", error);

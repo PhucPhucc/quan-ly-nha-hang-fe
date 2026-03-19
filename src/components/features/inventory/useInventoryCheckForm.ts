@@ -5,7 +5,13 @@ import { toast } from "sonner";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
-import { CreateInventoryCheckRequest, InventoryCheckItem } from "@/types/Inventory";
+import {
+  CreateInventoryCheckRequest,
+  InventoryCheckDetail,
+  InventoryCheckItem,
+} from "@/types/Inventory";
+
+import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
 
 export function useInventoryCheckForm(id?: string) {
   const router = useRouter();
@@ -78,10 +84,10 @@ export function useInventoryCheckForm(id?: string) {
 
   const createMutation = useMutation({
     mutationFn: (data: CreateInventoryCheckRequest) => inventoryService.createInventoryCheck(data),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       if (res.isSuccess) {
         toast.success(UI_TEXT.INVENTORY.CHECK.CREATE.SUCCESS_SAVE);
-        queryClient.invalidateQueries({ queryKey: ["inventory-checks"] });
+        await invalidateInventoryQueries(queryClient);
         router.push("/manager/inventory/check");
       }
     },
@@ -89,11 +95,32 @@ export function useInventoryCheckForm(id?: string) {
 
   const processMutation = useMutation({
     mutationFn: (id: string) => inventoryService.processInventoryCheck(id),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       if (res.isSuccess) {
+        if (id && !isNew) {
+          queryClient.setQueryData(
+            ["inventory-check", id],
+            (
+              previous:
+                | {
+                    isSuccess: boolean;
+                    data: InventoryCheckDetail;
+                  }
+                | undefined
+            ) =>
+              previous
+                ? {
+                    ...previous,
+                    data: {
+                      ...previous.data,
+                      status: res.data.status,
+                    },
+                  }
+                : previous
+          );
+        }
         toast.success(UI_TEXT.INVENTORY.CHECK.CREATE.SUCCESS_PROCESS);
-        queryClient.invalidateQueries({ queryKey: ["inventory-checks"] });
-        queryClient.invalidateQueries({ queryKey: ["ingredients"] });
+        await invalidateInventoryQueries(queryClient);
         router.push("/manager/inventory/check");
       }
     },

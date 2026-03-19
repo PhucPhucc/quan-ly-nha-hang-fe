@@ -4,7 +4,7 @@ import { LucideClipboardCheck, LucideExternalLink, LucidePlus } from "lucide-rea
 import Link from "next/link";
 import React from "react";
 
-import { DateRangePicker } from "@/components/shared/DateRangePicker";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,8 +48,10 @@ export function InventoryCheckTable() {
     totalCount,
     statusFilter,
     setStatusFilter,
-    dateRange,
-    setDateRange,
+    fromDate,
+    toDate,
+    setFromDate,
+    setToDate,
   } = useInventoryCheckTable();
 
   if (isLoading) {
@@ -85,7 +87,8 @@ export function InventoryCheckTable() {
           </SelectContent>
         </Select>
 
-        <DateRangePicker value={dateRange} onChange={setDateRange} />
+        <DatePicker value={fromDate} onChange={setFromDate} placeholder="Từ ngày" />
+        <DatePicker value={toDate} onChange={setToDate} placeholder="Đến ngày" />
       </InventoryToolbar>
 
       <div className={INVENTORY_TABLE_SURFACE_CLASS}>
