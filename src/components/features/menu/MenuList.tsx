@@ -11,18 +11,19 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useMenuStore } from "@/store/useMenuStore";
+import { Category } from "@/types/Menu";
 
 import { MenuItemCard } from "./MenuItemCard";
 
 interface MenuListProps {
-  categories: { id: string; name: string; type: number }[];
+  categories: Category[];
 }
 
 export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
   const { menuItems, setMenus, isLoading, searchQuery, categoryId } = useMenuStore();
 
   const filteredItems = useMemo(() => {
-    const isComboCategorySelected = categories.find((c) => c.id === categoryId)?.type === 2;
+    const isComboCategorySelected = categories.find((c) => c.categoryId === categoryId)?.type === 2;
 
     if (isComboCategorySelected) {
       return setMenus.filter((item) => {

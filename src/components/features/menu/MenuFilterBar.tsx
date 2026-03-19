@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useMenuStore } from "@/store/useMenuStore";
+import { Category } from "@/types/Menu";
 
 interface MenuFilterBarProps {
-  categories: { id: string; name: string; type: number }[];
+  categories: Category[];
 }
 
 export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
@@ -56,7 +57,7 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
         <SelectContent className="rounded-xl">
           <SelectItem value="all">{UI_TEXT.MENU.FILTER_ALL_CATEGORY}</SelectItem>
           {categories.map((category) => (
-            <SelectItem key={category.id} value={category.id}>
+            <SelectItem key={category.categoryId} value={category.categoryId}>
               {category.name}
             </SelectItem>
           ))}

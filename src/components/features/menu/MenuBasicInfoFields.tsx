@@ -13,11 +13,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { CategoryType } from "@/types/enums";
-import { MenuItem, SetMenu } from "@/types/Menu";
+import { Category, MenuItem, SetMenu } from "@/types/Menu";
 
 interface MenuBasicInfoFieldsProps {
   editingItem: MenuItem | SetMenu | null;
-  categories: { id: string; name: string; type: number }[];
+  categories: Category[];
   selectedCategoryId: string;
   setSelectedCategoryId: (val: string) => void;
 }
@@ -110,7 +110,7 @@ export const MenuBasicInfoFields: React.FC<MenuBasicInfoFieldsProps> = ({
           </SelectTrigger>
           <SelectContent>
             {categories.map((cat) => (
-              <SelectItem key={cat.id} value={cat.id}>
+              <SelectItem key={cat.categoryId} value={cat.categoryId}>
                 {cat.name} {cat.type === CategoryType.SPECIAL_GROUP && "(Combo)"}
               </SelectItem>
             ))}

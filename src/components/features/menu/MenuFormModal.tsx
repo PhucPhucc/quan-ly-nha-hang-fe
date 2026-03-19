@@ -11,13 +11,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMenuForm } from "@/hooks/useMenuForm";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { Category } from "@/types/Menu";
 
 import { RecipeSetupForm } from "../recipe/RecipeSetupForm";
 import { MenuDetailsTab } from "./MenuDetailsTab";
 import { MenuMediaTab } from "./MenuMediaTab";
 
 interface MenuFormModalProps {
-  categories: { id: string; name: string; type: number }[];
+  categories: Category[];
 }
 
 export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
