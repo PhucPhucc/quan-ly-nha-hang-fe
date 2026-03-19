@@ -48,7 +48,7 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
       </div>
 
       <Select value={categoryId || "all"} onValueChange={setCategoryId}>
-        <SelectTrigger className="w-full sm:w-50rounded-2xl bg-card border border-border text-foreground">
+        <SelectTrigger className="w-full sm:w-50 rounded-2xl bg-card border border-border text-foreground">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4" />
             <SelectValue placeholder={UI_TEXT.MENU.FILTER_ALL_CATEGORY} />

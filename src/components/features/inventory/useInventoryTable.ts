@@ -6,6 +6,8 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
 
+import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
+
 export type StatusFilter = "all" | "normal" | "low" | "out";
 
 export function useInventoryTable(pageSize = 10) {
@@ -58,7 +60,7 @@ export function useInventoryTable(pageSize = 10) {
           ? UI_TEXT.INVENTORY.DELETE.SUCCESS_DEACTIVATE
           : UI_TEXT.INVENTORY.DELETE.SUCCESS_REACTIVATE
       );
-      queryClient.invalidateQueries({ queryKey: ["ingredients"] });
+      void invalidateInventoryQueries(queryClient);
     },
   });
 

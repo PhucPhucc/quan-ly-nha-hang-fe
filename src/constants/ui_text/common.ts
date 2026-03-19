@@ -38,7 +38,7 @@ export const COMMON = {
   COMMA: ",",
   EXCLAMATION: "!",
   QUESTION: "?",
-  ELLIPSIS: "…",
+  ELLIPSIS: "...",
   COLON: ":",
   SEMICOLON: ";",
   QUOTE: '"',
@@ -98,6 +98,13 @@ export const COMMON = {
   HYPHEN: " - ",
   LOCALE_VI: "vi-VN",
   VALIDATION_ERROR: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.",
+  PAGINATION: {
+    PAGE: "Trang",
+    OF: "/",
+    TOTAL: "Tổng số",
+    PREV: "Trước",
+    NEXT: "Tiếp",
+  },
 };
 
 export const SIDE_BAR = {
@@ -166,6 +173,8 @@ export const BUTTON = {
   FEATURE: "Tính năng",
   BACK: "Quay lại",
   NEXT: "Tiếp theo",
+  UP: "Lên",
+  DOWN: "Xuống",
 };
 
 export const API = {

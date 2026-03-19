@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import type { Ingredient, InventorySettings } from "@/types/Inventory";
@@ -83,7 +84,11 @@ export function useOpeningStockIngredients() {
   }, [ingredients, search]);
 
   const totalValue = useMemo(
-    () => Object.values(entryItems).reduce((sum, item) => sum + item.quantity * item.costPrice, 0),
+    () =>
+      normalizeInventoryQuantity(
+        Object.values(entryItems).reduce((sum, item) => sum + item.quantity * item.costPrice, 0),
+        2
+      ),
     [entryItems]
   );
 
@@ -93,7 +98,9 @@ export function useOpeningStockIngredients() {
     }
 
     const parsedValue = Number.parseFloat(value);
-    const nextValue = Number.isFinite(parsedValue) ? parsedValue : 0;
+    const nextValue = Number.isFinite(parsedValue)
+      ? normalizeInventoryQuantity(parsedValue, field === "costPrice" ? 2 : 3)
+      : 0;
 
     setEntryOverrides((prev) => ({
       ...prev,

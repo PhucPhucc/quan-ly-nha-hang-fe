@@ -7,6 +7,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
 
+import { INVENTORY_TROW_CLASS } from "./inventoryStyles";
 import { StatusBadge } from "./StatusBadge";
 
 type Props = {
@@ -17,7 +18,7 @@ type Props = {
 
 export function InventoryRow({ item, onEdit, onDelete }: Props) {
   return (
-    <TableRow className="border-slate-100 transition-colors hover:bg-slate-50/50">
+    <TableRow className={INVENTORY_TROW_CLASS}>
       <TableCell className="text-center">
         <Badge
           variant="outline"

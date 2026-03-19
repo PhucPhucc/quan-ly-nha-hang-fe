@@ -1,0 +1,21 @@
+import type { QueryClient } from "@tanstack/react-query";
+
+const INVENTORY_QUERY_PREFIXES = [
+  ["inventory-settings"],
+  ["opening-stock-ingredients"],
+  ["ingredients"],
+  ["inventory-report"],
+  ["inventory-report-ingredients"],
+  ["inventory-ledger"],
+  ["inventory-ledger-ingredients"],
+  ["inventory-transactions"],
+  ["inventory-checks"],
+  ["inventory-check"],
+  ["inventory-check-create-form"],
+] as const;
+
+export function invalidateInventoryQueries(queryClient: QueryClient) {
+  return Promise.all(
+    INVENTORY_QUERY_PREFIXES.map((queryKey) => queryClient.invalidateQueries({ queryKey }))
+  );
+}

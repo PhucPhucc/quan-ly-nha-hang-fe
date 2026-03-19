@@ -14,9 +14,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
 import { StockInReceipt } from "@/types/StockIn";
+
+import {
+  INVENTORY_AVATAR_CLASS,
+  INVENTORY_DETAIL_CARD_CLASS,
+  INVENTORY_DETAIL_CARD_HEADER_CLASS,
+  INVENTORY_NOTE_BLOCK_CLASS,
+  INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_ROW_CLASS,
+  INVENTORY_TROW_CLASS,
+} from "./components/inventoryStyles";
 
 interface StockInDetailViewProps {
   receipt: StockInReceipt;
@@ -34,17 +45,13 @@ export const StockInDetailView = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" className="gap-2 rounded-2xl hover:bg-slate-100" onClick={onBack}>
+        <Button variant="ghost" className="gap-2 rounded-xl hover:bg-muted" onClick={onBack}>
           <ArrowLeft className="size-4" />
           {UI_TEXT.COMMON.BACK}
         </Button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {onPrint && (
-            <Button
-              variant="outline"
-              onClick={onPrint}
-              className="gap-2 rounded-2xl border-slate-200"
-            >
+            <Button variant="outline" onClick={onPrint} className="gap-2 rounded-xl border-border">
               <Printer className="size-4" />
               {UI_TEXT.BUTTON.DETAIL}
             </Button>
@@ -53,7 +60,7 @@ export const StockInDetailView = ({
             <Button
               variant="destructive"
               onClick={onDelete}
-              className="gap-2 rounded-2xl bg-destructive hover:bg-destructive/90 text-white"
+              className="gap-2 rounded-xl shadow-lg shadow-destructive/10"
             >
               <Trash2 className="size-4" />
               {UI_TEXT.BUTTON.DELETE}
@@ -64,55 +71,54 @@ export const StockInDetailView = ({
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Card className="rounded-3xl border-slate-100 shadow-sm shadow-slate-100/60 p-0 overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 py-4">
-              <CardTitle className="text-base font-semibold text-slate-700">
+          <Card className={INVENTORY_DETAIL_CARD_CLASS}>
+            <CardHeader className={INVENTORY_DETAIL_CARD_HEADER_CLASS}>
+              <CardTitle className="text-base font-bold text-foreground/80">
                 {UI_TEXT.INVENTORY.STOCK_IN_VOUCHER}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <Table>
-                <TableHeader className="bg-slate-50/30">
-                  <TableRow className="border-slate-100">
-                    <TableHead className="w-[120px] text-center font-semibold text-[11px] uppercase tracking-wider text-slate-500">
+                <TableHeader>
+                  <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
+                    <TableHead className={`${INVENTORY_TH_CLASS} w-[120px] text-center`}>
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
                     </TableHead>
-                    <TableHead className="font-semibold text-[11px] uppercase tracking-wider text-slate-500">
+                    <TableHead className={INVENTORY_TH_CLASS}>
                       {UI_TEXT.INVENTORY.TABLE.COL_ITEM}
                     </TableHead>
-                    <TableHead className="w-[120px] text-center font-semibold text-[11px] uppercase tracking-wider text-slate-500">
+                    <TableHead className={`${INVENTORY_TH_CLASS} w-[120px] text-center`}>
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_INITIAL}
                     </TableHead>
-                    <TableHead className="w-[150px] text-right font-semibold text-[11px] uppercase tracking-wider text-slate-500">
+                    <TableHead className={`${INVENTORY_TH_CLASS} w-[150px] text-right`}>
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
                     </TableHead>
-                    <TableHead className="w-[150px] text-right font-semibold text-[11px] uppercase tracking-wider text-slate-500">
+                    <TableHead className={`${INVENTORY_TH_CLASS} w-[150px] text-right pr-6`}>
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {receipt.items.map((item) => (
-                    <TableRow
-                      key={item.id}
-                      className="border-slate-50 hover:bg-slate-50/30 transition-colors"
-                    >
+                    <TableRow key={item.id} className={INVENTORY_TROW_CLASS}>
                       <TableCell className="text-center">
-                        <Badge variant="outline" className="font-mono text-[10px] bg-slate-50/50">
+                        <Badge variant="outline" className="font-mono text-[10px] bg-muted/30">
                           {item.ingredientCode || UI_TEXT.COMMON.DASH}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <div className="font-medium text-slate-700">{item.ingredientName}</div>
+                        <div className="font-bold text-foreground/80">{item.ingredientName}</div>
                       </TableCell>
-                      <TableCell className="text-center text-slate-600">
-                        {item.quantity}{" "}
-                        <span className="text-[10px] text-slate-400">{item.baseUnit}</span>
+                      <TableCell className="text-center font-medium">
+                        {formatInventoryQuantity(item.quantity)}{" "}
+                        <span className="text-[10px] text-muted-foreground uppercase font-bold">
+                          {item.baseUnit}
+                        </span>
                       </TableCell>
-                      <TableCell className="text-right text-slate-600">
+                      <TableCell className="text-right text-muted-foreground tabular-nums">
                         {formatCurrency(item.unitPrice || 0)}
                       </TableCell>
-                      <TableCell className="text-right font-bold text-primary">
+                      <TableCell className="text-right font-black text-primary tabular-nums pr-6">
                         {formatCurrency(item.totalAmount)}
                       </TableCell>
                     </TableRow>
@@ -124,23 +130,27 @@ export const StockInDetailView = ({
         </div>
 
         <div className="space-y-6">
-          <Card className="rounded-3xl border-slate-100 shadow-sm shadow-slate-100/60 overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 py-4">
-              <CardTitle className="text-base font-semibold text-slate-700">
+          <Card className={INVENTORY_DETAIL_CARD_CLASS}>
+            <CardHeader className={INVENTORY_DETAIL_CARD_HEADER_CLASS}>
+              <CardTitle className="text-base font-bold text-foreground/80">
                 {UI_TEXT.INVENTORY.SETTINGS.GENERAL_INFO}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              <div className="space-y-4 text-sm">
+            <CardContent className="p-5 space-y-4">
+              <div className="space-y-4 text-sm font-medium">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-500">{UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}</span>
-                  <span className="font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-xs">
+                  <span className="text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
+                    {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
+                  </span>
+                  <span className="font-mono font-black text-foreground/90 bg-muted px-2 py-1 rounded-lg text-xs">
                     {receipt.receiptCode}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-500">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</span>
-                  <span className="text-slate-700 font-medium">
+                  <span className="text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
+                    {UI_TEXT.INVENTORY.TABLE.COL_DATE}
+                  </span>
+                  <span className="text-foreground/80 font-bold">
                     {new Date(receipt.receivedDate).toLocaleDateString("vi-VN", {
                       day: "2-digit",
                       month: "2-digit",
@@ -149,34 +159,36 @@ export const StockInDetailView = ({
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-500">{UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}</span>
+                  <span className="text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
+                    {UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}
+                  </span>
                   <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary uppercase">
+                    <div className={INVENTORY_AVATAR_CLASS}>
                       {(receipt.createdBy || UI_TEXT.COMMON.DASH).charAt(0)}
                     </div>
-                    <span className="text-slate-700 font-medium">{receipt.createdBy}</span>
+                    <span className="text-foreground/80 font-bold">{receipt.createdBy}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100">
-                <div className="bg-primary/5 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-primary/60 font-medium uppercase tracking-wider mb-1">
+              <div className="pt-4 border-t border-dashed">
+                <div className="bg-primary/5 rounded-3xl p-5 text-center border border-primary/10">
+                  <p className="text-[10px] text-primary/60 font-black uppercase tracking-widest mb-1.5">
                     {UI_TEXT.INVENTORY.OPENING_STOCK.TOTAL_VALUE}
                   </p>
-                  <p className="text-2xl font-bold text-primary">
+                  <p className="text-3xl font-black text-primary tracking-tighter tabular-nums">
                     {formatCurrency(receipt.totalAmount)}
                   </p>
                 </div>
               </div>
 
               {receipt.note && (
-                <div className="pt-4 border-t border-slate-100">
-                  <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-2">
+                <div className="pt-4 border-t border-dashed">
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-2.5">
                     {UI_TEXT.INVENTORY.FORM.DESCRIPTION}
                   </p>
-                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                    <p className="text-sm text-slate-600 leading-relaxed italic">
+                  <div className={INVENTORY_NOTE_BLOCK_CLASS}>
+                    <p className="text-sm text-foreground/70 leading-relaxed italic">
                       {UI_TEXT.COMMON.QUOTE}
                       {receipt.note}
                       {UI_TEXT.COMMON.QUOTE}

@@ -24,6 +24,7 @@ import { AlertThresholdStatus, Ingredient, InventoryUnit } from "@/types/Invento
 
 import { IngredientFormFields } from "./components/IngredientFormFields";
 import { IngredientFormValues, ingredientSchema } from "./ingredientSchema";
+import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
 
 interface AddIngredientPanelProps {
   ingredient?: Ingredient;
@@ -195,7 +196,7 @@ export function AddIngredientPanel({
         toast.success(
           isEditing ? UI_TEXT.INVENTORY.FORM.SUCCESS_EDIT : UI_TEXT.INVENTORY.FORM.SUCCESS_ADD
         );
-        queryClient.invalidateQueries({ queryKey: ["ingredients"] });
+        await invalidateInventoryQueries(queryClient);
         setOpen(false);
         reset();
         if (onSuccess) onSuccess();

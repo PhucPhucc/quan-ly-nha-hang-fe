@@ -42,7 +42,7 @@ export const MenuManagement: React.FC = () => {
   }, [fetchMenuItems, fetchSetMenus]);
 
   return (
-    <div className="px-4 space-y-6 animate-in fade-in duration-500">
+    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
       <MenuFilterBar categories={categories} />
 
       <MenuList categories={categories} />

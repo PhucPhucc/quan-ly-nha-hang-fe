@@ -3,8 +3,8 @@
 import { ChevronDown, FileInput, FileOutput, History } from "lucide-react";
 import React, { useState } from "react";
 
-import { CreateStockInDrawer } from "@/app/(protected)/manager/inventory/stock-in/_components/CreateStockInDrawer";
-import { CreateStockOutDrawer } from "@/app/(protected)/manager/inventory/stock-out/_components/CreateStockOutDrawer";
+import { CreateStockInDrawer } from "@/components/features/inventory/CreateStockInDrawer";
+import { CreateStockOutDrawer } from "@/components/features/inventory/CreateStockOutDrawer";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,11 +26,11 @@ export function CreateStockInTrigger({ onSuccess }: Props) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-100 gap-2.5 px-6 font-semibold rounded-2xl uppercase tracking-wider text-[11px] h-11 w-full md:w-auto transition-all active:scale-95 border-none">
-            <div className="flex items-center justify-center size-5 bg-white/20 rounded-lg">
+          <Button className="h-9 w-auto gap-2 rounded-xl bg-primary px-3.5 text-sm font-medium text-primary-foreground shadow-sm shadow-primary/20 transition-colors hover:bg-primary-hover active:scale-[0.98]">
+            <div className="flex size-5 items-center justify-center rounded-lg bg-white/20">
               <History className="size-3.5 text-white" strokeWidth={2.5} />
             </div>
-            <span>{UI_TEXT.INVENTORY.CREATE_VOUCHER_BTN}</span>
+            <span className="whitespace-nowrap">{UI_TEXT.INVENTORY.CREATE_VOUCHER_BTN}</span>
             <ChevronDown className="size-3 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
