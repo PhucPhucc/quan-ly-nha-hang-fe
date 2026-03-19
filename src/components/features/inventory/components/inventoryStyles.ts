@@ -27,27 +27,34 @@ export const INVENTORY_DATE_BUTTON_CLASS =
 
 export const INVENTORY_PAGE_CLASS = "flex h-full min-h-0 flex-col gap-4 bg-slate-50/30 p-4 pt-6";
 
-// Table head cell — dùng chung cho tất cả list/detail table
+// Table behavior - container scroll + height
+export const INVENTORY_TABLE_CONTAINER_CLASS = "max-h-[600px] overflow-auto relative";
+
+// Table header wrapper - sticky background
+export const INVENTORY_THEAD_CLASS =
+  "sticky top-0 z-20 border-b border-slate-200 bg-slate-50 shadow-sm";
+
+// Table head row - background & hover logic
+export const INVENTORY_THEAD_ROW_CLASS = "border-slate-200 bg-slate-50 hover:bg-slate-50";
+
+// Table head cell - text style & padding
 export const INVENTORY_TH_CLASS =
-  "py-3 font-semibold text-muted-foreground uppercase text-[11px] tracking-wider bg-muted/40";
+  "bg-slate-50 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-800";
 
-// Table header row — sticky header trong list table
-export const INVENTORY_THEAD_ROW_CLASS = "border-b border-border bg-muted/40 hover:bg-muted/40";
+// Table body row - hover effect
+export const INVENTORY_TROW_CLASS = "h-[52px] border-border/60 hover:bg-muted/10 transition-colors";
 
-// Table body row — hover nhẹ, không gây flash
-export const INVENTORY_TROW_CLASS = "h-[52px] border-border/60 hover:bg-muted/20 transition-colors";
-
-// Detail card surface — dùng trong StockInDetailView / StockOutDetailView
+// Detail card surface
 export const INVENTORY_DETAIL_CARD_CLASS = "rounded-3xl border-border/60 shadow-sm overflow-hidden";
 
-// Detail card header — bg nhẹ, border-b
+// Detail card header
 export const INVENTORY_DETAIL_CARD_HEADER_CLASS = "bg-muted/30 border-b border-border/60 px-6 py-4";
 
-// Creator avatar — initials circle
+// Creator avatar
 export const INVENTORY_AVATAR_CLASS =
   "h-6 w-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground border border-border/50";
 
-// Note block — italic quote container
+// Note block
 export const INVENTORY_NOTE_BLOCK_CLASS = "bg-muted/40 rounded-xl p-3 border border-border/50";
 
 // Loading placeholder text

@@ -29,7 +29,11 @@ import { InventoryCheck, InventoryCheckStatus } from "@/types/Inventory";
 import { InventoryPagination } from "./components/InventoryPagination";
 import {
   INVENTORY_SELECT_TRIGGER_CLASS,
+  INVENTORY_TABLE_CONTAINER_CLASS,
   INVENTORY_TABLE_SURFACE_CLASS,
+  INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
+  INVENTORY_THEAD_ROW_CLASS,
 } from "./components/inventoryStyles";
 import { InventoryToolbar } from "./components/InventoryToolbar";
 import { useInventoryCheckTable } from "./useInventoryCheckTable";
@@ -41,6 +45,7 @@ export function InventoryCheckTable() {
     currentPage,
     setCurrentPage,
     totalPages,
+    totalCount,
     statusFilter,
     setStatusFilter,
     dateRange,
@@ -96,25 +101,25 @@ export function InventoryCheckTable() {
           </div>
         ) : (
           <>
-            <Table>
-              <TableHeader>
-                <TableRow className="border-b border-slate-200 bg-slate-50 hover:bg-slate-50">
-                  <TableHead className="w-[150px] pl-6 text-[10px] font-semibold uppercase tracking-wider text-slate-700">
+            <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
+              <TableHeader className={INVENTORY_THEAD_CLASS}>
+                <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
+                  <TableHead className={`${INVENTORY_TH_CLASS} w-[150px] pl-6`}>
                     {UI_TEXT.INVENTORY.CHECK.COL_CODE}
                   </TableHead>
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-slate-700">
+                  <TableHead className={INVENTORY_TH_CLASS}>
                     {UI_TEXT.INVENTORY.CHECK.COL_DATE}
                   </TableHead>
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-slate-700">
+                  <TableHead className={INVENTORY_TH_CLASS}>
                     {UI_TEXT.INVENTORY.CHECK.COL_CREATOR}
                   </TableHead>
-                  <TableHead className="text-center text-[10px] font-semibold uppercase tracking-wider text-slate-700">
+                  <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                     {UI_TEXT.INVENTORY.CHECK.COL_STATUS}
                   </TableHead>
-                  <TableHead className="text-center text-[10px] font-semibold uppercase tracking-wider text-slate-700">
+                  <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                     {UI_TEXT.INVENTORY.CHECK.COL_ITEMS}
                   </TableHead>
-                  <TableHead className="pr-6 text-right text-[10px] font-semibold uppercase tracking-wider text-slate-700">
+                  <TableHead className={`${INVENTORY_TH_CLASS} pr-6 text-right`}>
                     {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
                   </TableHead>
                 </TableRow>
@@ -170,7 +175,7 @@ export function InventoryCheckTable() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
-                totalItems={checks.length * totalPages}
+                totalItems={totalCount}
                 pageSize={10}
               />
             </div>

@@ -31,7 +31,13 @@ import { AddIngredientPanel } from "./AddIngredientPanel";
 import { InventoryEmptyState } from "./components/InventoryEmptyState";
 import { InventoryPagination } from "./components/InventoryPagination";
 import { InventoryRow } from "./components/InventoryRow";
-import { INVENTORY_TABLE_SURFACE_CLASS } from "./components/inventoryStyles";
+import {
+  INVENTORY_TABLE_CONTAINER_CLASS,
+  INVENTORY_TABLE_SURFACE_CLASS,
+  INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
+  INVENTORY_THEAD_ROW_CLASS,
+} from "./components/inventoryStyles";
 import { InventoryTableHeader } from "./components/InventoryTableHeader";
 import { useInventoryTable } from "./useInventoryTable";
 
@@ -171,28 +177,28 @@ export function IngredientTable() {
       </div>
 
       <div className={`${INVENTORY_TABLE_SURFACE_CLASS} mt-2`}>
-        <Table containerClassName="max-h-[460px] overflow-auto">
-          <TableHeader className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 shadow-sm">
-            <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
-              <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+        <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
+          <TableHeader className={INVENTORY_THEAD_CLASS}>
+            <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_SKU}
               </TableHead>
-              <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_NAME}
               </TableHead>
-              <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
               </TableHead>
-              <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
               </TableHead>
-              <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
               </TableHead>
-              <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
               </TableHead>
-              <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
               </TableHead>
             </TableRow>

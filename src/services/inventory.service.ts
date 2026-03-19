@@ -7,11 +7,13 @@ import {
   Ingredient,
   InventoryCheck,
   InventoryCheckDetail,
+  InventoryCheckItem,
   InventoryLedgerItem,
   InventoryReportItem,
   InventorySettings,
   InventoryStats,
   InventoryTransaction,
+  InventoryTransactionType,
   InventoryUnit,
 } from "@/types/Inventory";
 
@@ -39,6 +41,134 @@ function extractGeneratedIngredientCode(payload: unknown): string | null {
   }
 
   return null;
+}
+
+function formatDateOnly(value: string | Date): string {
+  const date = value instanceof Date ? value : new Date(value);
+  return date.toISOString().slice(0, 10);
+}
+
+interface InventoryCheckListDto {
+  inventoryCheckId: string;
+  checkDate: string;
+  status: number;
+  createdByName?: string | null;
+  totalItems: number;
+}
+
+interface InventoryCheckDetailItemDto {
+  inventoryCheckItemId: string;
+  inventoryCheckId: string;
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  unit: string;
+  bookQuantity: number;
+  physicalQuantity: number;
+  differenceQuantity: number;
+  reason?: string | null;
+}
+
+interface InventoryCheckDetailDto extends InventoryCheckListDto {
+  createdAt: string;
+  items: InventoryCheckDetailItemDto[];
+}
+
+interface InventoryCheckCreateFormDto {
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  baseUnit: string;
+  bookQuantity: number;
+}
+
+interface InventoryCheckProcessDto {
+  inventoryCheckId: string;
+  status: number;
+}
+
+interface PaginationEnvelope<T> {
+  items: T[];
+  totalCount: number;
+  pageSize: number;
+  currentPage?: number;
+  pageNumber?: number;
+  totalPages: number;
+}
+
+function mapInventoryCheck(dto: InventoryCheckListDto): InventoryCheck {
+  return {
+    inventoryCheckId: dto.inventoryCheckId,
+    checkDate: dto.checkDate,
+    status: dto.status,
+    createdBy: dto.createdByName ?? undefined,
+    totalItems: dto.totalItems,
+    createdAt:
+      "createdAt" in dto && typeof dto.createdAt === "string" ? dto.createdAt : dto.checkDate,
+  };
+}
+
+function mapInventoryCheckDetail(dto: InventoryCheckDetailDto): InventoryCheckDetail {
+  return {
+    ...mapInventoryCheck(dto),
+    createdAt: dto.createdAt,
+    items: dto.items.map((item) => ({
+      inventoryCheckItemId: item.inventoryCheckItemId,
+      inventoryCheckId: item.inventoryCheckId,
+      ingredientId: item.ingredientId,
+      ingredientName: item.ingredientName,
+      ingredientCode: item.ingredientCode,
+      unit: item.unit,
+      bookQuantity: item.bookQuantity,
+      physicalQuantity: item.physicalQuantity,
+      differenceQuantity: item.differenceQuantity,
+      reason: item.reason ?? undefined,
+    })),
+  };
+}
+
+function mapInventoryCheckCreateFormItem(
+  dto: InventoryCheckCreateFormDto
+): Partial<InventoryCheckItem> {
+  return {
+    ingredientId: dto.ingredientId,
+    ingredientName: dto.ingredientName,
+    ingredientCode: dto.ingredientCode,
+    unit: dto.baseUnit,
+    bookQuantity: dto.bookQuantity,
+    physicalQuantity: dto.bookQuantity,
+    differenceQuantity: 0,
+    reason: "",
+  };
+}
+
+function mapInventoryReportItem(dto: InventoryReportItem): InventoryReportItem {
+  return {
+    ...dto,
+    ingredientCode: dto.ingredientCode || "",
+    unit: dto.unit || "",
+  };
+}
+
+function mapInventoryLedgerItem(dto: InventoryLedgerItem): InventoryLedgerItem {
+  return {
+    occurredAt: dto.occurredAt,
+    transactionType: dto.transactionType as InventoryTransactionType,
+    referenceNo: dto.referenceNo,
+    quantityDelta: dto.quantityDelta,
+    balanceAfter: dto.balanceAfter,
+    note: dto.note,
+  };
+}
+
+function normalizePagination<T>(data: PaginationEnvelope<T>): PaginationResult<T> {
+  return {
+    items: data.items,
+    totalCount: data.totalCount,
+    pageSize: data.pageSize,
+    currentPage: data.currentPage ?? data.pageNumber ?? 1,
+    totalPages: data.totalPages,
+  };
 }
 
 export const inventoryService = {
@@ -215,43 +345,97 @@ export const inventoryService = {
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {
-          params.append(key, value.toString());
+          params.append(
+            key,
+            key.toLowerCase().includes("date") ? formatDateOnly(value.toString()) : value.toString()
+          );
         }
       });
     }
 
-    return apiFetch<PaginationResult<InventoryCheck>>(`/inventory/checks?${params.toString()}`);
+    const response = await apiFetch<PaginationEnvelope<InventoryCheckListDto>>(
+      `/inventory/check?${params.toString()}`
+    );
+
+    return {
+      ...response,
+      data: normalizePagination({
+        ...response.data,
+        items: response.data.items.map(mapInventoryCheck),
+      }),
+    };
   },
 
   getInventoryCheckDetail: async (id: string): Promise<ApiResponse<InventoryCheckDetail>> => {
-    return apiFetch<InventoryCheckDetail>(`/inventory/checks/${id}`);
+    const response = await apiFetch<InventoryCheckDetailDto>(`/inventory/check/${id}`);
+
+    return {
+      ...response,
+      data: mapInventoryCheckDetail(response.data),
+    };
+  },
+
+  getInventoryCheckCreateForm: async (): Promise<ApiResponse<Partial<InventoryCheckItem>[]>> => {
+    const response = await apiFetch<InventoryCheckCreateFormDto[]>("/inventory/check/create-form");
+
+    return {
+      ...response,
+      data: response.data.map(mapInventoryCheckCreateFormItem),
+    };
   },
 
   createInventoryCheck: async (
     data: CreateInventoryCheckRequest
   ): Promise<ApiResponse<InventoryCheck>> => {
-    return apiFetch<InventoryCheck>("/inventory/checks", {
+    const response = await apiFetch<InventoryCheckListDto>("/inventory/check", {
       method: "POST",
       body: data,
     });
+
+    return {
+      ...response,
+      data: mapInventoryCheck(response.data),
+    };
   },
 
   processInventoryCheck: async (id: string): Promise<ApiResponse<boolean>> => {
-    return apiFetch<boolean>(`/inventory/checks/${id}/process`, {
+    const response = await apiFetch<InventoryCheckProcessDto>(`/inventory/check/${id}/process`, {
       method: "POST",
     });
+
+    return {
+      ...response,
+      data: response.data.status > 0,
+    };
   },
 
   // Inventory Report
   getInventoryReport: async (
     fromDate: string,
     toDate: string,
-    ingredientId?: string
-  ): Promise<ApiResponse<InventoryReportItem[]>> => {
-    const params = new URLSearchParams({ fromDate, toDate });
+    ingredientId?: string,
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<ApiResponse<PaginationResult<InventoryReportItem>>> => {
+    const params = new URLSearchParams({
+      fromDate: formatDateOnly(fromDate),
+      toDate: formatDateOnly(toDate),
+    });
+    params.set("pageNumber", page.toString());
+    params.set("pageSize", pageSize.toString());
     if (ingredientId) params.set("ingredientId", ingredientId);
 
-    return apiFetch<InventoryReportItem[]>(`/inventory/reports?${params.toString()}`);
+    const response = await apiFetch<PaginationEnvelope<InventoryReportItem>>(
+      `/inventory/report?${params.toString()}`
+    );
+
+    return {
+      ...response,
+      data: normalizePagination({
+        ...response.data,
+        items: response.data.items.map(mapInventoryReportItem),
+      }),
+    };
   },
 
   getInventoryLedger: async (
@@ -260,11 +444,22 @@ export const inventoryService = {
     toDate: string,
     transactionType?: number
   ): Promise<ApiResponse<InventoryLedgerItem[]>> => {
-    const params = new URLSearchParams({ fromDate, toDate });
-    if (transactionType) params.set("transactionType", transactionType.toString());
+    const params = new URLSearchParams({
+      ingredientId,
+      fromDate: formatDateOnly(fromDate),
+      toDate: formatDateOnly(toDate),
+    });
+    if (transactionType !== undefined) {
+      params.set("transactionType", transactionType.toString());
+    }
 
-    return apiFetch<InventoryLedgerItem[]>(
-      `/ingredients/${ingredientId}/ledger?${params.toString()}`
+    const response = await apiFetch<InventoryLedgerItem[]>(
+      `/inventory/ledger?${params.toString()}`
     );
+
+    return {
+      ...response,
+      data: response.data.map(mapInventoryLedgerItem),
+    };
   },
 };

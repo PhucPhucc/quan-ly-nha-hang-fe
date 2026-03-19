@@ -16,6 +16,12 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 
+import {
+  INVENTORY_INPUT_CLASS,
+  INVENTORY_PAGE_CLASS,
+  INVENTORY_TABLE_SURFACE_CLASS,
+  INVENTORY_TOOLBAR_CLASS,
+} from "./components/inventoryStyles";
 import { OpeningStockSummary } from "./components/OpeningStockSummary";
 import { OpeningStockTable } from "./components/OpeningStockTable";
 import { useOpeningStockIngredients } from "./useOpeningStockIngredients";
@@ -103,14 +109,14 @@ export function OpeningStockEntry() {
 
   return (
     <>
-      <div className="flex h-full min-h-0 flex-col gap-3 p-4 pt-6">
-        <div className="shrink-0 rounded-xl border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100/60">
+      <div className={INVENTORY_PAGE_CLASS}>
+        <div className={INVENTORY_TOOLBAR_CLASS}>
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative w-full max-w-lg">
               <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
               <Input
                 placeholder={OPENING_STOCK.SEARCH_PLACEHOLDER}
-                className="h-9 rounded-xl border-slate-200 bg-slate-50 pl-9 text-sm shadow-none placeholder:text-slate-400 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-primary/15"
+                className={INVENTORY_INPUT_CLASS + " pl-9"}
                 value={search}
                 disabled={isLocked}
                 onChange={(e) => setSearch(e.target.value)}
@@ -144,7 +150,7 @@ export function OpeningStockEntry() {
           ) : null}
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft">
+        <div className={INVENTORY_TABLE_SURFACE_CLASS}>
           <OpeningStockTable
             ingredients={filteredIngredients}
             entryItems={entryItems}

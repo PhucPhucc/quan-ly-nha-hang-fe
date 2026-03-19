@@ -20,8 +20,10 @@ import { inventoryService } from "@/services/inventory.service";
 import { InventoryPagination } from "./components/InventoryPagination";
 import {
   INVENTORY_LOADING_CLASS,
+  INVENTORY_TABLE_CONTAINER_CLASS,
   INVENTORY_TABLE_SURFACE_CLASS,
   INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
   INVENTORY_THEAD_ROW_CLASS,
   INVENTORY_TROW_CLASS,
 } from "./components/inventoryStyles";
@@ -93,9 +95,9 @@ export function InventoryAlertsTable() {
           </div>
 
           <TabsContent value="low-stock" className="m-0 border-none outline-none">
-            <div className="overflow-auto max-h-[600px]">
+            <div className={INVENTORY_TABLE_CONTAINER_CLASS}>
               <Table>
-                <TableHeader className="bg-muted/5 sticky top-0 z-20">
+                <TableHeader className={INVENTORY_THEAD_CLASS}>
                   <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
                     <TableHead className={`${INVENTORY_TH_CLASS} pl-8`}>
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
@@ -159,9 +161,9 @@ export function InventoryAlertsTable() {
           </TabsContent>
 
           <TabsContent value="expiring" className="m-0 border-none outline-none">
-            <div className="overflow-auto max-h-[600px]">
+            <div className={INVENTORY_TABLE_CONTAINER_CLASS}>
               <Table>
-                <TableHeader className="bg-muted/5 sticky top-0 z-20">
+                <TableHeader className={INVENTORY_THEAD_CLASS}>
                   <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
                     <TableHead className={`${INVENTORY_TH_CLASS} pl-8`}>
                       {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}

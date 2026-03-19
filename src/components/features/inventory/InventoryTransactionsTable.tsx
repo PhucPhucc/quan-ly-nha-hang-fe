@@ -20,7 +20,9 @@ import { InventoryTransaction, InventoryTransactionType } from "@/types/Inventor
 import { InventoryPagination } from "./components/InventoryPagination";
 import {
   INVENTORY_LOADING_CLASS,
+  INVENTORY_TABLE_CONTAINER_CLASS,
   INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
   INVENTORY_THEAD_ROW_CLASS,
   INVENTORY_TROW_CLASS,
 } from "./components/inventoryStyles";
@@ -76,9 +78,9 @@ export function InventoryTransactionsTable() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-1 overflow-auto">
+      <div className={INVENTORY_TABLE_CONTAINER_CLASS}>
         <Table>
-          <TableHeader>
+          <TableHeader className={INVENTORY_THEAD_CLASS}>
             <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
               <TableHead className={`${INVENTORY_TH_CLASS} pl-6`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_SKU}

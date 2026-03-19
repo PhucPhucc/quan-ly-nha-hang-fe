@@ -27,7 +27,9 @@ import { StockOutReceipt } from "@/types/StockOut";
 import {
   INVENTORY_AVATAR_CLASS,
   INVENTORY_EMPTY_CELL_CLASS,
+  INVENTORY_TABLE_CONTAINER_CLASS,
   INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
   INVENTORY_THEAD_ROW_CLASS,
   INVENTORY_TROW_CLASS,
 } from "./components/inventoryStyles";
@@ -46,8 +48,8 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <Table containerClassName="max-h-[500px] overflow-auto border-t border-border/40">
-        <TableHeader className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 shadow-sm border-b">
+      <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
+        <TableHeader className={INVENTORY_THEAD_CLASS}>
           <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
             <TableHead className={`${INVENTORY_TH_CLASS} pl-6`}>
               {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}

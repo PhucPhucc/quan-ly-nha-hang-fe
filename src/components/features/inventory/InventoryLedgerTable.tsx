@@ -26,8 +26,10 @@ import { InventoryLedgerItem, InventoryTransactionType } from "@/types/Inventory
 import {
   INVENTORY_LOADING_CLASS,
   INVENTORY_SELECT_TRIGGER_CLASS,
+  INVENTORY_TABLE_CONTAINER_CLASS,
   INVENTORY_TABLE_SURFACE_CLASS,
   INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
   INVENTORY_THEAD_ROW_CLASS,
   INVENTORY_TROW_CLASS,
 } from "./components/inventoryStyles";
@@ -120,9 +122,9 @@ export function InventoryLedgerTable() {
           </p>
         </div>
 
-        <div className="overflow-auto max-h-[600px]">
+        <div className={INVENTORY_TABLE_CONTAINER_CLASS}>
           <Table>
-            <TableHeader className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 shadow-sm">
+            <TableHeader className={INVENTORY_THEAD_CLASS}>
               <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
                 <TableHead className={`${INVENTORY_TH_CLASS} pl-8 w-[200px]`}>
                   {UI_TEXT.INVENTORY.REPORT.LEDGER_COL_TIME}

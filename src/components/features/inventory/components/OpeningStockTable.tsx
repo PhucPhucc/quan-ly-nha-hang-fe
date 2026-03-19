@@ -14,6 +14,14 @@ import {
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Ingredient } from "@/types/Inventory";
 
+import {
+  INVENTORY_TABLE_CONTAINER_CLASS,
+  INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
+  INVENTORY_THEAD_ROW_CLASS,
+  INVENTORY_TROW_CLASS,
+} from "./inventoryStyles";
+
 interface Props {
   ingredients: Ingredient[];
   entryItems: Record<string, { quantity: number; costPrice: number }>;
@@ -32,25 +40,25 @@ export function OpeningStockTable({
   const missingRows = Math.max(0, pageSize - ingredients.length);
 
   return (
-    <Table containerClassName="max-h-[460px] overflow-auto bg-white">
-      <TableHeader className="sticky top-0 z-20 bg-slate-50 shadow-sm border-b border-slate-200">
-        <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
-          <TableHead className="w-[120px] py-3 text-center font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
+    <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
+      <TableHeader className={INVENTORY_THEAD_CLASS}>
+        <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
+          <TableHead className={`${INVENTORY_TH_CLASS} w-[120px] text-center`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
           </TableHead>
-          <TableHead className="py-3 text-left font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
+          <TableHead className={`${INVENTORY_TH_CLASS} text-left pl-4`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_NAME}
           </TableHead>
-          <TableHead className="w-[100px] py-3 text-center font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
+          <TableHead className={`${INVENTORY_TH_CLASS} w-[100px] text-center`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_UNIT}
           </TableHead>
-          <TableHead className="w-[140px] py-3 text-right font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
+          <TableHead className={`${INVENTORY_TH_CLASS} w-[140px] text-right pr-4`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_QTY?.toUpperCase()}
           </TableHead>
-          <TableHead className="w-[160px] py-3 text-right font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
+          <TableHead className={`${INVENTORY_TH_CLASS} w-[160px] text-right pr-4`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
           </TableHead>
-          <TableHead className="w-[180px] py-3 text-right font-semibold uppercase text-[11px] tracking-wider text-slate-800 bg-slate-50">
+          <TableHead className={`${INVENTORY_TH_CLASS} w-[180px] text-right pr-4`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
           </TableHead>
         </TableRow>
@@ -69,7 +77,7 @@ export function OpeningStockTable({
               const rowTotal = entry.quantity * entry.costPrice;
 
               return (
-                <TableRow key={item.ingredientId} className="h-[52px] hover:bg-slate-50/80">
+                <TableRow key={item.ingredientId} className={INVENTORY_TROW_CLASS}>
                   <TableCell className="text-center font-mono text-sm text-slate-500">
                     {item.code}
                   </TableCell>

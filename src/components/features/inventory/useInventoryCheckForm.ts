@@ -23,10 +23,10 @@ export function useInventoryCheckForm(id?: string) {
     enabled: !!id && !isNew,
   });
 
-  // 2. Fetch ingredients if new (to start with snapshot)
-  const { data: ingredientsData, isLoading: isLoadingIngredients } = useQuery({
-    queryKey: ["ingredients-all"],
-    queryFn: () => inventoryService.getIngredients(1, 1000), // Get all active ingredients
+  // 2. Fetch create-form snapshot if new
+  const { data: createFormData, isLoading: isLoadingCreateForm } = useQuery({
+    queryKey: ["inventory-check-create-form"],
+    queryFn: () => inventoryService.getInventoryCheckCreateForm(),
     enabled: isNew,
   });
 
@@ -45,23 +45,13 @@ export function useInventoryCheckForm(id?: string) {
   }, [detailData]);
 
   useEffect(() => {
-    if (isNew && ingredientsData?.isSuccess && ingredientsData.data && !isInitialized.current) {
-      const initItems = ingredientsData.data.items.map((ing) => ({
-        ingredientId: ing.ingredientId,
-        ingredientName: ing.name,
-        ingredientCode: ing.code,
-        unit: ing.unit,
-        bookQuantity: ing.currentStock,
-        physicalQuantity: ing.currentStock, // default same as book
-        differenceQuantity: 0,
-        reason: "",
-      }));
+    if (isNew && createFormData?.isSuccess && createFormData.data && !isInitialized.current) {
       Promise.resolve().then(() => {
-        setItems(initItems);
+        setItems(createFormData.data);
       });
       isInitialized.current = true;
     }
-  }, [isNew, ingredientsData]);
+  }, [isNew, createFormData]);
 
   const updatePhysicalQty = useCallback((ingredientId: string, val: number) => {
     setItems((prev) =>
@@ -146,7 +136,7 @@ export function useInventoryCheckForm(id?: string) {
   return {
     isNew,
     check: detailData?.data,
-    isLoading: isLoadingDetail || isLoadingIngredients,
+    isLoading: isLoadingDetail || isLoadingCreateForm,
     checkDate,
     setCheckDate,
     note,
