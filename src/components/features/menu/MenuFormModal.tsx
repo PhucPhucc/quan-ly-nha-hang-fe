@@ -255,7 +255,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent
-        className={`flex flex-col p-0 border-none overflow-hidden rounded-xl bg-neutral-50 shadow-2xl transition-all duration-300 ${activeTab === "recipe" ? "sm:max-w-7xl h-[90vh]" : "sm:max-w-2xl max-h-[90vh]"}`}
+        className={`flex flex-col p-0 border-none overflow-hidden rounded-xl bg-neutral-50 shadow-2xl transition-all duration-300 w-[95vw] ${activeTab === "recipe" ? "sm:max-w-7xl h-[90vh]" : "sm:max-w-4xl max-h-[90vh]"}`}
       >
         <div className="bg-white p-6 border-b shrink-0 z-30">
           <DialogHeader className="mb-6">
@@ -285,40 +285,42 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
           </DialogHeader>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-neutral-100/50 p-1 rounded-lg border border-neutral-200">
-              <TabsTrigger
-                value="details"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
-              >
-                <ClipboardList className="w-4 h-4" />
-                {UI_TEXT.MENU.TAB_DETAILS}
-              </TabsTrigger>
-              {isEditing && !isSetMenuCategory && (
+            <div className="overflow-x-auto custom-scrollbar" style={{ scrollbarWidth: "thin" }}>
+              <TabsList className="bg-neutral-100/50 p-1 rounded-lg border border-neutral-200 inline-flex min-w-max gap-1">
                 <TabsTrigger
-                  value="options"
+                  value="details"
                   className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
                 >
-                  <Plus className="w-4 h-4" />
-                  {UI_TEXT.MENU.OPTIONS.TITLE}
+                  <ClipboardList className="w-4 h-4" />
+                  {UI_TEXT.MENU.TAB_DETAILS}
                 </TabsTrigger>
-              )}
-              {isEditing && !isSetMenuCategory && (
+                {isEditing && !isSetMenuCategory && (
+                  <TabsTrigger
+                    value="options"
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    {UI_TEXT.MENU.OPTIONS.TITLE}
+                  </TabsTrigger>
+                )}
+                {isEditing && !isSetMenuCategory && (
+                  <TabsTrigger
+                    value="recipe"
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
+                  >
+                    <Utensils className="w-4 h-4" />
+                    {UI_TEXT.MENU.TAB_RECIPE}
+                  </TabsTrigger>
+                )}
                 <TabsTrigger
-                  value="recipe"
+                  value="media"
                   className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
                 >
-                  <Utensils className="w-4 h-4" />
-                  {UI_TEXT.MENU.TAB_RECIPE}
+                  <ImageIcon className="w-4 h-4" />
+                  {UI_TEXT.MENU.TAB_MEDIA}
                 </TabsTrigger>
-              )}
-              <TabsTrigger
-                value="media"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-2 gap-2"
-              >
-                <ImageIcon className="w-4 h-4" />
-                {UI_TEXT.MENU.TAB_MEDIA}
-              </TabsTrigger>
-            </TabsList>
+              </TabsList>
+            </div>
           </Tabs>
         </div>
 

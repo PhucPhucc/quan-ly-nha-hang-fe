@@ -1,6 +1,6 @@
 "use client";
 
-import { GripVertical, Library, Plus, Trash2 } from "lucide-react";
+import { GripVertical, Library, Plus, Save, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { optionService } from "@/services/optionService";
 import { MenuItemOptionGroup, OptionGroup } from "@/types/Menu";
 
+import { OptionItemsModal } from "./OptionItemsModal";
 import { OptionLibraryDrawer } from "./OptionLibraryDrawer";
 
 interface MenuItemOptionAssignmentProps {
@@ -29,6 +31,13 @@ export const MenuItemOptionAssignment: React.FC<MenuItemOptionAssignmentProps> =
   isFetching = false,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [viewingGroup, setViewingGroup] = useState<OptionGroup | null>(null);
+
+  const handleOpenItems = (group?: OptionGroup | null) => {
+    if (!group) return;
+    setViewingGroup(group);
+  };
 
   const handleAssignGroup = (group: OptionGroup) => {
     const newAssignment: MenuItemOptionGroup = {
@@ -44,6 +53,36 @@ export const MenuItemOptionAssignment: React.FC<MenuItemOptionAssignmentProps> =
     };
     setAssignments([...assignments, newAssignment]);
     setIsDrawerOpen(false);
+  };
+
+  const handlePersistAssignments = async () => {
+    if (!menuItemId) return;
+    setIsSaving(true);
+    try {
+      for (const assignment of assignments) {
+        if (assignment.menuItemOptionGroupId.startsWith("temp-")) {
+          await optionService.assignToMenuItem({
+            menuItemId,
+            optionGroupId: assignment.optionGroupId,
+            isRequired: assignment.isRequired,
+            minSelect: assignment.minSelect,
+            maxSelect: assignment.maxSelect,
+            sortOrder: assignment.sortOrder,
+            isVisible: assignment.isVisible,
+          });
+        } else {
+          await optionService.updateAssignment(assignment.menuItemOptionGroupId, {
+            isRequired: assignment.isRequired,
+            minSelect: assignment.minSelect,
+            maxSelect: assignment.maxSelect,
+            sortOrder: assignment.sortOrder,
+            isVisible: assignment.isVisible,
+          });
+        }
+      }
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleUpdateAssignment = (id: string, updates: Partial<MenuItemOptionGroup>) => {
@@ -80,10 +119,10 @@ export const MenuItemOptionAssignment: React.FC<MenuItemOptionAssignmentProps> =
           </h3>
           <p className="text-sm text-muted-foreground">{UI_TEXT.MENU.OPTIONS.ASSIGN_DESC}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 justify-end">
           <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm" disabled={isFetching}>
+              <Button variant="outline" size="sm" disabled={isFetching || isSaving}>
                 <Library className="h-4 w-4 mr-2" />
                 {UI_TEXT.MENU.OPTIONS.ADD_FROM_LIBRARY}
               </Button>
@@ -93,7 +132,11 @@ export const MenuItemOptionAssignment: React.FC<MenuItemOptionAssignmentProps> =
               onAssign={handleAssignGroup}
             />
           </Sheet>
-          <Button size="sm" disabled={isFetching}>
+          <Button
+            size="sm"
+            disabled={isFetching || isSaving}
+            onClick={() => window.open("/menu/options", "_blank")}
+          >
             <Plus className="h-4 w-4 mr-2" />
             {UI_TEXT.MENU.OPTIONS.CREATE_NEW_GROUP}
           </Button>
@@ -174,6 +217,7 @@ export const MenuItemOptionAssignment: React.FC<MenuItemOptionAssignmentProps> =
                     <button
                       type="button"
                       className="text-[11px] text-primary hover:underline font-medium"
+                      onClick={() => handleOpenItems(assignment.optionGroup ?? null)}
                     >
                       {UI_TEXT.MENU.OPTIONS.VIEW_ITEMS(
                         assignment.optionGroup?.optionItems?.length || 0
@@ -238,11 +282,38 @@ export const MenuItemOptionAssignment: React.FC<MenuItemOptionAssignmentProps> =
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
+
+                  <OptionItemsModal
+                    open={!!viewingGroup}
+                    onOpenChange={(open) => !open && setViewingGroup(null)}
+                    group={viewingGroup}
+                  />
                 </div>
               </Card>
             ))}
         </div>
       )}
+
+      <div className="flex justify-end pt-6">
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={isFetching || isSaving}
+          onClick={handlePersistAssignments}
+        >
+          {isSaving ? (
+            <>
+              <Save className="h-4 w-4 mr-2 animate-pulse" />
+              {UI_TEXT.BUTTON.SAVE_CHANGES}
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              {UI_TEXT.BUTTON.SAVE_CHANGES}
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 };

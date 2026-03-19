@@ -3,6 +3,86 @@ import { MenuItemOptionGroup, OptionGroup, OptionItem } from "@/types/Menu";
 
 import { apiFetch } from "./api";
 
+interface RawOptionItem {
+  optionItemId: string;
+  optionGroupId: string;
+  label?: string;
+  value?: string;
+  extraPrice?: number | string;
+  sortOrder?: number | string;
+  isActive?: boolean;
+  isVisible?: boolean;
+}
+
+interface RawOptionGroup {
+  optionGroupId: string;
+  name?: string;
+  optionType?: number;
+  type?: number;
+  isActive?: boolean;
+  isVisible?: boolean;
+  optionItems?: RawOptionItem[];
+  usageCount?: number;
+  optionGroup?: {
+    optionGroupId: string;
+    name?: string;
+    optionType?: number;
+    usageCount?: number;
+    optionItems?: RawOptionItem[];
+  };
+}
+
+interface RawAssignment {
+  menuItemOptionGroupId: string;
+  menuItemId: string;
+  optionGroupId?: string;
+  optionGroup?: RawOptionGroup;
+  isRequired?: boolean;
+  minSelect?: number;
+  maxSelect?: number;
+  sortOrder?: number;
+  isVisible?: boolean;
+}
+
+const mapOptionItem = (raw: RawOptionItem): OptionItem => ({
+  optionItemId: raw.optionItemId,
+  optionGroupId: raw.optionGroupId,
+  label: raw.label ?? raw.value ?? "",
+  value: raw.value ?? raw.label ?? "",
+  extraPrice: Number(raw.extraPrice ?? 0),
+  sortOrder: Number(raw.sortOrder ?? 0),
+  isActive: raw.isActive ?? raw.isVisible ?? true,
+});
+
+const mapOptionGroup = (raw: RawOptionGroup): OptionGroup => ({
+  optionGroupId: raw.optionGroupId,
+  name: raw.name ?? raw.optionGroup?.name ?? "",
+  optionType: Number(
+    raw.optionType ?? raw.type ?? raw.optionGroup?.optionType ?? 1
+  ) as OptionGroup["optionType"],
+  isActive: raw.isActive ?? raw.isVisible ?? true,
+  optionItems: (raw.optionItems ?? raw.optionGroup?.optionItems ?? []).map(mapOptionItem),
+  usageCount: raw.usageCount ?? raw.optionGroup?.usageCount,
+});
+
+const mapAssignment = (raw: RawAssignment): MenuItemOptionGroup => {
+  const optionGroup = mapOptionGroup((raw.optionGroup ?? raw) as unknown as RawOptionGroup);
+  const fallbackMax = optionGroup.optionType === 1 ? 1 : optionGroup.optionItems?.length || 1;
+  const fallbackMin = optionGroup.optionType === 1 ? 1 : 0;
+
+  return {
+    menuItemOptionGroupId: raw.menuItemOptionGroupId,
+    menuItemId: raw.menuItemId,
+    optionGroupId: raw.optionGroupId ?? raw.optionGroup?.optionGroupId ?? "",
+    optionGroup,
+    isRequired: raw.isRequired ?? false,
+    minSelect: raw.minSelect ?? fallbackMin,
+    maxSelect: raw.maxSelect ?? fallbackMax,
+    sortOrder: raw.sortOrder ?? 0,
+    isVisible: raw.isVisible ?? true,
+  };
+};
+
 export const optionService = {
   // --- Reusable Option Groups (Master Data) ---
 
@@ -14,7 +94,17 @@ export const optionService = {
     pageSize: number = 20
   ): Promise<ApiResponse<PaginationResult<OptionGroup>>> =>
     apiFetch<PaginationResult<OptionGroup>>(
-      `/Options/groups-library?PageNumber=${pageNum}&PageSize=${pageSize}`
+      `/Options/reusable?PageNumber=${pageNum}&PageSize=${pageSize}`
+    ).then((res) =>
+      res.data
+        ? {
+            ...res,
+            data: {
+              ...res.data,
+              items: res.data.items.map(mapOptionGroup),
+            },
+          }
+        : res
     ),
 
   /**
@@ -24,7 +114,6 @@ export const optionService = {
     apiFetch<string>("/Options/group", {
       method: "POST",
       body: {
-        menuItemId: data.menuItemId || null,
         name: data.name,
         type: data.optionType,
         isRequired: data.isRequired || false,
@@ -58,7 +147,9 @@ export const optionService = {
    * Get options assigned to a specific menu item
    */
   getAssignmentsByMenuItem: (menuItemId: string): Promise<ApiResponse<MenuItemOptionGroup[]>> =>
-    apiFetch<MenuItemOptionGroup[]>(`/Options/menu-item/${menuItemId}`),
+    apiFetch<MenuItemOptionGroup[]>(`/Options/menu-item/${menuItemId}`).then((res) =>
+      res.data ? { ...res, data: res.data.map(mapAssignment) } : res
+    ),
 
   /**
    * Assign a reusable group to a menu item
