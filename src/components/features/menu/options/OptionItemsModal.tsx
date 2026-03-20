@@ -36,20 +36,19 @@ export function OptionItemsModal({ open, onOpenChange, group }: OptionItemsModal
           <div className="space-y-3">
             {(group?.optionItems ?? []).map((item, idx) => (
               <Fragment key={item.optionItemId || idx}>
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="font-medium text-foreground">{item.label}</p>
-                    {item.extraPrice > 0 && (
-                      <p className="text-sm text-primary font-semibold">
-                        {UI_TEXT.COMMON.PLUS}
-                        {item.extraPrice.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
-                      </p>
-                    )}
+                <div className="flex items-center justify-between gap-3 py-1">
+                  <div className="flex flex-col">
+                    <p className="font-semibold text-foreground">{item.label}</p>
+                    <span className="text-[10px] text-muted-foreground uppercase">
+                      {UI_TEXT.COMMON.HASH}
+                      {idx + 1}
+                    </span>
                   </div>
-                  <span className="text-xs text-muted-foreground">
-                    {UI_TEXT.COMMON.HASH}
-                    {idx + 1}
-                  </span>
+                  <div className="text-sm font-bold text-primary bg-primary/5 px-2 py-1 rounded-lg border border-primary/10">
+                    {UI_TEXT.COMMON.PLUS}
+                    {item.extraPrice.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+                    {UI_TEXT.COMMON.CURRENCY}
+                  </div>
                 </div>
                 {idx < (group?.optionItems?.length ?? 0) - 1 && <Separator />}
               </Fragment>

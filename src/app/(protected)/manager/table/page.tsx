@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 
 import AreaManagementDialog from "@/components/features/table-layout/AreaManagementDialog";
-import AreaTabs from "@/components/features/table-layout/AreaTabs";
 import TableLayoutGrid from "@/components/features/table-layout/TableLayoutGrid";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -30,11 +29,9 @@ export default function TableLayoutPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
-      <AreaTabs onManageAreas={() => setAreaDialogOpen(true)} />
-
+    <div className="h-full p-3">
       {selectedArea ? (
-        <TableLayoutGrid area={selectedArea} />
+        <TableLayoutGrid area={selectedArea} onManageAreas={() => setAreaDialogOpen(true)} />
       ) : (
         <div className="flex h-64 flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-500">
           <p>{UI_TEXT.TABLE.SELECTED_AREA_PLEASE}</p>

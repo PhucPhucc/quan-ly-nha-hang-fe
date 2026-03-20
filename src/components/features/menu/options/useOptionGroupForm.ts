@@ -75,6 +75,81 @@ export function useOptionGroupForm({
     return null;
   };
 
+  const buildSavedItem = (
+    item: DraftItem,
+    index: number,
+    optionGroupId: string,
+    optionItemId?: string
+  ): NonNullable<OptionGroup["optionItems"]>[number] => ({
+    optionItemId: optionItemId ?? item.optionItemId ?? "",
+    optionGroupId,
+    label: item.label.trim(),
+    value: item.label.trim().toLowerCase().replace(/\s+/g, "-"),
+    extraPrice: item.extraPrice,
+    sortOrder: index,
+    isActive: item.isActive,
+  });
+
+  const syncOptionItems = async (
+    optionGroupId: string
+  ): Promise<NonNullable<OptionGroup["optionItems"]>> => {
+    const savedItems: NonNullable<OptionGroup["optionItems"]> = [];
+    const existingItemIds = new Set(
+      (editingGroup?.optionItems ?? []).map((item) => item.optionItemId).filter(Boolean)
+    );
+    const currentItemIds = new Set(items.map((item) => item.optionItemId).filter(Boolean));
+
+    for (const existingItemId of existingItemIds) {
+      if (!currentItemIds.has(existingItemId)) {
+        const deleteResponse = await optionService.deleteOptionItem(existingItemId);
+        if (!deleteResponse.isSuccess) {
+          throw new Error(`Failed to delete option item ${existingItemId}`);
+        }
+      }
+    }
+
+    for (const [index, item] of items.entries()) {
+      if (item.optionItemId) {
+        const updateResponse = await optionService.updateOptionItem(item.optionItemId, {
+          label: item.label,
+          extraPrice: item.extraPrice,
+          isActive: item.isActive,
+        });
+
+        if (!updateResponse.isSuccess) {
+          throw new Error(`Failed to update option item ${item.optionItemId}`);
+        }
+
+        savedItems.push(
+          buildSavedItem(
+            item,
+            index,
+            optionGroupId,
+            updateResponse.data?.optionItemId ?? item.optionItemId
+          )
+        );
+        continue;
+      }
+
+      const createResponse = await optionService.createOptionItem({
+        optionGroupId,
+        label: item.label,
+        extraPrice: item.extraPrice,
+        isActive: item.isActive,
+      });
+
+      if (!createResponse.isSuccess) {
+        throw new Error(`Failed to create option item ${item.label}`);
+      }
+
+      savedItems.push(
+        buildSavedItem(item, index, optionGroupId, createResponse.data?.optionItemId)
+      );
+    }
+
+    return savedItems;
+  };
+
   // --- Submit ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,15 +175,21 @@ export function useOptionGroupForm({
           : await optionService.createReusable(payload);
 
       if (response.isSuccess) {
+        const responseGroupId = response.data?.optionGroupId ?? "";
+        const savedGroupId =
+          (isEditing && editingGroup?.optionGroupId) || responseGroupId || groupId;
+        const savedItems =
+          savedGroupId && items.length > 0 ? await syncOptionItems(savedGroupId) : [];
+
         toast.success(
           isEditing ? UI_TEXT.MENU.OPTIONS.EDIT_SUCCESS : UI_TEXT.MENU.OPTIONS.CREATE_SUCCESS
         );
         onSuccess({
-          ...(editingGroup ?? { optionGroupId: response.data ?? "" }),
+          ...(editingGroup ?? { optionGroupId: savedGroupId }),
           name: name.trim(),
           optionType: Number(optionType) as OptionGroup["optionType"],
           isActive,
-          optionItems: payload.optionItems,
+          optionItems: savedItems.length > 0 ? savedItems : payload.optionItems,
         });
         onOpenChange(false);
       } else {
