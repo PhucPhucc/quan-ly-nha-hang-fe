@@ -59,9 +59,11 @@ export const reservationService = {
     return apiFetch<PagedResult<ReservationDto>>(`/reservations?${params.toString()}`);
   },
 
-  createReservation: (data: CreateInternalReservationCommand): Promise<ApiResponse<string>> => {
+  createPublicReservation: (
+    data: CreateInternalReservationCommand
+  ): Promise<ApiResponse<string>> => {
     console.log(123);
-    return apiFetch<string>("/reservations", { method: "POST", body: data });
+    return apiFetch<string>("/public/reservations", { method: "POST", body: data });
   },
 
   updateReservation: (
