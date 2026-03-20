@@ -153,10 +153,10 @@ export const orderService = {
       body: { orderId, tableId: newTableId },
     }),
 
-  mergeOrders: (sourceOrderId: string, targetOrderId: string): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/orders/${sourceOrderId}/merge`, {
+  mergeOrders: (firstOrder: string, secondOrder: string): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/tableoperations/${firstOrder}/merge`, {
       method: "POST",
-      body: { sourceOrderId, targetOrderId },
+      body: { firstOrder, secondOrder },
     }),
 
   splitOrder: (

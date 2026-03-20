@@ -156,6 +156,7 @@
      =============================== */
   --animate-float: float 6s ease-in-out infinite;
   --animate-fade-in-up: fade-in-up 0.8s ease-out forwards;
+  --animate-fade-in-right: fade-in-right 0.6s ease-out forwards;
   --animate-scale-in: scale-in 0.5s ease-out forwards;
   --animate-shimmer: shimmer 2s linear infinite;
 
@@ -179,6 +180,18 @@
     100% {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-right {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0);
     }
   }
 

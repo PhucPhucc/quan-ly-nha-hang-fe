@@ -40,6 +40,10 @@ export const ORDER = {
     FETCH_ERROR: "Lỗi khi lấy danh sách đơn hàng.",
     DROPDOWN_FEATURE: {
       MERGE: "Gộp đơn",
+      MERGE_LABEL: "Chọn đơn hàng để gộp",
+      MERGE_PLACEHOLDER: "Chọn đơn hàng",
+      MERGE_NO_ORDERS: "Không có đơn hàng nào để gộp",
+
       LABEL_MERGE: "Chọn đơn hàng để gộp",
       SPLIT: "Tách đơn",
       MOVE_TABLE: "Chuyển bàn",
