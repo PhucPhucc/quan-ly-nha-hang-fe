@@ -264,8 +264,9 @@ export default function InventoryTransactionsPage() {
           <InventoryPagination
             currentPage={page}
             totalPages={totalPages}
-            onPrev={() => setPage((p) => Math.max(1, p - 1))}
-            onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+            onPageChange={(newPage) => setPage(newPage)}
+            totalItems={transactions.length}
+            pageSize={pageSize}
           />
         </div>
       </div>
