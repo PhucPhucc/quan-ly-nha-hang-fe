@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import React from "react";
 
 import { Input } from "@/components/ui/input";
@@ -11,83 +11,68 @@ import { DraftItem } from "./types/optionGroupForm";
 
 interface OptionItemRowProps {
   item: DraftItem;
-  idx: number;
-  total: number;
   onUpdate: (draftId: string, patch: Partial<DraftItem>) => void;
   onRemove: (draftId: string) => void;
-  onMove: (idx: number, direction: "up" | "down") => void;
 }
 
-export const OptionItemRow: React.FC<OptionItemRowProps> = ({
-  item,
-  idx,
-  total,
-  onUpdate,
-  onRemove,
-  onMove,
-}) => (
-  <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-2 items-center bg-card rounded-xl border border-border px-3 py-2.5 hover:border-primary/30 transition-colors">
-    {/* Reorder buttons */}
-    <div className="flex flex-col gap-0.5">
-      <button
-        type="button"
-        title={UI_TEXT.BUTTON.UP}
-        onClick={() => onMove(idx, "up")}
-        disabled={idx === 0}
-        className="text-muted-foreground/40 hover:text-muted-foreground disabled:opacity-20 p-0.5 flex"
-      >
-        <ChevronUp className="h-3 w-3" />
-      </button>
-      <button
-        type="button"
-        title={UI_TEXT.BUTTON.DOWN}
-        onClick={() => onMove(idx, "down")}
-        disabled={idx === total - 1}
-        className="text-muted-foreground/40 hover:text-muted-foreground disabled:opacity-20 p-0.5 flex"
-      >
-        <ChevronDown className="h-3 w-3" />
-      </button>
-    </div>
-
-    {/* Label */}
-    <Input
-      value={item.label}
-      onChange={(e) => onUpdate(item.draftId, { label: e.target.value })}
-      placeholder={UI_TEXT.MENU.OPTIONS.PLACEHOLDER_OPTION_NAME}
-      className="h-8 text-sm"
-    />
-
-    {/* Extra price */}
-    <div className="w-28 relative">
-      <Input
-        type="number"
-        min={0}
-        value={item.extraPrice}
-        onChange={(e) => onUpdate(item.draftId, { extraPrice: Number(e.target.value) })}
-        className="h-8 text-sm pr-8 text-right"
-      />
-      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] text-muted-foreground pointer-events-none">
-        {UI_TEXT.MENU.UNIT_VND}
-      </span>
-    </div>
-
-    {/* Active toggle */}
-    <div className="w-16 flex justify-center">
-      <Switch
-        checked={item.isActive}
-        onCheckedChange={(v) => onUpdate(item.draftId, { isActive: v })}
-        className="scale-90"
-      />
-    </div>
-
-    {/* Delete */}
+export const OptionItemRow: React.FC<OptionItemRowProps> = ({ item, onUpdate, onRemove }) => (
+  <div className="relative rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/30 hover:shadow-md md:p-5">
     <button
       type="button"
       onClick={() => onRemove(item.draftId)}
-      className="w-8 h-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+      className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground/50 transition-colors hover:bg-destructive/10 hover:text-destructive md:right-5 md:top-5"
       aria-label={UI_TEXT.BUTTON.DELETE}
     >
-      <Trash2 className="h-3.5 w-3.5" />
+      <Trash2 className="h-4.5 w-4.5" />
     </button>
+
+    <div className="min-w-0 space-y-4 pt-8">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="space-y-1.5">
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {UI_TEXT.MENU.OPTIONS.ITEM_LABEL_COL}
+          </label>
+          <Input
+            value={item.label}
+            onChange={(e) => onUpdate(item.draftId, { label: e.target.value })}
+            placeholder={UI_TEXT.MENU.OPTIONS.PLACEHOLDER_OPTION_NAME}
+            className="h-11 w-full text-sm focus-visible:ring-primary/20"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {UI_TEXT.MENU.OPTIONS.PRICE_EXTRA}
+          </label>
+          <div className="relative">
+            <Input
+              type="number"
+              min={0}
+              value={item.extraPrice}
+              onChange={(e) => onUpdate(item.draftId, { extraPrice: Number(e.target.value) })}
+              className="h-11 w-full pr-12 text-right text-sm focus-visible:ring-primary/20"
+            />
+            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] font-medium text-muted-foreground">
+              {UI_TEXT.MENU.UNIT_VND}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 rounded-xl bg-muted/35 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-0.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {UI_TEXT.MENU.OPTIONS.IS_ACTIVE_LABEL}
+          </p>
+          <p className="text-xs text-muted-foreground">{UI_TEXT.MENU.OPTIONS.ACTIVE_HINT}</p>
+        </div>
+
+        <Switch
+          checked={item.isActive}
+          onCheckedChange={(v) => onUpdate(item.draftId, { isActive: v })}
+          className="data-[state=checked]:bg-primary"
+        />
+      </div>
+    </div>
   </div>
 );

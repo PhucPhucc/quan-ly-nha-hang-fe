@@ -1,8 +1,8 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import React from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +24,7 @@ export const OptionGroupFormModal: React.FC<OptionGroupFormModalProps> = ({
   onOpenChange,
   editingGroup,
   onSuccess,
+  onDelete,
 }) => {
   const {
     isEditing,
@@ -38,9 +39,14 @@ export const OptionGroupFormModal: React.FC<OptionGroupFormModalProps> = ({
     addItem,
     removeItem,
     updateItem,
-    moveItem,
     handleSubmit,
   } = useOptionGroupForm({ open, editingGroup, onSuccess, onOpenChange });
+
+  const handleDelete = () => {
+    if (editingGroup && onDelete) {
+      onDelete(editingGroup);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -82,17 +88,22 @@ export const OptionGroupFormModal: React.FC<OptionGroupFormModalProps> = ({
               onAdd={addItem}
               onUpdate={updateItem}
               onRemove={removeItem}
-              onMove={moveItem}
             />
           </div>
 
           {/* Sticky footer */}
           <div className="shrink-0 px-6 py-4 border-t border-border bg-white flex items-center justify-between gap-3">
-            <div>
-              {items.length > 0 && (
-                <Badge variant="secondary">
-                  {items.length} {UI_TEXT.MENU.OPTIONS.ITEMS_COUNT_SUFFIX}
-                </Badge>
+            <div className="flex gap-2">
+              {isEditing && onDelete && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={handleDelete}
+                  className="text-destructive hover:bg-destructive/10 h-10 px-4"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  {UI_TEXT.BUTTON.DELETE}
+                </Button>
               )}
             </div>
             <div className="flex gap-2">

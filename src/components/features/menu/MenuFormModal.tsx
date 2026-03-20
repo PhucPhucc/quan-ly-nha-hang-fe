@@ -28,10 +28,10 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
   return (
     <Dialog open={form.isModalOpen} onOpenChange={form.handleClose}>
       <DialogContent
-        className={`flex flex-col gap-0 p-0 border-none overflow-hidden rounded-xl bg-background shadow-2xl transition-all duration-300 ${form.activeTab === "recipe" ? "sm:max-w-7xl h-[90vh]" : "sm:max-w-2xl max-h-[90vh]"}`}
+        className={`flex flex-col gap-0 p-0 border-none overflow-hidden rounded-xl bg-background shadow-2xl transition-all duration-500 ease-in-out ${form.activeTab === "recipe" ? "sm:max-w-7xl h-[850px] max-h-[95vh]" : "sm:max-w-4xl h-auto max-h-[90vh]"}`}
       >
-        <div className="bg-card p-6 border-b shrink-0 z-30">
-          <DialogHeader className="mb-6">
+        <div className="bg-card p-5 border-b shrink-0 z-30">
+          <DialogHeader className="mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                 <Utensils className="w-6 h-6" />
@@ -95,13 +95,13 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
           </Tabs>
         </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="h-auto overflow-y-auto custom-scrollbar">
           <Tabs value={form.activeTab} onValueChange={form.setActiveTab} className="w-full">
             <TabsContent value="details" className="mt-0">
               <MenuDetailsTab form={form} categories={categories} />
             </TabsContent>
 
-            <TabsContent value="options" className="mt-0 p-6">
+            <TabsContent value="options" className="mt-0 p-4 pt-4">
               <MenuItemOptionAssignment
                 assignments={form.optionAssignments}
                 setAssignments={form.setOptionAssignments}

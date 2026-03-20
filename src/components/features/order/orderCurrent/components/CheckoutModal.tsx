@@ -46,11 +46,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     description?: string;
   } | null>(null);
 
-  const { selectedOrderId, checkoutOrder, clearOrderDetails } = useOrderBoardStore(
+  const { selectedOrderId, checkoutOrder, clearOrderDetails, fetchOrders } = useOrderBoardStore(
     (state: OrderBoardState) => ({
       selectedOrderId: state.selectedOrderId,
       checkoutOrder: state.checkoutOrder,
       clearOrderDetails: state.clearOrderDetails,
+      fetchOrders: state.fetchOrders,
     })
   );
 
@@ -114,6 +115,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           const res = await orderService.getOrderById(selectedOrderId);
 
           if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
+            await fetchOrders();
             toast.success("Hệ thống đã nhận được tiền!");
             onClose();
             clearOrderDetails();
@@ -126,7 +128,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     }
 
     return () => clearInterval(interval);
-  }, [isOpen, selectedMethod, payOSUrl, selectedOrderId, onClose, clearOrderDetails]);
+  }, [isOpen, selectedMethod, payOSUrl, selectedOrderId, onClose, clearOrderDetails, fetchOrders]);
 
   const handleCheckout = async () => {
     if (!selectedOrderId) return;
@@ -271,36 +273,38 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           {selectedMethod === PaymentMethod.BankTransfer && payOSUrl && (
             <div className="flex flex-col items-center justify-center space-y-3 py-2 animate-in fade-in slide-in-from-top-2">
               <div className="p-3 bg-white rounded-xl shadow-sm border border-muted">
-                <QRCodeSVG value={payOSUrl} size={180} level="M" />
+                <QRCodeSVG value={payOSUrl} size={100} level="M" />
               </div>
 
               {bankInfo && (
-                <div className="w-full space-y-1.5 mt-2 text-xs bg-muted/50 p-3 rounded-lg border border-muted">
-                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
-                    <span className="text-muted-foreground mr-4">{BANK_LABELS.bank}</span>
-                    <span className="font-semibold text-right">{bankInfo.bin || "---"}</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
-                    <span className="text-muted-foreground mr-4">{BANK_LABELS.accountName}</span>
-                    <span className="font-semibold text-right">
-                      {bankInfo.accountName || "---"}
+                <div className="w-full space-y-1 mt-1 text-[11px] bg-muted/40 p-2 rounded-md border border-muted">
+                  {/* Gộp Tên và Số tài khoản: Quan trọng nhất để đối soát nhanh */}
+                  <div className="flex flex-col border-b border-muted/50 pb-1">
+                    <span className="text-muted-foreground uppercase text-[9px] font-medium">
+                      {BANK_LABELS.accountName}
                     </span>
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold uppercase text-foreground">
+                        {bankInfo.accountName || "---"}
+                      </span>
+                      <span className="font-medium text-muted-foreground">
+                        {bankInfo.accountNumber}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
-                    <span className="text-muted-foreground mr-4">{BANK_LABELS.accountNumber}</span>
-                    <span className="font-bold text-primary tracking-wider text-right">
-                      {bankInfo.accountNumber || "---"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
-                    <span className="text-muted-foreground mr-4">{BANK_LABELS.amount}</span>
-                    <span className="font-black text-primary text-sm text-right">
+
+                  {/* Số tiền: Phải to và rõ */}
+                  <div className="flex justify-between items-center border-b border-muted/50 py-1">
+                    <span className="text-muted-foreground">{BANK_LABELS.amount}</span>
+                    <span className="font-black text-right text-red-600 text-xs">
                       {(bankInfo.amount ?? totalAmount).toLocaleString()} {BANK_LABELS.currency}
                     </span>
                   </div>
+
+                  {/* Nội dung: Chỉ hiện nếu có, dùng truncate */}
                   <div className="flex justify-between items-center pt-0.5">
-                    <span className="text-muted-foreground mr-4">{BANK_LABELS.desc}</span>
-                    <span className="font-bold text-right text-orange-600">
+                    <span className="text-muted-foreground shrink-0 mr-2">{BANK_LABELS.desc}</span>
+                    <span className="font-bold text-right text-orange-600 truncate">
                       {bankInfo.description || "---"}
                     </span>
                   </div>
@@ -309,7 +313,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
             </div>
           )}
         </div>
-
         <DialogFooter className="sm:justify-end">
           <Button variant="outline" onClick={onClose} disabled={isProcessing}>
             {UI_TEXT.COMMON.CANCEL_EN}
