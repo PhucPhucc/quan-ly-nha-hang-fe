@@ -1,3 +1,4 @@
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { apiFetch } from "@/services/api";
 import { ApiResponse, PaginationResult } from "@/types/Api";
 import { CreateStockInRequest, StockInReceipt } from "@/types/StockIn";
@@ -53,7 +54,7 @@ function mapReceipt(
     receiptCode: dto.receiptCode,
     receivedDate: dto.receivedAt,
     totalItems: dto.totalLines,
-    totalAmount: dto.totalAmount,
+    totalAmount: normalizeInventoryQuantity(dto.totalAmount, 2),
     createdBy: "createdByName" in dto ? (dto.createdByName ?? "-") : "-",
     note: "note" in dto ? (dto.note ?? null) : null,
     items:
@@ -62,10 +63,10 @@ function mapReceipt(
         ingredientId: item.ingredientId,
         ingredientCode: item.ingredientCode,
         ingredientName: item.ingredientName,
-        quantity: item.quantity,
+        quantity: normalizeInventoryQuantity(item.quantity),
         unit: item.baseUnit,
-        unitPrice: item.unitCost ?? undefined,
-        totalAmount: item.lineAmount,
+        unitPrice: item.unitCost != null ? normalizeInventoryQuantity(item.unitCost, 2) : undefined,
+        totalAmount: normalizeInventoryQuantity(item.lineAmount, 2),
         expirationDate: item.expiryDate ?? null,
         batchCode: item.batchCode ?? null,
       })) ?? [],
@@ -78,9 +79,9 @@ function mapCreateRequest(data: CreateStockInRequest) {
     note: data.note,
     items: data.items.map((item) => ({
       ingredientId: item.ingredientId,
-      quantity: item.quantity,
+      quantity: normalizeInventoryQuantity(item.quantity),
       baseUnit: item.baseUnit,
-      unitPrice: item.unitPrice,
+      unitPrice: normalizeInventoryQuantity(item.unitPrice, 2),
       expiryDate: item.expirationDate,
       batchCode: item.batchCode,
     })),

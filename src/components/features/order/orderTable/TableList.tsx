@@ -118,6 +118,7 @@ const TableList = ({ areaId }: TableListProps) => {
         const currentOrder = activeOrderByTableId.get(table.tableId);
 
         const tableData: TableCard = {
+          // tableId: table.tableId,
           tableNumber: table.tableNumber,
           label: table.tableCode,
           ...getTableInfo(table, currentOrder),
@@ -157,6 +158,8 @@ const getTableInfo = (table: ApiTable, order?: Order): Omit<TableCard, "label" |
   switch (order.status) {
     case OrderStatus.Serving:
       return {
+        tableId: table.tableId,
+        orderId: order.orderId,
         status: OrderStatus.Serving,
         people: table.capacity,
         price: order.totalAmount ? currencyFormatter.format(order.totalAmount) + "đ" : "0đ",

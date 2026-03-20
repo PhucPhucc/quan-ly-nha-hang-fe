@@ -1,16 +1,8 @@
-import { format } from "date-fns";
-import {
-  Calendar as CalendarIcon,
-  Layers,
-  Search,
-  ShoppingCart,
-  SlidersHorizontal,
-} from "lucide-react";
+import { Layers, Search, ShoppingCart, SlidersHorizontal } from "lucide-react";
 import { shallow } from "zustand/shallow";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -74,18 +66,17 @@ const OrderBoardHeader = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
             placeholder={SEARCH_PLACEHOLDER}
-            className="pl-10 h-11 bg-background border-muted-foreground/20 rounded-2xl shadow-sm"
+            className="pl-10 bg-background border-muted-foreground/20 rounded-2xl shadow-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-
         {/* Filter Popover */}
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="h-11 rounded-2xl px-4 gap-2 border-muted-foreground/20 shadow-sm"
+              className="rounded-xl px-4 gap-2 border-muted-foreground/20 shadow-sm"
             >
               <SlidersHorizontal className="size-4" />
               <span className="hidden sm:inline font-bold text-xs uppercase">
@@ -195,40 +186,24 @@ const OrderBoardHeader = () => {
             </div>
           </PopoverContent>
         </Popover>
-
-        {/* Date Range Popover */}
+        {/* Date Range Popover
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="h-11 rounded-2xl px-4 gap-2 border-muted-foreground/20 shadow-sm font-bold"
+              className="rounded-xl px-4 gap-2 border-muted-foreground/20 shadow-sm font-bold"
             >
-              <CalendarIcon className="size-4" />
-              <span className="text-[11px] uppercase">
-                {dateRange?.from ? (
-                  dateRange.to ? (
-                    <>
-                      {format(dateRange.from, "dd/MM")} {UI_TEXT.COMMON.MINUS}{" "}
-                      {format(dateRange.to, "dd/MM/yyyy")}
-                    </>
-                  ) : (
-                    format(dateRange.from, "dd/MM/yyyy")
-                  )
-                ) : (
-                  DATE_PICKER_LABEL
-                )}
-              </span>
+              <SendToBack />
+              {UI_TEXT.BUTTON.FEATURE}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0 rounded-2xl shadow-2xl" align="end">
-            <Calendar
-              mode="range"
-              selected={dateRange}
-              onSelect={setDateRange}
-              className="rounded-2xl"
-            />
+            <PopoverHeader>
+              <p className="font-black text-[11px] text-primary uppercase">Chuc nang don hang</p>
+            </PopoverHeader>
+            <OrderTabFeature />
           </PopoverContent>
-        </Popover>
+        </Popover> */}
       </div>
 
       {/* Area-based Tabs */}

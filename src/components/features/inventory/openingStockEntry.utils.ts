@@ -1,3 +1,4 @@
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import type { ImportOpeningStockInput } from "@/lib/zod-schemas/inventory";
 import type { Ingredient } from "@/types/Inventory";
 
@@ -6,8 +7,8 @@ import type { OpeningStockEntryValues } from "./components/openingStockEntry.typ
 export function buildOpeningStockEntryValues(ingredients: Ingredient[]): OpeningStockEntryValues {
   return ingredients.reduce<OpeningStockEntryValues>((acc, item) => {
     acc[item.ingredientId] = {
-      quantity: item.currentStock || 0,
-      costPrice: item.costPrice || 0,
+      quantity: normalizeInventoryQuantity(item.currentStock || 0),
+      costPrice: normalizeInventoryQuantity(item.costPrice || 0, 2),
     };
 
     return acc;
@@ -20,8 +21,13 @@ export function mergeOpeningStockEntryValues(
 ): OpeningStockEntryValues {
   return Object.entries(defaults).reduce<OpeningStockEntryValues>((acc, [ingredientId, value]) => {
     acc[ingredientId] = {
-      ...value,
-      ...overrides[ingredientId],
+      quantity: normalizeInventoryQuantity(
+        (overrides[ingredientId]?.quantity ?? value.quantity) || 0
+      ),
+      costPrice: normalizeInventoryQuantity(
+        (overrides[ingredientId]?.costPrice ?? value.costPrice) || 0,
+        2
+      ),
     };
 
     return acc;
@@ -38,8 +44,8 @@ export function buildImportOpeningStockInput(
         if (value.quantity > 0) {
           acc.push({
             ingredientId: id,
-            initialQuantity: value.quantity,
-            costPrice: value.costPrice,
+            initialQuantity: normalizeInventoryQuantity(value.quantity),
+            costPrice: normalizeInventoryQuantity(value.costPrice, 2),
           });
         }
 

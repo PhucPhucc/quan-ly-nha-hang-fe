@@ -31,6 +31,13 @@ import { AddIngredientPanel } from "./AddIngredientPanel";
 import { InventoryEmptyState } from "./components/InventoryEmptyState";
 import { InventoryPagination } from "./components/InventoryPagination";
 import { InventoryRow } from "./components/InventoryRow";
+import {
+  INVENTORY_TABLE_CONTAINER_CLASS,
+  INVENTORY_TABLE_SURFACE_CLASS,
+  INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
+  INVENTORY_THEAD_ROW_CLASS,
+} from "./components/inventoryStyles";
 import { InventoryTableHeader } from "./components/InventoryTableHeader";
 import { useInventoryTable } from "./useInventoryTable";
 
@@ -169,29 +176,29 @@ export function IngredientTable() {
         />
       </div>
 
-      <div className="flex min-h-0 h-fit flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft mt-2">
-        <Table containerClassName="max-h-[460px] overflow-auto">
-          <TableHeader className="sticky top-0 z-20 bg-slate-50 shadow-sm border-b">
-            <TableRow className="border-slate-200 hover:bg-slate-50 bg-slate-50">
-              <TableHead className="py-3 font-semibold text-slate-800 uppercase text-[11px] tracking-wider text-center bg-slate-50">
+      <div className={`${INVENTORY_TABLE_SURFACE_CLASS} mt-2`}>
+        <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
+          <TableHeader className={INVENTORY_THEAD_CLASS}>
+            <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_SKU}
               </TableHead>
-              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_NAME}
               </TableHead>
-              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
               </TableHead>
-              <TableHead className="py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
               </TableHead>
-              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
               </TableHead>
-              <TableHead className="w-[120px] py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800 bg-slate-50">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
               </TableHead>
-              <TableHead className="w-[140px] py-3 text-center font-semibold text-slate-800 uppercase text-[11px] tracking-wider bg-slate-50">
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
               </TableHead>
             </TableRow>
@@ -224,12 +231,13 @@ export function IngredientTable() {
           </TableBody>
         </Table>
 
-        <div className="shrink-0 border-t border-slate-200 bg-white">
+        <div className="shrink-0 border-t border-border/40 bg-muted/5">
           <InventoryPagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPrev={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-            onNext={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+            onPageChange={setCurrentPage}
+            totalItems={ingredients.length * totalPages} // Approximate as we don't have absolute total yet in this hook, but good enough for now
+            pageSize={pageSize}
           />
         </div>
       </div>

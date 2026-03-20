@@ -1,4 +1,5 @@
 import { DollarSign, Loader2 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -13,8 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { orderService } from "@/services/orderService";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
-import { PaymentMethod } from "@/types/enums";
+import { OrderStatus, PaymentMethod } from "@/types/enums";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -22,10 +24,27 @@ interface CheckoutModalProps {
   totalAmount: number;
 }
 
+const BANK_LABELS = {
+  bank: "Ngân hàng:",
+  accountName: "Chủ tài khoản:",
+  accountNumber: "Số tài khoản:",
+  amount: "Số tiền:",
+  currency: "đ",
+  desc: "Nội dung CT:",
+};
+
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, totalAmount }) => {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(PaymentMethod.Cash);
   const [customerGiven, setCustomerGiven] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [payOSUrl, setPayOSUrl] = useState<string | null>(null);
+  const [bankInfo, setBankInfo] = useState<{
+    accountName?: string;
+    accountNumber?: string;
+    bin?: string;
+    amount?: number;
+    description?: string;
+  } | null>(null);
 
   const { selectedOrderId, checkoutOrder, clearOrderDetails } = useOrderBoardStore(
     (state: OrderBoardState) => ({
@@ -35,10 +54,83 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     })
   );
 
+  React.useEffect(() => {
+    let isMounted = true;
+
+    if (!isOpen || selectedMethod !== PaymentMethod.BankTransfer) {
+      setPayOSUrl(null);
+      setBankInfo(null);
+      return;
+    }
+
+    const fetchQR = async () => {
+      if (!selectedOrderId) return;
+      setIsProcessing(true);
+      try {
+        const response = await orderService.createPayOsQr(selectedOrderId);
+        if (isMounted && response.isSuccess && response.data) {
+          const qrString =
+            typeof response.data === "string"
+              ? response.data
+              : response.data.qrCode || response.data.checkoutUrl || "";
+          setPayOSUrl(qrString);
+
+          if (typeof response.data === "object" && response.data !== null) {
+            setBankInfo({
+              accountName: response.data.accountName,
+              accountNumber: response.data.accountNumber,
+              bin: response.data.bin,
+              amount: response.data.amount,
+              description: response.data.description,
+            });
+          }
+        } else if (isMounted) {
+          toast.error("Không thể tạo mã QR thanh toán.");
+        }
+      } catch (error) {
+        if (isMounted) {
+          toast.error("Đã xảy ra lỗi khi tải mã QR.");
+          console.error(error);
+        }
+      } finally {
+        if (isMounted) setIsProcessing(false);
+      }
+    };
+
+    fetchQR();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedMethod, isOpen, selectedOrderId]);
+
+  React.useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+
+    if (isOpen && selectedMethod === PaymentMethod.BankTransfer && payOSUrl) {
+      interval = setInterval(async () => {
+        try {
+          if (!selectedOrderId) return;
+          const res = await orderService.getOrderById(selectedOrderId);
+
+          if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
+            toast.success("Hệ thống đã nhận được tiền!");
+            onClose();
+            clearOrderDetails();
+            clearInterval(interval);
+          }
+        } catch (error) {
+          console.error("Lỗi kiểm tra thanh toán:", error);
+        }
+      }, 3000);
+    }
+
+    return () => clearInterval(interval);
+  }, [isOpen, selectedMethod, payOSUrl, selectedOrderId, onClose, clearOrderDetails]);
+
   const handleCheckout = async () => {
     if (!selectedOrderId) return;
 
-    // Optional validation for cash
     let amountReceived = undefined;
     if (selectedMethod === PaymentMethod.Cash) {
       if (!customerGiven) {
@@ -54,12 +146,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
 
     try {
       setIsProcessing(true);
+
+      if (selectedMethod === PaymentMethod.BankTransfer) {
+        return;
+      }
+
       const success = await checkoutOrder(selectedOrderId, selectedMethod, amountReceived);
 
       if (success) {
         toast.success("Thanh toán thành công!");
         onClose();
-        clearOrderDetails(); // Clear selected order
+        clearOrderDetails();
       } else {
         toast.error("Thanh toán thất bại, vui lòng thử lại.");
       }
@@ -170,22 +267,66 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
               </div>
             </div>
           )}
+
+          {selectedMethod === PaymentMethod.BankTransfer && payOSUrl && (
+            <div className="flex flex-col items-center justify-center space-y-3 py-2 animate-in fade-in slide-in-from-top-2">
+              <div className="p-3 bg-white rounded-xl shadow-sm border border-muted">
+                <QRCodeSVG value={payOSUrl} size={180} level="M" />
+              </div>
+
+              {bankInfo && (
+                <div className="w-full space-y-1.5 mt-2 text-xs bg-muted/50 p-3 rounded-lg border border-muted">
+                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
+                    <span className="text-muted-foreground mr-4">{BANK_LABELS.bank}</span>
+                    <span className="font-semibold text-right">{bankInfo.bin || "---"}</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
+                    <span className="text-muted-foreground mr-4">{BANK_LABELS.accountName}</span>
+                    <span className="font-semibold text-right">
+                      {bankInfo.accountName || "---"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
+                    <span className="text-muted-foreground mr-4">{BANK_LABELS.accountNumber}</span>
+                    <span className="font-bold text-primary tracking-wider text-right">
+                      {bankInfo.accountNumber || "---"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-muted pb-1.5">
+                    <span className="text-muted-foreground mr-4">{BANK_LABELS.amount}</span>
+                    <span className="font-black text-primary text-sm text-right">
+                      {(bankInfo.amount ?? totalAmount).toLocaleString()} {BANK_LABELS.currency}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pt-0.5">
+                    <span className="text-muted-foreground mr-4">{BANK_LABELS.desc}</span>
+                    <span className="font-bold text-right text-orange-600">
+                      {bankInfo.description || "---"}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <DialogFooter className="sm:justify-end">
           <Button variant="outline" onClick={onClose} disabled={isProcessing}>
             {UI_TEXT.COMMON.CANCEL_EN}
           </Button>
-          <Button onClick={handleCheckout} disabled={isProcessing} className="font-bold">
-            {isProcessing ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                {UI_TEXT.ORDER.CURRENT.PROCESSING}
-              </>
-            ) : (
-              UI_TEXT.ORDER.CURRENT.CONFIRM_PAYMENT
-            )}
-          </Button>
+
+          {selectedMethod !== PaymentMethod.BankTransfer && (
+            <Button onClick={handleCheckout} disabled={isProcessing} className="font-bold">
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {UI_TEXT.ORDER.CURRENT.PROCESSING}
+                </>
+              ) : (
+                UI_TEXT.ORDER.CURRENT.CONFIRM_PAYMENT
+              )}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

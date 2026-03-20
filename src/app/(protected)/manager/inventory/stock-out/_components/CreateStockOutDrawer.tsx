@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { stockOutService } from "@/services/stock-out.service";
@@ -99,7 +100,11 @@ export const CreateStockOutDrawer = ({
   };
 
   const calculateTotal = useMemo(() => {
-    return () => items.reduce((sum, item) => sum + item.quantity * (item.unitPrice ?? 0), 0);
+    return () =>
+      normalizeInventoryQuantity(
+        items.reduce((sum, item) => sum + item.quantity * (item.unitPrice ?? 0), 0),
+        2
+      );
   }, [items]);
 
   const handleSubmit = async () => {
@@ -116,7 +121,10 @@ export const CreateStockOutDrawer = ({
 
     for (const item of validItems) {
       const ing = ingredients.find((x) => x.ingredientId === item.ingredientId);
-      if (ing && item.quantity > ing.currentStock) {
+      if (
+        ing &&
+        normalizeInventoryQuantity(item.quantity) > normalizeInventoryQuantity(ing.currentStock)
+      ) {
         toast.error(
           `${UI_TEXT.INVENTORY.STOCK_OUT.STOCK_EXCEEDED_PREFIX} ${ing.name} ${UI_TEXT.INVENTORY.STOCK_OUT.STOCK_EXCEEDED_TOKEN} ${ing.currentStock}${UI_TEXT.INVENTORY.TABLE.PAREN_CLOSE}`
         );
@@ -282,11 +290,15 @@ export const CreateStockOutDrawer = ({
                             <Input
                               type="number"
                               min="0"
-                              step="0.1"
+                              step="0.001"
                               className="h-9 rounded-lg"
                               value={item.quantity}
                               onChange={(e) =>
-                                updateItem(index, "quantity", parseFloat(e.target.value) || 0)
+                                updateItem(
+                                  index,
+                                  "quantity",
+                                  normalizeInventoryQuantity(parseFloat(e.target.value) || 0)
+                                )
                               }
                             />
                             <span className="text-xs font-semibold text-muted-foreground shrink-0 w-8">
@@ -298,10 +310,11 @@ export const CreateStockOutDrawer = ({
                               <div>
                                 {UI_TEXT.INVENTORY.STOCK_OUT.CURRENT_STOCK_LABEL}{" "}
                                 <span className="font-semibold text-slate-700">
-                                  {selectedIng.currentStock}
+                                  {formatInventoryQuantity(selectedIng.currentStock)}
                                 </span>
                               </div>
-                              {item.quantity > selectedIng.currentStock && (
+                              {normalizeInventoryQuantity(item.quantity) >
+                                normalizeInventoryQuantity(selectedIng.currentStock) && (
                                 <div className="text-[11px] text-destructive font-semibold">
                                   {UI_TEXT.INVENTORY.STOCK_OUT.EXCEED_STOCK_WARNING}
                                 </div>
@@ -322,7 +335,9 @@ export const CreateStockOutDrawer = ({
                               updateItem(
                                 index,
                                 "unitPrice",
-                                e.target.value === "" ? null : parseFloat(e.target.value) || 0
+                                e.target.value === ""
+                                  ? null
+                                  : normalizeInventoryQuantity(parseFloat(e.target.value) || 0, 2)
                               )
                             }
                             placeholder={UI_TEXT.INVENTORY.STOCK_OUT.PRICE_OPTIONAL}
@@ -335,9 +350,7 @@ export const CreateStockOutDrawer = ({
                           {UI_TEXT.INVENTORY.STOCK_OUT.TOTAL_PRICE_LABEL}
                         </span>
                         <span className="text-sm font-bold text-red-600">
-                          {(item.quantity * (item.unitPrice ?? 0)).toLocaleString(
-                            UI_TEXT.COMMON.LOCALE_VI
-                          )}
+                          {formatInventoryQuantity(item.quantity * (item.unitPrice ?? 0), 2)}
                           <span className="text-[10px] ml-1">{UI_TEXT.COMMON.CURRENCY}</span>
                         </span>
                       </div>
@@ -355,7 +368,7 @@ export const CreateStockOutDrawer = ({
               </span>
               <div className="text-right">
                 <span className="text-2xl font-black text-red-600 tracking-tighter">
-                  {calculateTotal().toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+                  {formatInventoryQuantity(calculateTotal(), 2)}
                 </span>
                 <span className="text-sm font-bold text-red-600 ml-1 uppercase">
                   {UI_TEXT.COMMON.CURRENCY}

@@ -9,6 +9,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import type { InventorySettingsInput } from "@/lib/zod-schemas/inventory";
 import { inventoryService } from "@/services/inventory.service";
 
+import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
 import {
   DEFAULT_INVENTORY_SETTINGS,
   getInventorySettingsFormValues,
@@ -66,7 +67,7 @@ export function InventorySettingsFormContainer({
 
         setFormValues(nextValues);
         queryClient.setQueryData(["inventory-settings"], response.data);
-        await queryClient.invalidateQueries({ queryKey: ["inventory-settings"] });
+        await invalidateInventoryQueries(queryClient);
         toast.success(SETTINGS.SUCCESS_UPDATE);
         return;
       }

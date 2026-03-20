@@ -1,3 +1,4 @@
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { apiFetch } from "@/services/api";
 import { ApiResponse, PaginationResult } from "@/types/Api";
 import { CreateStockOutRequest, StockOutReceipt } from "@/types/StockOut";
@@ -53,7 +54,7 @@ function mapReceipt(
     stockOutDate: dto.stockOutDate,
     reason: ("reason" in dto ? dto.reason : "note" in dto ? dto.note : undefined) ?? undefined,
     totalItems: dto.totalItems || 0,
-    totalAmount: dto.totalAmount,
+    totalAmount: normalizeInventoryQuantity(dto.totalAmount, 2),
     createdBy: "createdByName" in dto ? (dto.createdByName ?? "-") : "-",
     note: "note" in dto ? (dto.note ?? null) : null,
     items:
@@ -63,9 +64,9 @@ function mapReceipt(
         ingredientCode: item.ingredientCode,
         ingredientName: item.ingredientName,
         unit: item.unit,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice ?? null,
-        totalAmount: item.lineAmount,
+        quantity: normalizeInventoryQuantity(item.quantity),
+        unitPrice: item.unitPrice != null ? normalizeInventoryQuantity(item.unitPrice, 2) : null,
+        totalAmount: normalizeInventoryQuantity(item.lineAmount, 2),
       })) ?? [],
   };
 }
@@ -76,8 +77,8 @@ function mapCreateRequest(data: CreateStockOutRequest) {
     reason: data.reason,
     items: data.items.map((item) => ({
       ingredientId: item.ingredientId,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
+      quantity: normalizeInventoryQuantity(item.quantity),
+      unitPrice: item.unitPrice == null ? null : normalizeInventoryQuantity(item.unitPrice, 2),
     })),
   };
 }

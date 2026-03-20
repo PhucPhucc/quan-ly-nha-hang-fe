@@ -1,0 +1,73 @@
+"use client";
+
+import { EllipsisVertical } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { UI_TEXT } from "@/lib/UI_Text";
+
+import { Table } from "../TableItem";
+import CardFeature from "./CardFeature";
+
+export enum Feature {
+  MERGE = "MERGE",
+  SPLIT = "SPLIT",
+  MOVE_TABLE = "MOVE_TABLE",
+}
+
+const DropdownFeature = ({ table }: { table: Table }) => {
+  const [feature, setFeature] = useState<Feature | null>(null);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            className="p-0.5 rounded-full hover:bg-table-serving/25"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <EllipsisVertical />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent sideOffset={6} align="start">
+          {/* <DropdownMenuLabel>{UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.LABEL_MERGE}</DropdownMenuLabel> */}
+          <DropdownMenuItem onClick={() => setFeature(Feature.MERGE)}>
+            {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setFeature(Feature.SPLIT)}>
+            {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setFeature(Feature.MOVE_TABLE)}>
+            {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={!!feature} onOpenChange={() => setFeature(null)}>
+        <DialogContent>
+          <DialogTitle>
+            {
+              UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE[
+                feature as keyof typeof UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE
+              ]
+            }
+          </DialogTitle>
+          {feature && <CardFeature feature={feature} table={table} onClose={setFeature} />}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default DropdownFeature;

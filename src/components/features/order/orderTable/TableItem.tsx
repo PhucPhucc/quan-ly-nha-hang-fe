@@ -1,18 +1,14 @@
-import { Loader2, Plus, Users } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuGroup,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
 import { useElapsedTime } from "@/hooks/useElapsedTime";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { OrderStatus } from "@/types/enums";
 
+import DropdownFeature from "./components/DropdownFeature";
+
 export type Table = {
+  tableId?: string;
   tableNumber: number;
   status: OrderStatus;
   label: string;
@@ -20,6 +16,7 @@ export type Table = {
   elapsedTime?: string;
   price?: string;
   createdAt?: string;
+  orderId?: string;
 };
 
 type TableItemProps = {
@@ -34,7 +31,6 @@ const TableItem = ({ table, onTableClick, currentOrderCode, isLoading }: TableIt
   const isReady = table.status === OrderStatus.Ready;
   const isServing = table.status === OrderStatus.Serving;
   const isClickable = (isReady || isServing) && !!onTableClick;
-
   return (
     <li
       onClick={isClickable ? onTableClick : undefined}
@@ -44,74 +40,65 @@ const TableItem = ({ table, onTableClick, currentOrderCode, isLoading }: TableIt
           onTableClick();
         }
       }}
-      role={isClickable ? "button" : undefined}
+      // role={isClickable ? "button" : undefined}
       tabIndex={isClickable ? 0 : undefined}
       className={cn(
         "flex flex-col items-center justify-center transition-all active:scale-90 group px-1 focus:outline-none",
         isClickable ? "cursor-pointer" : "cursor-default"
       )}
     >
-      <ContextMenu>
-        <ContextMenuTrigger
-          className={cn(
-            "relative border-2 w-28 h-20 sm:w-36 sm:h-24 m-3 rounded-xl transition-all duration-300 shadow-sm group-hover:shadow-md overflow-visible",
-            getStatusColor(table.status)
-          )}
-        >
-          <ContextMenuContent>
-            <ContextMenuGroup>
-              <ContextMenuItem>{UI_TEXT.ORDER.BOARD.CONTEXT_MENU.BACK}</ContextMenuItem>
-              <ContextMenuItem disabled>{UI_TEXT.ORDER.BOARD.CONTEXT_MENU.FORWARD}</ContextMenuItem>
-              <ContextMenuItem>{UI_TEXT.ORDER.BOARD.CONTEXT_MENU.RELOAD}</ContextMenuItem>
-            </ContextMenuGroup>
-          </ContextMenuContent>
+      <div
+        className={cn(
+          "relative border-2 w-28 h-20 sm:w-36 sm:h-24 m-3 rounded-xl transition-all duration-300 shadow-sm group-hover:shadow-md overflow-visible",
+          getStatusColor(table.status)
+        )}
+      >
+        <FootTableItem position="top" color={getFootColor(table.status)} />
+        <FootTableItem position="bottom" color={getFootColor(table.status)} />
+        <FootTableItem position="left" color={getFootColor(table.status)} />
+        <FootTableItem position="right" color={getFootColor(table.status)} />
 
-          <FootTableItem position="top" color={getFootColor(table.status)} />
-          <FootTableItem position="bottom" color={getFootColor(table.status)} />
-          <FootTableItem position="left" color={getFootColor(table.status)} />
-          <FootTableItem position="right" color={getFootColor(table.status)} />
+        <div className="p-1.5 h-full flex flex-col justify-between overflow-hidden">
+          <div className="flex justify-between items-start">
+            {currentOrderCode && (
+              <p className="text-[12px] font-semibold font-mono tracking-wider">
+                {UI_TEXT.COMMON.HASH}
+                {currentOrderCode.slice(-3)}
+              </p>
+            )}
+            {table.status === OrderStatus.Serving && <DropdownFeature table={table} />}
+          </div>
 
-          <div className="p-1.5 h-full flex flex-col justify-between overflow-hidden">
-            <div className="flex justify-between items-start">
-              {currentOrderCode && (
-                <p className="text-[12px] font-semibold font-mono tracking-wider">
-                  {UI_TEXT.COMMON.HASH}
-                  {currentOrderCode}
-                </p>
-              )}
-              {table.status === OrderStatus.Serving && timeRunning && (
-                <div className="flex items-center bg-background/90 p-1 rounded-full border border-table-serving/50">
-                  <span className="text-[8px] font-black text-table-serving leading-none">
-                    {timeRunning}
-                  </span>
-                </div>
+          {isReady ? (
+            <div className="flex items-center justify-center flex-1">
+              {isLoading ? (
+                <Loader2 className="size-5 text-muted-foreground/50 animate-spin" />
+              ) : (
+                <Plus className="size-5 text-muted-foreground/40 group-hover:text-muted-foreground/70 transition-colors" />
               )}
             </div>
-
-            {isReady ? (
-              <div className="flex items-center justify-center flex-1">
-                {isLoading ? (
-                  <Loader2 className="size-5 text-muted-foreground/50 animate-spin" />
-                ) : (
-                  <Plus className="size-5 text-muted-foreground/40 group-hover:text-muted-foreground/70 transition-colors" />
-                )}
-              </div>
-            ) : (
-              <div className="flex justify-between items-center gap-0.5">
-                <p className="flex gap-1 text-xs font-bold text-foreground/70 truncate">
-                  <Users className="size-3 shrink-0" />
-                  <span>{table.people}</span>
-                </p>
-                {table.status === OrderStatus.Serving && (
+          ) : (
+            <div className="flex justify-between items-center gap-0.5">
+              {/* <p className="flex gap-1 text-xs font-bold text-foreground/70 truncate">
+                <Users className="size-3 shrink-0" />
+                <span>{table.people}</span>
+              </p> */}
+              {table.status === OrderStatus.Serving && (
+                <>
+                  <div className="flex items-center bg-background/90 p-1 rounded-full border border-table-serving/50">
+                    <span className="text-[8px] font-black text-table-serving leading-none">
+                      {timeRunning}
+                    </span>
+                  </div>
                   <p className="font-black text-xs text-primary truncate leading-none">
                     {table.price || "0"}
                   </p>
-                )}
-              </div>
-            )}
-          </div>
-        </ContextMenuTrigger>
-      </ContextMenu>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
       <p
         className={cn(
           "mt-3 text-[10px] font-black uppercase tracking-tighter transition-colors text-center w-full",

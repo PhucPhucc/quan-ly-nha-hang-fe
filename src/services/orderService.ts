@@ -4,6 +4,16 @@ import { Order } from "@/types/Order";
 
 import { apiFetch } from "./api";
 
+export interface PayOsQrResponse {
+  checkoutUrl?: string;
+  qrCode?: string;
+  accountName?: string;
+  accountNumber?: string;
+  bin?: string;
+  amount?: number;
+  description?: string;
+}
+
 // Requests
 export interface CreateOrderRequest {
   tableId?: string;
@@ -130,5 +140,31 @@ export const orderService = {
     apiFetch<string>(`/billing/orders/${orderId}/checkout`, {
       method: "POST",
       body: { orderId, paymentMethod, amountReceived },
+    }),
+
+  createPayOsQr: (orderId: string): Promise<ApiResponse<PayOsQrResponse | string>> =>
+    apiFetch<PayOsQrResponse | string>(`/billing/orders/${orderId}/payos-qr`, {
+      method: "POST",
+    }),
+  // /api/v1/tableoperations/{id}/change-table
+  changeTable: (orderId: string, newTableId: string): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/tableoperations/${orderId}/change-table`, {
+      method: "PATCH",
+      body: { orderId, tableId: newTableId },
+    }),
+
+  mergeOrders: (sourceOrderId: string, targetOrderId: string): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/orders/${sourceOrderId}/merge`, {
+      method: "POST",
+      body: { sourceOrderId, targetOrderId },
+    }),
+
+  splitOrder: (
+    orderId: string,
+    itemsToSplit: { orderItemId: string; quantity: number }[]
+  ): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/orders/${orderId}/split`, {
+      method: "POST",
+      body: { orderId, itemsToSplit },
     }),
 };

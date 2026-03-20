@@ -14,6 +14,11 @@ export enum AlertThresholdStatus {
   OUT_OF_STOCK = "OUT_OF_STOCK",
 }
 
+export enum InventoryCheckStatus {
+  Draft = 1,
+  Processed = 2,
+}
+
 export interface Ingredient {
   ingredientId: string;
   name: string;
@@ -53,6 +58,10 @@ export enum InventoryTransactionType {
   OpeningStock = 1,
   StockIn = 2,
   StockInReverse = 3,
+  StockOut = 4,
+  StockOutReverse = 5,
+  SaleDeduction = 6,
+  InventoryCheck = 7,
 }
 
 export interface InventoryTransaction {
@@ -84,4 +93,69 @@ export interface ImportOpeningStockResponse {
   updatedCount: number;
   transactionCount: number;
   updatedAt: string;
+}
+
+// Inventory Check
+export interface InventoryCheck {
+  inventoryCheckId: string;
+  checkDate: string;
+  status: InventoryCheckStatus;
+  createdBy?: string;
+  totalItems: number;
+  note?: string;
+  createdAt: string;
+}
+
+export interface InventoryCheckItem {
+  inventoryCheckItemId: string;
+  inventoryCheckId: string;
+  ingredientId: string;
+  ingredientName?: string;
+  ingredientCode?: string;
+  unit?: string;
+  bookQuantity: number;
+  physicalQuantity: number;
+  differenceQuantity: number;
+  reason?: string;
+}
+
+export interface InventoryCheckDetail extends InventoryCheck {
+  items: InventoryCheckItem[];
+}
+
+export interface CreateInventoryCheckRequest {
+  checkDate: string;
+  note?: string;
+  items: {
+    ingredientId: string;
+    physicalQuantity: number;
+    reason?: string;
+  }[];
+}
+
+// Inventory Report
+export interface InventoryReportItem {
+  ingredientId: string;
+  ingredientName: string;
+  ingredientCode: string;
+  unit: string;
+  openingStock: number;
+  totalStockIn: number;
+  totalStockOut: number;
+  totalSaleDeduction: number;
+  totalOutbound: number;
+  closingStock: number;
+  averageUnitCost: number;
+  closingStockValue: number;
+}
+
+export interface InventoryLedgerItem {
+  ingredientId: string;
+  ingredientName?: string;
+  occurredAt: string;
+  transactionType: InventoryTransactionType;
+  referenceNo: string;
+  quantityDelta: number;
+  balanceAfter: number;
+  note?: string;
 }
