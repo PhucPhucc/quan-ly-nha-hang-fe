@@ -61,7 +61,7 @@ export function useReservation(initialDate: Date | undefined) {
         reservationTime: selectedTime,
       };
 
-      const res = await reservationService.createPublicReservation(payload);
+      const res = await reservationService.createReservation(payload);
 
       if (res.isSuccess) {
         toast.success("Đặt bàn thành công! Hẹn gặp bạn tại nhà hàng nhé.");

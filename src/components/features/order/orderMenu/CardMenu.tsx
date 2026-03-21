@@ -74,8 +74,8 @@ const CardMenu = () => {
       categoryId: comboCategory?.categoryId || "combo-category-id",
       categoryName: comboCategory?.name || "Combo",
       isOutOfStock: sm.isOutOfStock,
-      createdAt: sm.createdAt,
-      updatedAt: sm.updatedAt,
+      // createdAt: sm.createdAt,
+      // updatedAt: sm.updatedAt,
     }));
   }, [setMenus, comboCategory]);
 

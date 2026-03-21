@@ -72,7 +72,7 @@ export default function EditTablePanel({
             maxCapacity={maxCapacity}
           />
           <p className="text-[11px] italic text-slate-400 mt-2">
-            {UI_TEXT.COMMON.ASTERISK} {UI_TEXT.COMMON.DEFAULT_SHAPE_NOTE}
+            {UI_TEXT.COMMON.ASTERISK} {UI_TEXT.TABLE.DEFAULT_SHAPE_NOTE}
           </p>
         </div>
 

@@ -49,7 +49,13 @@ describe("InventoryReportTable", () => {
 
     vi.mocked(inventoryService.getInventoryReport).mockResolvedValue({
       isSuccess: true,
-      data: [mockReportItem],
+      data: {
+        items: [mockReportItem],
+        totalCount: 1,
+        pageSize: 10,
+        currentPage: 1,
+        totalPages: 1,
+      },
     });
 
     renderWithProviders(<InventoryReportTable />);

@@ -11,7 +11,7 @@ import { optionService } from "@/services/optionService";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { CartItemOptionGroup } from "@/types/Cart";
-import { MenuItem, OptionGroup, OptionItem } from "@/types/Menu";
+import { MenuItem, MenuItemOptionGroup, OptionItem } from "@/types/Menu";
 
 import { SelectionDialogFooter } from "./components/dialog/SelectionDialogFooter";
 import { SelectionDialogHeader } from "./components/dialog/SelectionDialogHeader";
@@ -69,7 +69,7 @@ export function MenuOptionSelectionDialog({
 
   const totalPrice = menuItem ? (menuItem.price + extraPrice) * quantity : 0;
 
-  const handleToggleOption = (group: OptionGroup, item: OptionItem, isChecked: boolean) => {
+  const handleToggleOption = (group: MenuItemOptionGroup, item: OptionItem, isChecked: boolean) => {
     const currentSelection = selectedOptions[group.optionGroupId] || [];
 
     if (group.optionType === OPTION_TYPE_SINGLE_SELECT) {

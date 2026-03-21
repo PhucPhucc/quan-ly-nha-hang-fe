@@ -89,6 +89,8 @@ const mapAssignment = (raw: RawAssignment): MenuItemOptionGroup => {
     menuItemId: raw.menuItemId,
     optionGroupId: raw.optionGroupId ?? raw.optionGroup?.optionGroupId ?? "",
     optionGroup,
+    name: optionGroup.name,
+    optionType: optionGroup.optionType,
     isRequired: raw.isRequired ?? false,
     minSelect: raw.minSelect ?? fallbackMin,
     maxSelect: raw.maxSelect ?? fallbackMax,
