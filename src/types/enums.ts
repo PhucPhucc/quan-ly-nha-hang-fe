@@ -10,10 +10,13 @@ export enum OrderType {
 }
 
 export enum OrderStatus {
+  Pending = "Pending",
   Serving = "Serving",
   Completed = "Completed",
   Cancelled = "Cancelled",
   Paid = "Paid",
+  Closed = "Closed",
+  Merged = "Merged",
   Ready = "Ready",
   Reserved = "Reserved",
   Cleaning = "Cleaning",

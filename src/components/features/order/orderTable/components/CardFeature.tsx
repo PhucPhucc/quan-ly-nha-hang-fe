@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
+import { useTableStore } from "@/store/useTableStore";
 
 import { Table } from "../TableItem";
 import { Feature } from "./DropdownFeature";
@@ -20,6 +21,8 @@ export default function CardFeature({
   onClose: (feature: Feature | null) => void;
 }) {
   const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
+  const fetchTablesByArea = useTableStore((s) => s.fetchTablesByArea);
+  const selectedAreaId = useTableStore((s) => s.selectedAreaId);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -49,6 +52,9 @@ export default function CardFeature({
     }
 
     await fetchOrders();
+    if (selectedAreaId) {
+      await fetchTablesByArea(selectedAreaId);
+    }
     onClose(null);
   };
 

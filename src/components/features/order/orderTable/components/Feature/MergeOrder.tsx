@@ -12,14 +12,14 @@ import {
 } from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useOrderBoardStore } from "@/store/useOrderStore";
-import { OrderType } from "@/types/enums";
 
+import { isMergeCandidateOrder } from "../../orderTable.utils";
 import { Table } from "../../TableItem";
 
 const MergeOrder = ({ table }: { table: Table }) => {
   const orderCurrent = useOrderBoardStore((s) => s.orders.find((o) => o.orderId === table.orderId));
   const orderList = useOrderBoardStore((s) =>
-    s.orders.filter((o) => o.orderId !== table.orderId && o.orderType !== OrderType.Takeaway)
+    s.orders.filter((o) => isMergeCandidateOrder(o, table.orderId))
   );
 
   return (

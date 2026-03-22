@@ -10,6 +10,7 @@ import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 import { Table as ApiTable, TableStatus } from "@/types/Table-Layout";
 
+import { isTableOccupyingOrder } from "./orderTable.utils";
 import TableItem, { Table as TableCard } from "./TableItem";
 
 const TABLE_PLACEHOLDER_COUNT = 8;
@@ -42,9 +43,7 @@ const TableList = ({ areaId }: TableListProps) => {
   const sortedTables = tables.toSorted((a, b) => a.tableNumber - b.tableNumber);
 
   const activeOrderByTableId = new Map(
-    orders
-      .filter((order) => order.tableId && order.status !== OrderStatus.Completed)
-      .map((order) => [order.tableId as string, order])
+    orders.filter(isTableOccupyingOrder).map((order) => [order.tableId as string, order])
   );
 
   const handleTableClick = async (table: ApiTable, status: OrderStatus, orderId?: string) => {
