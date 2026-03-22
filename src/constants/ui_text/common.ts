@@ -114,7 +114,8 @@ export const COMMON = {
 
 export const SIDE_BAR = {
   DASHBOARD: "Trang chủ",
-  MENU: "Thực đơn",
+  MENU: "Quản lí thực đơn",
+  TABLE_MANAGEMENT: "Quản lí bàn",
   TABLE: "Sơ đồ bàn",
   ORDER: "Đơn hàng",
   EMPLOYEE: "Nhân viên",

@@ -4,13 +4,11 @@ import {
   AlertTriangle,
   BarChart3,
   BookOpen,
-  Calculator,
   ClipboardCheck,
   History,
   Layers,
   Package,
   PackagePlus,
-  Settings,
   Warehouse,
 } from "lucide-react";
 import Link from "next/link";
@@ -67,11 +65,6 @@ const NAV_ITEMS: NavItem[] = [
     icon: Layers,
   },
   {
-    label: UI_TEXT.INVENTORY.NAV.COGS,
-    href: "/manager/inventory/cogs",
-    icon: Calculator,
-  },
-  {
     label: UI_TEXT.INVENTORY.NAV.ALERTS,
     href: "/manager/inventory/alerts",
     icon: AlertTriangle,
@@ -80,11 +73,6 @@ const NAV_ITEMS: NavItem[] = [
     label: UI_TEXT.INVENTORY.NAV.TRANSACTIONS,
     href: "/manager/inventory/transactions",
     icon: History,
-  },
-  {
-    label: UI_TEXT.INVENTORY.NAV.SETTINGS,
-    href: "/manager/inventory/settings",
-    icon: Settings,
   },
 ];
 

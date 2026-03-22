@@ -23,7 +23,11 @@ import { RecalculateCogsResponse } from "@/types/Inventory";
 
 import { InventoryCogsRules } from "./components/InventoryCogsRules";
 
-export function InventoryCogsContainer() {
+type InventoryCogsContainerProps = {
+  embedded?: boolean;
+};
+
+export function InventoryCogsContainer({ embedded = false }: InventoryCogsContainerProps) {
   const [fromDate, setFromDate] = useState<Date | undefined>(undefined);
   const [toDate, setToDate] = useState<Date | undefined>(undefined);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -70,10 +74,16 @@ export function InventoryCogsContainer() {
   const isFormValid = !!(fromDate && toDate);
 
   return (
-    <div className="mx-auto max-w-[1040px] animate-in fade-in pt-4 duration-500 space-y-8">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+    <div
+      className={
+        embedded
+          ? "animate-in fade-in duration-500 space-y-6 overflow-x-hidden px-1 pt-4 sm:pt-6"
+          : "mx-auto max-w-[1040px] animate-in fade-in pt-4 duration-500 space-y-8"
+      }
+    >
+      <div className={`grid grid-cols-1 gap-8 ${embedded ? "md:grid-cols-12" : "lg:grid-cols-3"}`}>
         {/* Left Column: Form/Success Panel */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className={`min-w-0 space-y-6 ${embedded ? "md:col-span-7" : "lg:col-span-2"}`}>
           {!calculationResult ? (
             <div className="rounded-[2rem] border-none bg-background/60 p-8 shadow-2xl shadow-primary/5 ring-1 ring-border/50 backdrop-blur-xl">
               <div className="mb-8">
@@ -86,9 +96,9 @@ export function InventoryCogsContainer() {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-border/50 bg-muted/30 p-6 flex flex-col items-stretch gap-6 lg:flex-row lg:items-end">
-                <div className="flex-1 flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="flex-1">
+              <div className="flex flex-col items-stretch gap-6 rounded-2xl border border-border/50 bg-muted/30 p-6 xl:flex-row xl:items-end">
+                <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:items-end">
+                  <div className="min-w-0">
                     <p className="mb-1.5 ml-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                       {UI_TEXT.INVENTORY.COGS.FROM_DATE}
                     </p>
@@ -99,8 +109,7 @@ export function InventoryCogsContainer() {
                       className="w-full"
                     />
                   </div>
-                  <div className="hidden h-8 w-px bg-border/50 sm:block mt-5" />
-                  <div className="flex-1">
+                  <div className="min-w-0">
                     <p className="mb-1.5 ml-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                       {UI_TEXT.INVENTORY.COGS.TO_DATE}
                     </p>
@@ -113,11 +122,11 @@ export function InventoryCogsContainer() {
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto">
+                <div className="w-full xl:w-auto">
                   <Button
                     onClick={handleCalculateClick}
                     disabled={!isFormValid || calculateMutation.isPending}
-                    className="h-11 w-full rounded-xl bg-primary px-10 text-base font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 lg:w-auto"
+                    className="h-11 w-full rounded-xl bg-primary px-10 text-base font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 xl:w-auto"
                   >
                     {calculateMutation.isPending ? (
                       <RotateCcw className="mr-2 h-5 w-5 animate-spin" />
@@ -206,7 +215,7 @@ export function InventoryCogsContainer() {
         </div>
 
         {/* Right Column: Info Card */}
-        <div className="lg:col-span-1">
+        <div className={`min-w-0 ${embedded ? "md:col-span-5" : "lg:col-span-1"}`}>
           <InventoryCogsRules />
         </div>
       </div>

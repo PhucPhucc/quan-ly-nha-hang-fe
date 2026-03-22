@@ -49,6 +49,7 @@ export function InventoryLedgerTable() {
     transactionType,
     setTransactionType,
     ingredientId,
+    ingredientName,
     setIngredient,
     isLoading,
   } = useInventoryLedger();
@@ -268,6 +269,6 @@ function formatType(type: InventoryTransactionType) {
     case InventoryTransactionType.InventoryCheck:
       return UI_TEXT.INVENTORY.CHECK.TITLE;
     default:
-      return UI_TEXT.INVENTORY.TABLE.TRANS_TYPE_OTHER;
+      return "KHÁC";
   }
 }

@@ -3,7 +3,6 @@
 import {
   Bell,
   Boxes,
-  Calculator,
   CalendarDays,
   ChartColumn,
   ClipboardList,
@@ -13,7 +12,6 @@ import {
   Library,
   Martini,
   Package,
-  Settings,
   SquareMenu,
   Table,
   Users,
@@ -64,14 +62,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             ],
           },
           {
-            title: UI_TEXT.SIDE_BAR.TABLE,
-            url: "/manager/table",
-            icon: Table,
-          },
-          {
-            title: UI_TEXT.SIDE_BAR.RESERVATION,
+            title: UI_TEXT.SIDE_BAR.TABLE_MANAGEMENT,
             url: "/manager/reservation",
-            icon: CalendarDays,
+            icon: Table,
+            items: [
+              {
+                title: UI_TEXT.SIDE_BAR.RESERVATION,
+                url: "/manager/reservation",
+                icon: CalendarDays,
+              },
+            ],
           },
           {
             title: UI_TEXT.SIDE_BAR.ORDER,
@@ -101,22 +101,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 badge: alertsCount && alertsCount > 0 ? alertsCount : undefined,
               },
               {
-                title: UI_TEXT.INVENTORY.SETTINGS.TITLE,
-                url: "/manager/inventory/settings",
-                icon: Settings,
-              },
-              {
-                title: UI_TEXT.INVENTORY.COGS.TITLE || "Tính giá vốn",
-                url: "/manager/inventory/cogs",
-                icon: Calculator,
-              },
-              {
                 title: UI_TEXT.INVENTORY.STOCK_IN_TITLE,
                 url: "/manager/inventory/stock-in",
                 icon: Boxes,
               },
               {
-                title: "Lịch sử kho",
+                title: "Lich su kho",
                 url: "/manager/inventory/transactions",
                 icon: History,
               },
@@ -135,14 +125,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: ClipboardList,
           },
           {
-            title: UI_TEXT.SIDE_BAR.RESERVATION,
+            title: UI_TEXT.SIDE_BAR.TABLE_MANAGEMENT,
             url: "/reservation",
-            icon: CalendarDays,
-          },
-          {
-            title: UI_TEXT.SIDE_BAR.TABLE,
-            url: "/table-booking",
             icon: Table,
+            items: [
+              {
+                title: UI_TEXT.SIDE_BAR.RESERVATION,
+                url: "/reservation",
+                icon: CalendarDays,
+              },
+            ],
           },
         ],
         [EmployeeRole.CHEFBAR]: [
