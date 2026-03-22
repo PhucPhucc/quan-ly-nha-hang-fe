@@ -96,8 +96,12 @@ export function InventoryReportTable() {
           </div>
         }
       >
-        <DatePicker value={fromDate} onChange={setFromDate} placeholder="Từ ngày" />
-        <DatePicker value={toDate} onChange={setToDate} placeholder="Đến ngày" />
+        <DatePicker
+          value={fromDate}
+          onChange={setFromDate}
+          placeholder={UI_TEXT.COMMON.FROM_DATE}
+        />
+        <DatePicker value={toDate} onChange={setToDate} placeholder={UI_TEXT.COMMON.TO_DATE} />
 
         <Select
           value={ingredientId ?? "all"}

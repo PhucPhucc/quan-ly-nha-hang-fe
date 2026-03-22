@@ -3,13 +3,18 @@ import { apiFetch } from "@/services/api";
 import { ApiResponse, PaginationResult, QueryParams } from "@/types/Api";
 import {
   CreateInventoryCheckRequest,
+  DisposeLotRequest,
+  DisposeLotResponse,
   ImportOpeningStockRequest,
   ImportOpeningStockResponse,
   Ingredient,
+  InventoryAlertBadge,
+  InventoryAlertsResponse,
   InventoryCheck,
   InventoryCheckDetail,
   InventoryCheckItem,
   InventoryCheckStatus,
+  InventoryExpiryAlertItem,
   InventoryLedgerItem,
   InventoryReportItem,
   InventorySettings,
@@ -17,6 +22,7 @@ import {
   InventoryTransaction,
   InventoryTransactionType,
   InventoryUnit,
+  RecalculateCogsResponse,
 } from "@/types/Inventory";
 
 function buildFallbackIngredientCode(name: string): string {
@@ -564,6 +570,76 @@ export const inventoryService = {
     return {
       ...response,
       data: normalizePagination(response.data, mapInventoryLedgerItem),
+    };
+  },
+
+  // Tính lại giá vốn
+  calculateCogs: async (
+    fromDate: string,
+    toDate: string,
+    ingredientId: string | null = null
+  ): Promise<ApiResponse<RecalculateCogsResponse>> => {
+    const payload: Record<string, string> = {
+      fromDate: formatDateOnly(fromDate),
+      toDate: formatDateOnly(toDate),
+    };
+    if (ingredientId && ingredientId !== "all") {
+      payload.ingredientId = ingredientId;
+    }
+
+    return apiFetch<RecalculateCogsResponse>("/inventory/cogs/recalculate", {
+      method: "POST",
+      body: payload,
+    });
+  },
+
+  // Cảnh báo kho
+  getInventoryAlertBadge: async (): Promise<ApiResponse<InventoryAlertBadge>> => {
+    return apiFetch<InventoryAlertBadge>("/inventory/alerts/badge");
+  },
+
+  getInventoryAlerts: async (): Promise<ApiResponse<InventoryAlertsResponse>> => {
+    return apiFetch<InventoryAlertsResponse>("/inventory/alerts");
+  },
+
+  // Hủy lô
+  disposeLot: async (
+    lotId: string,
+    data: DisposeLotRequest
+  ): Promise<ApiResponse<DisposeLotResponse>> => {
+    return apiFetch<DisposeLotResponse>(`/inventory/lots/${lotId}/dispose`, {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  getInventoryLots: async (
+    params?: QueryParams
+  ): Promise<ApiResponse<PaginationResult<InventoryExpiryAlertItem>>> => {
+    let url = "/inventory/lots";
+    if (params) {
+      const qs = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) qs.set(key, String(value));
+      });
+      url += `?${qs.toString()}`;
+    }
+
+    const response = await apiFetch<PaginationResult<InventoryExpiryAlertItem>>(url);
+
+    if (!response.isSuccess || !response.data) {
+      return response;
+    }
+
+    return {
+      ...response,
+      data: {
+        ...response.data,
+        items: response.data.items.map((item) => ({
+          ...item,
+          remainingQuantity: normalizeInventoryQuantity(item.remainingQuantity),
+        })),
+      },
     };
   },
 };

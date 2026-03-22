@@ -65,7 +65,7 @@ export function InventoryTableHeader({
                 type="button"
                 variant="ghost"
                 className={INVENTORY_ICON_BUTTON_CLASS}
-                aria-label="Thao tác"
+                aria-label={UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
               >
                 <EllipsisVertical className="h-4 w-4" />
               </Button>

@@ -23,10 +23,12 @@ export type NavMainProps = {
   url: string;
   icon?: LucideIcon;
   isActive?: boolean;
+  badge?: React.ReactNode | string;
   items?: {
     title: string;
     url: string;
     icon?: LucideIcon;
+    badge?: React.ReactNode | string;
   }[];
 };
 
@@ -88,7 +90,12 @@ export function NavMain({ items }: { items: NavMainProps[] }) {
                               {subItem.icon && (
                                 <subItem.icon className="size-4 text-muted-foreground" />
                               )}
-                              <span>{subItem.title}</span>
+                              <span className="flex-1">{subItem.title}</span>
+                              {subItem.badge && (
+                                <div className="ml-auto bg-rose-500 text-white hover:bg-rose-600 rounded-full min-w-[20px] h-[20px] flex items-center justify-center text-[10px] py-0.5 px-1.5 font-bold shadow-sm">
+                                  {subItem.badge}
+                                </div>
+                              )}
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -109,7 +116,12 @@ export function NavMain({ items }: { items: NavMainProps[] }) {
                     })}
                   >
                     {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                    <span className="flex-1">{item.title}</span>
+                    {item.badge && (
+                      <div className="ml-auto bg-rose-500 text-white hover:bg-rose-600 rounded-full min-w-[20px] h-[20px] flex items-center justify-center text-[10px] py-0.5 px-1.5 font-bold shadow-sm">
+                        {item.badge}
+                      </div>
+                    )}
                   </SidebarMenuButton>
                 </Link>
               )}
