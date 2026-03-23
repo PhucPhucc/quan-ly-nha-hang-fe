@@ -14,8 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { billingService } from "@/services/billingService";
 import { orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
@@ -34,7 +34,7 @@ type SplitItem = {
   note?: string;
 };
 
-type SplitDestinationMode = "existing-order" | "new-table";
+type SplitDestinationMode = "same-order" | "existing-order" | "new-table";
 
 export default function CardFeature({
   feature,
@@ -50,7 +50,6 @@ export default function CardFeature({
   const selectedAreaId = useTableStore((s) => s.selectedAreaId);
   const fetchTablesByArea = useTableStore((s) => s.fetchTablesByArea);
   const tables = useTableStore((s) => s.tables);
-
   const sourceOrder = orders.find((o) => o.orderId === table.orderId);
   const candidateTables = tables.filter((t) => t.tableId !== table.tableId);
   const servingTargetOrders = candidateTables
@@ -67,15 +66,12 @@ export default function CardFeature({
       };
     })
     .filter(Boolean);
-  const availableTargetTables = candidateTables.filter(
-    (candidateTable) => candidateTable.status === TableStatus.Available
-  );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingSplitItems, setLoadingSplitItems] = useState(false);
   const [splitItems, setSplitItems] = useState<SplitItem[]>([]);
   const [splitDestinationMode, setSplitDestinationMode] =
-    useState<SplitDestinationMode>("new-table");
+    useState<SplitDestinationMode>("same-order");
   const [splitDestinationOrderId, setSplitDestinationOrderId] = useState("");
   const [splitDestinationTableId, setSplitDestinationTableId] = useState("");
 
@@ -114,11 +110,10 @@ export default function CardFeature({
 
   useEffect(() => {
     if (feature !== Feature.SPLIT) return;
-
-    setSplitDestinationMode(servingTargetOrders.length > 0 ? "existing-order" : "new-table");
+    setSplitDestinationMode("same-order");
     setSplitDestinationOrderId("");
     setSplitDestinationTableId("");
-  }, [feature, servingTargetOrders.length, table.orderId]);
+  }, [feature, table.orderId]);
 
   const updateQuantity = (orderItemId: string, value: number) => {
     setSplitItems((prev) =>
@@ -147,7 +142,7 @@ export default function CardFeature({
 
     if (feature === Feature.MERGE) {
       if (!orderId) {
-        toast.error("Không tìm thấy order của bàn này");
+        toast.error(UI_TEXT.ORDER.DETAIL.ORDER_NOT_FOUND_FOR_TABLE);
         return;
       }
 
@@ -178,7 +173,7 @@ export default function CardFeature({
 
     if (feature === Feature.SPLIT) {
       if (!orderId) {
-        toast.error("Không tìm thấy order của bàn này");
+        toast.error(UI_TEXT.ORDER.DETAIL.ORDER_NOT_FOUND_FOR_TABLE);
         return;
       }
 
@@ -206,17 +201,22 @@ export default function CardFeature({
 
       setIsSubmitting(true);
       try {
-        await orderService.splitOrder(orderId, {
-          destinationOrderId:
-            splitDestinationMode === "existing-order" ? splitDestinationOrderId : undefined,
-          destinationTableId:
-            splitDestinationMode === "new-table" ? splitDestinationTableId : undefined,
-          itemsToSplit,
-        });
-        toast.success(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_SUCCESS);
+        if (splitDestinationMode === "same-order") {
+          await billingService.splitBill(orderId, { itemsToSplit });
+          toast.success(UI_TEXT.ORDER.DETAIL.SPLIT_BILL_SUCCESS);
+        } else {
+          await orderService.splitOrder(orderId, {
+            destinationOrderId:
+              splitDestinationMode === "existing-order" ? splitDestinationOrderId : undefined,
+            destinationTableId:
+              splitDestinationMode === "new-table" ? splitDestinationTableId : undefined,
+            itemsToSplit,
+          });
+          toast.success(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_SUCCESS);
+        }
       } catch (error) {
-        toast.error(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ERROR);
-        console.error("Error occurred while splitting order:", error);
+        toast.error(UI_TEXT.ORDER.DETAIL.SPLIT_BILL_FAILED);
+        console.error("Error occurred while splitting bill:", error);
       } finally {
         setIsSubmitting(false);
         await refreshBoardData();
@@ -227,7 +227,7 @@ export default function CardFeature({
 
     if (feature === Feature.MOVE_TABLE) {
       if (!orderId) {
-        toast.error("Không tìm thấy order của bàn này");
+        toast.error(UI_TEXT.ORDER.DETAIL.ORDER_NOT_FOUND_FOR_TABLE);
         return;
       }
 
@@ -366,27 +366,49 @@ export default function CardFeature({
                 </p>
               </div>
 
-              <Tabs
-                value={splitDestinationMode}
-                onValueChange={(value) => {
-                  const nextMode = value as SplitDestinationMode;
-                  setSplitDestinationMode(nextMode);
-                  setSplitDestinationOrderId("");
-                  setSplitDestinationTableId("");
-                }}
-                className="w-full"
-              >
-                <TabsList className="grid h-10 w-full grid-cols-2 rounded-xl bg-muted/40 p-1">
-                  <TabsTrigger value="existing-order" disabled={servingTargetOrders.length === 0}>
-                    {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_MODE_EXISTING}
-                  </TabsTrigger>
-                  <TabsTrigger value="new-table" disabled={availableTargetTables.length === 0}>
-                    {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_MODE_NEW}
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
+              <div className="grid grid-cols-3 rounded-xl bg-muted/40 p-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSplitDestinationMode("same-order");
+                    setSplitDestinationOrderId("");
+                    setSplitDestinationTableId("");
+                  }}
+                  className={destinationModeButtonClass(splitDestinationMode === "same-order")}
+                >
+                  {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_SAME_ORDER}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSplitDestinationMode("existing-order");
+                    setSplitDestinationOrderId("");
+                    setSplitDestinationTableId("");
+                  }}
+                  className={destinationModeButtonClass(splitDestinationMode === "existing-order")}
+                  disabled={servingTargetOrders.length === 0}
+                >
+                  {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_EXISTING_ORDER}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSplitDestinationMode("new-table");
+                    setSplitDestinationOrderId("");
+                    setSplitDestinationTableId("");
+                  }}
+                  className={destinationModeButtonClass(splitDestinationMode === "new-table")}
+                  disabled={
+                    candidateTables.filter(
+                      (candidateTable) => candidateTable.status === TableStatus.Available
+                    ).length === 0
+                  }
+                >
+                  {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_NEW_TABLE}
+                </button>
+              </div>
 
-              {splitDestinationMode === "existing-order" ? (
+              {splitDestinationMode === "existing-order" && (
                 <Field>
                   <Label htmlFor="splitDestinationOrder">
                     {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_ORDER}
@@ -411,7 +433,9 @@ export default function CardFeature({
                     </SelectContent>
                   </Select>
                 </Field>
-              ) : (
+              )}
+
+              {splitDestinationMode === "new-table" && (
                 <Field>
                   <Label htmlFor="splitDestinationTable">
                     {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_TABLE}
@@ -428,11 +452,13 @@ export default function CardFeature({
                       />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {availableTargetTables.map((targetTable) => (
-                        <SelectItem key={targetTable.tableId} value={targetTable.tableId}>
-                          {targetTable.tableCode}
-                        </SelectItem>
-                      ))}
+                      {candidateTables
+                        .filter((candidateTable) => candidateTable.status === TableStatus.Available)
+                        .map((targetTable) => (
+                          <SelectItem key={targetTable.tableId} value={targetTable.tableId}>
+                            {targetTable.tableCode}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </Field>
@@ -534,11 +560,7 @@ export default function CardFeature({
             {!isSubmitting &&
               feature === Feature.MERGE &&
               UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE}
-            {!isSubmitting &&
-              feature === Feature.SPLIT &&
-              (splitDestinationMode === "new-table"
-                ? UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_NEW
-                : UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_EXISTING)}
+            {!isSubmitting && feature === Feature.SPLIT && UI_TEXT.ORDER.DETAIL.SPLIT_BILL}
           </Button>
         </div>
       </form>
@@ -584,3 +606,11 @@ const getSplitItemBadgeVariant = (
       return "secondary";
   }
 };
+
+const destinationModeButtonClass = (active: boolean) =>
+  [
+    "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
+    active
+      ? "bg-background text-foreground shadow-sm"
+      : "text-muted-foreground hover:text-foreground",
+  ].join(" ");

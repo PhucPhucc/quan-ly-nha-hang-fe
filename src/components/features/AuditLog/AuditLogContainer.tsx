@@ -44,7 +44,7 @@ const AuditLogContainer = ({ employeeId }: AuditLogContainerProps) => {
   };
 
   return (
-    <div className="flex-1 overflow-auto mt-4 px-1">
+    <div className="flex-1 min-h-0 mt-4 px-1">
       <AuditLogTable
         logs={logs}
         loading={loading}

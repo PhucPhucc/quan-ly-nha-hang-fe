@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  RefreshCcw,
-  Search,
-  ShieldCheck,
-} from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Filter, RefreshCcw, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -17,7 +9,6 @@ import {
   INVENTORY_PAGE_CLASS,
   INVENTORY_PAGINATION_BUTTON_CLASS,
   INVENTORY_SELECT_TRIGGER_CLASS,
-  INVENTORY_SURFACE_CLASS,
 } from "@/components/features/inventory/components/inventoryStyles";
 import { InventoryToolbar } from "@/components/features/inventory/components/InventoryToolbar";
 import { Button } from "@/components/ui/button";
@@ -34,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { getSystemAuditLogs, SystemAuditLog, SystemAuditLogParams } from "@/services/auditService";
 
 import { AuditLogDetailSheet } from "./AuditLogDetailSheet";
+import { AuditLogHeader } from "./AuditLogHeader";
 import { AuditLogTable } from "./AuditLogTable";
 import { toIsoDateEnd, toIsoDateStart } from "./AuditUtils";
 
@@ -138,46 +130,7 @@ export default function SystemAuditLogPage() {
 
   return (
     <div className={INVENTORY_PAGE_CLASS}>
-      <div
-        className={cn(
-          INVENTORY_SURFACE_CLASS,
-          "flex flex-col gap-3 rounded-3xl p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between lg:gap-6"
-        )}
-      >
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 rounded-full bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
-            <ShieldCheck className="h-4 w-4" />
-            {UI_TEXT.SIDE_BAR.AUDIT_LOG}
-          </div>
-          <div>
-            <h1 className="text-xl font-bold leading-7 text-slate-900">
-              {UI_TEXT.AUDIT_LOG.SUB_TITLE}
-            </h1>
-            <p className="mt-1 text-sm text-slate-500">{UI_TEXT.AUDIT_LOG.SUB_DESC}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center lg:min-w-[320px]">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-              {UI_TEXT.AUDIT_LOG.STATS.TOTAL}
-            </div>
-            <div className="mt-1 text-2xl font-bold text-slate-900">{totalCount}</div>
-          </div>
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-              {UI_TEXT.AUDIT_LOG.STATS.CURRENT_PAGE}
-            </div>
-            <div className="mt-1 text-2xl font-bold text-slate-900">{page}</div>
-          </div>
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-              {UI_TEXT.AUDIT_LOG.STATS.PAGE_SIZE}
-            </div>
-            <div className="mt-1 text-2xl font-bold text-slate-900">{PAGE_SIZE}</div>
-          </div>
-        </div>
-      </div>
+      <AuditLogHeader totalCount={totalCount} currentPage={page} pageSize={PAGE_SIZE} />
 
       <InventoryToolbar
         actions={

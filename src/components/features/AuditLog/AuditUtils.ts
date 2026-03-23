@@ -19,6 +19,8 @@ const HIDDEN_CHANGE_KEYS = new Set([
   "CreatedAt",
   "CreatedBy",
   "DeletedAt",
+  "IsRevoked",
+  "Expires",
 ]);
 
 export function toIsoDateStart(value: string) {
@@ -64,6 +66,7 @@ export function formatScalarValue(value: unknown, key?: string) {
   if (typeof value === "string") {
     if (key === "ReservationDate") return formatDateOnly(value);
     if (key === "ReservationTime") return value.slice(0, 5);
+    if (value.length > 80) return `${value.slice(0, 80)}…`;
     return value;
   }
   return JSON.stringify(value);
@@ -191,7 +194,7 @@ export function getSummary(log: SystemAuditLog) {
       ? getReservationSubject(primaryState, log.entityId)
       : log.entityName === "Table"
         ? getTableSubject(primaryState, log.entityId)
-        : `${getEntityLabel(log.entityName)} ${log.entityId.slice(0, 8)}`;
+        : getEntityLabel(log.entityName);
 
   const action = log.action.toLowerCase();
 
@@ -227,8 +230,20 @@ export function getChangeItems(log: SystemAuditLog): ChangeItem[] {
   const newState = parseJson(log.newValues);
   const keys = Array.from(new Set([...Object.keys(oldState), ...Object.keys(newState)]));
 
+  const shouldHideKey = (key: string) => {
+    const lower = key.toLowerCase();
+    if (lower === "id" || lower === "orderid" || lower === "logid" || lower === "tableid") {
+      return true;
+    }
+    if (lower.endsWith("id")) return true;
+    if (lower.includes("token")) return true;
+    if (lower.includes("revoked")) return true;
+    if (lower.includes("expire")) return true;
+    return false;
+  };
+
   return keys
-    .filter((key) => !HIDDEN_CHANGE_KEYS.has(key))
+    .filter((key) => !HIDDEN_CHANGE_KEYS.has(key) && !shouldHideKey(key))
     .map((key) => {
       const oldValue = oldState[key];
       const newValue = newState[key];
@@ -243,12 +258,7 @@ export function getChangeItems(log: SystemAuditLog): ChangeItem[] {
     .filter((item) => item.oldValue !== item.newValue);
 }
 
-export function getStatusMessage(log: SystemAuditLog) {
-  const changes = getChangeItems(log);
-  if (changes.length === 0) return UI_TEXT.AUDIT_LOG.MESSAGES.NO_DETAIL_CHANGES;
-
-  return changes
-    .slice(0, 2)
-    .map((change) => `${change.label}: ${change.oldValue} -> ${change.newValue}`)
-    .join(" | ");
+export function getStatusMessage(_log: SystemAuditLog) {
+  // Ẩn dòng chi tiết thay đổi ở list view để tránh lộ dữ liệu kỹ thuật
+  return "";
 }

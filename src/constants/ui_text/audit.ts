@@ -1,5 +1,6 @@
 export const AUDIT_LOG = {
   TITLE: "Lịch sử hệ thống",
+  TITLE_BADGE: "Lịch sử thao tác",
   EMPTY: "Chưa có lịch sử nào",
   FETCH_ERROR: "Không thể tải lịch sử hệ thống",
   LOG_ID: "Mã Log",
