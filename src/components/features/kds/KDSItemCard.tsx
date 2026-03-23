@@ -67,11 +67,11 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
             <h3 className="text-lg font-semibold text-foreground truncate">
               {item.itemNameSnapshot}
             </h3>
-            {/* {item.itemOptions && (
+            {item.itemOptions && (
               <p className="text-xs text-muted-foreground truncate">
                 {UI_TEXT.KDS.OPTION_LABEL} {item.itemOptions}
               </p>
-            )} */}
+            )}
             {item.itemNote && (
               <p className="text-xs text-muted-foreground truncate">
                 {UI_TEXT.KDS.NOTE_LABEL} {item.itemNote}
