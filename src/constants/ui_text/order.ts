@@ -216,27 +216,10 @@ export const ORDER = {
       "BE đã có OrderAuditLog, nhưng hiện chưa có query riêng để FE đổ danh sách. Màn này giữ đúng layout để gắn API sau.",
     ITEM_COUNT: (count: number) => `${count} món trong đơn`,
   },
-  MANAGEMENT: {
-    WORKSPACE_TITLE: "Workspace quản lý đơn hàng",
-    WORKSPACE_DESC:
-      "Một màn cho manager: xem đơn, soi thanh toán và giữ layout audit log sẵn sàng.",
-    RELOAD: "Tải lại",
-    STATS: {
-      TOTAL: "Tổng đơn",
-      SERVING: "Đang phục vụ",
-      REVENUE: "Doanh thu",
-      VIP: "VIP",
-    },
-    TABS: {
-      ORDERS: "Danh sách đơn",
-      BILLING: "Lịch sử thanh toán",
-      AUDIT: "Nhật ký thao tác",
-    },
-    PAGE_COUNT: (count: number) => `${count} trang`,
-  },
   OVERVIEW: {
     HERO_TITLE: "Quản lý đơn hàng",
     HERO_DESC: "Theo dõi trạng thái đơn, thanh toán và audit từ một nơi.",
+    FETCH_ERROR: "Không thể tải tổng quan đơn hàng.",
     STATS: {
       ACTIVE: "Tổng đơn đang hoạt động",
       WAITING: "Chờ thanh toán",
@@ -255,6 +238,38 @@ export const ORDER = {
       SERVING_ACTION: "Đang phục vụ",
       UPDATE_ACTION: "Cập nhật đơn",
     },
-    FETCH_ERROR: "Không thể tải tổng quan đơn hàng.",
+    DISTRIBUTION: {
+      ORDER_TYPE: "Cơ cấu theo loại đơn",
+      ORDER_TYPE_DESC:
+        "Theo dõi nhanh tỷ trọng đơn tại bàn, mang đi và giao hàng trong ca hiện tại.",
+      ORDER_STATUS: "Phân bổ theo trạng thái",
+      ORDER_STATUS_DESC:
+        "Tập trung vào các trạng thái vận hành chính để biết khu bếp và thu ngân đang ở đâu.",
+      EMPTY_TYPE: "Chưa có dữ liệu loại đơn để hiển thị.",
+      EMPTY_STATUS: "Chưa có dữ liệu trạng thái để hiển thị.",
+    },
+    STATUS_LABELS: {
+      SERVING: "Đang phục vụ",
+      READY: "Sẵn sàng trả món",
+      WAITING_CHECKOUT: "Chờ thanh toán",
+    },
+  },
+  MANAGEMENT: {
+    WORKSPACE_TITLE: "Workspace quản lý đơn hàng",
+    WORKSPACE_DESC:
+      "Một màn cho manager: xem đơn, soi thanh toán và giữ layout audit log sẵn sàng.",
+    RELOAD: "Tải lại",
+    STATS: {
+      TOTAL: "Tổng đơn",
+      SERVING: "Đang phục vụ",
+      REVENUE: "Doanh thu",
+      VIP: "VIP",
+    },
+    TABS: {
+      ORDERS: "Danh sách đơn",
+      BILLING: "Lịch sử thanh toán",
+      AUDIT: "Nhật ký thao tác",
+    },
+    PAGE_COUNT: (count: number) => `${count} trang`,
   },
 };

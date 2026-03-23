@@ -98,4 +98,39 @@ export const TABLE = {
   // Fetch errors on table page
   FETCH_AREA_ERROR: "Không thể tải danh sách khu vực",
   FETCH_TABLE_ERROR: "Không thể tải danh sách bàn",
+
+  // Overview
+  OVERVIEW: {
+    TITLE: "Tổng quan Sơ đồ bàn",
+    DESCRIPTION: "Quản lý và theo dõi trạng thái bàn trong thực tế",
+    TOTAL_TABLES: "Tổng số bàn",
+    TOTAL_AREAS: "Tổng số khu vực",
+    TOTAL_SEATS: "Tổng số ghế",
+    OCCUPANCY_RATE: "Tỷ lệ lấp đầy",
+    STATUS_SUMMARY: "Tóm tắt trạng thái",
+    AREA_DISTRIBUTION: "Phân bổ theo khu vực",
+    REFRESH: "Làm mới",
+    GO_TO_LAYOUT: "Xem sơ đồ chi tiết",
+    AREA_STAT(count: number) {
+      return `${count} bàn`;
+    },
+    AUDIT: {
+      TITLE: "Hoạt động gần đây",
+      EMPTY: "Chưa có hoạt động nào",
+      LOADING: "Đang tải hoạt động...",
+      ACTOR_EMPLOYEE: "Nhân viên",
+      ACTOR_GUEST: "Khách",
+      ACTOR_SYSTEM: "Hệ thống",
+      ACTION_CREATE: "Tạo mới",
+      ACTION_UPDATE: "Cập nhật",
+      ACTION_DELETE: "Xóa",
+      ACTION_STATUSCHANGE: "Đổi trạng thái",
+      LOG_SUMMARY(actor: string, action: string, entity: string) {
+        return `${actor} đã ${action} bàn ${entity}.`;
+      },
+      LOG_SUMMARY_GENERIC(action: string, entity: string) {
+        return `Thao tác ${action} trên bàn ${entity}.`;
+      },
+    },
+  },
 };

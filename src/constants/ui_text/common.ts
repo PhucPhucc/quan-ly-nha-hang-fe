@@ -112,10 +112,15 @@ export const COMMON = {
   },
   SYSTEM: "Hệ thống",
   MINUTES: "p",
+  SHARE: "Tỷ trọng",
+  DOT_SEP: "·",
+  REMAINING: "Còn",
+  DAYS: "ngày",
 };
 
 export const SIDE_BAR = {
   DASHBOARD: "Trang chủ",
+  OVERVIEW: "Tổng quan",
   MENU: "Quản lí thực đơn",
   TABLE_MANAGEMENT: "Quản lí bàn",
   TABLE: "Sơ đồ bàn",

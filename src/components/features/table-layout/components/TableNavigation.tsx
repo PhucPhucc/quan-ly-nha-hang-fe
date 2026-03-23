@@ -1,10 +1,11 @@
 "use client";
 
-import { BookOpenText, LayoutDashboard, Library } from "lucide-react";
+import { CalendarDays, LayoutDashboard, Map } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -16,24 +17,24 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Tổng quan",
-    href: "/manager/menu",
+    label: UI_TEXT.SIDE_BAR.OVERVIEW,
+    href: "/manager/table",
     icon: LayoutDashboard,
     exact: true,
   },
   {
-    label: "Danh sách món",
-    href: "/manager/menu/list",
-    icon: BookOpenText,
+    label: UI_TEXT.SIDE_BAR.TABLE,
+    href: "/manager/table/layout",
+    icon: Map,
   },
   {
-    label: "Danh sách tùy chọn",
-    href: "/manager/menu/options",
-    icon: Library,
+    label: UI_TEXT.SIDE_BAR.RESERVATION,
+    href: "/manager/reservation",
+    icon: CalendarDays,
   },
 ];
 
-export function MenuNavigation() {
+export function TableNavigation() {
   const pathname = usePathname();
 
   const isActive = (item: NavItem) => {
@@ -44,7 +45,7 @@ export function MenuNavigation() {
   return (
     <nav
       className="flex items-center gap-1 overflow-x-auto scrollbar-none"
-      aria-label="Điều hướng menu"
+      aria-label={UI_TEXT.COMMON.SIDEBAR_DESC}
     >
       {NAV_ITEMS.map((item) => {
         const active = isActive(item);
