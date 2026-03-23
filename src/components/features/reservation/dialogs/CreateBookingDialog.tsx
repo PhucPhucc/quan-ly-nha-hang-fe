@@ -25,11 +25,26 @@ import { reservationService } from "@/services/reservationService";
 import { tableService } from "@/services/tableService";
 import { Area, AreaStatus, AreaType } from "@/types/Table-Layout";
 
-const OPEN_TIME_MINUTES = 9 * 60;
-const CLOSE_TIME_MINUTES = 20 * 60;
+const OPEN_TIME_MINUTES = 10 * 60 + 30; // 10:30
+const CLOSE_TIME_MINUTES = 22 * 60; // 22:00
+const BREAK_START_MINUTES = 13 * 60; // 13:00
+const BREAK_END_MINUTES = 17 * 60; // 17:00
 const MIN_LEAD_TIME_MINUTES = 45;
-const LAST_BOOKING_MINUTES = CLOSE_TIME_MINUTES - 90;
+const LAST_BOOKING_MINUTES = CLOSE_TIME_MINUTES;
 const VIP_GUEST_THRESHOLD = RESERVATION_RULES.VIP_MIN_GUEST_COUNT;
+
+const generateTimeSlots = () => {
+  const slots: string[] = [];
+  for (let mins = OPEN_TIME_MINUTES; mins <= CLOSE_TIME_MINUTES; mins += 15) {
+    if (mins >= BREAK_START_MINUTES && mins < BREAK_END_MINUTES) continue;
+    const hours = Math.floor(mins / 60);
+    const m = mins % 60;
+    slots.push(`${hours.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`);
+  }
+  return slots;
+};
+
+const TIME_SLOTS = generateTimeSlots();
 
 const formatReservationTime = (value: string) => {
   const segments = value.split(":");
@@ -111,6 +126,11 @@ export const CreateBookingDialog = ({
     const minutesOfDay = reservationDateTime.getHours() * 60 + reservationDateTime.getMinutes();
     if (minutesOfDay < OPEN_TIME_MINUTES || minutesOfDay > LAST_BOOKING_MINUTES) {
       toast.error(UI_TEXT.RESERVATION.VALIDATION_WITHIN_OPERATING_HOURS);
+      return;
+    }
+
+    if (minutesOfDay >= BREAK_START_MINUTES && minutesOfDay < BREAK_END_MINUTES) {
+      toast.error(UI_TEXT.RESERVATION.VALIDATION_BREAK_TIME);
       return;
     }
 
@@ -241,15 +261,26 @@ export const CreateBookingDialog = ({
                   {UI_TEXT.RESERVATION.FIELD_TIME}{" "}
                   <span className="text-red-500">{UI_TEXT.RESERVATION.REQUIRED_MARK}</span>
                 </Label>
-                <Input
-                  id="time"
+                <Select
                   name="reservationTime"
-                  type="time"
-                  className="col-span-3"
                   value={formData.reservationTime}
-                  onChange={(e) => handleChange("reservationTime", e.target.value)}
-                  required
-                />
+                  onValueChange={(val) => handleChange("reservationTime", val)}
+                >
+                  <SelectTrigger id="time">
+                    <SelectValue placeholder={UI_TEXT.RESERVATION.FIELD_TIME} />
+                  </SelectTrigger>
+                  <SelectContent
+                    position="popper"
+                    sideOffset={4}
+                    className="max-h-[300px] w-[var(--radix-select-trigger-width)]"
+                  >
+                    {TIME_SLOTS.map((slot) => (
+                      <SelectItem key={slot} value={slot}>
+                        {slot}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

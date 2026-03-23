@@ -5,6 +5,7 @@ import { useState } from "react";
 import BackgroundDot from "@/components/shared/BackgroundDot";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useTableSignalR } from "@/hooks/useTableSignalR";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useTableStore } from "@/store/useTableStore";
 import { Area, Table, TableStatus } from "@/types/Table-Layout";
@@ -20,6 +21,7 @@ interface Props {
 const isActive = (s: TableStatus) => s !== TableStatus.OutOfService;
 
 export default function TableLayoutGrid({ area }: Props) {
+  useTableSignalR(); // Kích hoạt kết nối SignalR cho sơ đồ bàn
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const {
     tables,
