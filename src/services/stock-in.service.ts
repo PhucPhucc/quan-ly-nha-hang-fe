@@ -81,7 +81,7 @@ function mapCreateRequest(data: CreateStockInRequest) {
       ingredientId: item.ingredientId,
       quantity: normalizeInventoryQuantity(item.quantity),
       baseUnit: item.baseUnit,
-      unitPrice: normalizeInventoryQuantity(item.unitPrice, 2),
+      unitPrice: normalizeInventoryQuantity(item.unitPrice ?? 0, 2),
       expiryDate: item.expirationDate,
       batchCode: item.batchCode,
     })),

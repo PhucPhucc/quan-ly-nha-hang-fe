@@ -12,6 +12,10 @@ const INVENTORY_QUERY_PREFIXES = [
   ["inventory-checks"],
   ["inventory-check"],
   ["inventory-check-create-form"],
+  ["inventory-alerts"],
+  ["inventory-alerts-badge"],
+  ["inventory-lots"],
+  ["inventory-lots-filter-ingredients"],
 ] as const;
 
 export function invalidateInventoryQueries(queryClient: QueryClient) {

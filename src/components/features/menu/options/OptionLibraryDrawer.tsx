@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Search } from "lucide-react";
+import { Check, Plus, Search } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -55,14 +55,25 @@ export const OptionLibraryDrawer: React.FC<OptionLibraryDrawerProps> = ({
       </SheetHeader>
 
       <div className="px-6 py-4 border-b border-border">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={UI_TEXT.MENU.OPTIONS.SEARCH_PLACEHOLDER}
-            className="pl-9"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={UI_TEXT.MENU.OPTIONS.SEARCH_PLACEHOLDER}
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button
+            size="icon"
+            variant="outline"
+            className="h-9 w-9 border-primary/20 text-primary hover:bg-primary/5 shadow-sm"
+            onClick={() => window.open("/menu/options", "_blank")}
+            title={UI_TEXT.MENU.OPTIONS.CREATE_NEW_GROUP}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -91,9 +102,21 @@ export const OptionLibraryDrawer: React.FC<OptionLibraryDrawerProps> = ({
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-foreground">{group.name}</span>
-                      <Badge variant="outline" className="text-[10px] uppercase">
-                        {String(group.optionType)}
-                      </Badge>
+                      {String(group.optionType) === "1" ? (
+                        <Badge
+                          variant="outline"
+                          className="bg-orange-50 border-orange-200 text-orange-600 uppercase text-[9px] font-bold px-1.5 py-0 h-4"
+                        >
+                          {UI_TEXT.MENU.OPTIONS.TYPE_SINGLE}
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="bg-indigo-50 border-indigo-200 text-indigo-600 uppercase text-[9px] font-bold px-1.5 py-0 h-4"
+                        >
+                          {UI_TEXT.MENU.OPTIONS.TYPE_MULTI}
+                        </Badge>
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {group.optionItems?.map((i) => i.label).join(", ")}

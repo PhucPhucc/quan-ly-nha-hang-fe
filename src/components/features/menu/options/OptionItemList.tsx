@@ -14,7 +14,6 @@ interface OptionItemListProps {
   onAdd: () => void;
   onUpdate: (draftId: string, patch: Partial<DraftItem>) => void;
   onRemove: (draftId: string) => void;
-  onMove: (idx: number, direction: "up" | "down") => void;
 }
 
 export const OptionItemList: React.FC<OptionItemListProps> = ({
@@ -22,7 +21,6 @@ export const OptionItemList: React.FC<OptionItemListProps> = ({
   onAdd,
   onUpdate,
   onRemove,
-  onMove,
 }) => (
   <section className="space-y-4">
     {/* Section header */}
@@ -52,28 +50,11 @@ export const OptionItemList: React.FC<OptionItemListProps> = ({
       </div>
     ) : (
       <div className="space-y-2">
-        {/* Column headers */}
-        <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-2 px-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-          <span className="w-6" />
-          <span>{UI_TEXT.MENU.OPTIONS.ITEM_LABEL_COL}</span>
-          <span className="w-28 text-right">{UI_TEXT.MENU.OPTIONS.PRICE_EXTRA}</span>
-          <span className="w-16 text-center">{UI_TEXT.MENU.OPTIONS.IS_ACTIVE_LABEL}</span>
-          <span className="w-8" />
-        </div>
-
-        {items.map((item, idx) => (
-          <OptionItemRow
-            key={item.draftId}
-            item={item}
-            idx={idx}
-            total={items.length}
-            onUpdate={onUpdate}
-            onRemove={onRemove}
-            onMove={onMove}
-          />
+        {items.map((item) => (
+          <OptionItemRow key={item.draftId} item={item} onUpdate={onUpdate} onRemove={onRemove} />
         ))}
 
-        <p className="text-[11px] text-muted-foreground px-2">
+        <p className="px-1 text-[11px] text-muted-foreground">
           {items.length} {UI_TEXT.MENU.OPTIONS.ITEMS_COUNT_SUFFIX}
         </p>
       </div>

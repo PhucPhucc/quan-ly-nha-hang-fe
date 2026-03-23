@@ -70,12 +70,15 @@ export const CreateStockInDrawer = ({
       fetchIngredients();
       setNote("");
       setReceivedDate(new Date().toISOString().split("T")[0]);
-      setItems([{ ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "" }]);
+      setItems([{ ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "", batchCode: "" }]);
     }
   }, [open]);
 
   const addItem = () => {
-    setItems([...items, { ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "" }]);
+    setItems([
+      ...items,
+      { ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "", batchCode: "" },
+    ]);
   };
 
   const removeItem = (index: number) => {
@@ -83,7 +86,7 @@ export const CreateStockInDrawer = ({
     setItems(
       newItems.length > 0
         ? newItems
-        : [{ ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "" }]
+        : [{ ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "", batchCode: "" }]
     );
   };
 
@@ -123,12 +126,17 @@ export const CreateStockInDrawer = ({
       const request: CreateStockInRequest = {
         receivedDate,
         note,
-        items: validItems,
+        items: validItems.map((i) => ({
+          ...i,
+          batchCode: i.batchCode || undefined,
+        })),
       };
       const response = await stockInService.createReceipt(request);
       if (response.isSuccess) {
         await invalidateInventoryQueries(queryClient);
-        toast.success(`Đã tạo phiếu nhập ${response.data.receiptCode}`);
+        toast.success(
+          `${UI_TEXT.INVENTORY.LOTS.SUCCESS_CREATE_RECEIPT} ${response.data.receiptCode}`
+        );
         onSuccess();
         onOpenChange(false);
       }
@@ -287,16 +295,31 @@ export const CreateStockInDrawer = ({
                       </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <Label className="text-[10px] font-bold uppercase text-muted-foreground block text-left">
-                        {UI_TEXT.INVENTORY.TABLE.COL_EXPIRATION}
-                      </Label>
-                      <Input
-                        type="date"
-                        className="h-9 rounded-lg"
-                        value={item.expirationDate || ""}
-                        onChange={(e) => updateItem(index, "expirationDate", e.target.value)}
-                      />
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label className="text-[10px] font-bold uppercase text-muted-foreground block text-left">
+                          {UI_TEXT.INVENTORY.TABLE.COL_EXPIRATION}
+                        </Label>
+                        <Input
+                          type="date"
+                          className="h-9 rounded-lg"
+                          value={item.expirationDate || ""}
+                          onChange={(e) => updateItem(index, "expirationDate", e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-[10px] font-bold uppercase text-muted-foreground block text-left">
+                          {UI_TEXT.INVENTORY.FORM.BATCH_CODE_LABEL}
+                        </Label>
+                        <Input
+                          type="text"
+                          className="h-9 rounded-lg"
+                          placeholder={UI_TEXT.INVENTORY.FORM.BATCH_CODE_PLACEHOLDER}
+                          value={item.batchCode || ""}
+                          onChange={(e) => updateItem(index, "batchCode", e.target.value)}
+                        />
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between pt-2 border-t border-dashed">

@@ -51,4 +51,5 @@ export interface OptionGroupFormModalProps {
   onOpenChange: (open: boolean) => void;
   editingGroup: OptionGroup | null;
   onSuccess: (group: OptionGroup) => void;
+  onDelete?: (group: OptionGroup) => void;
 }

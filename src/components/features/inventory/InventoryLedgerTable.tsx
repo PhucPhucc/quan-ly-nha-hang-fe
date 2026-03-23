@@ -77,8 +77,12 @@ export function InventoryLedgerTable() {
   return (
     <div className="space-y-6">
       <InventoryToolbar>
-        <DatePicker value={fromDate} onChange={setFromDate} placeholder="Từ ngày" />
-        <DatePicker value={toDate} onChange={setToDate} placeholder="Đến ngày" />
+        <DatePicker
+          value={fromDate}
+          onChange={setFromDate}
+          placeholder={UI_TEXT.COMMON.FROM_DATE}
+        />
+        <DatePicker value={toDate} onChange={setToDate} placeholder={UI_TEXT.COMMON.TO_DATE} />
 
         <Select
           value={ingredientId || "all"}
@@ -163,15 +167,6 @@ export function InventoryLedgerTable() {
       </InventoryToolbar>
 
       <div className={`${INVENTORY_TABLE_SURFACE_CLASS} flex flex-col overflow-hidden`}>
-        <div className="bg-muted/5 border-b border-border/40 px-6 py-4 flex flex-col gap-1">
-          <p className="text-lg font-black tracking-tight text-foreground/80">
-            {ingredientName || UI_TEXT.INVENTORY.REPORT.SELECT_MATERIAL}
-          </p>
-          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground/40">
-            {UI_TEXT.INVENTORY.TABLE.HISTORY_DESC_FULL}
-          </p>
-        </div>
-
         <div className={INVENTORY_TABLE_CONTAINER_CLASS}>
           <Table>
             <TableHeader className={INVENTORY_THEAD_CLASS}>

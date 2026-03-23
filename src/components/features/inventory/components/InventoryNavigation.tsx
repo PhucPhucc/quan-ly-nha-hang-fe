@@ -6,15 +6,18 @@ import {
   BookOpen,
   ClipboardCheck,
   History,
+  Layers,
+  LayoutDashboard,
   Package,
   PackagePlus,
-  Settings,
   Warehouse,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import { useInventoryAlertsCount } from "@/hooks/useInventoryAlertsCount";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -27,55 +30,61 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Tổng quan",
+    label: UI_TEXT.INVENTORY.NAV.OVERVIEW,
     href: "/manager/inventory",
-    icon: Warehouse,
+    icon: LayoutDashboard,
     exact: true,
   },
   {
-    label: "Nhập / Xuất kho",
+    label: UI_TEXT.INVENTORY.NAV.INGREDIENTS,
+    href: "/manager/inventory/ingredients",
+    icon: Package,
+  },
+  {
+    label: UI_TEXT.INVENTORY.NAV.STOCK_IO,
     href: "/manager/inventory/stock-in",
     icon: PackagePlus,
   },
   {
-    label: "Khai báo tồn đầu",
+    label: UI_TEXT.INVENTORY.NAV.OPENING_STOCK,
     href: "/manager/inventory/opening-stock",
-    icon: Package,
+    icon: Warehouse,
   },
   {
-    label: "Kiểm kho",
+    label: UI_TEXT.INVENTORY.NAV.CHECK,
     href: "/manager/inventory/check",
     icon: ClipboardCheck,
   },
   {
-    label: "Báo cáo kho",
+    label: UI_TEXT.INVENTORY.NAV.REPORT,
     href: "/manager/inventory/reports",
     icon: BarChart3,
   },
   {
-    label: "Sổ cái",
+    label: UI_TEXT.INVENTORY.NAV.LEDGER,
     href: "/manager/inventory/ledger",
     icon: BookOpen,
   },
   {
-    label: "Giao dịch",
-    href: "/manager/inventory/transactions",
-    icon: History,
+    label: UI_TEXT.INVENTORY.NAV.LOTS,
+    href: "/manager/inventory/lots",
+    icon: Layers,
   },
   {
-    label: "Cảnh báo",
+    label: UI_TEXT.INVENTORY.NAV.ALERTS,
     href: "/manager/inventory/alerts",
     icon: AlertTriangle,
   },
   {
-    label: "Cài đặt",
-    href: "/manager/inventory/settings",
-    icon: Settings,
+    label: UI_TEXT.INVENTORY.NAV.TRANSACTIONS,
+    href: "/manager/inventory/transactions",
+    icon: History,
   },
 ];
 
 export function InventoryNavigation() {
   const pathname = usePathname();
+  const { data: alertCount = 0 } = useInventoryAlertsCount();
 
   const isActive = (item: NavItem) => {
     if (item.exact) return pathname === item.href;
@@ -84,8 +93,8 @@ export function InventoryNavigation() {
 
   return (
     <nav
-      className="flex items-center gap-1 overflow-x-auto px-4 pb-2 scrollbar-none"
-      aria-label="Điều hướng kho hàng"
+      className="flex items-center gap-1 overflow-x-auto scrollbar-none"
+      aria-label={UI_TEXT.SIDE_BAR.INVENTORY}
     >
       {NAV_ITEMS.map((item) => {
         const active = isActive(item);
@@ -110,6 +119,16 @@ export function InventoryNavigation() {
               )}
             />
             <span className="whitespace-nowrap">{item.label}</span>
+            {item.label === UI_TEXT.INVENTORY.NAV.ALERTS && alertCount > 0 && (
+              <span
+                className={cn(
+                  "ml-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold tabular-nums",
+                  active ? "bg-primary-foreground text-primary" : "bg-danger text-white"
+                )}
+              >
+                {alertCount}
+              </span>
+            )}
           </Link>
         );
       })}

@@ -156,6 +156,7 @@
      =============================== */
   --animate-float: float 6s ease-in-out infinite;
   --animate-fade-in-up: fade-in-up 0.8s ease-out forwards;
+  --animate-fade-in-right: fade-in-right 0.6s ease-out forwards;
   --animate-scale-in: scale-in 0.5s ease-out forwards;
   --animate-shimmer: shimmer 2s linear infinite;
 
@@ -179,6 +180,18 @@
     100% {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-right {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0);
     }
   }
 
@@ -422,6 +435,12 @@
   --sidebar-border: oklch(0.26 0.02 40);
 }
 
+/*
+Source - https://stackoverflow.com/a/66436651
+Posted by Steve O
+Retrieved 2026-03-22, License - CC BY-SA 4.0
+*/
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -572,6 +591,17 @@
 }
 
 @layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
   .glass {
     @apply backdrop-blur-xl bg-white/70 dark:bg-black/40 border border-white/20 dark:border-white/10 shadow-lg;
   }

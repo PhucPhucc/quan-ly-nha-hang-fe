@@ -27,7 +27,7 @@ export default function AreaTabs({ onManageAreas }: Props) {
       </Tabs>
 
       {onManageAreas && (
-        <Button variant="outline" size="sm" onClick={onManageAreas}>
+        <Button variant="outline" size="sm" onClick={onManageAreas} className="ml-6 shrink-0">
           {UI_TEXT.TABLE.MANAGE_AREAS}
         </Button>
       )}

@@ -41,11 +41,11 @@ export default function AddTableDialog({
   };
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div className="relative flex flex-col items-end">
       <Dialog>
         <DialogTrigger asChild>
-          <Button disabled={isVipLimitReached}>
-            <Plus />
+          <Button disabled={isVipLimitReached} className="h-9">
+            <Plus className="size-4" />
             {UI_TEXT.TABLE.ADD_TABLE}
           </Button>
         </DialogTrigger>
@@ -77,7 +77,9 @@ export default function AddTableDialog({
         </DialogContent>
       </Dialog>
       {isVipLimitReached && (
-        <p className="text-xs text-amber-600">{UI_TEXT.TABLE.VIP_SINGLE_TABLE_NOTICE}</p>
+        <p className="absolute top-full right-0 mt-1 whitespace-nowrap text-[10px] font-medium text-amber-600">
+          {UI_TEXT.TABLE.VIP_SINGLE_TABLE_NOTICE}
+        </p>
       )}
     </div>
   );

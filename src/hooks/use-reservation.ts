@@ -49,7 +49,7 @@ export function useReservation(initialDate: Date | undefined) {
       !formData.customerPhone ||
       !formData.areaId
     ) {
-      toast.error("Vui lòng điền đầy đủ các thông tin bắt buộc nha!");
+      toast.error("Vui lòng điền đầy đủ các thông tin bắt buộc!");
       return;
     }
 

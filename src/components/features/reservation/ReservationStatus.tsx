@@ -57,19 +57,19 @@ export const ReservationStatus = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {stats.map((stat, index) => (
         <Card
           key={index}
-          className={`p-6 border ${stat.borderColor} ${stat.cardBg} shadow-sm rounded-3xl flex items-center gap-5 transition-all hover:shadow-md hover:-translate-y-1`}
+          className={`p-4 border ${stat.borderColor} ${stat.cardBg} shadow-sm rounded-3xl flex flex-col items-center justify-center text-center gap-3 transition-all hover:shadow-md hover:-translate-y-1`}
         >
-          <div className={`p-4 rounded-2xl ${stat.iconBg} flex items-center justify-center`}>
+          <div className={`p-4 rounded-2xl ${stat.iconBg} flex items-center justify-center w-fit`}>
             <stat.icon className={`h-7 w-7 ${stat.colorClass}`} />
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center">
             <p
-              className={`text-[11px] font-black ${stat.colorClass} mb-0.5 uppercase tracking-widest opacity-80`}
+              className={`text-[11px] font-black ${stat.colorClass} mb-1.5 uppercase tracking-widest opacity-80`}
             >
               {stat.title}
             </p>

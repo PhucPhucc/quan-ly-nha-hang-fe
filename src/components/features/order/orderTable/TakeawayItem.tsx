@@ -88,7 +88,7 @@ const TakeawayItem = ({ order, onClick }: TakeawayItemProps) => {
         <div className="absolute top-0 right-0">
           {order.status === "SERVING" && (
             <div className="bg-orange-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full shadow-sm animate-pulse">
-              {order.elapsedTime || "5m"}
+              {order.elapsedTime || "5" + UI_TEXT.COMMON.MINUTES}
             </div>
           )}
           {order.status === "READY" && (
