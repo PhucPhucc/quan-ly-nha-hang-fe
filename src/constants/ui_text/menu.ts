@@ -60,7 +60,7 @@ export const MENU = {
     EDIT_GROUP_TITLE: "Chỉnh sửa nhóm tùy chọn",
     EDIT_GROUP_DESC: "Cập nhật thông tin và danh sách lựa chọn.",
     SECTION_GROUP_INFO: "Thông tin nhóm",
-    PLACEHOLDER_GROUP_NAME: "VD: Kích cỡ, Độ ngọ, Topping...",
+    PLACEHOLDER_GROUP_NAME: "VD: Kích cỡ, Độ ngọt, Topping...",
     TYPE_SINGLE_HINT: "Khách chỉ được chọn đúng 1 lựa chọn (radio).",
     TYPE_MULTI_HINT: "Khách được chọn nhiều lựa chọn (checkbox).",
     IS_ACTIVE_LABEL: "Hiển thị",

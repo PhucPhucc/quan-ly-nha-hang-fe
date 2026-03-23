@@ -92,7 +92,7 @@ export const OptionGroupFormModal: React.FC<OptionGroupFormModalProps> = ({
           </div>
 
           {/* Sticky footer */}
-          <div className="shrink-0 px-6 py-4 border-t border-border bg-white flex items-center justify-between gap-3">
+          <div className="shrink-0 px-6 py-4 border-t border-border bg-card flex items-center justify-between gap-3">
             <div className="flex gap-2">
               {isEditing && onDelete && (
                 <Button
