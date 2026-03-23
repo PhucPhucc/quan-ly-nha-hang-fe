@@ -547,7 +547,7 @@ export default function CardFeature({
         <div className="p-2">
           <Button
             type="submit"
-            className="w-full"
+            className="w-full min-h-12 font-bold text-primary-foreground"
             disabled={
               isSubmitting ||
               (feature === Feature.SPLIT && (loadingSplitItems || !hasSelectedSplitItems))

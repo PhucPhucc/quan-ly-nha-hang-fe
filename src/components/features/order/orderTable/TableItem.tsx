@@ -17,6 +17,7 @@ export type Table = {
   price?: string;
   createdAt?: string;
   orderId?: string;
+  orderCount?: number;
 };
 
 type TableItemProps = {
@@ -61,10 +62,17 @@ const TableItem = ({ table, onTableClick, currentOrderCode, isLoading }: TableIt
         <div className="p-1.5 h-full flex flex-col justify-between overflow-hidden">
           <div className="flex justify-between items-start">
             {currentOrderCode && (
-              <p className="text-[12px] font-semibold font-mono tracking-wider">
-                {UI_TEXT.COMMON.HASH}
-                {currentOrderCode.slice(-3)}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[12px] font-semibold font-mono tracking-wider">
+                  {UI_TEXT.COMMON.HASH}
+                  {currentOrderCode.slice(-3)}
+                </p>
+                {(table.orderCount ?? 1) > 1 && (
+                  <span className="rounded-full border border-table-serving/40 bg-background/90 px-2 py-0.5 text-[10px] font-bold text-table-serving">
+                    {UI_TEXT.ORDER.BOARD.ORDER_COUNT(table.orderCount!)}
+                  </span>
+                )}
+              </div>
             )}
             {table.status === OrderStatus.Serving && <DropdownFeature table={table} />}
           </div>

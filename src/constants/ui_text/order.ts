@@ -11,6 +11,9 @@ export const ORDER = {
   QUANTITY: (quantity: number) => `Số Lượng: ${quantity}`,
   BOARD: {
     TABLE_ZONE: "Khu vực bàn",
+    ORDER_COUNT: (count: number) => `${count} đơn`,
+    PICK_ORDER_TITLE: "Chọn đơn",
+    PICK_ORDER_DESC: "Chọn một đơn đang phục vụ trên bàn này để mở chi tiết.",
     TAKEAWAY_ORDERS: "Đơn mang đi",
     AVAILABLE_LCT: "Sẵn",
     AT_TABLE: "Tại bàn",

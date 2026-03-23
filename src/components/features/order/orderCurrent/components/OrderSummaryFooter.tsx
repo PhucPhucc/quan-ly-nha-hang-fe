@@ -122,6 +122,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
           disabled={
             isSubmitting || !selectedOrderId || (cartData[selectedOrderId] || []).length === 0
           }
+          className="min-w-40 bg-primary text-primary-foreground font-bold hover:bg-primary/90 disabled:bg-primary/60 disabled:text-primary-foreground"
         >
           {isSubmitting ? (
             <>
@@ -129,12 +130,12 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
               {UI_TEXT.ORDER.CURRENT.PROCESSING}
             </>
           ) : (
-            UI_TEXT.MENU.OPTIONS.ADD_TO_ORDER.replace(" -", "")
+            "Thêm vào đơn"
           )}
         </Button>
         <Button
           variant="outline"
-          className="col-span-2 font-bold bg-success text-success-foreground hover:bg-success/80 border-success"
+          className="col-span-2 min-w-40 font-bold bg-success text-success-foreground hover:bg-success/80 border-success"
           onClick={() => setIsCheckoutOpen(true)}
           disabled={isSubmitting || !selectedOrderId}
         >
