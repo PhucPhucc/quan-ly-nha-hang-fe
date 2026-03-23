@@ -13,16 +13,16 @@ interface OrderCurrentHeaderProps {
 }
 
 const StatusMap: Record<OrderStatus, { label: string; color: string }> = {
-  Pending: { label: "Cho xu ly", color: "bg-warning/20 text-warning-foreground" },
   Ready: { label: UI_TEXT.TABLE.READY, color: "bg-table-empty text-muted-foreground" },
-  Serving: { label: UI_TEXT.TABLE.SERVING, color: "bg-table-serving text-muted" },
-  Reserved: { label: UI_TEXT.TABLE.RESERVED, color: "bg-table-reserved text-muted" },
-  Cleaning: { label: UI_TEXT.TABLE.CLEANING, color: "bg-table-cleaning text-muted" },
-  Cancelled: { label: UI_TEXT.TABLE.CANCELLED, color: "bg-orange-500 text-muted" },
-  Completed: { label: UI_TEXT.TABLE.COMPLETED, color: "bg-emerald-500 text-muted" },
-  Paid: { label: "Da thanh toan", color: "bg-slate-500 text-muted" },
-  Closed: { label: "Da dong", color: "bg-slate-500 text-muted" },
-  Merged: { label: "Da gop", color: "bg-info/20 text-info-foreground" },
+  Serving: { label: UI_TEXT.TABLE.SERVING, color: "bg-table-serving text-muted " },
+  Reserved: { label: UI_TEXT.TABLE.RESERVED, color: "bg-table-reserved text-muted " },
+  Cleaning: { label: UI_TEXT.TABLE.CLEANING, color: "bg-table-cleaning text-muted " },
+  Cancelled: { label: UI_TEXT.TABLE.CANCELLED, color: "bg-orange-500 text-muted " },
+  Completed: { label: UI_TEXT.TABLE.COMPLETED, color: "bg-emerald-500 text-muted " },
+  Paid: { label: "Đã thanh toán", color: "bg-slate-500 text-muted " },
+  Pending: { label: "Chờ xử lý", color: "bg-slate-300 text-muted" },
+  Merged: { label: "Đã gộp", color: "bg-purple-500 text-muted" },
+  Closed: { label: "Đã đóng", color: "bg-slate-400 text-muted" },
   OutOfService: {
     label: UI_TEXT.TABLE.OUT_OF_SERVICE,
     color: "bg-table-out-of-service text-muted",
