@@ -50,7 +50,6 @@ export function TableOverviewDashboard() {
     const occupied = tables.filter((t) => t.status === TableStatus.Occupied).length;
     const reserved = tables.filter((t) => t.status === TableStatus.Reserved).length;
     const available = tables.filter((t) => t.status === TableStatus.Available).length;
-    const cleaning = tables.filter((t) => t.status === TableStatus.Cleaning).length;
     const outOfService = tables.filter((t) => t.status === TableStatus.OutOfService).length;
     const totalSeats = tables.reduce((acc, t) => acc + t.capacity, 0);
 
@@ -61,7 +60,6 @@ export function TableOverviewDashboard() {
       occupied,
       reserved,
       available,
-      cleaning,
       outOfService,
       totalSeats,
       occupancyRate,

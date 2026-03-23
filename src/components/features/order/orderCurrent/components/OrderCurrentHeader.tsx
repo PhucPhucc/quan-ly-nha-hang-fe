@@ -16,7 +16,6 @@ const StatusMap: Record<OrderStatus, { label: string; color: string }> = {
   Ready: { label: UI_TEXT.TABLE.READY, color: "bg-table-empty text-muted-foreground" },
   Serving: { label: UI_TEXT.TABLE.SERVING, color: "bg-table-serving text-muted " },
   Reserved: { label: UI_TEXT.TABLE.RESERVED, color: "bg-table-reserved text-muted " },
-  Cleaning: { label: UI_TEXT.TABLE.CLEANING, color: "bg-table-cleaning text-muted " },
   Cancelled: { label: UI_TEXT.TABLE.CANCELLED, color: "bg-orange-500 text-muted " },
   Completed: { label: UI_TEXT.TABLE.COMPLETED, color: "bg-emerald-500 text-muted " },
   Paid: { label: "Đã thanh toán", color: "bg-slate-500 text-muted " },

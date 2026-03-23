@@ -14,7 +14,6 @@ interface StatusSummaryCardProps {
     available: number;
     occupied: number;
     reserved: number;
-    cleaning: number;
     outOfService: number;
     totalTables: number;
   };
@@ -56,13 +55,6 @@ export function StatusSummaryCard({
           count={stats.reserved}
           total={stats.totalTables}
           color="bg-table-reserved"
-          loading={isLoading}
-        />
-        <StatusItem
-          label={UI_TEXT.TABLE.STATUS_CLEANING}
-          count={stats.cleaning}
-          total={stats.totalTables}
-          color="bg-table-cleaning"
           loading={isLoading}
         />
         <StatusItem

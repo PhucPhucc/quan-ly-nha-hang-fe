@@ -95,7 +95,7 @@ export default function EditTablePanel({
           </Button>
 
           <div className="grid grid-cols-2 gap-3">
-            {table.status === TableStatus.Cleaning || table.status === TableStatus.OutOfService ? (
+            {table.status === TableStatus.OutOfService ? (
               <Button
                 variant="outline"
                 className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 font-bold h-11 rounded-xl"

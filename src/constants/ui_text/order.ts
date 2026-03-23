@@ -45,7 +45,6 @@ export const ORDER = {
     STATUS_AVAILABLE: "Bàn trống",
     STATUS_SERVING: "Đang sử dụng",
     STATUS_RESERVED: "Đặt trước",
-    STATUS_CLEANING: "Đang dọn",
     STATUS_OUT_OF_SERVICE: "Tạm ngưng",
     GET_STATUS_LABEL: (status: string) => {
       switch (status) {
@@ -55,8 +54,6 @@ export const ORDER = {
           return "Đang sử dụng";
         case "reserved":
           return "Đặt trước";
-        case "cleaning":
-          return "Đang dọn";
         case "out_of_service":
           return "Tạm ngưng";
         case "tk_serving":

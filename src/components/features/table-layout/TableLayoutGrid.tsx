@@ -128,10 +128,6 @@ export default function TableLayoutGrid({ area, onManageAreas }: Props) {
               {UI_TEXT.TABLE.STATUS_OCCUPIED}
             </span>
             <span className="flex items-center gap-1.5 hover:opacity-80 transition-all cursor-default">
-              <span className="size-1.5 rounded-full bg-table-cleaning shadow-[0_0_8px_rgba(59,130,246,0.4)]" />
-              {UI_TEXT.TABLE.STATUS_CLEANING}
-            </span>
-            <span className="flex items-center gap-1.5 hover:opacity-80 transition-all cursor-default">
               <span className="size-1.5 rounded-full bg-slate-300 shadow-[0_0_8px_rgba(100,116,139,0.3)]" />
               {UI_TEXT.TABLE.STATUS_OUT_OF_SERVICE}
             </span>
