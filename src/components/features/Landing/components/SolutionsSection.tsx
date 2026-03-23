@@ -35,7 +35,7 @@ export function SolutionsSection() {
     <section className="bg-slate-50 dark:bg-slate-900/50 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-20 text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-5xl mb-6">
+          <h2 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl mb-6">
             {t.MISSION_CRITICAL}
           </h2>
           <p className="text-lg text-muted-foreground text-balance">{t.MISSION_DESC}</p>

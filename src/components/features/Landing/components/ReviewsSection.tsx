@@ -15,11 +15,11 @@ export function ReviewsSection() {
       <div className="absolute top-0 right-0 p-20 opacity-5">
         <Quote className="h-96 w-96 transform rotate-12" />
       </div>
-      <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#0F172A] to-transparent z-10" />
+      <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-[#0F172A] to-transparent z-10" />
 
       <div className="mx-auto max-w-7xl px-6 relative z-20">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold md:text-5xl mb-6">{t.REVIEWS_TITLE}</h2>
+          <h2 className="text-4xl font-bold md:text-5xl mb-6">{t.REVIEWS_TITLE}</h2>
           <p className="text-slate-400 max-w-2xl mx-auto text-lg">{t.REVIEWS_DESC}</p>
         </div>
 
@@ -37,13 +37,13 @@ export function ReviewsSection() {
                   />
                 ))}
               </div>
-              <p className="italic text-slate-300 mb-8 leading-relaxed text-lg">
-                {QUOTE_MARK_MOCK}
+              <p className="font-serif italic text-slate-300 mb-8 leading-relaxed text-lg text-balance">
+                <span className="text-primary italic mr-1">{QUOTE_MARK_MOCK}</span>
                 {rev.content}
-                {QUOTE_MARK_MOCK}
+                <span className="text-primary italic ml-1">{QUOTE_MARK_MOCK}</span>
               </p>
               <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center font-bold text-white text-sm">
+                <div className="h-10 w-10 rounded-full bg-linear-to-br from-primary to-purple-500 flex items-center justify-center font-bold text-white text-sm">
                   {rev.author.charAt(0)}
                 </div>
                 <div>

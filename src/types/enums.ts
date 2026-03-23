@@ -27,7 +27,6 @@ export enum OrderStatus {
 export enum OrderItemStatus {
   Preparing = "Preparing",
   Cooking = "Cooking",
-  Ready = "Ready",
   Completed = "Completed",
   Cancelled = "Cancelled",
   Rejected = "Rejected",

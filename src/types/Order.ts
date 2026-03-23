@@ -97,7 +97,7 @@ export interface OrderDashboardOverview {
   cleaningTables: number;
   pendingKitchenItems: number;
   cookingItems: number;
-  readyItems: number;
+  completedItems: number;
   waitingCheckoutOrders: number;
   todayPaidOrders: number;
   todayRevenue: number;

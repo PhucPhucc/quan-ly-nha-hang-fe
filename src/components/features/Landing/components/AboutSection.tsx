@@ -61,8 +61,8 @@ export function AboutSection() {
               className="glass absolute -bottom-8 -left-8 p-8 rounded-2xl hidden lg:block animate-float"
               style={{ animationDelay: "1s" }}
             >
-              <p className="text-4xl font-extrabold text-primary">{CUSTOMERS}</p>
-              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mt-1">
+              <p className="text-4xl font-bold text-primary">{CUSTOMERS}</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
                 {t.PARTNERS}
               </p>
             </div>

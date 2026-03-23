@@ -88,8 +88,8 @@ export const kdsService = {
     });
   },
 
-  markReady: async (orderItemId: string): Promise<ApiResponse<string>> => {
-    return apiFetch<string>(`/Kds/mark-ready`, {
+  completeCooking: async (orderItemId: string): Promise<ApiResponse<string>> => {
+    return apiFetch<string>(`/Kds/complete-cooking`, {
       method: "POST",
       body: JSON.stringify({ orderItemId }),
     });

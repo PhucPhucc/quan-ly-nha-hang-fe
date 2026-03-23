@@ -148,8 +148,10 @@
   /* ===============================
      Fonts
      =============================== */
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-inter);
+  --font-display: var(--font-inter);
 
   /* ===============================
      Animations

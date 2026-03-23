@@ -46,7 +46,6 @@ const itemStatusClass = (status: OrderItemStatus) => {
   if (status === OrderItemStatus.Completed) return "table-pill-success";
   if (status === OrderItemStatus.Cancelled || status === OrderItemStatus.Rejected)
     return "table-pill-danger";
-  if (status === OrderItemStatus.Ready) return "table-pill-info";
   if (status === OrderItemStatus.Cooking) return "table-pill-primary";
   return "table-pill-neutral";
 };

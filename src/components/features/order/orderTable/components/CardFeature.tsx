@@ -504,8 +504,6 @@ const getSplitItemStatusLabel = (status: OrderItemStatus) => {
       return UI_TEXT.ORDER.CURRENT.STATUS_PREP;
     case OrderItemStatus.Cooking:
       return UI_TEXT.ORDER.CURRENT.STATUS_COOKING;
-    case OrderItemStatus.Ready:
-      return UI_TEXT.ORDER.CURRENT.STATUS_READY;
     case OrderItemStatus.Cancelled:
       return UI_TEXT.ORDER.CURRENT.STATUS_CANCELLED;
     case OrderItemStatus.Rejected:
@@ -520,8 +518,6 @@ const getSplitItemBadgeVariant = (
   status: OrderItemStatus
 ): "secondary" | "success" | "warning" | "destructive" | "outline" => {
   switch (status) {
-    case OrderItemStatus.Ready:
-      return "success";
     case OrderItemStatus.Cooking:
       return "warning";
     case OrderItemStatus.Cancelled:

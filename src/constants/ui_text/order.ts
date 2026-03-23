@@ -143,7 +143,6 @@ export const ORDER = {
     NEW: "Mới",
     STATUS_PREP: "Đang chuẩn bị",
     STATUS_COOKING: "Đang nấu",
-    STATUS_READY: "Sẵn sàng",
     STATUS_DONE: "Hoàn tất",
     STATUS_SERVING: "Đang phục vụ",
     STATUS_COMPLETED: "Đã hoàn thành",
@@ -277,7 +276,7 @@ export const ORDER = {
     },
     STATUS_LABELS: {
       SERVING: "Đang phục vụ",
-      READY: "Sẵn sàng trả món",
+      COMPLETED: "Bếp đã hoàn tất",
       WAITING_CHECKOUT: "Chờ thanh toán",
     },
   },
