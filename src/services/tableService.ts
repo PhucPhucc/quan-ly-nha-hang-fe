@@ -55,9 +55,6 @@ export const tableService = {
     return apiFetch<Table[]>(url);
   },
 
-  getTablesByArea: (areaId: string): Promise<ApiResponse<Table[]>> =>
-    apiFetch<Table[]>(`/tables/area/${areaId}`),
-
   createTable: (data: CreateTableRequest): Promise<ApiResponse<Table>> =>
     apiFetch<Table>("/tables", { method: "POST", body: data }),
 

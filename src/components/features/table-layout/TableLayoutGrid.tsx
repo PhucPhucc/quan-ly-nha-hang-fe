@@ -7,6 +7,7 @@ import BackgroundDot from "@/components/shared/BackgroundDot";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useTableSignalR } from "@/hooks/useTableSignalR";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useTableStore } from "@/store/useTableStore";
 import { Area, Table, TableStatus } from "@/types/Table-Layout";
@@ -24,6 +25,7 @@ interface Props {
 const isActive = (s: TableStatus) => s !== TableStatus.OutOfService;
 
 export default function TableLayoutGrid({ area, onManageAreas }: Props) {
+  useTableSignalR(); // Kích hoạt kết nối SignalR cho sơ đồ bàn
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const {
     tables,
@@ -61,7 +63,7 @@ export default function TableLayoutGrid({ area, onManageAreas }: Props) {
   return (
     <Card className="flex flex-col flex-1 overflow-hidden min-h-0 mb-4">
       {/* ─── Summary bar ─── */}
-      <CardHeader className="border-b px-6 py-3 space-y-3 bg-white">
+      <CardHeader className="relative z-10 border-b px-6 py-3 space-y-3 bg-white shadow-sm">
         {/* Row 1: Area Selection + Actions */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
