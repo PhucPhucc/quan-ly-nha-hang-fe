@@ -1,4 +1,4 @@
-import { OptionGroup, OptionItem } from "@/types/Menu";
+import { MenuItemOptionGroup, OptionItem } from "@/types/Menu";
 
 export const ERROR_MESSAGES = {
   loadOptions: "Không thể tải tùy chọn món ăn",
@@ -9,7 +9,7 @@ export const ERROR_MESSAGES = {
 } as const;
 
 export type MenuOptionState = {
-  optionGroups: OptionGroup[];
+  optionGroups: MenuItemOptionGroup[];
   loading: boolean;
   quantity: number;
   note: string;
@@ -17,7 +17,7 @@ export type MenuOptionState = {
 };
 
 export type MenuOptionAction =
-  | { type: "SET_GROUPS"; payload: OptionGroup[] }
+  | { type: "SET_GROUPS"; payload: MenuItemOptionGroup[] }
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_QUANTITY"; payload: number | ((prev: number) => number) }
   | { type: "SET_NOTE"; payload: string }

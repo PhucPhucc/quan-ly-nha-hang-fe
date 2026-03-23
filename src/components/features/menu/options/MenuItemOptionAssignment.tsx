@@ -48,6 +48,8 @@ export const MenuItemOptionAssignment: React.FC<MenuItemOptionAssignmentProps> =
       menuItemId: menuItemId,
       optionGroupId: group.optionGroupId,
       optionGroup: group,
+      name: group.name,
+      optionType: group.optionType,
       isRequired: false,
       minSelect: 0,
       maxSelect: 1,

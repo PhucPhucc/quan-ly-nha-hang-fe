@@ -7,17 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { OptionGroup, OptionItem } from "@/types/Menu";
+import { MenuItemOptionGroup, OptionItem } from "@/types/Menu";
 
 import OptionGroupSection from "./OptionGroupSection";
 
 interface SelectionOptionsContentProps {
-  optionGroups: OptionGroup[];
+  optionGroups: MenuItemOptionGroup[];
   selectedOptions: Record<string, OptionItem[]>;
   loading: boolean;
   note: string;
   menuItemName: string;
-  onToggleOption: (group: OptionGroup, item: OptionItem, isChecked: boolean) => void;
+  onToggleOption: (group: MenuItemOptionGroup, item: OptionItem, isChecked: boolean) => void;
   onNoteChange: (value: string) => void;
 }
 

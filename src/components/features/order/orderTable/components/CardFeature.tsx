@@ -249,6 +249,24 @@ export default function CardFeature({
         onClose(null);
       }
     }
+
+    // if (feature === Feature.MERGE) {
+    //   try {
+    //     const sourceOrderId = table.orderId;
+    //     const destinyOrderId = formData.get("feature") as string;
+    //     await orderService.mergeOrders(sourceOrderId as string, destinyOrderId);
+    //     toast.success("Orders merged successfully");
+    //   } catch (error) {
+    //     toast.error("Failed to merge orders. Please try again.");
+    //     console.error("Error occurred while merging orders:", error);
+    //   }
+    // }
+
+    await fetchOrders();
+    if (selectedAreaId) {
+      await fetchTablesByArea(selectedAreaId);
+    }
+    onClose(null);
   };
 
   return (

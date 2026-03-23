@@ -1,6 +1,6 @@
 import { DollarSign, Loader2 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     })
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
 
     if (!isOpen || selectedMethod !== PaymentMethod.BankTransfer) {

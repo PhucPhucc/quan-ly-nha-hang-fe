@@ -5,12 +5,12 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { OptionGroup, OptionItem } from "@/types/Menu";
+import { MenuItemOptionGroup, OptionItem } from "@/types/Menu";
 
 import OptionItemRow from "./OptionItemRow";
 
 interface OptionGroupSectionProps {
-  group: OptionGroup;
+  group: MenuItemOptionGroup;
   selectedItems: OptionItem[];
   onToggle: (item: OptionItem, isChecked: boolean) => void;
 }

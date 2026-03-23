@@ -1,5 +1,4 @@
 import { ApiResponse, PaginationResult } from "@/types/Api";
-import { EmployeeAuditLog } from "@/types/Employee";
 
 import { apiFetch } from "./api";
 
@@ -26,7 +25,7 @@ export interface SystemAuditLogParams {
 
 export async function getAuditLogs(
   employeeId?: string
-): Promise<ApiResponse<PaginationResult<EmployeeAuditLog>>> {
+): Promise<ApiResponse<PaginationResult<SystemAuditLog>>> {
   if (!employeeId) {
     return {
       isSuccess: true,
@@ -39,7 +38,7 @@ export async function getAuditLogs(
       },
     };
   }
-  return apiFetch<PaginationResult<EmployeeAuditLog>>(`/employees/${employeeId}/audit-logs`, {
+  return apiFetch<PaginationResult<SystemAuditLog>>(`/employees/${employeeId}/audit-logs`, {
     cache: "no-store",
   });
 }
