@@ -25,19 +25,14 @@ const MergeOrder = ({ table }: { table: Table }) => {
   return (
     <FieldGroup className="grid grid-cols-2 gap-4">
       <Field>
-        <Label htmlFor="firstOrderCode">{UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE_LABEL}</Label>
-        <Input
-          id="firstOrderCode"
-          value={orderCurrent?.orderCode}
-          readOnly
-          className="text-[10px]"
-        />
+        <Label htmlFor="mergeSource">{UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE_LABEL}</Label>
+        <Input id="mergeSource" value={orderCurrent?.orderCode} readOnly className="text-[10px]" />
       </Field>
       <Field>
-        <Label htmlFor="destinyOrderId">
+        <Label htmlFor="targetOrderId">
           {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE_DESTINATION}
         </Label>
-        <Select name="feature">
+        <Select name="targetOrderId" required>
           <SelectTrigger>
             <SelectValue placeholder="Select an order" />
           </SelectTrigger>

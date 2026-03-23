@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  Bell,
   CreditCard,
   History,
   LayoutDashboard,
-  Settings,
   ShoppingCart,
   Table as TableIcon,
   User,
@@ -13,13 +11,11 @@ import {
   Utensils,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useMemo } from "react";
 
 import { InventoryNavigation } from "../features/inventory/components/InventoryNavigation";
 import { MenuNavigation } from "../features/menu/components/MenuNavigation";
 import { OrderNavigation } from "../features/order/components/OrderNavigation";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 
@@ -40,7 +36,7 @@ const HeaderBar = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((seg) => seg);
   const segment = pathSegments[pathSegments.length - 1];
-  const pageLabel = React.useMemo(() => {
+  const pageLabel = useMemo(() => {
     if (pathname === "/manager/order") return ROUTE_CONFIG.order.label;
     if (pathname === "/manager/order/list") return "Danh sách đơn hàng";
     if (pathname === "/manager/order/billing-history") return ROUTE_CONFIG["billing-history"].label;
@@ -76,7 +72,7 @@ const HeaderBar = () => {
       </div>
 
       {/* Right section: Actions */}
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <Button
           variant="ghost"
           size="icon"
@@ -96,7 +92,7 @@ const HeaderBar = () => {
         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted">
           <Settings className="size-5 text-slate-600" />
         </Button>
-      </div>
+      </div> */}
     </header>
   );
 };
