@@ -123,7 +123,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                 <div className="flex items-center justify-between mt-1">
                   <Badge
                     variant="ghost"
-                    className="text-[10px] font-bold px-2 py-0.5 border-none bg-order-new/15 text-order-new"
+                    className="text-[10px] font-bold px-2 py-0.5 border-none bg-order-new/15 text-order-new animate-fade-in-right"
                   >
                     {UI_TEXT.ORDER.CURRENT.NEW}
                   </Badge>
@@ -176,7 +176,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between mt-1">
-                  {getStatusBadge(item.status)}
+                  <div className="animate-fade-in-right">{getStatusBadge(item.status)}</div>
                   <span className="text-[10px] text-muted-foreground font-mono">
                     {new Date(item.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",

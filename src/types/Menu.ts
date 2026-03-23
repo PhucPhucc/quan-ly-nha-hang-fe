@@ -43,8 +43,11 @@ export interface OptionItem {
 export interface MenuItemOptionGroup {
   menuItemOptionGroupId: string;
   menuItemId: string;
+  name: string;
   optionGroupId: string;
   optionGroup?: OptionGroup; // Populated for UI
+  optionType: OptionType;
+  optionItems?: OptionItem[];
 
   // Specific rules for this menu item
   isRequired: boolean;

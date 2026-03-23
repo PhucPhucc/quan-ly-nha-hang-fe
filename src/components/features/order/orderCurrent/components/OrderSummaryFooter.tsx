@@ -11,6 +11,7 @@ import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 
 import { CheckoutModal } from "./CheckoutModal";
+import PrintTempDialog from "./PrintTempDialog";
 
 interface OrderSummaryFooterProps {
   subtotal: number;
@@ -115,8 +116,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
         </div>
       </div>
       <div className="w-full grid grid-cols-2 gap-2">
-        <Button variant="outline">{UI_TEXT.ORDER.CURRENT.PRINT_TEMP}</Button>
-
+        <PrintTempDialog />
         <Button
           onClick={handleSendRequest}
           disabled={

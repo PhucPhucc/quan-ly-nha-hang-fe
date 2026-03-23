@@ -6,7 +6,7 @@ import { uploadImage } from "@/services/imageService";
 import { menuService } from "@/services/menuService";
 import { optionService } from "@/services/optionService";
 import { useMenuStore } from "@/store/useMenuStore";
-import { Category, MenuItem, OptionGroup, SetMenu } from "@/types/Menu";
+import { Category, MenuItem, MenuItemOptionGroup, SetMenu } from "@/types/Menu";
 
 type SetMenuApiRes = SetMenu & {
   items?: { menuItemId: string; quantity: number }[];
@@ -32,10 +32,8 @@ export const useMenuForm = (categories: Category[]) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [comboItems, setComboItems] = useState<{ menuItemId: string; quantity: number }[]>([]);
   const [isFetchingCombo, setIsFetchingCombo] = useState(false);
-  const [optionGroups, setOptionGroups] = useState<Partial<OptionGroup>[]>([]);
-  const [isFetchingOptions, setIsFetchingOptions] = useState(false);
-  const [deletedGroupIds, setDeletedGroupIds] = useState<string[]>([]);
-  const [deletedItemIds, setDeletedItemIds] = useState<string[]>([]);
+  const [optionAssignments, setOptionAssignments] = useState<MenuItemOptionGroup[]>([]);
+  const [isFetchingAssignments, setIsFetchingAssignments] = useState(false);
 
   const isEditing = !!editingItem;
   const isSetMenu = isEditing && editingItem && "setMenuId" in editingItem;
@@ -86,24 +84,22 @@ export const useMenuForm = (categories: Category[]) => {
         }
 
         if (!isSetMenu && itemId) {
-          setIsFetchingOptions(true);
+          setIsFetchingAssignments(true);
           optionService
-            .getOptionGroupsByMenuItem(itemId)
+            .getAssignmentsByMenuItem(itemId)
             .then((res) => {
               if (res.isSuccess && res.data) {
-                setOptionGroups(res.data);
+                setOptionAssignments(res.data);
               }
             })
-            .finally(() => setIsFetchingOptions(false));
+            .finally(() => setIsFetchingAssignments(false));
         } else {
-          setOptionGroups([]);
+          setOptionAssignments([]);
         }
       } else {
         setSelectedCategoryId(categories[0]?.categoryId || "");
         setComboItems([]);
-        setOptionGroups([]);
-        setDeletedGroupIds([]);
-        setDeletedItemIds([]);
+        setOptionAssignments([]);
       }
     }
   }, [editingItem, categories, isModalOpen, isSetMenu, itemId]);
@@ -127,9 +123,7 @@ export const useMenuForm = (categories: Category[]) => {
     setSelectedImage(null);
     setActiveTab("details");
     setComboItems([]);
-    setOptionGroups([]);
-    setDeletedGroupIds([]);
-    setDeletedItemIds([]);
+    setOptionAssignments([]);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -211,53 +205,23 @@ export const useMenuForm = (categories: Category[]) => {
         }
 
         if (savedMenuItemId) {
-          for (const gId of deletedGroupIds) {
-            await optionService.deleteOptionGroup(gId);
-          }
-          for (const iId of deletedItemIds) {
-            await optionService.deleteOptionItem(iId);
-          }
-
-          for (const group of optionGroups) {
-            let currentGroupId = group.optionGroupId;
-            const isNewGroup = !currentGroupId || currentGroupId.startsWith("temp-");
-
-            if (isNewGroup) {
-              const groupRes = await optionService.createOptionGroup({
-                menuItemId: savedMenuItemId,
-                name: group.name,
-                optionType: group.optionType,
-                isRequired: group.isRequired,
+          for (const assignment of optionAssignments) {
+            if (assignment.menuItemOptionGroupId.startsWith("temp-")) {
+              await optionService.assignToMenuItem({
+                menuItemId: savedMenuItemId!,
+                optionGroupId: assignment.optionGroupId,
+                isRequired: assignment.isRequired,
+                minSelect: assignment.minSelect,
+                maxSelect: assignment.maxSelect,
+                sortOrder: assignment.sortOrder,
               });
-              if (groupRes.isSuccess && groupRes.data) {
-                currentGroupId = groupRes.data;
-              }
-            } else if (currentGroupId) {
-              await optionService.updateOptionGroup(currentGroupId, {
-                name: group.name,
-                optionType: group.optionType,
-                isRequired: group.isRequired,
+            } else {
+              await optionService.updateAssignment(assignment.menuItemOptionGroupId, {
+                isRequired: assignment.isRequired,
+                minSelect: assignment.minSelect,
+                maxSelect: assignment.maxSelect,
+                sortOrder: assignment.sortOrder,
               });
-            }
-
-            if (currentGroupId && group.optionItems) {
-              for (const item of group.optionItems) {
-                const currentItemId = item.optionItemId;
-                const isNewItem = !currentItemId || currentItemId.startsWith("temp-");
-
-                if (isNewItem) {
-                  await optionService.createOptionItem({
-                    optionGroupId: currentGroupId,
-                    label: item.label,
-                    extraPrice: item.extraPrice,
-                  });
-                } else {
-                  await optionService.updateOptionItem(currentItemId, {
-                    label: item.label,
-                    extraPrice: item.extraPrice,
-                  });
-                }
-              }
             }
           }
         }
@@ -289,11 +253,10 @@ export const useMenuForm = (categories: Category[]) => {
     setSelectedCategoryId,
     comboItems,
     isFetchingCombo,
-    optionGroups,
-    setOptionGroups,
-    isFetchingOptions,
-    setDeletedGroupIds,
-    setDeletedItemIds,
+
+    optionAssignments,
+    setOptionAssignments,
+    isFetchingAssignments,
 
     addComboItem,
     updateComboItem,
@@ -302,3 +265,5 @@ export const useMenuForm = (categories: Category[]) => {
     handleClose,
   };
 };
+
+export type MenuFormType = ReturnType<typeof useMenuForm>;

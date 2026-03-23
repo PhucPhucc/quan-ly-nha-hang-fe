@@ -55,14 +55,8 @@ const DropdownFeature = ({ table }: { table: Table }) => {
       </DropdownMenu>
 
       <Dialog open={!!feature} onOpenChange={() => setFeature(null)}>
-        <DialogContent>
-          <DialogTitle>
-            {
-              UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE[
-                feature as keyof typeof UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE
-              ]
-            }
-          </DialogTitle>
+        <DialogContent className={feature === Feature.SPLIT ? "sm:max-w-2xl" : undefined}>
+          <DialogTitle>{feature}</DialogTitle>
           {feature && <CardFeature feature={feature} table={table} onClose={setFeature} />}
         </DialogContent>
       </Dialog>

@@ -93,7 +93,6 @@ export const OptionGroupMasterList: React.FC = () => {
           loading={loading}
           searchQuery={searchQuery}
           onEdit={handleEdit}
-          onDelete={handleDelete}
           onCreate={handleCreate}
         />
       </div>
@@ -102,6 +101,7 @@ export const OptionGroupMasterList: React.FC = () => {
         onOpenChange={setModalOpen}
         editingGroup={editingGroup}
         onSuccess={handleModalSuccess}
+        onDelete={handleDelete}
       />
     </>
   );

@@ -88,8 +88,8 @@ const OrderBoard = () => {
                       status: o.status === OrderStatus.Serving ? "SERVING" : "READY",
                       label: UI_TEXT.ORDER.BOARD.TAKEAWAY,
                       people: 1,
-                      price: currencyFormatter.format(o.totalAmount) + "đ",
-                      elapsedTime: "5m",
+                      price: currencyFormatter.format(o.totalAmount) + UI_TEXT.COMMON.CURRENCY,
+                      elapsedTime: "5" + UI_TEXT.COMMON.MINUTES,
                     }}
                   />
                 ))}

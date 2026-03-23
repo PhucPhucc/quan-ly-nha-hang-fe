@@ -1,7 +1,8 @@
-import { Save, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Save } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { AreaType, Table, TableStatus } from "@/types/Table-Layout";
 
@@ -26,8 +27,6 @@ export default function EditTablePanel({
   areaType,
 }: Props) {
   const [capacity, setCapacity] = useState(table.capacity);
-  const [showBelow, setShowBelow] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
 
   const isVipArea = areaType === AreaType.VIP;
   const minCapacity = 1;
@@ -41,62 +40,47 @@ export default function EditTablePanel({
     setCapacity(normalizedCapacity);
   }, [maxCapacity, minCapacity, table.capacity]);
 
-  useEffect(() => {
-    if (!panelRef.current) return;
-
-    const checkPosition = () => {
-      const rect = panelRef.current?.getBoundingClientRect();
-      if (rect && rect.right > window.innerWidth - 20) {
-        setShowBelow(true);
-      }
-    };
-
-    // Check vị trí sau khi render
-    requestAnimationFrame(checkPosition);
-  }, []);
-
   return (
-    <div
-      ref={panelRef}
-      className={`absolute z-50 w-72 rounded-lg border border-border bg-white shadow-2xl overflow-hidden ${
-        showBelow ? "top-full left-0 mt-4" : "left-full top-0 ml-10"
-      }`}
-    >
+    <DialogContent className="sm:max-w-md p-0 overflow-hidden border-none shadow-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border bg-background px-4 py-3">
-        <h3 className="text-sm font-bold">{UI_TEXT.TABLE.EDIT_TABLE(table.tableCode)}</h3>
-        <Button size="icon" variant="ghost" onClick={onClose}>
-          <X className="size-4" />
-        </Button>
-      </div>
+      <DialogHeader className="px-6 py-4 border-b bg-slate-50/50">
+        <DialogTitle className="text-xl font-bold text-slate-800">
+          {UI_TEXT.TABLE.EDIT_TABLE(table.tableCode)}
+        </DialogTitle>
+      </DialogHeader>
 
-      <div className="space-y-4 p-4">
+      <div className="space-y-6 p-6">
         {/* Mã bàn (readonly) */}
-        <div className="space-y-1">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
+        <div className="space-y-2">
+          <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
             {UI_TEXT.TABLE.TABLE_CODE}
           </label>
-          <input
-            readOnly
-            value={table.tableCode}
-            className="w-full cursor-not-allowed rounded border border-gray-200 bg-gray-100 px-3 py-2 text-sm font-bold text-gray-500 focus:outline-none"
-          />
+          <div className="w-full rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-500">
+            {table.tableCode}
+          </div>
         </div>
 
         {/* Số ghế stepper */}
-        <div className="space-y-1">
+        <div className="space-y-2">
+          <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            {UI_TEXT.TABLE.SEATS}
+          </label>
           <SelectCapacityTable
             capacity={capacity}
             setCapacity={setCapacity}
             minCapacity={minCapacity}
             maxCapacity={maxCapacity}
           />
-          <p className="text-[9px] italic text-gray-400">{UI_TEXT.TABLE.DEFAULT_SHAPE_NOTE}</p>
+          <p className="text-[11px] italic text-slate-400 mt-2">
+            {UI_TEXT.COMMON.ASTERISK} {UI_TEXT.TABLE.DEFAULT_SHAPE_NOTE}
+          </p>
         </div>
 
-        {/* Buttons */}
-        <div className="space-y-2 pt-2">
-          <button
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-3 pt-4">
+          <Button
+            size="lg"
+            className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-xl shadow-lg shadow-primary/20"
             onClick={async () => {
               await onUpdateInfo(table.tableId, {
                 capacity,
@@ -105,35 +89,40 @@ export default function EditTablePanel({
               });
               onClose();
             }}
-            className="w-full rounded bg-primary py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90"
           >
-            <Save className="mr-1.5 inline h-4 w-4" />
+            <Save className="mr-2 h-5 w-5" />
             {UI_TEXT.COMMON.SAVE}
-          </button>
-          {/* status-specific action */}
-          {table.status === TableStatus.Cleaning || table.status === TableStatus.OutOfService ? (
-            <button
-              onClick={() => onUpdateStatus(table.tableId, true)}
-              className="flex w-full items-center justify-center gap-2 rounded border border-green-200 py-2 text-sm font-bold text-green-600 hover:bg-green-50"
+          </Button>
+
+          <div className="grid grid-cols-2 gap-3">
+            {table.status === TableStatus.Cleaning || table.status === TableStatus.OutOfService ? (
+              <Button
+                variant="outline"
+                className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 font-bold h-11 rounded-xl"
+                onClick={() => onUpdateStatus(table.tableId, true)}
+              >
+                {UI_TEXT.TABLE.ACTIVATE}
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                className="border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold h-11 rounded-xl"
+                onClick={() => onUpdateStatus(table.tableId, false)}
+              >
+                {UI_TEXT.TABLE.DEACTIVATE}
+              </Button>
+            )}
+
+            <Button
+              variant="ghost"
+              className="text-slate-500 hover:bg-slate-100 font-bold h-11 rounded-xl"
+              onClick={onClose}
             >
-              {UI_TEXT.TABLE.ACTIVATE}
-            </button>
-          ) : (
-            <button
-              onClick={() => onUpdateStatus(table.tableId, false)}
-              className="flex w-full items-center justify-center gap-2 rounded border border-red-200 py-2 text-sm font-bold text-red-600 hover:bg-red-50"
-            >
-              {UI_TEXT.TABLE.DEACTIVATE}
-            </button>
-          )}
-          <button
-            onClick={onClose}
-            className="w-full rounded border border-gray-300 bg-white py-2 text-sm font-bold text-gray-700 hover:bg-gray-50"
-          >
-            {UI_TEXT.COMMON.CANCEL}
-          </button>
+              {UI_TEXT.COMMON.CANCEL}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </DialogContent>
   );
 }

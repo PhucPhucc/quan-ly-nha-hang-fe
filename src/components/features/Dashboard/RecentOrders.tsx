@@ -18,7 +18,7 @@ import {
 import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { OrderStatus, OrderType } from "@/types/enums";
-import { Order } from "@/types/Order";
+import { Order, OrderDashboardTopOrderItem } from "@/types/Order";
 
 const t = UI_TEXT.DASHBOARD.RECENT_ORDERS;
 
@@ -48,11 +48,36 @@ const getStatusColor = (status: OrderStatus) => {
   }
 };
 
-export function RecentOrders() {
+type RecentOrdersProps = {
+  seedOrders?: OrderDashboardTopOrderItem[];
+};
+
+function mapSeedOrder(order: OrderDashboardTopOrderItem): Order {
+  return {
+    orderId: order.orderId,
+    orderCode: order.orderCode,
+    orderType: order.orderType as OrderType,
+    status: order.status as OrderStatus,
+    tableId: order.tableId,
+    totalAmount: order.totalAmount,
+    isPriority: order.isPriority,
+    createdAt: order.createdAt,
+    orderItems: [],
+  };
+}
+
+export function RecentOrders({ seedOrders = [] }: RecentOrdersProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const visibleOrders = orders.slice(0, 4);
 
   useEffect(() => {
+    if (seedOrders.length > 0) {
+      setOrders(seedOrders.map(mapSeedOrder));
+      setLoading(false);
+      return;
+    }
+
     const fetchOrders = async () => {
       try {
         setLoading(true);
@@ -68,15 +93,15 @@ export function RecentOrders() {
     };
 
     fetchOrders();
-  }, []);
+  }, [seedOrders]);
 
   if (loading) {
     return (
-      <Card className="border-none shadow-md">
+      <Card className="h-[clamp(340px,40vh,360px)] min-h-0 overflow-hidden border-none shadow-md">
         <CardHeader>
           <CardTitle className="text-lg font-bold">{t.TITLE}</CardTitle>
         </CardHeader>
-        <CardContent className="flex h-40 items-center justify-center">
+        <CardContent className="flex min-h-0 flex-1 items-center justify-center">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
         </CardContent>
       </Card>
@@ -84,11 +109,11 @@ export function RecentOrders() {
   }
 
   return (
-    <Card className="border-none shadow-md">
+    <Card className="h-[clamp(330px,38vh,320px)] min-h-0 overflow-hidden border-none shadow-md">
       <CardHeader>
         <CardTitle className="text-lg font-bold">{t.TITLE}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="min-h-0 flex-1 overflow-y-auto">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
@@ -100,8 +125,8 @@ export function RecentOrders() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.length > 0 ? (
-              orders.map((order) => (
+            {visibleOrders.length > 0 ? (
+              visibleOrders.map((order) => (
                 <TableRow
                   key={order.orderId}
                   className="cursor-pointer transition-colors hover:bg-muted/50"

@@ -38,7 +38,7 @@ export function MenuNavigation() {
 
   return (
     <nav
-      className="flex items-center gap-1 overflow-x-auto px-4 pb-2 scrollbar-none"
+      className="flex items-center gap-1 overflow-x-auto scrollbar-none"
       aria-label="Điều hướng menu"
     >
       {NAV_ITEMS.map((item) => {
