@@ -1,5 +1,23 @@
 import { OrderItemStatus, OrderStatus, OrderType } from "./enums";
 
+export interface OrderItemOptionValue {
+  orderItemOptionValueId: string;
+  orderItemOptionGroupId: string;
+  labelSnapshot: string;
+  extraPriceSnapshot: number;
+  quantity: number;
+  note?: string;
+}
+
+export interface OrderItemOptionGroup {
+  orderItemOptionGroupId: string;
+  orderItemId: string;
+  groupNameSnapshot: string;
+  groupTypeSnapshot: string;
+  isRequiredSnapshot: boolean;
+  optionValues: OrderItemOptionValue[];
+}
+
 export interface OrderItem {
   orderItemId: string;
   orderId: string;
@@ -18,6 +36,10 @@ export interface OrderItem {
   createdAt: string;
   updatedAt?: string;
   canceledAt?: string;
+  cancelledAt?: string;
+  rejectedAt?: string;
+  rejectionReason?: string;
+  optionGroups?: OrderItemOptionGroup[];
 }
 
 export interface Order {
@@ -26,15 +48,61 @@ export interface Order {
   orderType: OrderType;
   status: OrderStatus;
   tableId?: string;
+  reservationId?: string;
 
   note?: string;
+  subTotal?: number;
+  vatRate?: number;
+  vatAmount?: number;
   totalAmount: number;
   isPriority: boolean;
   createdAt: string;
   updatedAt?: string;
   completedAt?: string;
   cancelledAt?: string;
+  paymentMethod?: string;
+  amountPaid?: number;
+  paidAt?: string;
   orderItems: OrderItem[];
+}
+
+export interface OrderDashboardStatusBreakdownItem {
+  status: string;
+  count: number;
+}
+
+export interface OrderDashboardTopOrderItem {
+  orderId: string;
+  orderCode: string;
+  orderType: string;
+  status: string;
+  tableId?: string;
+  tableLabel?: string | null;
+  totalAmount: number;
+  isPriority: boolean;
+  itemCount: number;
+  finishedItemCount: number;
+  createdAt: string;
+}
+
+export interface OrderDashboardOverview {
+  generatedAtUtc: string;
+  activeOrders: number;
+  priorityOrders: number;
+  dineInOrders: number;
+  takeawayOrders: number;
+  deliveryOrders: number;
+  occupiedTables: number;
+  availableTables: number;
+  cleaningTables: number;
+  pendingKitchenItems: number;
+  cookingItems: number;
+  readyItems: number;
+  waitingCheckoutOrders: number;
+  todayPaidOrders: number;
+  todayRevenue: number;
+  statusBreakdown: OrderDashboardStatusBreakdownItem[];
+  topActiveOrders: OrderDashboardTopOrderItem[];
 }
 
 export const DINE_IN_STATUSES = [

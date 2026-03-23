@@ -2,6 +2,7 @@
 
 import {
   Bell,
+  CreditCard,
   History,
   LayoutDashboard,
   Settings,
@@ -14,8 +15,10 @@ import {
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import { InventoryNavigation } from "../features/inventory/components/InventoryNavigation";
+import { MenuNavigation } from "../features/menu/components/MenuNavigation";
+import { OrderNavigation } from "../features/order/components/OrderNavigation";
 import { Badge } from "../ui/badge";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
@@ -23,9 +26,10 @@ import { SidebarTrigger } from "../ui/sidebar";
 const ROUTE_CONFIG: Record<string, { label: string; icon: React.ReactNode }> = {
   dashboard: { label: "Tổng quan", icon: <LayoutDashboard className="size-3.5" /> },
   order: { label: "Bán hàng", icon: <ShoppingCart className="size-3.5" /> },
+  "billing-history": { label: "Lịch sử thanh toán", icon: <CreditCard className="size-3.5" /> },
+  "audit-log": { label: "Nhật ký thao tác", icon: <History className="size-3.5" /> },
   menu: { label: "Thực đơn", icon: <Utensils className="size-3.5" /> },
   employee: { label: "Nhân viên", icon: <Users className="size-3.5" /> },
-  "audit-log": { label: "Lịch sử", icon: <History className="size-3.5" /> },
   profile: { label: "Cá nhân", icon: <User className="size-3.5" /> },
   table: { label: "Sơ đồ bàn", icon: <TableIcon className="size-3.5" /> },
   inventory: { label: "Kho hàng", icon: <Utensils className="size-3.5" /> },
@@ -36,28 +40,39 @@ const HeaderBar = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((seg) => seg);
   const segment = pathSegments[pathSegments.length - 1];
+  const pageLabel = React.useMemo(() => {
+    if (pathname === "/manager/order") return ROUTE_CONFIG.order.label;
+    if (pathname === "/manager/order/list") return "Danh sách đơn hàng";
+    if (pathname === "/manager/order/billing-history") return ROUTE_CONFIG["billing-history"].label;
+    if (pathname === "/manager/order/audit-log") return ROUTE_CONFIG["audit-log"].label;
+    if (pathname.startsWith("/manager/order/")) return "Chi tiết đơn hàng";
+    return ROUTE_CONFIG[segment]?.label || segment;
+  }, [pathname, segment]);
   const NOTIF_COUNT = "3";
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-md transition-all">
-      <div className="flex items-center">
+      <div className="flex flex-1 items-center overflow-hidden">
         <div className="flex items-center gap-2">
           <SidebarTrigger className="h-9 w-9" />
           <Separator orientation="vertical" className="h-4" />
         </div>
 
-        <Breadcrumb className="hidden md:block">
-          <BreadcrumbList>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <div
-                className="flex items-center gap-1.5 font-semibold text-secondary-foreground"
-                aria-current="page"
-              >
-                <span>{ROUTE_CONFIG[segment]?.label || segment}</span>
-              </div>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <div className="ml-2 hidden flex-1 items-center overflow-hidden md:flex">
+          {pathname.startsWith("/manager/order") ? (
+            <OrderNavigation />
+          ) : pathname.startsWith("/manager/menu") ? (
+            <MenuNavigation />
+          ) : pathname.startsWith("/manager/inventory") ? (
+            <InventoryNavigation />
+          ) : (
+            <div
+              className="flex items-center gap-1.5 font-semibold text-secondary-foreground"
+              aria-current="page"
+            >
+              <span>{pageLabel}</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Right section: Actions */}

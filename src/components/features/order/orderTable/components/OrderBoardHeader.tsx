@@ -23,8 +23,7 @@ import { DINE_IN_STATUSES, TAKEAWAY_STATUSES } from "@/types/Order";
 import { AreaStatus } from "@/types/Table-Layout";
 
 const TAKEAWAY_TAB = "takeaway";
-const DATE_PICKER_LABEL = "Chọn ngày";
-const SEARCH_PLACEHOLDER = "Tìm kiếm mã đơn, số bàn...";
+const SEARCH_PLACEHOLDER = UI_TEXT.ORDER.BOARD.SEARCH_PLACEHOLDER;
 
 const OrderBoardHeader = () => {
   const searchQuery = useOrderBoardStore((s) => s.searchQuery);
@@ -35,9 +34,6 @@ const OrderBoardHeader = () => {
 
   const activeTab = useOrderBoardStore((s) => s.activeTab);
   const setActiveTab = useOrderBoardStore((s) => s.setActiveTab);
-
-  const dateRange = useOrderBoardStore((s) => s.dateRange);
-  const setDateRange = useOrderBoardStore((s) => s.setDateRange);
 
   const sortOrder = useOrderBoardStore((s) => s.sortOrder);
   const setSortOrder = useOrderBoardStore((s) => s.setSortOrder);
@@ -129,7 +125,9 @@ const OrderBoardHeader = () => {
                           <Checkbox checked={selectedStatuses.includes(s.value)} />
                           <div className="flex items-center gap-2">
                             <div className={cn("size-2 rounded-full", s.color)} />
-                            <span className="text-xs font-bold whitespace-nowrap">{s.label}</span>
+                            <span className="text-xs font-bold whitespace-nowrap">
+                              {UI_TEXT.ORDER.BOARD.GET_STATUS_LABEL(s.value)}
+                            </span>
                           </div>
                         </div>
                       ))}
@@ -160,7 +158,9 @@ const OrderBoardHeader = () => {
                           <Checkbox checked={selectedStatuses.includes(s.value)} />
                           <div className="flex items-center gap-2">
                             <div className={cn("size-2 rounded-full", s.color)} />
-                            <span className="text-xs font-bold whitespace-nowrap">{s.label}</span>
+                            <span className="text-xs font-bold whitespace-nowrap">
+                              {UI_TEXT.ORDER.BOARD.GET_STATUS_LABEL(s.value)}
+                            </span>
                           </div>
                         </div>
                       ))}

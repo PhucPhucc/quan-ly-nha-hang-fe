@@ -1,8 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { CircleAlert } from "lucide-react";
-import Link from "next/link";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -24,7 +21,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventory.service";
 import { Ingredient } from "@/types/Inventory";
 
 import { AddIngredientPanel } from "./AddIngredientPanel";
@@ -40,28 +36,6 @@ import {
 } from "./components/inventoryStyles";
 import { InventoryTableHeader } from "./components/InventoryTableHeader";
 import { useInventoryTable } from "./useInventoryTable";
-
-const COMPLETED_OPENING_STOCK_STATUS = 2;
-const OPENING_STOCK_REMINDER = {
-  title: "Bạn chưa nhập số dư đầu kỳ",
-  description:
-    "Vui lòng nhập số dư đầu kỳ trước khi tiếp tục quản lý kho để dữ liệu tồn kho được chính xác.",
-  action: "Đi đến nhập số dư",
-} as const;
-
-function shouldShowOpeningStockReminder(
-  settings?: { openingStockStatus?: number | string; lockedAt?: string | null } | null
-) {
-  if (!settings) {
-    return true;
-  }
-
-  return (
-    !settings.lockedAt &&
-    settings.openingStockStatus !== COMPLETED_OPENING_STOCK_STATUS &&
-    settings.openingStockStatus !== "Completed"
-  );
-}
 
 export function IngredientTable() {
   const pageSize = 10;
@@ -80,14 +54,6 @@ export function IngredientTable() {
     setStatusFilter,
     toggleActivationMutation,
   } = useInventoryTable(pageSize);
-
-  const { data: settings } = useQuery({
-    queryKey: ["inventory-settings"],
-    queryFn: async () => {
-      const response = await inventoryService.getInventorySettings();
-      return response.data;
-    },
-  });
 
   const [editingItem, setEditingItem] = useState<Ingredient | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -146,23 +112,7 @@ export function IngredientTable() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col space-y-6 pt-2">
-      {shouldShowOpeningStockReminder(settings) ? (
-        <div className="flex items-start justify-between gap-2 rounded-xl border border-amber-300 bg-amber-50 p-2 text-amber-950">
-          <div className="flex items-start gap-2">
-            <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" />
-            <div className="space-y-0.5">
-              <p className="text-[13px] font-semibold">{OPENING_STOCK_REMINDER.title}</p>
-              <p className="text-[11px] text-amber-900/90 leading-tight">
-                {OPENING_STOCK_REMINDER.description}
-              </p>
-            </div>
-          </div>
-          <Button asChild size="sm" className="h-8 px-3 shrink-0 text-xs">
-            <Link href="/manager/inventory/opening-stock">{OPENING_STOCK_REMINDER.action}</Link>
-          </Button>
-        </div>
-      ) : null}
-
+      {" "}
       <div className="shrink-0">
         <InventoryTableHeader
           searchQuery={searchQuery}
@@ -175,7 +125,6 @@ export function IngredientTable() {
           }}
         />
       </div>
-
       <div className={`${INVENTORY_TABLE_SURFACE_CLASS} mt-2`}>
         <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
           <TableHeader className={INVENTORY_THEAD_CLASS}>
@@ -241,7 +190,6 @@ export function IngredientTable() {
           />
         </div>
       </div>
-
       <AddIngredientPanel
         ingredient={editingItem || undefined}
         open={isEditOpen}
@@ -254,7 +202,6 @@ export function IngredientTable() {
         onSuccess={handleEditSuccess}
         hideTrigger={true}
       />
-
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="rounded-xl">
           <DialogHeader>

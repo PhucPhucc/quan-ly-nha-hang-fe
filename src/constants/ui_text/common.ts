@@ -110,6 +110,8 @@ export const COMMON = {
     PREV: "Trước",
     NEXT: "Tiếp",
   },
+  SYSTEM: "Hệ thống",
+  MINUTES: "p",
 };
 
 export const SIDE_BAR = {

@@ -17,6 +17,8 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 
+const RESERVATION_LABEL = "Reservation:";
+
 interface OrderBoardTableProps {
   orders: Order[];
   loading: boolean;
@@ -25,6 +27,7 @@ interface OrderBoardTableProps {
   totalPages: number;
   onPageChange: (page: number) => void;
   onRetry: () => void;
+  onRowSelect?: (order: Order) => void;
 }
 
 const getStatusBadgeClassName = (status: string) => {
@@ -65,6 +68,7 @@ export default function OrderBoardTable({
   totalPages,
   onPageChange,
   onRetry,
+  onRowSelect,
 }: OrderBoardTableProps) {
   if (loading) {
     return <TableSkeleton />;
@@ -115,18 +119,29 @@ export default function OrderBoardTable({
 
             {!error &&
               orders.map((order) => (
-                <TableRow key={order.orderId}>
+                <TableRow
+                  key={order.orderId}
+                  className={onRowSelect ? "cursor-pointer" : undefined}
+                  onClick={onRowSelect ? () => onRowSelect(order) : undefined}
+                >
                   <TableCell className="table-cell-strong">{order.orderCode}</TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-1">
                       <span className="text-sm font-semibold text-table-text-strong">
                         {order.orderType === OrderType.DineIn
                           ? UI_TEXT.ORDER.CURRENT.DINE_IN
-                          : UI_TEXT.ORDER.CURRENT.TAKEAWAY}
+                          : order.orderType === OrderType.Takeaway
+                            ? UI_TEXT.ORDER.CURRENT.TAKEAWAY
+                            : "Giao hàng"}
                       </span>
                       {order.tableId && (
                         <span className="text-xs text-table-text-muted">
                           {UI_TEXT.ORDER.BOARD.TABLE_PREFIX} {order.tableId}
+                        </span>
+                      )}
+                      {order.reservationId && (
+                        <span className="text-xs text-table-text-muted">
+                          {RESERVATION_LABEL} {order.reservationId}
                         </span>
                       )}
                     </div>

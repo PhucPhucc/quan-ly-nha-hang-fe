@@ -44,6 +44,45 @@ export interface InventoryStats {
   totalValue: number;
 }
 
+export interface InventoryDashboardStockAlertItem {
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  unit: string;
+  currentStock: number;
+  threshold: number;
+}
+
+export interface InventoryDashboardExpiryItem {
+  inventoryLotId: string;
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  lotCode: string;
+  expiryDate?: string;
+  remainingQuantity: number;
+  unit: string;
+  daysRemaining?: number;
+  status: InventoryLotStatus | string;
+}
+
+export interface InventoryDashboardOverview {
+  generatedAtUtc: string;
+  totalIngredients: number;
+  activeIngredients: number;
+  outOfStockCount: number;
+  lowStockCount: number;
+  expiredLots: number;
+  nearExpiryLots: number;
+  badgeCount: number;
+  totalStockValue: number;
+  stockInToday: number;
+  stockOutToday: number;
+  saleDeductionToday: number;
+  topLowStockItems: InventoryDashboardStockAlertItem[];
+  topExpiringLots: InventoryDashboardExpiryItem[];
+}
+
 export interface InventorySettings {
   expiryWarningDays: number;
   defaultLowStockThreshold: number;

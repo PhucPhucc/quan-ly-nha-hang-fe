@@ -7,6 +7,7 @@ import {
   ClipboardCheck,
   History,
   Layers,
+  LayoutDashboard,
   Package,
   PackagePlus,
   Warehouse,
@@ -31,8 +32,13 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: UI_TEXT.INVENTORY.NAV.OVERVIEW,
     href: "/manager/inventory",
-    icon: Warehouse,
+    icon: LayoutDashboard,
     exact: true,
+  },
+  {
+    label: UI_TEXT.INVENTORY.NAV.INGREDIENTS,
+    href: "/manager/inventory/ingredients",
+    icon: Package,
   },
   {
     label: UI_TEXT.INVENTORY.NAV.STOCK_IO,
@@ -42,7 +48,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: UI_TEXT.INVENTORY.NAV.OPENING_STOCK,
     href: "/manager/inventory/opening-stock",
-    icon: Package,
+    icon: Warehouse,
   },
   {
     label: UI_TEXT.INVENTORY.NAV.CHECK,
@@ -87,7 +93,7 @@ export function InventoryNavigation() {
 
   return (
     <nav
-      className="flex items-center gap-1 overflow-x-auto px-4 pb-2 scrollbar-none"
+      className="flex items-center gap-1 overflow-x-auto scrollbar-none"
       aria-label={UI_TEXT.SIDE_BAR.INVENTORY}
     >
       {NAV_ITEMS.map((item) => {

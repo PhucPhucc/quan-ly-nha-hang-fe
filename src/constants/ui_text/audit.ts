@@ -16,4 +16,18 @@ export const AUDIT_LOG = {
   AFTER_CHANGE: "Sau khi thay đổi",
   CREATED_AT: "Thời gian",
   REASON: "Lý do / Ghi chú",
+  PANEL_TITLE: "Khung audit log",
+  PANEL_DESC:
+    "BE đã có `OrderAuditLog`, nhưng hiện chưa có query riêng cho FE. Màn này giữ layout để gắn endpoint sau.",
+  TIME: "Thời gian",
+  ACTOR: "Nhân viên thực hiện",
+  ACTIONS_METADATA: "Hành động, lý do, metadata trước/sau",
+  TIMELINE_TITLE: "Dòng thời gian đơn gần nhất",
+  EMPTY_TITLE: "Chọn một đơn để xem audit preview",
+  EMPTY_DESC: "Khi user click vào một dòng đơn hàng, khu này sẽ mô phỏng cách hiển thị audit log.",
+  PLACEHOLDER: {
+    TITLE:
+      "BE đã có entity OrderAuditLog, nhưng chưa có query riêng. UI dưới đây giữ khung sẵn để nối API sau.",
+    DESCRIPTION: "Khi có API, màn này sẽ đổi sang danh sách log theo thời gian và theo từng đơn.",
+  },
 };

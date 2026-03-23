@@ -6,6 +6,7 @@ import {
   CalendarDays,
   ChartColumn,
   ClipboardList,
+  CreditCard,
   Flame,
   History,
   LayoutDashboard,
@@ -63,7 +64,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: UI_TEXT.SIDE_BAR.TABLE_MANAGEMENT,
-            url: "/manager/reservation",
+            url: "/manager/table",
             icon: Table,
             items: [
               {
@@ -77,16 +78,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: UI_TEXT.SIDE_BAR.ORDER,
             url: "/manager/order",
             icon: UtensilsCrossed,
+            items: [
+              {
+                title: "Tổng quan",
+                url: "/manager/order",
+                icon: LayoutDashboard,
+              },
+              {
+                title: "Danh sách đơn",
+                url: "/manager/order/list",
+                icon: ClipboardList,
+              },
+              {
+                title: "Lịch sử thanh toán",
+                url: "/manager/order/billing-history",
+                icon: CreditCard,
+              },
+              {
+                title: "Nhật ký thao tác",
+                url: "/manager/order/audit-log",
+                icon: History,
+              },
+            ],
           },
           {
             title: UI_TEXT.SIDE_BAR.EMPLOYEE,
             url: "/manager/employee",
             icon: Users,
-          },
-          {
-            title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
-            url: "/manager/audit-log",
-            icon: ChartColumn,
           },
           {
             title: UI_TEXT.SIDE_BAR.INVENTORY,
@@ -95,27 +113,52 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             badge: alertsCount && alertsCount > 0 ? alertsCount : undefined,
             items: [
               {
+                title: UI_TEXT.INVENTORY.NAV.STOCK_IO,
+                url: "/manager/inventory/stock-in",
+                icon: Boxes,
+              },
+              {
+                title: UI_TEXT.INVENTORY.NAV.OPENING_STOCK,
+                url: "/manager/inventory/opening-stock",
+                icon: Package,
+              },
+              {
+                title: UI_TEXT.INVENTORY.NAV.CHECK,
+                url: "/manager/inventory/check",
+                icon: ClipboardList,
+              },
+              {
+                title: UI_TEXT.INVENTORY.NAV.REPORT,
+                url: "/manager/inventory/reports",
+                icon: ChartColumn,
+              },
+              {
+                title: UI_TEXT.INVENTORY.NAV.LEDGER,
+                url: "/manager/inventory/ledger",
+                icon: Library,
+              },
+              {
+                title: UI_TEXT.INVENTORY.NAV.LOTS,
+                url: "/manager/inventory/lots",
+                icon: Boxes,
+              },
+              {
                 title: UI_TEXT.INVENTORY.ALERTS_BTN,
                 url: "/manager/inventory/alerts",
                 icon: Bell,
                 badge: alertsCount && alertsCount > 0 ? alertsCount : undefined,
               },
               {
-                title: UI_TEXT.INVENTORY.STOCK_IN_TITLE,
-                url: "/manager/inventory/stock-in",
-                icon: Boxes,
-              },
-              {
-                title: "Lich su kho",
+                title: UI_TEXT.INVENTORY.NAV.TRANSACTIONS,
                 url: "/manager/inventory/transactions",
                 icon: History,
               },
-              {
-                title: UI_TEXT.INVENTORY.OPENING_STOCK.TITLE,
-                url: "/manager/inventory/opening-stock",
-                icon: Package,
-              },
             ],
+          },
+          {
+            title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
+            url: "/manager/audit-log",
+            icon: ChartColumn,
           },
         ],
         [EmployeeRole.CASHIER]: [
@@ -126,7 +169,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: UI_TEXT.SIDE_BAR.TABLE_MANAGEMENT,
-            url: "/reservation",
+            url: "/table-booking",
             icon: Table,
             items: [
               {

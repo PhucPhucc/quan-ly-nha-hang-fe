@@ -14,6 +14,7 @@ import {
   InventoryCheckDetail,
   InventoryCheckItem,
   InventoryCheckStatus,
+  InventoryDashboardOverview,
   InventoryExpiryAlertItem,
   InventoryLedgerItem,
   InventoryReportItem,
@@ -376,6 +377,10 @@ export const inventoryService = {
   // Lấy thống kê tổng quan (Dashboard)
   getStats: async (): Promise<ApiResponse<InventoryStats>> => {
     return apiFetch<InventoryStats>("/inventory/stats");
+  },
+
+  getDashboardOverview: async (): Promise<ApiResponse<InventoryDashboardOverview>> => {
+    return apiFetch<InventoryDashboardOverview>("/dashboard/inventory/overview");
   },
 
   // Lấy cấu hình kho
