@@ -83,4 +83,23 @@ export const ORDER = {
     TAKEAWAY: "Mang đi",
     DINE_IN: "Dùng tại bàn",
   },
+
+  PRINT_TEMP: {
+    TITLE: "PHIẾU TẠM TÍNH",
+    TIME: "Ngày in",
+    EMPLOYEE: "Nhân viên",
+    ORDER_CODE(orderCode: string) {
+      return `Mã Đơn Hàng: ${orderCode}`;
+    },
+    MENU_NAME: "Tên món",
+    QUANTITY: "Số lượng",
+    UNIT_PRICE: "Đơn giá",
+    AMOUNT: "Thành tiền",
+    TAX_LABEL: "Thuế GTGT (10%)",
+    BEFORE_TAX: "Tổng trước thuế",
+    TOTAL_AMOUNT: "Tổng thanh toán",
+
+    THIS_IS_NOT_RECEIPT: "Đây không phải là hóa đơn thanh toán",
+    THANK_YOU: "Cảm ơn quý khách và hẹn gặp lại!",
+  },
 };

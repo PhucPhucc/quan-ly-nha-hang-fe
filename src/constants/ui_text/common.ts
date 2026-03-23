@@ -17,6 +17,7 @@ export const COMMON = {
   NO_RESULTS: "Không có kết quả",
   REFINE_SEARCH: "Thử thay đổi từ khóa tìm kiếm",
   NAME_PROJECT: "FoodHub",
+  NAME_RESTAURANT: "FoodHub Restaurant",
   RESET: "Đặt lại",
   UPDATE_SUCCESS: "Cập nhật thông tin thành công",
   UPDATE_ERROR: "Cập nhật thông tin thất bại",
