@@ -50,11 +50,11 @@ export function OpeningStockTable({
           <TableHead className={`${INVENTORY_TH_CLASS} text-left pl-4`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_NAME}
           </TableHead>
-          <TableHead className={`${INVENTORY_TH_CLASS} w-[100px] text-center`}>
-            {UI_TEXT.INVENTORY.OPENING_STOCK.COL_UNIT}
-          </TableHead>
           <TableHead className={`${INVENTORY_TH_CLASS} w-[140px] text-right pr-4`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_QTY?.toUpperCase()}
+          </TableHead>
+          <TableHead className={`${INVENTORY_TH_CLASS} w-[100px] text-center`}>
+            {UI_TEXT.INVENTORY.OPENING_STOCK.COL_UNIT}
           </TableHead>
           <TableHead className={`${INVENTORY_TH_CLASS} w-[160px] text-right pr-4`}>
             {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
@@ -88,9 +88,6 @@ export function OpeningStockTable({
                   >
                     {item.name}
                   </TableCell>
-                  <TableCell className="text-center text-slate-600 font-medium">
-                    {item.baseUnit || item.unit}
-                  </TableCell>
                   <TableCell>
                     <Input
                       type="number"
@@ -102,6 +99,9 @@ export function OpeningStockTable({
                       className="h-8 text-right font-semibold rounded-lg border-slate-100 focus:ring-primary/20"
                       onChange={(e) => onInputChange(item.ingredientId, "quantity", e.target.value)}
                     />
+                  </TableCell>
+                  <TableCell className="text-center text-slate-600 font-medium">
+                    {item.baseUnit || item.unit}
                   </TableCell>
                   <TableCell>
                     <div className="relative">

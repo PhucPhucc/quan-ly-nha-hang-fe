@@ -87,8 +87,12 @@ export function InventoryCheckTable() {
           </SelectContent>
         </Select>
 
-        <DatePicker value={fromDate} onChange={setFromDate} placeholder="Từ ngày" />
-        <DatePicker value={toDate} onChange={setToDate} placeholder="Đến ngày" />
+        <DatePicker
+          value={fromDate}
+          onChange={setFromDate}
+          placeholder={UI_TEXT.COMMON.FROM_DATE}
+        />
+        <DatePicker value={toDate} onChange={setToDate} placeholder={UI_TEXT.COMMON.TO_DATE} />
       </InventoryToolbar>
 
       <div className={INVENTORY_TABLE_SURFACE_CLASS}>

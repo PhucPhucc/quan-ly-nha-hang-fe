@@ -44,6 +44,45 @@ export interface InventoryStats {
   totalValue: number;
 }
 
+export interface InventoryDashboardStockAlertItem {
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  unit: string;
+  currentStock: number;
+  threshold: number;
+}
+
+export interface InventoryDashboardExpiryItem {
+  inventoryLotId: string;
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  lotCode: string;
+  expiryDate?: string;
+  remainingQuantity: number;
+  unit: string;
+  daysRemaining?: number;
+  status: InventoryLotStatus | string;
+}
+
+export interface InventoryDashboardOverview {
+  generatedAtUtc: string;
+  totalIngredients: number;
+  activeIngredients: number;
+  outOfStockCount: number;
+  lowStockCount: number;
+  expiredLots: number;
+  nearExpiryLots: number;
+  badgeCount: number;
+  totalStockValue: number;
+  stockInToday: number;
+  stockOutToday: number;
+  saleDeductionToday: number;
+  topLowStockItems: InventoryDashboardStockAlertItem[];
+  topExpiringLots: InventoryDashboardExpiryItem[];
+}
+
 export interface InventorySettings {
   expiryWarningDays: number;
   defaultLowStockThreshold: number;
@@ -158,4 +197,72 @@ export interface InventoryLedgerItem {
   quantityDelta: number;
   balanceAfter: number;
   note?: string;
+}
+
+// Alerts & Lots
+export interface InventoryAlertBadge {
+  badgeCount: number;
+  outOfStockCount: number;
+  lowStockCount: number;
+  expiredCount: number;
+  nearExpiryCount: number;
+}
+
+export enum InventoryLotStatus {
+  Active = "Active",
+  NearExpiry = "NearExpiry",
+  Expired = "Expired",
+  Depleted = "Depleted",
+  Disposed = "Disposed",
+}
+
+export interface InventoryStockAlertItem {
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  unit: string;
+  currentStock: number;
+  threshold: number;
+}
+
+export interface InventoryExpiryAlertItem {
+  inventoryLotId: string;
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName: string;
+  lotCode: string;
+  expiryDate?: string;
+  remainingQuantity: number;
+  unit: string;
+  daysRemaining?: number;
+  status: InventoryLotStatus;
+}
+
+export interface InventoryAlertsResponse {
+  outOfStockItems: InventoryStockAlertItem[];
+  lowStockItems: InventoryStockAlertItem[];
+  expiredLots: InventoryExpiryAlertItem[];
+  nearExpiryLots: InventoryExpiryAlertItem[];
+  badgeCount: number;
+}
+
+export interface RecalculateCogsResponse {
+  fromDate: string;
+  toDate: string;
+  processedIngredients: number;
+  updatedReceipts: number;
+  updatedItems: number;
+  totalAdjustmentAmount: number;
+  message: string;
+}
+
+export interface DisposeLotRequest {
+  quantity: number;
+  reason: string;
+}
+
+export interface DisposeLotResponse {
+  lotId: string;
+  remainingQuantity: number;
+  status: InventoryLotStatus;
 }

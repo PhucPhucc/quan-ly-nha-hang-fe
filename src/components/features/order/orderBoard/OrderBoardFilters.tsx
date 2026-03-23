@@ -25,6 +25,7 @@ const ORDER_TYPE_OPTIONS = [
   { value: "ALL", label: UI_TEXT.ORDER.BOARD.ALL_TYPE },
   { value: OrderType.DineIn.toString(), label: UI_TEXT.ORDER.BOARD.DINE_IN_LABEL },
   { value: OrderType.Takeaway.toString(), label: UI_TEXT.ORDER.BOARD.TAKEAWAY_LABEL },
+  { value: OrderType.Delivery.toString(), label: "Giao hàng" },
 ];
 
 interface OrderBoardFiltersProps {

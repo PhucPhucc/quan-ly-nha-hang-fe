@@ -7,6 +7,7 @@ export enum ThemeMode {
 export enum OrderType {
   DineIn = "DineIn",
   Takeaway = "Takeaway",
+  Delivery = "Delivery",
 }
 
 export enum OrderStatus {

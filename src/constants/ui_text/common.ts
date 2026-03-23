@@ -12,6 +12,7 @@ export const COMMON = {
   EMPTY: "Trống",
   UPDATE: "Đã cập nhật",
   ALL: "Tất cả",
+  NOT_APPLICABLE: "N/A",
   FILTER: "Bộ lọc",
   SEARCH: "Tìm kiếm",
   NO_RESULTS: "Không có kết quả",
@@ -96,6 +97,8 @@ export const COMMON = {
   SOMETHING_WENT_WRONG: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
   TOGGLE: "Mở rộng",
   SELECT_DATE_RANGE: "Chọn khoảng thời gian",
+  FROM_DATE: "Từ ngày",
+  TO_DATE: "Đến ngày",
   SELECT_TIME: "Chọn thời gian",
   CLEAR_FILTER: "Xóa lọc",
   HYPHEN: " - ",
@@ -108,11 +111,14 @@ export const COMMON = {
     PREV: "Trước",
     NEXT: "Tiếp",
   },
+  SYSTEM: "Hệ thống",
+  MINUTES: "p",
 };
 
 export const SIDE_BAR = {
   DASHBOARD: "Trang chủ",
-  MENU: "Thực đơn",
+  MENU: "Quản lí thực đơn",
+  TABLE_MANAGEMENT: "Quản lí bàn",
   TABLE: "Sơ đồ bàn",
   ORDER: "Đơn hàng",
   EMPLOYEE: "Nhân viên",

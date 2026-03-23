@@ -1,6 +1,6 @@
 import { ApiResponse, PaginationResult } from "@/types/Api";
 import { OrderStatus, OrderType } from "@/types/enums";
-import { Order } from "@/types/Order";
+import { Order, OrderDashboardOverview } from "@/types/Order";
 
 import { apiFetch } from "./api";
 
@@ -74,6 +74,29 @@ export interface PaginationParams {
   toDate?: string;
 }
 
+export interface SplitOrderItemRequest {
+  orderItemId: string;
+  quantityToSplit: number;
+}
+
+export interface SplitOrderRequest {
+  destinationOrderId?: string;
+  destinationTableId?: string;
+  destinationReservationId?: string;
+  itemsToSplit: SplitOrderItemRequest[];
+}
+
+export interface SplitOrderResponse {
+  sourceOrderId: string;
+  sourceOrderCode: string;
+  sourceOrderTotalAmount: number;
+  destinationOrderId: string;
+  destinationOrderCode: string;
+  destinationOrderTotalAmount: number;
+  destinationTableId?: string;
+  createdNewOrder: boolean;
+}
+
 export const orderService = {
   createOrder: (data: CreateOrderRequest): Promise<ApiResponse<Order>> =>
     apiFetch<Order>("/orders", {
@@ -95,6 +118,9 @@ export const orderService = {
 
     return apiFetch<PaginationResult<Order>>(`/orders?${queryParams.toString()}`);
   },
+
+  getDashboardOverview: (): Promise<ApiResponse<OrderDashboardOverview>> =>
+    apiFetch<OrderDashboardOverview>("/dashboard/orders/overview"),
 
   submitToKitchen: (data: SubmitOrderToKitchenRequest): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/orders/${data.orderId}/submit-to-kitchen`, {
@@ -153,18 +179,18 @@ export const orderService = {
       body: { orderId, tableId: newTableId },
     }),
 
-  mergeOrders: (firstOrder: string, secondOrder: string): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/tableoperations/${firstOrder}/merge`, {
+  mergeOrders: (sourceOrderId: string, targetOrderId: string): Promise<ApiResponse<string>> =>
+    apiFetch<string>(`/tableoperations/${sourceOrderId}/merge`, {
       method: "POST",
-      body: { firstOrder, secondOrder },
+      body: { secondOrder: targetOrderId },
     }),
 
   splitOrder: (
     orderId: string,
-    itemsToSplit: { orderItemId: string; quantity: number }[]
-  ): Promise<ApiResponse<string>> =>
-    apiFetch<string>(`/orders/${orderId}/split`, {
+    data: SplitOrderRequest
+  ): Promise<ApiResponse<SplitOrderResponse>> =>
+    apiFetch<SplitOrderResponse>(`/tableoperations/${orderId}/split`, {
       method: "POST",
-      body: { orderId, itemsToSplit },
+      body: data,
     }),
 };

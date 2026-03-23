@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
@@ -10,12 +11,14 @@ import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 import { Table as ApiTable, TableStatus } from "@/types/Table-Layout";
 
-import { isTableOccupyingOrder } from "./orderTable.utils";
 import TableItem, { Table as TableCard } from "./TableItem";
 
+const isActiveServingOrder = (order: Order) =>
+  !!order.tableId && order.status === OrderStatus.Serving;
+
 const TABLE_PLACEHOLDER_COUNT = 8;
-const EMPTY_TABLE_MESSAGE = "Chưa có bàn nào";
-const CREATE_ORDER_ERROR = "Tạo order thất bại";
+const EMPTY_TABLE_MESSAGE = UI_TEXT.ORDER.BOARD.NOT_FOUND;
+const CREATE_ORDER_ERROR = UI_TEXT.ORDER.BOARD.CREATE_ORDER_ERROR;
 const currencyFormatter = new Intl.NumberFormat("vi-VN");
 
 interface TableListProps {
@@ -43,7 +46,7 @@ const TableList = ({ areaId }: TableListProps) => {
   const sortedTables = tables.toSorted((a, b) => a.tableNumber - b.tableNumber);
 
   const activeOrderByTableId = new Map(
-    orders.filter(isTableOccupyingOrder).map((order) => [order.tableId as string, order])
+    orders.filter(isActiveServingOrder).map((order) => [order.tableId as string, order])
   );
 
   const handleTableClick = async (table: ApiTable, status: OrderStatus, orderId?: string) => {
@@ -70,7 +73,7 @@ const TableList = ({ areaId }: TableListProps) => {
             res.data?.orderId ||
             useOrderBoardStore
               .getState()
-              .orders.find((o) => o.tableId === table.tableId && o.status !== OrderStatus.Completed)
+              .orders.find((o) => o.tableId === table.tableId && o.status === OrderStatus.Serving)
               ?.orderId;
 
           if (newOrderId) setSelectedOrderId(newOrderId);
@@ -161,7 +164,9 @@ const getTableInfo = (table: ApiTable, order?: Order): Omit<TableCard, "label" |
         orderId: order.orderId,
         status: OrderStatus.Serving,
         people: table.capacity,
-        price: order.totalAmount ? currencyFormatter.format(order.totalAmount) + "đ" : "0đ",
+        price: order.totalAmount
+          ? currencyFormatter.format(order.totalAmount) + UI_TEXT.COMMON.CURRENCY
+          : "0" + UI_TEXT.COMMON.CURRENCY,
         createdAt: order.createdAt,
       };
     case OrderStatus.Reserved:
