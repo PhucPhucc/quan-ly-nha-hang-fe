@@ -1,14 +1,13 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, ArrowRight, CalendarClock, PackageX } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useInventoryAlerts } from "@/hooks/useInventoryAlerts";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
-import { inventoryService } from "@/services/inventory.service";
 import { InventoryExpiryAlertItem, InventoryStockAlertItem } from "@/types/Inventory";
 
 // ─── Low Stock Row ────────────────────────────────────────────────────────────
@@ -190,17 +189,12 @@ function AlertPanel({
 }
 
 export function InventoryAlertSummary() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["inventory-alerts"],
-    queryFn: () => inventoryService.getInventoryAlerts(),
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: alertsData, isLoading } = useInventoryAlerts();
 
-  const alerts = data?.data;
-  const outOfStockItems = alerts?.outOfStockItems ?? [];
-  const lowStockItems = alerts?.lowStockItems ?? [];
-  const expiredLots = alerts?.expiredLots ?? [];
-  const nearExpiryLots = alerts?.nearExpiryLots ?? [];
+  const outOfStockItems = alertsData?.outOfStockItems ?? [];
+  const lowStockItems = alertsData?.lowStockItems ?? [];
+  const expiredLots = alertsData?.expiredLots ?? [];
+  const nearExpiryLots = alertsData?.nearExpiryLots ?? [];
 
   const topLowStock = [...outOfStockItems, ...lowStockItems];
   const topExpiring = [...expiredLots, ...nearExpiryLots];
@@ -223,7 +217,9 @@ export function InventoryAlertSummary() {
           <LowStockRow
             key={item.ingredientId}
             item={item}
-            isOutOfStock={outOfStockItems.some((o) => o.ingredientId === item.ingredientId)}
+            isOutOfStock={outOfStockItems.some(
+              (o: InventoryStockAlertItem) => o.ingredientId === item.ingredientId
+            )}
           />
         ))}
       </AlertPanel>

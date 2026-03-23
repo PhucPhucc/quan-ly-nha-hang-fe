@@ -19,6 +19,7 @@ import React, { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useInventoryAlerts } from "@/hooks/useInventoryAlerts";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { inventoryService } from "@/services/inventory.service";
@@ -149,14 +150,7 @@ export function InventoryOverviewDashboard() {
     },
   });
 
-  const { data: alerts, isLoading: alertsLoading } = useQuery({
-    queryKey: ["inventory-alerts-overview-priority"],
-    queryFn: async () => {
-      const response = await inventoryService.getInventoryAlerts();
-      return response.data;
-    },
-    staleTime: 3 * 60 * 1000,
-  });
+  const { data: alerts, isLoading: alertsLoading } = useInventoryAlerts();
 
   const { data: ingredients, isLoading: ingredientsLoading } = useQuery({
     queryKey: ["inventory-ingredients-overview-priority"],
