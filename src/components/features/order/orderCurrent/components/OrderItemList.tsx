@@ -160,10 +160,35 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                 <div className="flex justify-between flex-1 text-muted-foreground">
                   <div>
                     <h4 className="font-semibold text-sm leading-tight">{item.itemNameSnapshot}</h4>
-                    {item.itemOptions && (
-                      <p className="text-[10px] text-muted-foreground mt-1">
-                        {item.itemOptions.split(";").join(", ")}
-                      </p>
+                    {item.optionGroups && item.optionGroups.length > 0 ? (
+                      <div className="mt-1 space-y-0.5">
+                        {item.optionGroups
+                          .flatMap((g) => g.optionValues)
+                          .map((val) => (
+                            <p
+                              key={val.orderItemOptionValueId}
+                              className="text-[10px] text-muted-foreground flex items-center justify-between"
+                            >
+                              <span>
+                                {UI_TEXT.COMMON.BULLET}
+                                {val.labelSnapshot}
+                              </span>
+                              {val.extraPriceSnapshot > 0 && (
+                                <span>
+                                  {UI_TEXT.COMMON.PLUS}
+                                  {val.extraPriceSnapshot.toLocaleString()}
+                                  {UI_TEXT.COMMON.CURRENCY}
+                                </span>
+                              )}
+                            </p>
+                          ))}
+                      </div>
+                    ) : (
+                      item.itemOptions && (
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          {item.itemOptions.split(";").join(", ")}
+                        </p>
+                      )
                     )}
                     {item.itemNote && (
                       <p className="text-[10px] italic mt-1">{UI_TEXT.ORDER.NOTE(item.itemNote)}</p>
