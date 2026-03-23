@@ -16,6 +16,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { useInventoryAlertsCount } from "@/hooks/useInventoryAlertsCount";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
@@ -120,14 +121,14 @@ export function InventoryNavigation() {
             />
             <span className="whitespace-nowrap">{item.label}</span>
             {item.label === UI_TEXT.INVENTORY.NAV.ALERTS && alertCount > 0 && (
-              <span
+              <Badge
                 className={cn(
-                  "ml-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold tabular-nums",
+                  "ml-1 p-0 font-mono flex size-4 items-center justify-center rounded-full text-[10px] font-bold tabular-nums",
                   active ? "bg-primary-foreground text-primary" : "bg-danger text-white"
                 )}
               >
                 {alertCount}
-              </span>
+              </Badge>
             )}
           </Link>
         );

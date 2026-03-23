@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function MenuOptionsPage() {
   return (
-    <div className="w-full h-full min-h-0 bg-slate-50/50">
+    <div className="w-full h-full min-h-0">
       <OptionGroupMasterList />
     </div>
   );

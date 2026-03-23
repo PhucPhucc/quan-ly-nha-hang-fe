@@ -1,10 +1,11 @@
+import { TabsTrigger } from "@radix-ui/react-tabs";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { billingService } from "@/services/billingService";
 import { orderService } from "@/services/orderService";
@@ -24,6 +26,8 @@ import { TableStatus } from "@/types/Table-Layout";
 
 import { Table } from "../TableItem";
 import { Feature } from "./DropdownFeature";
+import ChangeTable from "./Feature/ChangeTable";
+import MergeOrder from "./Feature/MergeOrder";
 
 type SplitItem = {
   orderItemId: string;
@@ -250,18 +254,6 @@ export default function CardFeature({
       }
     }
 
-    // if (feature === Feature.MERGE) {
-    //   try {
-    //     const sourceOrderId = table.orderId;
-    //     const destinyOrderId = formData.get("feature") as string;
-    //     await orderService.mergeOrders(sourceOrderId as string, destinyOrderId);
-    //     toast.success("Orders merged successfully");
-    //   } catch (error) {
-    //     toast.error("Failed to merge orders. Please try again.");
-    //     console.error("Error occurred while merging orders:", error);
-    //   }
-    // }
-
     await fetchOrders();
     if (selectedAreaId) {
       await fetchTablesByArea(selectedAreaId);
@@ -272,70 +264,9 @@ export default function CardFeature({
   return (
     <Card className="w-full border-none p-2 shadow-none">
       <form onSubmit={handleSubmit}>
-        {feature === Feature.MOVE_TABLE && (
-          <FieldGroup className="grid grid-cols-2 gap-4">
-            <Field>
-              <Label htmlFor="sourceOrderId">
-                {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE_ORIGIN}
-              </Label>
-              <Input id="sourceOrderId" value={table.label} readOnly className="text-[10px]" />
-            </Field>
-            <Field>
-              <Label htmlFor="destinyOrderId">
-                {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE_DESTINATION}
-              </Label>
-              <Select name="targetTableId">
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE_SELECT_PLACEHOLDER}
-                  />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  {candidateTables.map((candidateTable) => (
-                    <SelectItem key={candidateTable.tableId} value={candidateTable.tableId}>
-                      {candidateTable.tableCode}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </FieldGroup>
-        )}
+        {feature === Feature.MOVE_TABLE && <ChangeTable table={table} />}
 
-        {feature === Feature.MERGE && (
-          <FieldGroup className="grid grid-cols-2 gap-4">
-            <Field>
-              <Label htmlFor="mergeSource">
-                {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE_ORIGIN}
-              </Label>
-              <Input
-                id="mergeSource"
-                value={sourceOrder?.orderCode || table.label}
-                readOnly
-                className="text-[10px]"
-              />
-            </Field>
-            <Field>
-              <Label htmlFor="mergeTarget">
-                {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE_DESTINATION}
-              </Label>
-              <Select name="targetOrderId" required>
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE_PLACEHOLDER}
-                  />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  {servingTargetOrders.map((item) => (
-                    <SelectItem key={item!.tableId} value={item!.orderId}>
-                      {item!.orderCode}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </FieldGroup>
-        )}
+        {feature === Feature.MERGE && <MergeOrder table={table} />}
 
         {feature === Feature.SPLIT && (
           <div className="space-y-4 px-1 py-2">
@@ -366,47 +297,45 @@ export default function CardFeature({
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 rounded-xl bg-muted/40 p-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSplitDestinationMode("same-order");
-                    setSplitDestinationOrderId("");
-                    setSplitDestinationTableId("");
-                  }}
-                  className={destinationModeButtonClass(splitDestinationMode === "same-order")}
-                >
-                  {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_SAME_ORDER}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSplitDestinationMode("existing-order");
-                    setSplitDestinationOrderId("");
-                    setSplitDestinationTableId("");
-                  }}
-                  className={destinationModeButtonClass(splitDestinationMode === "existing-order")}
-                  disabled={servingTargetOrders.length === 0}
-                >
-                  {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_EXISTING_ORDER}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSplitDestinationMode("new-table");
-                    setSplitDestinationOrderId("");
-                    setSplitDestinationTableId("");
-                  }}
-                  className={destinationModeButtonClass(splitDestinationMode === "new-table")}
-                  disabled={
-                    candidateTables.filter(
-                      (candidateTable) => candidateTable.status === TableStatus.Available
-                    ).length === 0
-                  }
-                >
-                  {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_NEW_TABLE}
-                </button>
-              </div>
+              <Tabs
+                value={splitDestinationMode}
+                onValueChange={(value) => {
+                  const nextMode = value as SplitDestinationMode;
+                  setSplitDestinationMode(nextMode);
+                  setSplitDestinationOrderId("");
+                  setSplitDestinationTableId("");
+                }}
+                className="w-full"
+              >
+                <TabsList className="grid h-10 w-full grid-cols-2 rounded-xl bg-muted/40 p-1">
+                  <TabsTrigger
+                    value="existing-order"
+                    disabled={servingTargetOrders.length === 0}
+                    asChild
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    >
+                      {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_MODE_EXISTING}
+                    </Button>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="new-table"
+                    disabled={servingTargetOrders.length === 0}
+                    asChild
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    >
+                      {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_MODE_NEW}
+                    </Button>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
 
               {splitDestinationMode === "existing-order" && (
                 <Field>
@@ -542,6 +471,7 @@ export default function CardFeature({
               </div>
             </div>
           </div>
+          // <SplitOrder table={table} splitItems={splitItems} onSplit={setSplitItems} />
         )}
 
         <div className="p-2">
@@ -549,8 +479,8 @@ export default function CardFeature({
             type="submit"
             className="w-full min-h-12 font-bold text-primary-foreground"
             disabled={
-              isSubmitting ||
-              (feature === Feature.SPLIT && (loadingSplitItems || !hasSelectedSplitItems))
+              isSubmitting
+              // (feature === Feature.SPLIT && (loadingSplitItems || !hasSelectedSplitItems))
             }
           >
             {isSubmitting && UI_TEXT.ORDER.CURRENT.PROCESSING}
@@ -567,8 +497,6 @@ export default function CardFeature({
     </Card>
   );
 }
-
-const isSplitItemMovable = (status: OrderItemStatus) => status !== OrderItemStatus.Completed;
 
 const getSplitItemStatusLabel = (status: OrderItemStatus) => {
   switch (status) {
@@ -607,10 +535,4 @@ const getSplitItemBadgeVariant = (
   }
 };
 
-const destinationModeButtonClass = (active: boolean) =>
-  [
-    "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
-    active
-      ? "bg-background text-foreground shadow-sm"
-      : "text-muted-foreground hover:text-foreground",
-  ].join(" ");
+const isSplitItemMovable = (status: OrderItemStatus) => status !== OrderItemStatus.Completed;

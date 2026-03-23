@@ -18,9 +18,8 @@ import { Table } from "../../TableItem";
 
 const ChangeTable = ({ table }: { table: Table }) => {
   const apiTable = useTableStore((s) =>
-    s.tables.filter((t) => t.tableId !== table.tableId || t.status === TableStatus.Available)
+    s.tables.filter((t) => t.tableId !== table.tableId && t.status === TableStatus.Available)
   );
-
   return (
     <FieldGroup className="grid grid-cols-2 gap-4">
       <Field>
@@ -30,12 +29,12 @@ const ChangeTable = ({ table }: { table: Table }) => {
         <Input id="sourceOrderId" value={table.label} readOnly className="text-[10px]" />
       </Field>
       <Field>
-        <Label htmlFor="destinyOrderId">
+        <Label htmlFor="targetTableId">
           {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE_DESTINATION}
         </Label>
-        <Select name="feature">
+        <Select name="targetTableId">
           <SelectTrigger>
-            <SelectValue placeholder="Select an order" />
+            <SelectValue placeholder="Select a table" />
           </SelectTrigger>
           <SelectContent position="popper">
             {apiTable.map((t) => (
