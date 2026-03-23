@@ -47,9 +47,9 @@ export function ReservationSection() {
               <h3 className="text-primary font-bold uppercase tracking-widest text-sm">
                 {RESERVATION.SUBTITLE}
               </h3>
-              <h2 className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tighter">
+              <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight">
                 {RESERVATION.TITLE_MAIN} <br />
-                <span className="text-primary font-serif">{RESERVATION.TITLE_ITALIC}</span>{" "}
+                <span className="text-primary">{RESERVATION.TITLE_ITALIC}</span>{" "}
                 {RESERVATION.TITLE_SUFFIX}
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed max-w-md">
@@ -232,7 +232,7 @@ export function ReservationSection() {
                   size="lg"
                   onClick={handleSubmit}
                   disabled={isLoading || timeSlots.length === 0}
-                  className="w-full h-16 rounded-2xl text-lg font-black tracking-widest group uppercase shadow-xl shadow-primary/20"
+                  className="w-full h-16 rounded-2xl text-lg font-bold tracking-widest group uppercase shadow-xl shadow-primary/20"
                 >
                   {isLoading ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />

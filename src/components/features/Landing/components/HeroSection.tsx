@@ -32,11 +32,11 @@ export function HeroSection() {
         </div>
 
         <h1
-          className="mt-8 text-5xl font-extrabold tracking-tight text-foreground md:text-7xl text-balance animate-fade-in-up"
+          className="mt-8 text-5xl font-bold tracking-tight text-foreground md:text-7xl text-balance animate-fade-in-up"
           style={{ animationDelay: "0.1s" }}
         >
           {t.HERO_TITLE} <br />
-          <span className="bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent italic px-2">
+          <span className="bg-linear-to-r from-primary to-orange-500 bg-clip-text text-transparent px-2">
             {t.HERO_SUBTITLE}
           </span>
         </h1>

@@ -115,9 +115,9 @@ export default function OrderOverviewPage() {
         tone: "primary" as const,
       },
       {
-        key: "ready",
-        label: UI_TEXT.ORDER.OVERVIEW.STATUS_LABELS.READY,
-        value: overview?.readyItems ?? 0,
+        key: "completed",
+        label: UI_TEXT.ORDER.OVERVIEW.STATUS_LABELS.COMPLETED,
+        value: overview?.completedItems ?? 0,
         tone: "info" as const,
       },
       {

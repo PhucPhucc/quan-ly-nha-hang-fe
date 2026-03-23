@@ -150,7 +150,7 @@ export default function KDSAuditLogPage() {
                 const actions = [
                   "all",
                   "KDS_START_COOKING",
-                  "KDS_MARK_READY",
+                  "KDS_COMPLETE_COOKING",
                   "KDS_REJECT",
                   "KDS_RETURN",
                 ];
