@@ -20,6 +20,9 @@ const StatusMap: Record<OrderStatus, { label: string; color: string }> = {
   Cancelled: { label: UI_TEXT.TABLE.CANCELLED, color: "bg-orange-500 text-muted " },
   Completed: { label: UI_TEXT.TABLE.COMPLETED, color: "bg-emerald-500 text-muted " },
   Paid: { label: "Đã thanh toán", color: "bg-slate-500 text-muted " },
+  Pending: { label: "Chờ xử lý", color: "bg-slate-300 text-muted" },
+  Merged: { label: "Đã gộp", color: "bg-purple-500 text-muted" },
+  Closed: { label: "Đã đóng", color: "bg-slate-400 text-muted" },
   OutOfService: {
     label: UI_TEXT.TABLE.OUT_OF_SERVICE,
     color: "bg-table-out-of-service text-muted ",

@@ -219,13 +219,13 @@ function BillingHistoryPreview({
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg font-bold">
           <CreditCard className="h-4 w-4 text-primary" />
-          <span>{UI_TEXT.ORDER.OVERVIEW.BILLING.TITLE}</span>
+          <span>{UI_TEXT.ORDER.OVERVIEW.BILLING_HISTORY.TITLE}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="min-h-0 flex-1 overflow-y-auto space-y-3">
         {loading ? (
           <div className="flex h-full min-h-[160px] items-center justify-center text-sm text-muted-foreground">
-            <span>{UI_TEXT.ORDER.OVERVIEW.BILLING.LOADING}</span>
+            <span>{UI_TEXT.ORDER.OVERVIEW.BILLING_HISTORY.LOADING}</span>
           </div>
         ) : recentRecords.length > 0 ? (
           recentRecords.map((record) => (
@@ -246,14 +246,14 @@ function BillingHistoryPreview({
                   variant="outline"
                   className={cn("table-pill border-0", getPaymentMethodClass(record.paymentMethod))}
                 >
-                  {record.paymentMethod || UI_TEXT.ORDER.OVERVIEW.BILLING.UNKNOWN_METHOD}
+                  {record.paymentMethod || UI_TEXT.ORDER.OVERVIEW.BILLING_HISTORY.UNKNOWN_METHOD}
                 </Badge>
               </div>
             </div>
           ))
         ) : (
           <div className="flex h-full min-h-[160px] items-center justify-center rounded-xl border border-dashed text-sm text-muted-foreground">
-            <span>{UI_TEXT.ORDER.OVERVIEW.BILLING.EMPTY}</span>
+            <span>{UI_TEXT.ORDER.OVERVIEW.BILLING_HISTORY.EMPTY}</span>
           </div>
         )}
       </CardContent>
