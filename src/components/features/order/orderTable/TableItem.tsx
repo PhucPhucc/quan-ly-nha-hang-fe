@@ -163,8 +163,6 @@ const getStatusColor = (status: OrderStatus) => {
       return "border-table-serving/60 bg-table-serving/20";
     case OrderStatus.Reserved:
       return "border-table-reserved/60 bg-table-reserved/20";
-    case OrderStatus.Cleaning:
-      return "border-table-cleaning/60 bg-table-cleaning/20";
     case OrderStatus.OutOfService:
       return "border-table-out-of-service/60 bg-table-out-of-service/20";
     default:
@@ -180,8 +178,6 @@ const getFootColor = (status: OrderStatus) => {
       return "bg-table-serving/50";
     case OrderStatus.Reserved:
       return "bg-table-reserved/50";
-    case OrderStatus.Cleaning:
-      return "bg-table-cleaning/50";
     case OrderStatus.OutOfService:
       return "bg-table-out-of-service/50";
     default:

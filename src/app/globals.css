@@ -75,7 +75,6 @@
   --color-table-empty: var(--table-empty);
   --color-table-reserved: var(--table-reserved);
   --color-table-serving: var(--table-serving);
-  --color-table-cleaning: var(--table-cleaning);
 
   --color-table-available: var(--table-available);
   --color-table-reserved: var(--table-reserved);
@@ -323,7 +322,6 @@
   /* Vàng sậm hơn */
   --table-serving: oklch(0.6 0.18 145);
   /* Xanh lá đậm hơn */
-  --table-cleaning: oklch(0.55 0.15 40);
   /* Đỏ nâu/Cam thay vì đỏ rực để đỡ chói */
   /* Table status colors (5 trạng thái) */
   --table-available: oklch(0.75 0.15 145);
@@ -332,7 +330,6 @@
   /* Vàng — đặt trước */
   --table-occupied: oklch(0.6 0.18 35);
   /* Cam đỏ — đang dùng */
-  --table-cleaning: oklch(0.7 0.1 240);
   /* Xanh dương — dọn dẹp */
   --table-out-of-service: oklch(0.6 0.01 260);
 

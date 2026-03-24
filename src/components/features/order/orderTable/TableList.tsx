@@ -227,8 +227,6 @@ const getTableInfo = (table: ApiTable, order?: Order): Omit<TableCard, "label" |
       };
     case OrderStatus.Reserved:
       return { status: OrderStatus.Reserved, people: table.capacity };
-    case OrderStatus.Cleaning:
-      return { status: OrderStatus.Cleaning, people: 0 };
     case OrderStatus.Ready:
     default:
       return { status: OrderStatus.Ready, people: 0 };
@@ -241,8 +239,6 @@ const mapTableStatus = (status: TableStatus): OrderStatus => {
       return OrderStatus.Serving;
     case TableStatus.Reserved:
       return OrderStatus.Reserved;
-    case TableStatus.Cleaning:
-      return OrderStatus.Cleaning;
     case TableStatus.OutOfService:
       return OrderStatus.OutOfService;
     case TableStatus.Available:

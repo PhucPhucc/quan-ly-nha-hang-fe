@@ -20,7 +20,6 @@ export enum OrderStatus {
   Merged = "Merged",
   Ready = "Ready",
   Reserved = "Reserved",
-  Cleaning = "Cleaning",
   OutOfService = "OutOfService",
 }
 

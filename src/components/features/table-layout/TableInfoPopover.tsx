@@ -15,7 +15,6 @@ const statusLabel: Record<TableStatus, string> = {
   [TableStatus.Available]: "Trống",
   [TableStatus.Reserved]: "Đặt trước",
   [TableStatus.Occupied]: "Đang dùng",
-  [TableStatus.Cleaning]: "Đang dọn",
   [TableStatus.OutOfService]: "Tạm ngưng",
 };
 
