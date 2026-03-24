@@ -16,6 +16,7 @@ import {
   Package,
   SquareMenu,
   Table,
+  Tag,
   Users,
   UtensilsCrossed,
 } from "lucide-react";
@@ -109,6 +110,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 title: "Danh sách đơn",
                 url: "/manager/order/list",
                 icon: ClipboardList,
+              },
+              {
+                title: UI_TEXT.SIDE_BAR.VOUCHER,
+                url: "/manager/voucher",
+                icon: Tag,
               },
               {
                 title: "Lịch sử thanh toán",

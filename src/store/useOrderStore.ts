@@ -6,7 +6,6 @@ import { orderService, PaginationParams } from "@/services/orderService";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 
-/** Area ID string or "takeaway" */
 export type ActiveTab = string;
 
 const TAKEAWAY_TAB = "takeaway";
@@ -14,7 +13,6 @@ const TAKEAWAY_TAB = "takeaway";
 export type OrderActiveView = "order" | "menu";
 
 export interface OrderBoardState {
-  // data
   orders: Order[];
   activeOrderDetails: Order | null;
   loading: boolean;
@@ -41,6 +39,7 @@ export interface OrderBoardState {
   setDateRange: (d?: DateRange) => void;
   setSortOrder: (s: string) => void;
   resetFilters: () => void;
+  updateActiveOrderDiscount: (discount: number, voucherCode?: string) => void;
 
   // order mutations
   addOrder: (order: Order) => void;
@@ -191,6 +190,20 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         selectedStatuses: [],
       });
       get().fetchOrders();
+    },
+
+    updateActiveOrderDiscount: (discount: number, voucherCode?: string) => {
+      set((state) => {
+        if (!state.activeOrderDetails) return state;
+        return {
+          activeOrderDetails: {
+            ...state.activeOrderDetails,
+            discountAmount: discount,
+            voucherCode: voucherCode || undefined,
+            appliedVoucherCode: voucherCode || undefined,
+          },
+        };
+      });
     },
 
     isTakeawayTab: () => get().activeTab === TAKEAWAY_TAB,

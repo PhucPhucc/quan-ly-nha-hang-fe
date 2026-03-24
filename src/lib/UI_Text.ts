@@ -13,6 +13,7 @@ import { ORDER } from "../constants/ui_text/order";
 import { RESERVATION } from "../constants/ui_text/reservation";
 import { SALES_ANALYTICS } from "../constants/ui_text/salesAnalytics";
 import { TABLE } from "../constants/ui_text/table";
+import { VOUCHER } from "../constants/ui_text/voucher";
 export const UI_TEXT = {
   COMMON,
   SIDE_BAR,
@@ -36,4 +37,5 @@ export const UI_TEXT = {
   SALES_ANALYTICS,
   INVENTORY,
   PREFERENCE,
+  VOUCHER,
 };
