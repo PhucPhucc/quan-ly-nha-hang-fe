@@ -13,14 +13,15 @@ export type ChangeItem = {
   newValue: string;
 };
 
+// Chỉ ẩn các trường thực sự mang tính quản trị nội bộ dư thừa
 const HIDDEN_CHANGE_KEYS = new Set([
   "UpdatedAt",
   "UpdatedBy",
   "CreatedAt",
   "CreatedBy",
   "DeletedAt",
-  "IsRevoked",
-  "Expires",
+  "IsRevoked", // Ẩn lại vì đây là trường kỹ thuật
+  "Expires", // Ẩn lại vì đây là trường kỹ thuật
 ]);
 
 export function toIsoDateStart(value: string) {
@@ -55,6 +56,33 @@ export function formatDateOnly(value: string) {
   return date.toLocaleDateString("vi-VN");
 }
 
+function getStringField(state: ParsedState, keys: string[]) {
+  for (const key of keys) {
+    const value = state[key];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return null;
+}
+
+function formatTableSubjectValue(value: string) {
+  const cleaned = value.replace(/[{}"']/g, "").trim();
+  if (!cleaned) return null;
+
+  if (/^\d+$/.test(cleaned)) {
+    return cleaned.replace(/^0+(?=\d)/, "") || "0";
+  }
+
+  const compact = cleaned.replace(/-/g, "");
+  if (/^[0-9a-fA-F]+$/.test(compact) && compact.length >= 4) {
+    return compact.slice(-4);
+  }
+
+  return cleaned;
+}
+
 export function formatScalarValue(value: unknown, key?: string) {
   if (value === null || value === undefined || value === "") {
     return UI_TEXT.AUDIT_LOG.MESSAGES.NULL_VALUE;
@@ -66,6 +94,15 @@ export function formatScalarValue(value: unknown, key?: string) {
   if (typeof value === "string") {
     if (key === "ReservationDate") return formatDateOnly(value);
     if (key === "ReservationTime") return value.slice(0, 5);
+
+    // Thu gọn các chuỗi dài (Token/ID) để hiển thị đẹp hơn
+    if (
+      value.length > 50 &&
+      (key?.toLowerCase().includes("token") || key?.toLowerCase().includes("id"))
+    ) {
+      return `${value.slice(0, 8)}...${value.slice(-8)}`;
+    }
+
     if (value.length > 80) return `${value.slice(0, 80)}…`;
     return value;
   }
@@ -175,9 +212,25 @@ export function getReservationSubject(state: ParsedState, fallbackId: string) {
 }
 
 export function getTableSubject(state: ParsedState, fallbackId: string) {
-  const tableNumber = typeof state.TableNumber === "string" ? state.TableNumber : null;
-  if (tableNumber) return UI_TEXT.AUDIT_LOG.SUBJECTS.TABLE_NUM.replace("{number}", tableNumber);
-  return UI_TEXT.AUDIT_LOG.SUBJECTS.TABLE_ID.replace("{id}", fallbackId.slice(0, 8));
+  const tableNumberValue =
+    typeof state.TableNumber === "string" || typeof state.TableNumber === "number"
+      ? String(state.TableNumber)
+      : getStringField(state, ["tableNumber"]);
+
+  if (tableNumberValue) {
+    const formattedTableNumber = formatTableSubjectValue(tableNumberValue);
+    if (formattedTableNumber) {
+      return UI_TEXT.AUDIT_LOG.SUBJECTS.TABLE_NUM.replace("{number}", formattedTableNumber);
+    }
+  }
+
+  const tableCode = getStringField(state, ["TableCode", "tableCode"]);
+  if (tableCode) return `bàn ${tableCode}`;
+
+  const cleaned = fallbackId.replace(/[{}"']/g, "").trim();
+  const formattedFallback = formatTableSubjectValue(cleaned) || "0000";
+
+  return UI_TEXT.AUDIT_LOG.SUBJECTS.TABLE_ID.replace("{id}", formattedFallback);
 }
 
 export function getPrimaryState(log: SystemAuditLog) {
@@ -232,13 +285,19 @@ export function getChangeItems(log: SystemAuditLog): ChangeItem[] {
 
   const shouldHideKey = (key: string) => {
     const lower = key.toLowerCase();
+    // Ẩn mã định danh nội bộ
     if (lower === "id" || lower === "orderid" || lower === "logid" || lower === "tableid") {
       return true;
     }
-    if (lower.endsWith("id")) return true;
-    if (lower.includes("token")) return true;
-    if (lower.includes("revoked")) return true;
-    if (lower.includes("expire")) return true;
+    // Ẩn thông tin kỹ thuật sâu
+    if (
+      lower.endsWith("id") ||
+      lower.includes("token") ||
+      lower.includes("revoked") ||
+      lower.includes("expire")
+    ) {
+      return true;
+    }
     return false;
   };
 
@@ -258,7 +317,6 @@ export function getChangeItems(log: SystemAuditLog): ChangeItem[] {
     .filter((item) => item.oldValue !== item.newValue);
 }
 
-export function getStatusMessage(_log: SystemAuditLog) {
-  // Ẩn dòng chi tiết thay đổi ở list view để tránh lộ dữ liệu kỹ thuật
+export function getStatusMessage() {
   return "";
 }

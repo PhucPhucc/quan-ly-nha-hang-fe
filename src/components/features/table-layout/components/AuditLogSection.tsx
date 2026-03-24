@@ -43,18 +43,61 @@ function getActionLabel(action: string) {
   }
 }
 
-function getLogSummary(log: SystemAuditLog) {
+function getEntityLabel(entityId: string) {
   try {
-    const actor = log.actorInfo
-      ? getActorLabel(log.actorInfo)
-      : UI_TEXT.TABLE.OVERVIEW.AUDIT.ACTOR_SYSTEM;
+    const parsed = JSON.parse(entityId);
+    if (parsed && typeof parsed === "object") {
+      const candidates = [
+        parsed.tableCode,
+        parsed.TableCode,
+        parsed.tableId,
+        parsed.TableId,
+        parsed.id,
+        parsed.Id,
+      ].filter((v): v is string => typeof v === "string" && v.length > 0);
+
+      if (candidates.length > 0) return candidates[0];
+
+      const firstValue = Object.values(parsed)[0];
+      if (typeof firstValue === "string" && firstValue.length > 0) return firstValue;
+    }
+  } catch {
+    // fall through to cleanup
+  }
+
+  const cleaned = entityId.replace(/[{}"']/g, "").trim();
+
+  const hyphenless = cleaned.replace(/-/g, "");
+  if (/^[0-9a-fA-F]+$/.test(hyphenless) && hyphenless.length >= 4) {
+    const last4 = hyphenless.slice(-4);
+    return last4 || "0000";
+  }
+
+  const uuidLike = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  if (uuidLike.test(cleaned)) {
+    const compact = cleaned.replace(/-/g, "");
+    const last4 = compact.slice(-4);
+    return last4 || "0000";
+  }
+
+  if (cleaned.length > 12) return `${cleaned.slice(0, 6)}…${cleaned.slice(-4)}`;
+  return cleaned || UI_TEXT.TABLE.OVERVIEW.AUDIT.ACTOR_SYSTEM;
+}
+
+function getLogSummary(log: SystemAuditLog) {
+  const actor = log.actorInfo
+    ? getActorLabel(log.actorInfo)
+    : UI_TEXT.TABLE.OVERVIEW.AUDIT.ACTOR_SYSTEM;
+  const entityLabel = getEntityLabel(log.entityId);
+
+  try {
     return UI_TEXT.TABLE.OVERVIEW.AUDIT.LOG_SUMMARY(
       actor,
       getActionLabel(log.action).toLowerCase(),
-      log.entityId.slice(0, 8)
+      entityLabel
     );
   } catch {
-    return UI_TEXT.TABLE.OVERVIEW.AUDIT.LOG_SUMMARY_GENERIC(log.action, log.entityId.slice(0, 8));
+    return UI_TEXT.TABLE.OVERVIEW.AUDIT.LOG_SUMMARY_GENERIC(log.action, entityLabel);
   }
 }
 

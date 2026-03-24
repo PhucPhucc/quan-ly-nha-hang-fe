@@ -97,6 +97,27 @@ export interface SplitOrderResponse {
   createdNewOrder: boolean;
 }
 
+export interface OrderAuditLogResponse {
+  logId: string;
+  createdAt: string;
+  formattedTime: string;
+  orderId: string;
+  orderCode: string;
+  action: string;
+  actionName: string;
+  employeeId: string;
+  actorName: string;
+  actorRole: string;
+  oldValue?: string | null;
+  newValue?: string | null;
+  changeReason?: string | null;
+}
+
+export interface OrderAuditLogsParams {
+  pageNumber?: number;
+  pageSize?: number;
+}
+
 export const orderService = {
   createOrder: (data: CreateOrderRequest): Promise<ApiResponse<Order>> =>
     apiFetch<Order>("/orders", {
@@ -105,6 +126,20 @@ export const orderService = {
     }),
 
   getOrderById: (id: string): Promise<ApiResponse<Order>> => apiFetch<Order>(`/orders/${id}`),
+
+  getOrderAuditLogs: (
+    id: string,
+    params: OrderAuditLogsParams = {}
+  ): Promise<ApiResponse<PaginationResult<OrderAuditLogResponse>>> => {
+    const queryParams = new URLSearchParams();
+    if (params.pageNumber) queryParams.append("pageNumber", params.pageNumber.toString());
+    if (params.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+
+    const query = queryParams.toString();
+    return apiFetch<PaginationResult<OrderAuditLogResponse>>(
+      `/orders/${id}/audit-logs${query ? `?${query}` : ""}`
+    );
+  },
 
   getOrders: (params: PaginationParams): Promise<ApiResponse<PaginationResult<Order>>> => {
     const queryParams = new URLSearchParams();

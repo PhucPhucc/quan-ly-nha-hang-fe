@@ -44,109 +44,133 @@ export function JsonDiffViewer({ oldValue, newValue }: JsonDiffViewerProps) {
 
   if (!oldValue && !newValue) {
     return (
-      <div className="flex h-20 items-center justify-center rounded-xl border border-dashed border-border/40 text-xs text-muted-foreground/40 font-bold uppercase tracking-widest bg-muted/5">
-        {UI_TEXT.AUDIT_LOG.NO_CHANGES}
+      <div className="flex h-32 items-center justify-center rounded-2xl border border-dashed border-border bg-muted/20">
+        <div className="text-center space-y-1">
+          <p className="text-xs font-black text-muted-foreground/40 uppercase tracking-widest">
+            {UI_TEXT.AUDIT_LOG.NO_CHANGES}
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="overflow-hidden rounded-xl border bg-card/60 shadow-sm border-border/30 transition-all hover:shadow-md">
-        <div className="grid grid-cols-12 border-b bg-muted/20 px-4 py-2.5 text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 lg:grid-cols-10">
-          <div className="col-span-4 lg:col-span-3">{UI_TEXT.AUDIT_LOG.METADATA_LABEL}</div>
-          <div className="col-span-4 lg:col-span-3.5 px-3 border-l border-border/10">
-            {UI_TEXT.AUDIT_LOG.BEFORE_CHANGE}
-          </div>
-          <div className="col-span-4 lg:col-span-3.5 px-3 border-l border-border/10">
-            {UI_TEXT.AUDIT_LOG.AFTER_CHANGE}
-          </div>
-        </div>
-
-        <div className="divide-y divide-border/10">
-          {diff.length === 0 ? (
-            <div className="p-8 text-center text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
-              {UI_TEXT.AUDIT_LOG.NO_CHANGES}
-            </div>
-          ) : (
-            diff.map((item) => (
-              <div
-                key={item.key}
-                className={cn(
-                  "grid grid-cols-12 px-4 py-2.5 text-[11px] transition-colors hover:bg-muted/10 lg:grid-cols-10",
-                  item.isChanged ? "bg-primary/5" : ""
-                )}
-              >
-                <div className="col-span-4 flex items-start gap-1.5 lg:col-span-3">
-                  <span className="truncate font-black text-foreground/70 uppercase tracking-tighter">
-                    {item.key}
-                  </span>
-                  {item.isChanged && (
-                    <Badge className="h-3.5 pointer-events-none scale-90 border-none bg-primary/20 text-primary px-1 text-[8px] font-black uppercase tracking-tighter leading-none">
-                      {UI_TEXT.AUDIT_LOG.MODIFIED_LABEL}
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="wrap-break-word col-span-4 px-3 font-mono text-[10px] text-muted-foreground/60 lg:col-span-3.5 border-l border-border/10">
-                  {item.oldValue === undefined || item.oldValue === null ? (
-                    <span className="opacity-20 font-black">{UI_TEXT.COMMON.NULL}</span>
-                  ) : typeof item.oldValue === "object" ? (
-                    <pre className="whitespace-pre-wrap leading-tight text-info/60">
-                      {JSON.stringify(item.oldValue, null, 1)}
-                    </pre>
-                  ) : (
-                    <span className="break-all">{String(item.oldValue)}</span>
-                  )}
-                </div>
-
-                <div
-                  className={cn(
-                    "wrap-break-word col-span-4 px-3 font-mono text-[10px] lg:col-span-3.5 border-l border-border/10",
-                    item.isChanged ? "font-black text-primary" : "text-muted-foreground/60"
-                  )}
-                >
-                  {item.newValue === undefined || item.newValue === null ? (
-                    <span className="opacity-20 font-black">{UI_TEXT.COMMON.NULL}</span>
-                  ) : typeof item.newValue === "object" ? (
-                    <pre className="whitespace-pre-wrap leading-tight shadow-none border-none">
-                      {JSON.stringify(item.newValue, null, 1)}
-                    </pre>
-                  ) : (
-                    <span
-                      className={cn(
-                        "break-all",
-                        item.isChanged ? "decoration-primary/40 underline-offset-2" : ""
-                      )}
-                    >
-                      {String(item.newValue)}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
+    <div className="divide-y divide-border/60 flex flex-col">
+      {/* Header của bảng kỹ thuật */}
+      <div className="grid grid-cols-12 bg-secondary/50 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+        <div className="col-span-4 lg:col-span-3">{UI_TEXT.AUDIT_LOG.METADATA_LABEL}</div>
+        <div className="col-span-8 lg:col-span-9 grid grid-cols-2 gap-4 px-4">
+          <div className="border-l border-border pl-4">{UI_TEXT.AUDIT_LOG.BEFORE_CHANGE}</div>
+          <div className="border-l border-border pl-4">{UI_TEXT.AUDIT_LOG.AFTER_CHANGE}</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <h4 className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 ml-1.5">
-            <div className="h-1 w-1 rounded-full bg-slate-200" />
-            {UI_TEXT.AUDIT_LOG.RAW_STATE_BEFORE}
-          </h4>
-          <pre className="max-h-[220px] overflow-auto rounded-xl border bg-muted/10 p-4 font-mono text-[9px] leading-tight shadow-inner border-border/10 text-muted-foreground/60">
-            {oldValue ? JSON.stringify(safeParse(oldValue), null, 2) : UI_TEXT.COMMON.NULL}
-          </pre>
+      <div className="divide-y divide-border/30 bg-card">
+        {diff.map((item) => (
+          <div
+            key={item.key}
+            className={cn(
+              "grid grid-cols-12 px-4 py-4 transition-colors hover:bg-muted/30",
+              item.isChanged ? "bg-primary/5" : ""
+            )}
+          >
+            {/* Tên trường dữ liệu */}
+            <div className="col-span-4 lg:col-span-3 pr-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-[11px] font-black text-muted-foreground uppercase tracking-tighter break-all">
+                  {item.key}
+                </span>
+                {item.isChanged && (
+                  <Badge
+                    variant="outline"
+                    className="h-4 border-none bg-warning/20 text-warning-foreground text-[8px] font-black uppercase tracking-tighter px-1.5 leading-none"
+                  >
+                    {UI_TEXT.AUDIT_LOG.MODIFIED_LABEL}
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {/* Nội dung thay đổi dạng Side-by-Side */}
+            <div className="col-span-8 lg:col-span-9 grid grid-cols-2 gap-4 px-4 h-full">
+              {/* Giá trị cũ */}
+              <div
+                className={cn(
+                  "font-mono text-[11px] leading-relaxed break-all border-l border-border/50 pl-4",
+                  item.isChanged
+                    ? "text-destructive line-through decoration-destructive/30"
+                    : "text-muted-foreground/60"
+                )}
+              >
+                {item.oldValue === undefined || item.oldValue === null ? (
+                  <span className="italic opacity-30 font-bold lowercase tracking-normal">
+                    {UI_TEXT.COMMON.NULL}
+                  </span>
+                ) : typeof item.oldValue === "object" ? (
+                  <pre className="whitespace-pre-wrap text-[10px] bg-muted/30 p-2 rounded-lg border border-border/50">
+                    {JSON.stringify(item.oldValue, null, 1)}
+                  </pre>
+                ) : (
+                  String(item.oldValue)
+                )}
+              </div>
+
+              {/* Giá trị mới */}
+              <div
+                className={cn(
+                  "font-mono text-[11px] leading-relaxed break-all border-l border-border/50 pl-4",
+                  item.isChanged ? "text-success font-bold" : "text-muted-foreground"
+                )}
+              >
+                {item.newValue === undefined || item.newValue === null ? (
+                  <span className="italic opacity-30 font-bold lowercase tracking-normal">
+                    {UI_TEXT.COMMON.NULL}
+                  </span>
+                ) : typeof item.newValue === "object" ? (
+                  <pre className="whitespace-pre-wrap text-[10px] bg-muted/30 p-2 rounded-lg border border-border/50 text-success">
+                    {JSON.stringify(item.newValue, null, 1)}
+                  </pre>
+                ) : (
+                  String(item.newValue)
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Raw JSON Views ở dưới cùng - Thiết kế dạng Terminal (Làm sáng hơn để dễ đọc) */}
+      <div className="bg-slate-900 border-t border-slate-800 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1.5 px-3">
+              <div className="h-2 w-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
+            </div>
+            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+              {UI_TEXT.AUDIT_LOG.RAW_STATE_BEFORE}
+            </h4>
+          </div>
+          <div className="bg-slate-950/50 rounded-xl border border-slate-800 p-4 font-mono text-[10px] text-rose-300 overflow-auto max-h-[400px] shadow-inner custom-scrollbar italic leading-relaxed">
+            <pre className="whitespace-pre">
+              {oldValue ? JSON.stringify(safeParse(oldValue), null, 2) : UI_TEXT.COMMON.NULL}
+            </pre>
+          </div>
         </div>
-        <div className="space-y-2">
-          <h4 className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 ml-1.5">
-            <div className="h-1 w-1 rounded-full bg-primary/30" />
-            {UI_TEXT.AUDIT_LOG.RAW_STATE_AFTER}
-          </h4>
-          <pre className="max-h-[220px] overflow-auto rounded-xl border bg-muted/10 p-4 font-mono text-[9px] leading-tight shadow-inner border-border/10 text-muted-foreground/60">
-            {newValue ? JSON.stringify(safeParse(newValue), null, 2) : UI_TEXT.COMMON.NULL}
-          </pre>
+
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1.5 px-3">
+              <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+            </div>
+            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+              {UI_TEXT.AUDIT_LOG.RAW_STATE_AFTER}
+            </h4>
+          </div>
+          <div className="bg-slate-950/50 rounded-xl border border-slate-800 p-4 font-mono text-[10px] text-emerald-300 overflow-auto max-h-[400px] shadow-inner custom-scrollbar italic leading-relaxed">
+            <pre className="whitespace-pre">
+              {newValue ? JSON.stringify(safeParse(newValue), null, 2) : UI_TEXT.COMMON.NULL}
+            </pre>
+          </div>
         </div>
       </div>
     </div>

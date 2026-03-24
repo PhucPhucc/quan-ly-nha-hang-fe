@@ -1,14 +1,11 @@
 "use client";
 
-import { Eye, History, UserRound } from "lucide-react";
+import { Eye, History } from "lucide-react";
 
 import {
   INVENTORY_TABLE_CONTAINER_CLASS,
   INVENTORY_TABLE_SURFACE_CLASS,
-  INVENTORY_TH_CLASS,
   INVENTORY_THEAD_CLASS,
-  INVENTORY_THEAD_ROW_CLASS,
-  INVENTORY_TROW_CLASS,
 } from "@/components/features/inventory/components/inventoryStyles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,11 +38,18 @@ interface AuditLogTableProps {
   loading: boolean;
   error: string | null;
   onOpenDetails: (log: SystemAuditLog) => void;
+  noSurface?: boolean;
 }
 
-export function AuditLogTable({ logs, loading, error, onOpenDetails }: AuditLogTableProps) {
+export function AuditLogTable({
+  logs,
+  loading,
+  error,
+  onOpenDetails,
+  noSurface = false,
+}: AuditLogTableProps) {
   return (
-    <div className={cn(INVENTORY_TABLE_SURFACE_CLASS, "flex flex-col min-h-0")}>
+    <div className={cn(!noSurface && INVENTORY_TABLE_SURFACE_CLASS, "flex flex-col min-h-0")}>
       {loading ? (
         <div className="space-y-2 p-4">
           {Array.from({ length: 8 }).map((_, index) => (
@@ -58,29 +62,43 @@ export function AuditLogTable({ logs, loading, error, onOpenDetails }: AuditLogT
             containerClassName={cn(
               INVENTORY_TABLE_CONTAINER_CLASS,
               "max-h-[520px] overflow-auto",
-              "[&_td]:align-top [&_td]:py-3 [&_td]:text-sm [&_td]:text-slate-800",
-              "[&_th]:text-slate-600",
-              "[&_p]:text-slate-700"
+              "[&_td]:align-top [&_td]:py-4 [&_td]:text-sm",
+              "custom-scrollbar"
             )}
           >
-            <TableHeader className={INVENTORY_THEAD_CLASS}>
-              <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
-                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.TIME}</TableHead>
-                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.ENTITY}</TableHead>
-                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.ACTION}</TableHead>
-                <TableHead className={INVENTORY_TH_CLASS}>
-                  {UI_TEXT.AUDIT_LOG.CHANGE_DETAILS}
+            <TableHeader className={cn(INVENTORY_THEAD_CLASS, "bg-secondary/50 sticky top-0 z-20")}>
+              <TableRow className="hover:bg-transparent border-b border-border/50">
+                <TableHead className="w-[180px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {UI_TEXT.AUDIT_LOG.TIME}
                 </TableHead>
-                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.ACTOR}</TableHead>
-                <TableHead className={cn(INVENTORY_TH_CLASS, "text-right")}>
+                <TableHead className="w-[140px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {UI_TEXT.AUDIT_LOG.ACTION}
+                </TableHead>
+                <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {UI_TEXT.AUDIT_LOG.ENTITY} {UI_TEXT.COMMON.SLASH}{" "}
+                  {UI_TEXT.AUDIT_LOG.METADATA_LABEL}
+                </TableHead>
+                <TableHead className="w-[200px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {UI_TEXT.AUDIT_LOG.ACTOR}
+                </TableHead>
+                <TableHead className="w-[100px] text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right border-l border-border/10">
                   {UI_TEXT.BUTTON.DETAIL}
                 </TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className="divide-y divide-slate-200">
-              {!error && logs.length === 0 ? (
+            <TableBody className="divide-y divide-border/30">
+              {error ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-40 text-center">
+                  <TableCell
+                    colSpan={5}
+                    className="h-32 text-center text-destructive font-medium bg-destructive/5"
+                  >
+                    {error}
+                  </TableCell>
+                </TableRow>
+              ) : logs.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-64 text-center">
                     <EmptyState
                       icon={History}
                       title={UI_TEXT.AUDIT_LOG.EMPTY}
@@ -88,74 +106,59 @@ export function AuditLogTable({ logs, loading, error, onOpenDetails }: AuditLogT
                     />
                   </TableCell>
                 </TableRow>
-              ) : null}
-
-              {error ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-28 text-center text-sm text-destructive">
-                    {error}
-                  </TableCell>
-                </TableRow>
-              ) : null}
-
-              {!error &&
+              ) : (
                 logs.map((log) => (
                   <TableRow
                     key={log.logId}
-                    className={cn(
-                      INVENTORY_TROW_CLASS,
-                      "hover:bg-slate-50/80 transition-colors",
-                      "align-top"
-                    )}
+                    className="group border-b border-border/20 hover:bg-muted/30 transition-all duration-300"
                   >
-                    <TableCell className="min-w-[160px] text-sm text-slate-600 align-top">
-                      <div className="font-medium text-slate-900">
+                    <TableCell>
+                      <span className="font-bold text-foreground text-sm tracking-tight">
                         {formatDateTime(log.createdAt)}
-                      </div>
+                      </span>
                     </TableCell>
-
-                    <TableCell className="min-w-[120px] align-top">
-                      <div className="flex items-center gap-2">
-                        <Badge variant={getActionVariant(log.action)} className="w-fit">
-                          {getActionLabel(log.action)}
-                        </Badge>
-                        <span className="font-semibold text-slate-900">
+                    <TableCell>
+                      <Badge
+                        variant={getActionVariant(log.action)}
+                        className="px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-full shadow-sm"
+                      >
+                        {getActionLabel(log.action)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1.5 max-w-[400px]">
+                        <span className="font-bold text-foreground text-sm leading-tight tracking-tight">
+                          {getSummary(log)}
+                        </span>
+                        <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest">
                           {getEntityLabel(log.entityName)}
                         </span>
                       </div>
                     </TableCell>
-
-                    <TableCell className="min-w-[340px] max-w-[520px] whitespace-normal align-top">
-                      <p className="font-medium text-slate-900 leading-6">{getSummary(log)}</p>
-                    </TableCell>
-
-                    <TableCell className="min-w-[180px] align-top">
-                      <div className="flex items-start gap-2">
-                        <UserRound className="mt-0.5 h-4 w-4 text-slate-400" />
-                        <div className="space-y-0.5">
-                          <p className="font-medium text-slate-900">
-                            {getActorLabel(log.actorInfo)}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {getActorSubLabel(log.actorInfo) ??
-                              UI_TEXT.AUDIT_LOG.ACTOR_INFO.INTERNAL}
-                          </p>
-                        </div>
+                    <TableCell>
+                      <div className="space-y-0.5">
+                        <p className="font-bold text-foreground text-sm leading-none">
+                          {getActorLabel(log.actorInfo)}
+                        </p>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mt-1">
+                          {getActorSubLabel(log.actorInfo) ?? UI_TEXT.AUDIT_LOG.ACTOR_INFO.INTERNAL}
+                        </p>
                       </div>
                     </TableCell>
-
-                    <TableCell className="text-right align-top min-w-[120px]">
+                    <TableCell className="text-right border-l border-border/10">
                       <Button
-                        variant="outline"
-                        className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 gap-2 text-primary hover:text-primary-hover hover:bg-primary/5 px-2 -mr-2 font-black text-[10px] uppercase tracking-widest rounded-full transition-all active:scale-[0.96]"
                         onClick={() => onOpenDetails(log)}
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-3.5 w-3.5" />
                         {UI_TEXT.BUTTON.DETAIL}
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

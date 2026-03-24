@@ -3,8 +3,9 @@
 import { format } from "date-fns";
 import { CalendarClock, FileText, Loader2, UserCircle2 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
+import OrderAuditLogPanel from "@/components/features/order/manager/OrderAuditLogPanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,20 +59,23 @@ export default function OrderDetailPage({ orderId }: { orderId: string }) {
   }, [orderId]);
 
   const current = detail;
-
-  const timeline = useMemo(() => {
-    if (!current) return [];
-    const rows = [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_CREATE, value: fmt(current.createdAt) }];
-    if (current.updatedAt)
-      rows.push({ label: UI_TEXT.ORDER.DETAIL.TIMELINE_UPDATE, value: fmt(current.updatedAt) });
-    if (current.paidAt)
-      rows.push({ label: UI_TEXT.ORDER.DETAIL.TIMELINE_PAID, value: fmt(current.paidAt) });
-    if (current.completedAt)
-      rows.push({ label: UI_TEXT.ORDER.DETAIL.TIMELINE_COMPLETE, value: fmt(current.completedAt) });
-    if (current.cancelledAt)
-      rows.push({ label: UI_TEXT.ORDER.DETAIL.TIMELINE_CANCEL, value: fmt(current.cancelledAt) });
-    return rows;
-  }, [current]);
+  const timeline = current
+    ? [
+        { label: UI_TEXT.ORDER.DETAIL.TIMELINE_CREATE, value: fmt(current.createdAt) },
+        ...(current.updatedAt
+          ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_UPDATE, value: fmt(current.updatedAt) }]
+          : []),
+        ...(current.paidAt
+          ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_PAID, value: fmt(current.paidAt) }]
+          : []),
+        ...(current.completedAt
+          ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_COMPLETE, value: fmt(current.completedAt) }]
+          : []),
+        ...(current.cancelledAt
+          ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_CANCEL, value: fmt(current.cancelledAt) }]
+          : []),
+      ]
+    : [];
 
   const itemTotal = (current?.orderItems ?? []).reduce(
     (sum, item) => sum + item.quantity * item.unitPriceSnapshot,
@@ -338,52 +342,11 @@ export default function OrderDetailPage({ orderId }: { orderId: string }) {
           </TabsContent>
 
           <TabsContent value="audit" className="m-0">
-            <div className="grid gap-4 xl:grid-cols-2">
-              <Card className="p-5">
-                <h3 className="font-bold text-table-text-strong">
-                  {UI_TEXT.ORDER.DETAIL.AUDIT_TIMELINE}
-                </h3>
-                <Separator className="my-4" />
-                <div className="space-y-3">
-                  {timeline.map((row) => (
-                    <div
-                      key={row.label}
-                      className="flex items-center justify-between rounded-xl border px-4 py-3"
-                    >
-                      <span className="font-medium text-table-text-strong">{row.label}</span>
-                      <span className="text-sm text-muted-foreground">{row.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card className="border-dashed p-5">
-                <h3 className="font-bold text-table-text-strong">
-                  {UI_TEXT.ORDER.DETAIL.AUDIT_BE_TITLE}
-                </h3>
-                <Separator className="my-4" />
-                <p className="text-sm text-muted-foreground">
-                  {UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {[
-                    "CREATE_ORDER",
-                    "SUBMIT_ORDER",
-                    "ADD_ORDER_ITEM",
-                    "CANCEL_ORDER",
-                    "CHECKOUT_ORDER",
-                  ].map((action) => (
-                    <Badge
-                      key={action}
-                      variant="outline"
-                      className="table-pill table-pill-neutral border-0"
-                    >
-                      {action}
-                    </Badge>
-                  ))}
-                </div>
-              </Card>
-            </div>
+            <OrderAuditLogPanel
+              orderId={current.orderId}
+              title={UI_TEXT.ORDER.DETAIL.AUDIT_TIMELINE}
+              description={UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC}
+            />
           </TabsContent>
         </Tabs>
       )}
