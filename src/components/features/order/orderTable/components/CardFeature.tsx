@@ -1,3 +1,4 @@
+import { TabsTrigger } from "@radix-ui/react-tabs";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -14,8 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { billingService } from "@/services/billingService";
 import { orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
@@ -36,7 +38,7 @@ type SplitItem = {
   note?: string;
 };
 
-type SplitDestinationMode = "existing-order" | "new-table";
+type SplitDestinationMode = "same-order" | "existing-order" | "new-table";
 
 export default function CardFeature({
   feature,
@@ -52,7 +54,6 @@ export default function CardFeature({
   const selectedAreaId = useTableStore((s) => s.selectedAreaId);
   const fetchTablesByArea = useTableStore((s) => s.fetchTablesByArea);
   const tables = useTableStore((s) => s.tables);
-
   const sourceOrder = orders.find((o) => o.orderId === table.orderId);
   const candidateTables = tables.filter((t) => t.tableId !== table.tableId);
   const servingTargetOrders = candidateTables
@@ -69,15 +70,12 @@ export default function CardFeature({
       };
     })
     .filter(Boolean);
-  const availableTargetTables = candidateTables.filter(
-    (candidateTable) => candidateTable.status === TableStatus.Available
-  );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingSplitItems, setLoadingSplitItems] = useState(false);
   const [splitItems, setSplitItems] = useState<SplitItem[]>([]);
   const [splitDestinationMode, setSplitDestinationMode] =
-    useState<SplitDestinationMode>("new-table");
+    useState<SplitDestinationMode>("same-order");
   const [splitDestinationOrderId, setSplitDestinationOrderId] = useState("");
   const [splitDestinationTableId, setSplitDestinationTableId] = useState("");
 
@@ -116,11 +114,10 @@ export default function CardFeature({
 
   useEffect(() => {
     if (feature !== Feature.SPLIT) return;
-
-    setSplitDestinationMode(servingTargetOrders.length > 0 ? "existing-order" : "new-table");
+    setSplitDestinationMode("same-order");
     setSplitDestinationOrderId("");
     setSplitDestinationTableId("");
-  }, [feature, servingTargetOrders.length, table.orderId]);
+  }, [feature, table.orderId]);
 
   const updateQuantity = (orderItemId: string, value: number) => {
     setSplitItems((prev) =>
@@ -149,7 +146,7 @@ export default function CardFeature({
 
     if (feature === Feature.MERGE) {
       if (!orderId) {
-        toast.error("Không tìm thấy order của bàn này");
+        toast.error(UI_TEXT.ORDER.DETAIL.ORDER_NOT_FOUND_FOR_TABLE);
         return;
       }
 
@@ -180,7 +177,7 @@ export default function CardFeature({
 
     if (feature === Feature.SPLIT) {
       if (!orderId) {
-        toast.error("Không tìm thấy order của bàn này");
+        toast.error(UI_TEXT.ORDER.DETAIL.ORDER_NOT_FOUND_FOR_TABLE);
         return;
       }
 
@@ -208,17 +205,22 @@ export default function CardFeature({
 
       setIsSubmitting(true);
       try {
-        await orderService.splitOrder(orderId, {
-          destinationOrderId:
-            splitDestinationMode === "existing-order" ? splitDestinationOrderId : undefined,
-          destinationTableId:
-            splitDestinationMode === "new-table" ? splitDestinationTableId : undefined,
-          itemsToSplit,
-        });
-        toast.success(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_SUCCESS);
+        if (splitDestinationMode === "same-order") {
+          await billingService.splitBill(orderId, { itemsToSplit });
+          toast.success(UI_TEXT.ORDER.DETAIL.SPLIT_BILL_SUCCESS);
+        } else {
+          await orderService.splitOrder(orderId, {
+            destinationOrderId:
+              splitDestinationMode === "existing-order" ? splitDestinationOrderId : undefined,
+            destinationTableId:
+              splitDestinationMode === "new-table" ? splitDestinationTableId : undefined,
+            itemsToSplit,
+          });
+          toast.success(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_SUCCESS);
+        }
       } catch (error) {
-        toast.error(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ERROR);
-        console.error("Error occurred while splitting order:", error);
+        toast.error(UI_TEXT.ORDER.DETAIL.SPLIT_BILL_FAILED);
+        console.error("Error occurred while splitting bill:", error);
       } finally {
         setIsSubmitting(false);
         await refreshBoardData();
@@ -229,7 +231,7 @@ export default function CardFeature({
 
     if (feature === Feature.MOVE_TABLE) {
       if (!orderId) {
-        toast.error("Không tìm thấy order của bàn này");
+        toast.error(UI_TEXT.ORDER.DETAIL.ORDER_NOT_FOUND_FOR_TABLE);
         return;
       }
 
@@ -367,7 +369,7 @@ export default function CardFeature({
                   </TabsTrigger>
                   <TabsTrigger
                     value="new-table"
-                    disabled={availableTargetTables.length === 0}
+                    disabled={servingTargetOrders.length === 0}
                     asChild
                   >
                     <Button
@@ -381,7 +383,7 @@ export default function CardFeature({
                 </TabsList>
               </Tabs>
 
-              {splitDestinationMode === "existing-order" ? (
+              {splitDestinationMode === "existing-order" && (
                 <Field>
                   <Label htmlFor="splitDestinationOrder">
                     {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_ORDER}
@@ -406,7 +408,9 @@ export default function CardFeature({
                     </SelectContent>
                   </Select>
                 </Field>
-              ) : (
+              )}
+
+              {splitDestinationMode === "new-table" && (
                 <Field>
                   <Label htmlFor="splitDestinationTable">
                     {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_DESTINATION_TABLE}
@@ -423,11 +427,13 @@ export default function CardFeature({
                       />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {availableTargetTables.map((targetTable) => (
-                        <SelectItem key={targetTable.tableId} value={targetTable.tableId}>
-                          {targetTable.tableCode}
-                        </SelectItem>
-                      ))}
+                      {candidateTables
+                        .filter((candidateTable) => candidateTable.status === TableStatus.Available)
+                        .map((targetTable) => (
+                          <SelectItem key={targetTable.tableId} value={targetTable.tableId}>
+                            {targetTable.tableCode}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </Field>
@@ -517,7 +523,7 @@ export default function CardFeature({
         <div className="p-2">
           <Button
             type="submit"
-            className="w-full"
+            className="w-full min-h-12 font-bold text-primary-foreground"
             disabled={
               isSubmitting
               // (feature === Feature.SPLIT && (loadingSplitItems || !hasSelectedSplitItems))
@@ -538,6 +544,7 @@ export default function CardFeature({
             {!isSubmitting &&
               feature === Feature.CANCEL &&
               UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL}
+            {!isSubmitting && feature === Feature.SPLIT && UI_TEXT.ORDER.DETAIL.SPLIT_BILL}
           </Button>
         </div>
       </form>
@@ -551,8 +558,6 @@ const getSplitItemStatusLabel = (status: OrderItemStatus) => {
       return UI_TEXT.ORDER.CURRENT.STATUS_PREP;
     case OrderItemStatus.Cooking:
       return UI_TEXT.ORDER.CURRENT.STATUS_COOKING;
-    case OrderItemStatus.Ready:
-      return UI_TEXT.ORDER.CURRENT.STATUS_READY;
     case OrderItemStatus.Cancelled:
       return UI_TEXT.ORDER.CURRENT.STATUS_CANCELLED;
     case OrderItemStatus.Rejected:
@@ -567,8 +572,6 @@ const getSplitItemBadgeVariant = (
   status: OrderItemStatus
 ): "secondary" | "success" | "warning" | "destructive" | "outline" => {
   switch (status) {
-    case OrderItemStatus.Ready:
-      return "success";
     case OrderItemStatus.Cooking:
       return "warning";
     case OrderItemStatus.Cancelled:

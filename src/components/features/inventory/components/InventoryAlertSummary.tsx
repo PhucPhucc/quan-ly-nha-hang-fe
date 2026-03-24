@@ -1,14 +1,13 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, ArrowRight, CalendarClock, PackageX } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useInventoryAlerts } from "@/hooks/useInventoryAlerts";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
-import { inventoryService } from "@/services/inventory.service";
 import { InventoryExpiryAlertItem, InventoryStockAlertItem } from "@/types/Inventory";
 
 // ─── Low Stock Row ────────────────────────────────────────────────────────────
@@ -132,7 +131,7 @@ function AlertPanel({
   emptyText: string;
 }) {
   return (
-    <div className="flex h-[clamp(250px,34vh,400px)] min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+    <div className="flex flex-1 min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md">
       <div className="flex items-center justify-between border-b border-border/40 bg-muted/20 px-4 py-3">
         <div className="flex items-center gap-2">
           <div
@@ -190,17 +189,12 @@ function AlertPanel({
 }
 
 export function InventoryAlertSummary() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["inventory-alerts"],
-    queryFn: () => inventoryService.getInventoryAlerts(),
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: alertsData, isLoading } = useInventoryAlerts();
 
-  const alerts = data?.data;
-  const outOfStockItems = alerts?.outOfStockItems ?? [];
-  const lowStockItems = alerts?.lowStockItems ?? [];
-  const expiredLots = alerts?.expiredLots ?? [];
-  const nearExpiryLots = alerts?.nearExpiryLots ?? [];
+  const outOfStockItems = alertsData?.outOfStockItems ?? [];
+  const lowStockItems = alertsData?.lowStockItems ?? [];
+  const expiredLots = alertsData?.expiredLots ?? [];
+  const nearExpiryLots = alertsData?.nearExpiryLots ?? [];
 
   const topLowStock = [...outOfStockItems, ...lowStockItems];
   const topExpiring = [...expiredLots, ...nearExpiryLots];
@@ -209,7 +203,7 @@ export function InventoryAlertSummary() {
   const hasAlerts = totalLowStock + totalExpiring > 0;
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 flex-1 min-h-0 md:grid-cols-2">
       {/* Low Stock Panel */}
       <AlertPanel
         title={UI_TEXT.INVENTORY.ALERTS.TAB_LOW_STOCK}
@@ -223,7 +217,9 @@ export function InventoryAlertSummary() {
           <LowStockRow
             key={item.ingredientId}
             item={item}
-            isOutOfStock={outOfStockItems.some((o) => o.ingredientId === item.ingredientId)}
+            isOutOfStock={outOfStockItems.some(
+              (o: InventoryStockAlertItem) => o.ingredientId === item.ingredientId
+            )}
           />
         ))}
       </AlertPanel>
@@ -244,7 +240,7 @@ export function InventoryAlertSummary() {
 
       {/* All-clear state */}
       {!isLoading && !hasAlerts && (
-        <div className="col-span-full flex items-center justify-center rounded-2xl border border-success/20 bg-success/5 py-6">
+        <div className="col-span-full flex flex-1 min-h-0 items-center justify-center rounded-2xl border border-success/20 bg-success/5 py-10 shadow-sm">
           <div className="text-center">
             <div className="mb-1 text-sm font-semibold text-success">
               {UI_TEXT.INVENTORY.OVERVIEW.STOCK_HEALTHY}

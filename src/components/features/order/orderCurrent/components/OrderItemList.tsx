@@ -36,12 +36,6 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
             {UI_TEXT.ORDER.CURRENT.STATUS_COOKING}
           </Badge>
         );
-      case OrderItemStatus.Ready:
-        return (
-          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-[10px] py-0">
-            {UI_TEXT.ORDER.CURRENT.STATUS_READY}
-          </Badge>
-        );
       case OrderItemStatus.Completed:
         return (
           <Badge className="bg-slate-500 hover:bg-slate-600 text-[10px] py-0">

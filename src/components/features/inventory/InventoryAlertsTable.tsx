@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import {
   AlertCircle,
   AlertTriangle,
@@ -13,8 +12,8 @@ import {
 import React, { useState } from "react";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useInventoryAlerts } from "@/hooks/useInventoryAlerts";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { inventoryService } from "@/services/inventory.service";
 
 import { ExpiringTabContent } from "./components/ExpiringTabContent";
 import {
@@ -26,12 +25,9 @@ import { LowStockTabContent } from "./components/LowStockTabContent";
 export function InventoryAlertsTable() {
   const [activeTab, setActiveTab] = useState("low-stock");
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["inventory-alerts"],
-    queryFn: () => inventoryService.getInventoryAlerts(),
-  });
+  const { data: alertsData, isLoading } = useInventoryAlerts();
 
-  const alerts = data?.data;
+  const alerts = alertsData;
   const outOfStockItems = alerts?.outOfStockItems || [];
   const lowStockItems = alerts?.lowStockItems || [];
   const expiredLots = alerts?.expiredLots || [];

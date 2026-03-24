@@ -45,7 +45,7 @@ const PrintTempDialog = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full focus:ring-0" disabled={!selectedOrderId}>
-          {UI_TEXT.ORDER.CURRENT.PRINT_TEMP}
+          {UI_TEXT.ORDER.CURRENT.PRINT_TEMP_ACTION || "In tạm tính"}
         </Button>
       </DialogTrigger>
       <DialogContent className="overflow-hidden max-w-none border-border bg-background p-0 sm:rounded-md">
@@ -157,7 +157,7 @@ const PrintTempDialog = () => {
             </Button>
           </DialogClose>
           <Button className="flex-1 focus:ring-0" onClick={() => window.print()}>
-            {UI_TEXT.ORDER.CURRENT.PRINT_TEMP}
+            {UI_TEXT.ORDER.CURRENT.PRINT_TEMP_ACTION || "In tạm tính"}
           </Button>
         </DialogFooter>
       </DialogContent>

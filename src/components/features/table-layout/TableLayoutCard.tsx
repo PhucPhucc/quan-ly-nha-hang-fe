@@ -23,7 +23,6 @@ const statusCardStyle: Record<TableStatus, string> = {
     "bg-table-available/15 hover:bg-table-available/10 border-table-available",
   [TableStatus.Reserved]: "bg-table-reserved/15 hover:bg-table-reserved/10 border-table-reserved",
   [TableStatus.Occupied]: "bg-table-occupied/15 hover:bg-table-occupied/10 border-table-occupied",
-  [TableStatus.Cleaning]: "bg-table-cleaning/15 hover:bg-table-cleaning/10 border-table-cleaning",
   [TableStatus.OutOfService]: "bg-neutral-100 border-slate-200 opacity-60 grayscale",
 };
 
@@ -35,7 +34,6 @@ const statusTextStyle: Record<TableStatus, string> = {
   [TableStatus.Available]: "text-table-available",
   [TableStatus.Reserved]: "text-table-reserved",
   [TableStatus.Occupied]: "text-table-occupied",
-  [TableStatus.Cleaning]: "text-table-cleaning",
   [TableStatus.OutOfService]: "text-slate-400",
 };
 
@@ -46,7 +44,6 @@ const statusLabel: Record<TableStatus, string> = {
   [TableStatus.Available]: "Trống",
   [TableStatus.Reserved]: "Đặt trước",
   [TableStatus.Occupied]: "Đang dùng",
-  [TableStatus.Cleaning]: "Đang dọn",
   [TableStatus.OutOfService]: "Tạm ngưng",
 };
 
@@ -55,7 +52,6 @@ const statusChairStyle: Record<TableStatus, string> = {
   [TableStatus.Available]: "bg-table-available/60",
   [TableStatus.Reserved]: "bg-table-reserved/60",
   [TableStatus.Occupied]: "bg-table-occupied/60",
-  [TableStatus.Cleaning]: "bg-table-cleaning/60",
   [TableStatus.OutOfService]: "bg-slate-300",
 };
 

@@ -18,7 +18,7 @@ export function Navbar() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-r from-primary to-primary/60 text-primary-foreground shadow-lg shadow-primary/25">
             <ChefHat className="h-8 w-8 text-white drop-shadow-md" />
           </div>
-          <span className="text-2xl font-black drop-shadow-md tracking-tight">
+          <span className="text-2xl font-bold drop-shadow-md tracking-tight">
             {UI_TEXT.LANDING.NAV_BRAND}
           </span>
         </div>

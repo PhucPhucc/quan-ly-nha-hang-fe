@@ -9,7 +9,8 @@
     "lint": "eslint",
     "prepare": "husky",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit --incremental"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs}": [

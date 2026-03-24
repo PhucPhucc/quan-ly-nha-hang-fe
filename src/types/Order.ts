@@ -94,10 +94,9 @@ export interface OrderDashboardOverview {
   deliveryOrders: number;
   occupiedTables: number;
   availableTables: number;
-  cleaningTables: number;
   pendingKitchenItems: number;
   cookingItems: number;
-  readyItems: number;
+  completedItems: number;
   waitingCheckoutOrders: number;
   todayPaidOrders: number;
   todayRevenue: number;
@@ -109,7 +108,6 @@ export const DINE_IN_STATUSES = [
   { value: "ready", label: "Bàn trống", color: "bg-table-empty" },
   { value: "serving", label: "Đang sử dụng", color: "bg-table-serving" },
   { value: "reserved", label: "Đặt trước", color: "bg-table-reserved" },
-  { value: "cleaning", label: "Đang dọn", color: "bg-table-cleaning" },
   { value: "out_of_service", label: "Tạm ngưng", color: "bg-table-out-of-service" },
 ];
 

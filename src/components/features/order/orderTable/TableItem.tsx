@@ -17,6 +17,7 @@ export type Table = {
   price?: string;
   createdAt?: string;
   orderId?: string;
+  orderCount?: number;
 };
 
 type TableItemProps = {
@@ -61,10 +62,17 @@ const TableItem = ({ table, onTableClick, currentOrderCode, isLoading }: TableIt
         <div className="p-1.5 h-full flex flex-col justify-between overflow-hidden">
           <div className="flex justify-between items-start">
             {currentOrderCode && (
-              <p className="text-[12px] font-semibold font-mono tracking-wider">
-                {UI_TEXT.COMMON.HASH}
-                {currentOrderCode.slice(-3)}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[12px] font-semibold font-mono tracking-wider">
+                  {UI_TEXT.COMMON.HASH}
+                  {currentOrderCode.slice(-3)}
+                </p>
+                {(table.orderCount ?? 1) > 1 && (
+                  <span className="rounded-full border border-table-serving/40 bg-background/90 px-2 py-0.5 text-[10px] font-bold text-table-serving">
+                    {UI_TEXT.ORDER.BOARD.ORDER_COUNT(table.orderCount!)}
+                  </span>
+                )}
+              </div>
             )}
             {table.status === OrderStatus.Serving && <DropdownFeature table={table} />}
           </div>
@@ -155,8 +163,6 @@ const getStatusColor = (status: OrderStatus) => {
       return "border-table-serving/60 bg-table-serving/20";
     case OrderStatus.Reserved:
       return "border-table-reserved/60 bg-table-reserved/20";
-    case OrderStatus.Cleaning:
-      return "border-table-cleaning/60 bg-table-cleaning/20";
     case OrderStatus.OutOfService:
       return "border-table-out-of-service/60 bg-table-out-of-service/20";
     default:
@@ -172,8 +178,6 @@ const getFootColor = (status: OrderStatus) => {
       return "bg-table-serving/50";
     case OrderStatus.Reserved:
       return "bg-table-reserved/50";
-    case OrderStatus.Cleaning:
-      return "bg-table-cleaning/50";
     case OrderStatus.OutOfService:
       return "bg-table-out-of-service/50";
     default:

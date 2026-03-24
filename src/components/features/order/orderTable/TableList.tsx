@@ -3,6 +3,14 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
@@ -36,6 +44,8 @@ const TableList = ({ areaId }: TableListProps) => {
   const fetchTablesByArea = useTableStore((s) => s.fetchTablesByArea);
 
   const [loadingTableId, setLoadingTableId] = useState<string | null>(null);
+  const [orderPickerOpen, setOrderPickerOpen] = useState(false);
+  const [pickedTable, setPickedTable] = useState<ApiTable | null>(null);
 
   useEffect(() => {
     if (areaId) {
@@ -45,9 +55,12 @@ const TableList = ({ areaId }: TableListProps) => {
 
   const sortedTables = tables.toSorted((a, b) => a.tableNumber - b.tableNumber);
 
-  const activeOrderByTableId = new Map(
-    orders.filter(isActiveServingOrder).map((order) => [order.tableId as string, order])
-  );
+  const servingOrdersByTableId = new Map<string, Order[]>();
+  orders.filter(isActiveServingOrder).forEach((order) => {
+    const tableId = order.tableId as string;
+    const current = servingOrdersByTableId.get(tableId) || [];
+    servingOrdersByTableId.set(tableId, [...current, order]);
+  });
 
   const handleTableClick = async (table: ApiTable, status: OrderStatus, orderId?: string) => {
     if (status === OrderStatus.Serving && orderId) {
@@ -117,12 +130,14 @@ const TableList = ({ areaId }: TableListProps) => {
   return (
     <>
       {sortedTables.map((table) => {
-        const currentOrder = activeOrderByTableId.get(table.tableId);
+        const currentOrders = servingOrdersByTableId.get(table.tableId) || [];
+        const currentOrder = currentOrders[0];
 
         const tableData: TableCard = {
           // tableId: table.tableId,
           tableNumber: table.tableNumber,
           label: table.tableCode,
+          orderCount: currentOrders.length,
           ...getTableInfo(table, currentOrder),
         };
 
@@ -135,14 +150,55 @@ const TableList = ({ areaId }: TableListProps) => {
             table={tableData}
             onTableClick={
               isClickable
-                ? () => handleTableClick(table, tableData.status, currentOrder?.orderId)
+                ? () => {
+                    if (tableData.status !== OrderStatus.Serving) {
+                      void handleTableClick(table, tableData.status, currentOrder?.orderId);
+                      return;
+                    }
+
+                    if (currentOrders.length > 1) {
+                      setPickedTable(table);
+                      setOrderPickerOpen(true);
+                      return;
+                    }
+
+                    void handleTableClick(table, tableData.status, currentOrder?.orderId);
+                  }
                 : undefined
             }
-            currentOrderCode={currentOrder?.orderCode}
+            currentOrderCode={currentOrders.length > 0 ? currentOrder?.orderCode : undefined}
             isLoading={loadingTableId === table.tableId}
           />
         );
       })}
+      <Dialog open={orderPickerOpen} onOpenChange={setOrderPickerOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {pickedTable?.tableCode || UI_TEXT.ORDER.BOARD.PICK_ORDER_TITLE}
+            </DialogTitle>
+            <DialogDescription>{UI_TEXT.ORDER.BOARD.PICK_ORDER_DESC}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            {(pickedTable ? servingOrdersByTableId.get(pickedTable.tableId) || [] : []).map(
+              (order) => (
+                <Button
+                  key={order.orderId}
+                  variant="outline"
+                  className="w-full justify-between"
+                  onClick={() => {
+                    setSelectedOrderId(order.orderId);
+                    setOrderPickerOpen(false);
+                  }}
+                >
+                  <span>{order.orderCode}</span>
+                  <span className="text-xs text-muted-foreground">{order.status}</span>
+                </Button>
+              )
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
@@ -171,8 +227,6 @@ const getTableInfo = (table: ApiTable, order?: Order): Omit<TableCard, "label" |
       };
     case OrderStatus.Reserved:
       return { status: OrderStatus.Reserved, people: table.capacity };
-    case OrderStatus.Cleaning:
-      return { status: OrderStatus.Cleaning, people: 0 };
     case OrderStatus.Ready:
     default:
       return { status: OrderStatus.Ready, people: 0 };
@@ -185,8 +239,6 @@ const mapTableStatus = (status: TableStatus): OrderStatus => {
       return OrderStatus.Serving;
     case TableStatus.Reserved:
       return OrderStatus.Reserved;
-    case TableStatus.Cleaning:
-      return OrderStatus.Cleaning;
     case TableStatus.OutOfService:
       return OrderStatus.OutOfService;
     case TableStatus.Available:

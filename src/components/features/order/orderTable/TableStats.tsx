@@ -17,12 +17,11 @@ const TableStats = ({ tables }: TableStatsProps) => {
     available: tables.filter((t) => t.status === OrderStatus.Ready).length,
     occupied: tables.filter((t) => t.status === OrderStatus.Serving).length,
     reserved: tables.filter((t) => t.status === OrderStatus.Reserved).length,
-    cleaning: tables.filter((t) => t.status === OrderStatus.Cleaning).length,
     outOfService: tables.filter((t) => t.status === OrderStatus.OutOfService).length,
   };
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-2 px-2">
+    <div className="grid grid-cols-3 md:grid-cols-5 gap-2 mb-2 px-2">
       <StatCard
         label={UI_TEXT.COMMON.ALL}
         value={stats.total}
@@ -42,11 +41,6 @@ const TableStats = ({ tables }: TableStatsProps) => {
         label={UI_TEXT.TABLE.RESERVED}
         value={stats.reserved}
         color="bg-table-reserved/30 text-amber-900 border-table-reserved/50"
-      />
-      <StatCard
-        label={UI_TEXT.TABLE.CLEANING}
-        value={stats.cleaning}
-        color="bg-table-cleaning/30 text-table-cleaning border-table-cleaning/50"
       />
       <StatCard
         label={UI_TEXT.TABLE.OUT_OF_SERVICE}

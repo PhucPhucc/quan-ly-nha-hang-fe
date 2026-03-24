@@ -1,6 +1,6 @@
 "use client";
 
-import { Library, SquareMenu } from "lucide-react";
+import { BookOpenText, LayoutDashboard, Library } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -16,10 +16,15 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Thực đơn",
+    label: "Tổng quan",
     href: "/manager/menu",
-    icon: SquareMenu,
+    icon: LayoutDashboard,
     exact: true,
+  },
+  {
+    label: "Danh sách món",
+    href: "/manager/menu/list",
+    icon: BookOpenText,
   },
   {
     label: "Danh sách tùy chọn",

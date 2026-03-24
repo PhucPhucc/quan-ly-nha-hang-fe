@@ -6,7 +6,32 @@ import { KdsItemResponse, KdsQueueResponse, kdsService } from "@/services/kdsSer
 import { KDSStation, OrderItemStatus } from "@/types/enums";
 import { Order, OrderItem } from "@/types/Order";
 
-/* ---------- helpers ---------- */
+const normalizeOrderItemStatus = (status: unknown): OrderItemStatus => {
+  const normalized = String(status ?? "")
+    .trim()
+    .toLowerCase();
+
+  switch (normalized) {
+    case "1":
+    case "preparing":
+      return OrderItemStatus.Preparing;
+    case "2":
+    case "cooking":
+      return OrderItemStatus.Cooking;
+    case "3":
+    case "completed":
+      return OrderItemStatus.Completed;
+    case "4":
+    case "cancelled":
+    case "canceled":
+      return OrderItemStatus.Cancelled;
+    case "5":
+    case "rejected":
+      return OrderItemStatus.Rejected;
+    default:
+      return OrderItemStatus.Preparing;
+  }
+};
 
 const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Order[] => {
   if (!items || !Array.isArray(items)) return [];
@@ -34,7 +59,7 @@ const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Ord
       orderId: item.orderId,
       itemNameSnapshot: item.itemNameSnapshot || "Unknown Item",
       stationSnapshot: item.stationSnapshot,
-      status: item.status === "Cooking" ? OrderItemStatus.Cooking : OrderItemStatus.Preparing,
+      status: normalizeOrderItemStatus(item.status),
       quantity: item.quantity ?? 1,
       itemNote: item.itemNote,
       itemOptions: item.itemOptions || [],
@@ -49,34 +74,27 @@ const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Ord
   );
 };
 
-/* ---------- store definition ---------- */
-
 interface KdsState {
-  // data
   activeItems: KdsItemResponse[];
   queueItems: KdsQueueResponse[];
   activeOrders: Order[];
   queueOrders: Order[];
   station: KDSStation;
-
-  // actions
   setStation: (station: KDSStation) => void;
   fetchKdsData: (targetStation?: KDSStation) => Promise<void>;
   startCooking: (orderItemId: string) => Promise<void>;
-  markItemReady: (orderItemId: string) => Promise<void>;
+  completeItemCooking: (orderItemId: string) => Promise<void>;
   rejectItem: (orderItemId: string, reason: string) => Promise<void>;
 }
 
 export const useKdsStore = createWithEqualityFn<KdsState>(
   (set, get) => ({
-    // ---------- state ----------
     activeItems: [],
     queueItems: [],
     activeOrders: [],
     queueOrders: [],
     station: KDSStation.Kitchen,
 
-    // ---------- actions ----------
     setStation: (station) => set({ station }),
 
     fetchKdsData: async (targetStation?: KDSStation) => {
@@ -100,37 +118,37 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         });
       } catch (error) {
         console.error("Failed to fetch KDS data:", error);
-        toast.error("Không thể tải dữ liệu KDS");
+        toast.error("Khong the tai du lieu KDS");
       }
     },
 
     startCooking: async (orderItemId) => {
       try {
         await kdsService.startCooking(orderItemId);
-        toast.success("Đã bắt đầu nấu!");
+        toast.success("Da bat dau nau!");
         get().fetchKdsData();
       } catch (error: unknown) {
-        toast.error(error instanceof Error ? error.message : "Lỗi khi bắt đầu nấu");
+        toast.error(error instanceof Error ? error.message : "Loi khi bat dau nau");
       }
     },
 
-    markItemReady: async (orderItemId) => {
+    completeItemCooking: async (orderItemId) => {
       try {
-        await kdsService.markReady(orderItemId);
-        toast.success("Món đã hoàn thành!");
+        await kdsService.completeCooking(orderItemId);
+        toast.success("Mon da hoan thanh!");
         get().fetchKdsData();
       } catch (e: unknown) {
-        toast.error(e instanceof Error ? e.message : "Lỗi khi hoàn thành món");
+        toast.error(e instanceof Error ? e.message : "Loi khi hoan thanh mon");
       }
     },
 
     rejectItem: async (orderItemId, reason) => {
       try {
         await kdsService.rejectItem(orderItemId, reason);
-        toast.success("Đã từ chối món!");
+        toast.success("Da tu choi mon!");
         get().fetchKdsData();
       } catch (e: unknown) {
-        toast.error(e instanceof Error ? e.message : "Lỗi khi từ chối món");
+        toast.error(e instanceof Error ? e.message : "Loi khi tu choi mon");
       }
     },
   }),

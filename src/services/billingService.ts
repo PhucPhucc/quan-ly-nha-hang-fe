@@ -14,6 +14,36 @@ export interface BillingHistoryParams {
   toDate?: string;
 }
 
+export interface SplitBillItemRequest {
+  orderItemId: string;
+  quantityToSplit: number;
+}
+
+export interface SplitBillRequest {
+  itemsToSplit: SplitBillItemRequest[];
+}
+
+export interface SplitBillItemResponse {
+  orderItemId: string;
+  orderId: string;
+  menuItemId: string;
+  itemNameSnapshot: string;
+  quantity: number;
+  unitPriceSnapshot: number;
+}
+
+export interface SplitBillResponse {
+  sourceOrderId: string;
+  sourceOrderCode: string;
+  sourceOrderTotalAmount: number;
+  sourceOrderItems: SplitBillItemResponse[];
+  destinationOrderId: string;
+  destinationOrderCode: string;
+  destinationOrderTotalAmount: number;
+  destinationOrderItems: SplitBillItemResponse[];
+  destinationTableId?: string | null;
+}
+
 export const billingService = {
   getBillingHistory: (
     params: BillingHistoryParams
@@ -36,5 +66,11 @@ export const billingService = {
   getPreCheckBill: (orderId: string): Promise<ApiResponse<PreCheckBill>> =>
     apiFetch<PreCheckBill>(`/billing/orders/${orderId}/pre-check-bill`, {
       cache: "no-store",
+    }),
+
+  splitBill: (orderId: string, data: SplitBillRequest): Promise<ApiResponse<SplitBillResponse>> =>
+    apiFetch<SplitBillResponse>(`/billing/orders/${orderId}/split-bill`, {
+      method: "POST",
+      body: data,
     }),
 };

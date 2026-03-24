@@ -314,12 +314,21 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           )}
         </div>
         <DialogFooter className="sm:justify-end">
-          <Button variant="outline" onClick={onClose} disabled={isProcessing}>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={isProcessing}
+            className="min-w-28 font-semibold text-foreground"
+          >
             {UI_TEXT.COMMON.CANCEL_EN}
           </Button>
 
           {selectedMethod !== PaymentMethod.BankTransfer && (
-            <Button onClick={handleCheckout} disabled={isProcessing} className="font-bold">
+            <Button
+              onClick={handleCheckout}
+              disabled={isProcessing}
+              className="min-w-40 font-bold text-primary-foreground"
+            >
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

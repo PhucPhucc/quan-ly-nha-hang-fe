@@ -201,4 +201,57 @@ export const MENU = {
     CURRENCY: "$",
     TOTAL_COST_DESC: "Dựa trên giá nhập gần nhất của các nguyên liệu trong định lượng.",
   },
+  OVERVIEW: {
+    HERO_DESC:
+      "Theo dõi độ phủ thực đơn, món cần ưu tiên cập nhật và khả năng phục vụ theo danh mục trước khi đi vào thao tác chi tiết.",
+    STATS: {
+      SELLABLE: "Món đang mở bán",
+      COMBOS: "Combo / set menu",
+      UNAVAILABLE: "Món tạm ngưng",
+      CATEGORIES: "Danh mục đang dùng",
+    },
+    ACTIONS: {
+      CATALOG: "Quản lý danh sách món",
+      OPTIONS: "Quản lý nhóm tùy chọn",
+      RECIPES: "Thiết lập công thức món",
+    },
+    SECTIONS: {
+      CATEGORY_MIX: "Cơ cấu danh mục",
+      CATEGORY_MIX_DESC:
+        "Nhìn nhanh danh mục nào đang chiếm tỷ trọng lớn trong danh sách món hiện tại.",
+      STATION_READINESS: "Năng lực theo trạm",
+      STATION_READINESS_DESC:
+        "Phân bổ món theo trạm để cân bằng tải giữa bếp nóng, bếp lạnh và quầy pha chế.",
+      CHECKLIST: "Kiểm tra nhanh trước ca",
+      CHECKLIST_DESC: "Một vài tín hiệu nhanh để biết thực đơn đã sẵn sàng cho vận hành hay chưa.",
+      PRIORITY: "Món cần ưu tiên xử lý",
+      PRIORITY_DESC:
+        "Những món này có dấu hiệu cần cập nhật sớm để menu hiển thị đẹp và vận hành trơn hơn.",
+      OPTION_HIGHLIGHTS: "Nhóm tùy chọn dùng nhiều",
+    },
+    CHECKLIST: {
+      IMAGE_COVERAGE: "Có hình ảnh hiển thị",
+      IMAGE_HINT: "giữa toàn bộ món và combo",
+      COST_COVERAGE: "Có giá vốn",
+      COST_HINT: "đã cấu hình giá vốn",
+      OPTION_COVERAGE: "Nhóm tùy chọn đang dùng",
+      OPTION_HINT: "nhóm tùy chọn đang được gắn",
+      UNAVAILABLE_HINT: "cần kiểm tra nguyên liệu hoặc trạng thái bán",
+    },
+    EMPTY: {
+      CATEGORIES: "Chưa có dữ liệu danh mục để hiển thị.",
+      STATIONS: "Chưa có món lẻ nào được gán trạm chế biến.",
+      PRIORITY: "Thực đơn hiện khá ổn. Chưa có món nào cần ưu tiên xử lý.",
+      STATION_NO_DATA: "Chưa có dữ liệu thời gian chuẩn bị",
+    },
+    REASONS: {
+      OUT_OF_STOCK: "Hết hàng",
+      MISSING_IMAGE: "Thiếu ảnh",
+      MISSING_COST: "Chưa có giá vốn",
+      LONG_PREP: "Chuẩn bị lâu",
+    },
+    AVG_PREP_SUFFIX: "phút TB",
+    ITEM_UNIT: "món",
+    REFRESH: "Làm mới",
+  },
 };

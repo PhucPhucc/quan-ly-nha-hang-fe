@@ -1,9 +1,19 @@
 "use client";
 
-import { format } from "date-fns";
-import { Info } from "lucide-react";
+import { Eye, History, UserRound } from "lucide-react";
 
+import {
+  INVENTORY_TABLE_CONTAINER_CLASS,
+  INVENTORY_TABLE_SURFACE_CLASS,
+  INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
+  INVENTORY_THEAD_ROW_CLASS,
+  INVENTORY_TROW_CLASS,
+} from "@/components/features/inventory/components/inventoryStyles";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -12,179 +22,144 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { EmployeeAuditLog } from "@/types/Employee";
+import { cn } from "@/lib/utils";
+import { SystemAuditLog } from "@/services/auditService";
+
+import {
+  formatDateTime,
+  getActionLabel,
+  getActionVariant,
+  getActorLabel,
+  getActorSubLabel,
+  getEntityLabel,
+  getSummary,
+} from "./AuditUtils";
 
 interface AuditLogTableProps {
-  logs: EmployeeAuditLog[];
+  logs: SystemAuditLog[];
   loading: boolean;
   error: string | null;
+  onOpenDetails: (log: SystemAuditLog) => void;
 }
 
-const getActionBadgeVariant = (action: string) => {
-  switch (action.toUpperCase()) {
-    case "CREATE":
-      return "default";
-    case "UPDATE":
-      return "secondary";
-    case "DEACTIVATE":
-      return "destructive";
-    case "RESETPASSWORD":
-      return "outline";
-    case "CHANGEROLE":
-      return "secondary";
-    default:
-      return "outline";
-  }
-};
-
-const AuditLogTable = ({ logs, loading, error }: AuditLogTableProps) => {
+export function AuditLogTable({ logs, loading, error, onOpenDetails }: AuditLogTableProps) {
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{UI_TEXT.AUDIT_LOG.ACTION}</TableHead>
-            <TableHead>{UI_TEXT.AUDIT_LOG.ACTOR_LABEL}</TableHead>
-            <TableHead>{UI_TEXT.AUDIT_LOG.CREATED_AT}</TableHead>
-            <TableHead className="hidden md:table-cell">{UI_TEXT.AUDIT_LOG.REASON}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.AUDIT_LOG.METADATA_LABEL}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {loading && (
-            <TableRow>
-              <TableCell colSpan={5} className="h-24 text-center">
-                {UI_TEXT.COMMON.LOADING}
-              </TableCell>
-            </TableRow>
-          )}
-          {error && (
-            <TableRow>
-              <TableCell colSpan={5} className="h-24 text-center text-destructive">
-                {error}
-              </TableCell>
-            </TableRow>
-          )}
-          {!loading && logs.length === 0 && !error && (
-            <TableRow>
-              <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                {UI_TEXT.AUDIT_LOG.EMPTY}
-              </TableCell>
-            </TableRow>
-          )}
-          {!loading &&
-            logs.map((log: EmployeeAuditLog) => {
-              // Defensive property mapping
-              const action = log.action;
-              const actor = log.actorName;
-              const timestamp = log.time;
-              const reason = log.reason;
-              const metadata = log.metadata;
-              return (
-                <TableRow key={log.logId}>
-                  <TableCell>
-                    <Badge variant={getActionBadgeVariant(action)} className="capitalize">
-                      {action.toLowerCase()}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm">{actor}</TableCell>
-                  <TableCell className="text-sm">
-                    {(() => {
-                      if (!timestamp) return "-";
-                      try {
-                        const date = new Date(timestamp);
-                        if (isNaN(date.getTime())) return "-";
-                        return format(date, "dd/MM/yyyy HH:mm");
-                      } catch {
-                        return "-";
-                      }
-                    })()}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell text-sm">{reason}</TableCell>
-                  <TableCell className="text-right">
-                    {metadata && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-4 w-4 ml-auto cursor-help opacity-50 hover:opacity-100 transition-opacity" />
-                          </TooltipTrigger>
-                          <TooltipContent className="max-w-md p-0 overflow-hidden rounded-lg border-none shadow-xl">
-                            <div className="bg-card text-card-foreground">
-                              <div className="px-4 py-2 bg-muted/50 border-b flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider opacity-70">
-                                  {UI_TEXT.AUDIT_LOG.CHANGE_DETAILS}
-                                </span>
-                              </div>
-                              <div className="p-4 space-y-4 max-h-md overflow-auto">
-                                {(() => {
-                                  try {
-                                    // Handle stringified JSON if necessary
-                                    const parsed =
-                                      typeof metadata === "string"
-                                        ? JSON.parse(metadata)
-                                        : metadata;
-
-                                    if (parsed.OldValue || parsed.NewValue) {
-                                      return (
-                                        <div className="grid grid-cols-1 gap-4">
-                                          {parsed.OldValue && (
-                                            <div className="space-y-1">
-                                              <p className="text-[10px] font-bold text-destructive uppercase">
-                                                {UI_TEXT.AUDIT_LOG.BEFORE_CHANGE}
-                                              </p>
-                                              <pre className="text-xs bg-destructive/5 p-3 rounded-md border border-destructive/10 whitespace-pre-wrap font-mono text-destructive-foreground">
-                                                {typeof parsed.OldValue === "string"
-                                                  ? parsed.OldValue
-                                                  : JSON.stringify(parsed.OldValue, null, 2)}
-                                              </pre>
-                                            </div>
-                                          )}
-                                          {parsed.NewValue && (
-                                            <div className="space-y-1">
-                                              <p className="text-[10px] font-bold text-primary uppercase">
-                                                {UI_TEXT.AUDIT_LOG.AFTER_CHANGE}
-                                              </p>
-                                              <pre className="text-xs bg-primary/5 p-3 rounded-md border border-primary/10 whitespace-pre-wrap font-mono text-primary-foreground">
-                                                {typeof parsed.NewValue === "string"
-                                                  ? parsed.NewValue
-                                                  : JSON.stringify(parsed.NewValue, null, 2)}
-                                              </pre>
-                                            </div>
-                                          )}
-                                        </div>
-                                      );
-                                    }
-
-                                    // Fallback for general metadata objects
-                                    return (
-                                      <pre className="text-xs bg-muted p-3 rounded-md whitespace-pre-wrap font-mono">
-                                        {JSON.stringify(parsed, null, 2)}
-                                      </pre>
-                                    );
-                                  } catch {
-                                    return (
-                                      <pre className="text-xs bg-muted p-3 rounded-md whitespace-pre-wrap font-mono">
-                                        {String(metadata)}
-                                      </pre>
-                                    );
-                                  }
-                                })()}
-                              </div>
-                            </div>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
+    <div className={cn(INVENTORY_TABLE_SURFACE_CLASS, "flex flex-col min-h-0")}>
+      {loading ? (
+        <div className="space-y-2 p-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Skeleton key={index} className="h-14 w-full rounded-xl" />
+          ))}
+        </div>
+      ) : (
+        <div className="flex-1 overflow-hidden">
+          <Table
+            containerClassName={cn(
+              INVENTORY_TABLE_CONTAINER_CLASS,
+              "max-h-[520px] overflow-auto",
+              "[&_td]:align-top [&_td]:py-3 [&_td]:text-sm [&_td]:text-slate-800",
+              "[&_th]:text-slate-600",
+              "[&_p]:text-slate-700"
+            )}
+          >
+            <TableHeader className={INVENTORY_THEAD_CLASS}>
+              <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
+                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.TIME}</TableHead>
+                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.ENTITY}</TableHead>
+                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.ACTION}</TableHead>
+                <TableHead className={INVENTORY_TH_CLASS}>
+                  {UI_TEXT.AUDIT_LOG.CHANGE_DETAILS}
+                </TableHead>
+                <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.AUDIT_LOG.ACTOR}</TableHead>
+                <TableHead className={cn(INVENTORY_TH_CLASS, "text-right")}>
+                  {UI_TEXT.BUTTON.DETAIL}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="divide-y divide-slate-200">
+              {!error && logs.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-40 text-center">
+                    <EmptyState
+                      icon={History}
+                      title={UI_TEXT.AUDIT_LOG.EMPTY}
+                      description={UI_TEXT.AUDIT_LOG.MESSAGES.EMPTY_HINT}
+                    />
                   </TableCell>
                 </TableRow>
-              );
-            })}
-        </TableBody>
-      </Table>
+              ) : null}
+
+              {error ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-28 text-center text-sm text-destructive">
+                    {error}
+                  </TableCell>
+                </TableRow>
+              ) : null}
+
+              {!error &&
+                logs.map((log) => (
+                  <TableRow
+                    key={log.logId}
+                    className={cn(
+                      INVENTORY_TROW_CLASS,
+                      "hover:bg-slate-50/80 transition-colors",
+                      "align-top"
+                    )}
+                  >
+                    <TableCell className="min-w-[160px] text-sm text-slate-600 align-top">
+                      <div className="font-medium text-slate-900">
+                        {formatDateTime(log.createdAt)}
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="min-w-[120px] align-top">
+                      <div className="flex items-center gap-2">
+                        <Badge variant={getActionVariant(log.action)} className="w-fit">
+                          {getActionLabel(log.action)}
+                        </Badge>
+                        <span className="font-semibold text-slate-900">
+                          {getEntityLabel(log.entityName)}
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="min-w-[340px] max-w-[520px] whitespace-normal align-top">
+                      <p className="font-medium text-slate-900 leading-6">{getSummary(log)}</p>
+                    </TableCell>
+
+                    <TableCell className="min-w-[180px] align-top">
+                      <div className="flex items-start gap-2">
+                        <UserRound className="mt-0.5 h-4 w-4 text-slate-400" />
+                        <div className="space-y-0.5">
+                          <p className="font-medium text-slate-900">
+                            {getActorLabel(log.actorInfo)}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {getActorSubLabel(log.actorInfo) ??
+                              UI_TEXT.AUDIT_LOG.ACTOR_INFO.INTERNAL}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="text-right align-top min-w-[120px]">
+                      <Button
+                        variant="outline"
+                        className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                        onClick={() => onOpenDetails(log)}
+                      >
+                        <Eye className="h-4 w-4" />
+                        {UI_TEXT.BUTTON.DETAIL}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
-};
-
-export default AuditLogTable;
+}

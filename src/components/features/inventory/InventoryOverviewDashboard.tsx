@@ -6,6 +6,7 @@ import {
   ArrowRight,
   CircleAlert,
   DollarSign,
+  Info,
   Package,
   PackageX,
   RefreshCw,
@@ -13,12 +14,16 @@ import {
   Warehouse,
 } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useInventoryAlerts } from "@/hooks/useInventoryAlerts";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { inventoryService } from "@/services/inventory.service";
+import { InventoryAlertsResponse } from "@/types/Inventory";
 
 import { InventoryAlertSummary } from "./components/InventoryAlertSummary";
 import { InventoryStatCard } from "./components/InventoryStatCard";
@@ -145,7 +150,19 @@ export function InventoryOverviewDashboard() {
     },
   });
 
+  const { data: alerts, isLoading: alertsLoading } = useInventoryAlerts();
+
+  const { data: ingredients, isLoading: ingredientsLoading } = useQuery({
+    queryKey: ["inventory-ingredients-overview-priority"],
+    queryFn: async () => {
+      const response = await inventoryService.getIngredients(1, 1000);
+      return response.data?.items ?? [];
+    },
+    staleTime: 3 * 60 * 1000,
+  });
+
   const overview = overviewData?.data;
+  const priorityLoading = alertsLoading || ingredientsLoading;
 
   const outOfStockCount = overview?.outOfStockCount ?? 0;
   const lowStockCount = overview?.lowStockCount ?? 0;
@@ -156,8 +173,13 @@ export function InventoryOverviewDashboard() {
   const lowStockVariant = lowStockCount > 0 ? "warning" : "success";
   const alertsVariant = totalAlerts > 0 ? "danger" : "success";
 
+  const priorityGroups = useMemo(
+    () => buildPriorityGroups(alerts, ingredients ?? []),
+    [alerts, ingredients]
+  );
+
   return (
-    <div className={cn(INVENTORY_PAGE_CLASS, "gap-6")}>
+    <div className={cn(INVENTORY_PAGE_CLASS, "gap-4 pb-8")}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 items-center gap-6">
           <div className="flex items-center gap-3">
@@ -222,6 +244,7 @@ export function InventoryOverviewDashboard() {
           value={overview?.totalIngredients ?? "—"}
           href="/manager/inventory"
           isLoading={statsLoading}
+          compact
         />
         <InventoryStatCard
           icon={DollarSign}
@@ -230,6 +253,7 @@ export function InventoryOverviewDashboard() {
           subLabel={UI_TEXT.COMMON.ALL}
           isLoading={statsLoading}
           variant="info"
+          compact
         />
         <InventoryStatCard
           icon={TrendingDown}
@@ -238,6 +262,7 @@ export function InventoryOverviewDashboard() {
           href="/manager/inventory/alerts"
           variant={lowStockVariant}
           isLoading={statsLoading}
+          compact
         />
         <InventoryStatCard
           icon={AlertTriangle}
@@ -248,6 +273,7 @@ export function InventoryOverviewDashboard() {
           href="/manager/inventory/alerts"
           variant={alertsVariant}
           isLoading={statsLoading}
+          compact
         />
       </div>
 
@@ -288,7 +314,7 @@ export function InventoryOverviewDashboard() {
         </div>
       )}
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <SectionHeader
           title={UI_TEXT.INVENTORY.ALERTS_TITLE}
           description={UI_TEXT.INVENTORY.ALERTS_DESC}
@@ -298,6 +324,174 @@ export function InventoryOverviewDashboard() {
         />
         <InventoryAlertSummary />
       </div>
+
+      <div className="flex flex-col gap-3">
+        <SectionHeader
+          title={UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_ITEMS_TITLE}
+          description={UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_ITEMS_DESC}
+          href="/manager/inventory"
+          hrefLabel={UI_TEXT.INVENTORY.OVERVIEW.VIEW_INGREDIENT_LIST}
+          icon={Info}
+        />
+        <Card className="border-none shadow-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base font-bold">
+              <Info className="h-4 w-4 text-primary" />
+              <span>{UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_LIST}</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {priorityLoading
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index} className="h-36 animate-pulse rounded-xl bg-muted/70" />
+                ))
+              : priorityGroups.map((group) => <PriorityGroupCard key={group.key} group={group} />)}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
+}
+
+type PriorityGroup = {
+  key: string;
+  title: string;
+  href: string;
+  actionLabel: string;
+  tone: "danger" | "warning" | "info" | "neutral";
+  items: { id: string; name: string; meta: string }[];
+};
+
+function buildPriorityGroups(
+  alerts: InventoryAlertsResponse | undefined,
+  ingredients: Array<{
+    ingredientId: string;
+    name: string;
+    code: string;
+    unit: string;
+    costPrice: number;
+    lowStockThreshold: number;
+  }>
+): PriorityGroup[] {
+  const lowStockItems = [...(alerts?.outOfStockItems ?? []), ...(alerts?.lowStockItems ?? [])]
+    .slice(0, 4)
+    .map((item) => ({
+      id: item.ingredientId,
+      name: item.ingredientName,
+      meta: `${item.currentStock}/${item.threshold} ${item.unit}`,
+    }));
+
+  const expiringLots = [...(alerts?.expiredLots ?? []), ...(alerts?.nearExpiryLots ?? [])]
+    .slice(0, 4)
+    .map((item) => ({
+      id: item.inventoryLotId,
+      name: item.ingredientName,
+      meta:
+        item.daysRemaining != null && item.daysRemaining >= 0
+          ? `${UI_TEXT.COMMON.REMAINING} ${item.daysRemaining} ${UI_TEXT.COMMON.DAYS} ${UI_TEXT.COMMON.DOT_SEP} ${item.lotCode}`
+          : `${UI_TEXT.INVENTORY.ALERTS.BADGE_EXPIRED} ${UI_TEXT.COMMON.DOT_SEP} ${item.lotCode}`,
+    }));
+
+  const missingCost = ingredients
+    .filter((item) => (item.costPrice ?? 0) <= 0)
+    .slice(0, 4)
+    .map((item) => ({
+      id: item.ingredientId,
+      name: item.name,
+      meta: `${item.code} ${UI_TEXT.COMMON.DOT_SEP} ${UI_TEXT.INVENTORY.OVERVIEW.MISSING_COST_META}`,
+    }));
+
+  const missingThreshold = ingredients
+    .filter((item) => (item.lowStockThreshold ?? 0) <= 0)
+    .slice(0, 4)
+    .map((item) => ({
+      id: item.ingredientId,
+      name: item.name,
+      meta: `${item.code} ${UI_TEXT.COMMON.DOT_SEP} ${UI_TEXT.INVENTORY.OVERVIEW.MISSING_THRESHOLD_META}`,
+    }));
+
+  return [
+    {
+      key: "low-stock",
+      title: UI_TEXT.INVENTORY.OVERVIEW.LOW_STOCK_TITLE,
+      href: "/manager/inventory/alerts",
+      actionLabel: UI_TEXT.INVENTORY.OVERVIEW.OPEN_ALERTS,
+      tone: "danger",
+      items: lowStockItems,
+    },
+    {
+      key: "expiring",
+      title: UI_TEXT.INVENTORY.OVERVIEW.EXPIRING_LOTS_TITLE,
+      href: "/manager/inventory/alerts",
+      actionLabel: UI_TEXT.INVENTORY.OVERVIEW.VIEW_EXPIRING_LOTS,
+      tone: "warning",
+      items: expiringLots,
+    },
+    {
+      key: "missing-cost",
+      title: UI_TEXT.INVENTORY.OVERVIEW.MISSING_COST_TITLE,
+      href: "/manager/inventory",
+      actionLabel: UI_TEXT.INVENTORY.OVERVIEW.UPDATE_INGREDIENT,
+      tone: "info",
+      items: missingCost,
+    },
+    {
+      key: "missing-threshold",
+      title: UI_TEXT.INVENTORY.OVERVIEW.MISSING_THRESHOLD_TITLE,
+      href: "/manager/inventory/settings",
+      actionLabel: UI_TEXT.INVENTORY.OVERVIEW.OPEN_SETTINGS,
+      tone: "neutral",
+      items: missingThreshold,
+    },
+  ];
+}
+
+function PriorityGroupCard({ group }: { group: PriorityGroup }) {
+  return (
+    <div className="rounded-xl border bg-card p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-foreground">{group.title}</p>
+          <p className="text-xs text-muted-foreground">
+            {group.items.length} {UI_TEXT.INVENTORY.OVERVIEW.HIGHLIGHT_SUFFIX}
+          </p>
+        </div>
+        <Badge variant="outline" className={cn("border-0", priorityToneClass(group.tone))}>
+          {group.items.length}
+        </Badge>
+      </div>
+
+      {group.items.length > 0 ? (
+        <div className="space-y-2">
+          {group.items.map((item) => (
+            <div key={item.id} className="rounded-lg border border-border/60 px-3 py-2">
+              <p className="truncate text-sm font-medium text-foreground">{item.name}</p>
+              <p className="text-xs text-muted-foreground">{item.meta}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex min-h-[112px] items-center justify-center rounded-lg border border-dashed px-4 text-center text-sm text-muted-foreground">
+          {UI_TEXT.INVENTORY.OVERVIEW.EMPTY_GROUP}
+        </div>
+      )}
+
+      <div className="pt-3">
+        <Link
+          href={group.href}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+        >
+          {group.actionLabel}
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function priorityToneClass(tone: PriorityGroup["tone"]) {
+  if (tone === "danger") return "table-pill table-pill-danger";
+  if (tone === "warning") return "table-pill table-pill-warning";
+  if (tone === "info") return "table-pill table-pill-info";
+  return "table-pill table-pill-neutral";
 }

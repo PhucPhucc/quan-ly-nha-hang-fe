@@ -16,6 +16,7 @@ import React, { useMemo } from "react";
 import { InventoryNavigation } from "../features/inventory/components/InventoryNavigation";
 import { MenuNavigation } from "../features/menu/components/MenuNavigation";
 import { OrderNavigation } from "../features/order/components/OrderNavigation";
+import { TableNavigation } from "../features/table-layout/components/TableNavigation";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 
@@ -60,6 +61,9 @@ const HeaderBar = () => {
             <MenuNavigation />
           ) : pathname.startsWith("/manager/inventory") ? (
             <InventoryNavigation />
+          ) : pathname.startsWith("/manager/table") ||
+            pathname.startsWith("/manager/reservation") ? (
+            <TableNavigation />
           ) : (
             <div
               className="flex items-center gap-1.5 font-semibold text-secondary-foreground"

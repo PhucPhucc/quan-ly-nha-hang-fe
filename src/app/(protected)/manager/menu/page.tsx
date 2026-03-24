@@ -1,9 +1,9 @@
-import { MenuManagement } from "@/components/features/menu/MenuManagement";
+import { MenuOverviewDashboard } from "@/components/features/menu/MenuOverviewDashboard";
 
 const MenuPage = () => {
   return (
-    <div className="w-full h-full">
-      <MenuManagement />
+    <div className="h-full w-full overflow-auto">
+      <MenuOverviewDashboard />
     </div>
   );
 };

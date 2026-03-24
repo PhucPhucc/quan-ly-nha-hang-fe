@@ -15,6 +15,7 @@ interface InventoryStatCardProps {
   variant?: "default" | "danger" | "warning" | "success" | "info";
   className?: string;
   isLoading?: boolean;
+  compact?: boolean;
 }
 
 const variantStyles = {
@@ -60,60 +61,97 @@ export function InventoryStatCard({
   variant = "default",
   className,
   isLoading = false,
+  compact = false,
 }: InventoryStatCardProps) {
   const styles = variantStyles[variant];
+
+  // Sizes for Horizontal Layout (Compact)
+  const padding = compact ? "p-3 py-2.5" : "p-5";
+  const gap = compact ? "gap-3" : "gap-3";
+  const iconSize = compact ? "h-9 w-9" : "h-10 w-10";
+  const iconInner = compact ? "h-4 w-4" : "h-5 w-5";
+  const valueSize = compact ? "text-xl" : "text-3xl";
+  const labelSize = compact ? "text-[10px]" : "text-xs";
 
   const content = (
     <div
       className={cn(
-        "group relative flex h-full flex-col gap-3 rounded-2xl border p-5 shadow-sm transition-all duration-200",
+        "group relative flex h-full rounded-2xl border shadow-sm transition-all duration-200",
+        compact ? "flex-row items-center" : "flex-col",
+        gap,
+        padding,
         href && "hover:shadow-md hover:-translate-y-0.5 cursor-pointer",
         styles.card,
         className
       )}
     >
-      {/* Icon + Arrow row */}
-      <div className="flex items-start justify-between">
-        <div
-          className={cn("flex h-10 w-10 items-center justify-center rounded-xl", styles.iconWrap)}
-        >
-          <Icon className="h-5 w-5" />
-        </div>
-        {href && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 transition-colors group-hover:text-muted-foreground">
-            {UI_TEXT.INVENTORY.OVERVIEW.VIEW_DETAIL_ARROW}
+      {/* Icon Section */}
+      <div
+        className={cn(
+          "flex shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-105",
+          iconSize,
+          styles.iconWrap
+        )}
+      >
+        <Icon className={iconInner} />
+      </div>
+
+      {/* Text Section */}
+      <div className="flex flex-1 flex-col justify-center min-w-0">
+        <div className="flex flex-col gap-0.5">
+          <span
+            className={cn(
+              "font-bold uppercase tracking-widest opacity-60 leading-tight",
+              labelSize,
+              styles.label
+            )}
+          >
+            {label}
           </span>
-        )}
-      </div>
+          <div className="flex items-baseline gap-2">
+            {isLoading ? (
+              <div className="h-6 w-12 animate-pulse rounded-md bg-muted" />
+            ) : (
+              <div
+                className={cn("font-black tabular-nums tracking-tight", valueSize, styles.value)}
+              >
+                {value}
+              </div>
+            )}
 
-      {/* Value */}
-      <div className="flex-1">
-        {isLoading ? (
-          <div className="h-8 w-20 animate-pulse rounded-lg bg-muted mt-2" />
-        ) : (
-          <div className={cn("text-3xl font-bold tabular-nums tracking-tight", styles.value)}>
-            {value}
+            {!compact && subLabel && subValue !== undefined && (
+              <div className="flex items-center gap-1 opacity-50">
+                <span className="text-[10px] font-bold">
+                  {subLabel}
+                  {UI_TEXT.COMMON.COLON}
+                </span>
+                <span className="text-[10px] font-black">{subValue}</span>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Label */}
-      <div className="flex flex-col gap-0.5">
-        <span className={cn("text-xs font-semibold", styles.label)}>{label}</span>
-        {subLabel && subValue !== undefined && (
-          <div className="flex items-center gap-1">
-            <span className="text-[11px] text-muted-foreground/60">
+        {compact && subLabel && subValue !== undefined && (
+          <div className="flex items-center gap-1 mt-0.5 opacity-40">
+            <span className="text-[9px] font-bold uppercase tracking-tighter">
               {subLabel}
               {UI_TEXT.COMMON.COLON}
             </span>
             {isLoading ? (
-              <div className="h-3 w-12 animate-pulse rounded bg-muted" />
+              <div className="h-2 w-8 animate-pulse rounded bg-muted" />
             ) : (
-              <span className="text-[11px] font-medium text-muted-foreground">{subValue}</span>
+              <span className="text-[9px] font-black">{subValue}</span>
             )}
           </div>
         )}
       </div>
+
+      {/* Detail Arrow - Only for non-compact or floating */}
+      {href && !compact && (
+        <span className="absolute right-4 top-4 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/30 transition-colors group-hover:text-muted-foreground">
+          {UI_TEXT.INVENTORY.OVERVIEW.VIEW_DETAIL_ARROW}
+        </span>
+      )}
     </div>
   );
 

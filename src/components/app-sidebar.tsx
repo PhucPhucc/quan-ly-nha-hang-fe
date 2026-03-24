@@ -11,6 +11,7 @@ import {
   History,
   LayoutDashboard,
   Library,
+  Map,
   Martini,
   Package,
   SquareMenu,
@@ -56,6 +57,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: SquareMenu,
             items: [
               {
+                title: "Tổng quan",
+                url: "/manager/menu",
+                icon: LayoutDashboard,
+              },
+              {
+                title: "Danh sách món",
+                url: "/manager/menu/list",
+                icon: ClipboardList,
+              },
+              {
                 title: UI_TEXT.MENU.OPTIONS.REUSABLE_TITLE,
                 url: "/manager/menu/options",
                 icon: Library,
@@ -67,6 +78,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: "/manager/table",
             icon: Table,
             items: [
+              {
+                title: "Tổng quan",
+                url: "/manager/table",
+                icon: LayoutDashboard,
+              },
+              {
+                title: "Sơ đồ bàn",
+                url: "/manager/table/layout",
+                icon: Map,
+              },
               {
                 title: UI_TEXT.SIDE_BAR.RESERVATION,
                 url: "/manager/reservation",
@@ -112,6 +133,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: Package,
             badge: alertsCount && alertsCount > 0 ? alertsCount : undefined,
             items: [
+              {
+                title: "Tổng quan",
+                url: "/manager/inventory",
+                icon: LayoutDashboard,
+              },
               {
                 title: UI_TEXT.INVENTORY.NAV.STOCK_IO,
                 url: "/manager/inventory/stock-in",

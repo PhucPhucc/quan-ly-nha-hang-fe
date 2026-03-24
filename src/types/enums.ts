@@ -20,14 +20,12 @@ export enum OrderStatus {
   Merged = "Merged",
   Ready = "Ready",
   Reserved = "Reserved",
-  Cleaning = "Cleaning",
   OutOfService = "OutOfService",
 }
 
 export enum OrderItemStatus {
   Preparing = "Preparing",
   Cooking = "Cooking",
-  Ready = "Ready",
   Completed = "Completed",
   Cancelled = "Cancelled",
   Rejected = "Rejected",

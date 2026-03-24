@@ -46,7 +46,6 @@ const itemStatusClass = (status: OrderItemStatus) => {
   if (status === OrderItemStatus.Completed) return "table-pill-success";
   if (status === OrderItemStatus.Cancelled || status === OrderItemStatus.Rejected)
     return "table-pill-danger";
-  if (status === OrderItemStatus.Ready) return "table-pill-info";
   if (status === OrderItemStatus.Cooking) return "table-pill-primary";
   return "table-pill-neutral";
 };
@@ -109,6 +108,28 @@ export default function OrderDetailsDrawer({ open, order, onOpenChange }: OrderD
   }, [open, order]);
 
   const current = detail ?? order;
+
+  const handleSplitBill = async (item: OrderModel["orderItems"][number]) => {
+    const raw = window.prompt(UI_TEXT.ORDER.DETAIL.SPLIT_BILL_PROMPT(item.itemNameSnapshot), "1");
+    if (raw == null) return;
+
+    const quantity = Number(raw);
+    if (!Number.isInteger(quantity) || quantity <= 0 || quantity > item.quantity) {
+      window.alert(UI_TEXT.ORDER.DETAIL.SPLIT_BILL_INVALID_QTY);
+      return;
+    }
+
+    const response = await billingService.splitBill(order!.orderId, {
+      itemsToSplit: [{ orderItemId: item.orderItemId, quantityToSplit: quantity }],
+    });
+
+    if (!response.isSuccess) {
+      window.alert(response.message || UI_TEXT.ORDER.DETAIL.SPLIT_BILL_FAILED);
+      return;
+    }
+
+    window.alert(UI_TEXT.ORDER.DETAIL.SPLIT_BILL_SUCCESS);
+  };
 
   const timeline = useMemo(() => {
     if (!current) return [];
@@ -343,6 +364,16 @@ export default function OrderDetailsDrawer({ open, order, onOpenChange }: OrderD
                                 <p className="text-lg font-black text-primary">
                                   {money.format(item.quantity * item.unitPriceSnapshot)}
                                 </p>
+                                {current.status === OrderStatus.Serving && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="mt-3"
+                                    onClick={() => handleSplitBill(item)}
+                                  >
+                                    {UI_TEXT.ORDER.DETAIL.SPLIT_BILL}
+                                  </Button>
+                                )}
                               </div>
                             </div>
                           );

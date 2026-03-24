@@ -25,7 +25,8 @@ export const INVENTORY_PAGINATION_BUTTON_CLASS =
 export const INVENTORY_DATE_BUTTON_CLASS =
   "h-10 justify-start rounded-xl border-slate-200 bg-slate-50 text-left font-normal text-slate-900 shadow-none transition-colors hover:bg-slate-100/70";
 
-export const INVENTORY_PAGE_CLASS = "flex h-full min-h-0 flex-col gap-4 bg-slate-50/30 p-4 pt-6";
+export const INVENTORY_PAGE_CLASS =
+  "flex flex-1 min-h-0 flex-col gap-4 bg-slate-50/30 p-4 pt-6 overflow-y-auto";
 
 // Table behavior - container scroll + height (shorter to leave room for pagination)
 export const INVENTORY_TABLE_CONTAINER_CLASS = "max-h-[540px] overflow-auto relative";
