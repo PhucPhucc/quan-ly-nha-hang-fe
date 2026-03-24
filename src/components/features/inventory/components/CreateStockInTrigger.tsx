@@ -26,7 +26,7 @@ export function CreateStockInTrigger({ onSuccess }: Props) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="h-9 w-auto gap-2 rounded-xl bg-primary px-3.5 text-sm font-medium text-primary-foreground shadow-sm shadow-primary/20 transition-colors hover:bg-primary-hover active:scale-[0.98]">
+          <Button className="h-9 w-auto gap-2 bg-primary px-3.5 text-sm font-medium text-primary-foreground shadow-sm shadow-primary/20 transition-colors hover:bg-primary-hover active:scale-[0.98]">
             <div className="flex size-5 items-center justify-center rounded-lg bg-white/20">
               <History className="size-3.5 text-white" strokeWidth={2.5} />
             </div>

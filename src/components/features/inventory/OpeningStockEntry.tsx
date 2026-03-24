@@ -129,7 +129,7 @@ export function OpeningStockEntry() {
                 onClick={handlePrimarySave}
                 disabled={saving || isLocked}
                 size="sm"
-                className="h-9 rounded-xl bg-primary px-3 text-xs text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary-hover"
+                className="h-9 bg-primary px-3 text-xs text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary-hover"
               >
                 {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-3.5 w-3.5" />}
                 {OPENING_STOCK.BTN_SAVE}
