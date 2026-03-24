@@ -2,7 +2,7 @@ import { PREFERENCE } from "@/constants/ui_text/preference";
 
 import { AUDIT_LOG } from "../constants/ui_text/audit";
 import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_text/auth";
-import { API, BUTTON, COMMON, FORM, ROLE, SIDE_BAR } from "../constants/ui_text/common";
+import { API, BUTTON, COMMON, FORM, NAVIGATION, ROLE, SIDE_BAR } from "../constants/ui_text/common";
 import { DASHBOARD } from "../constants/ui_text/dashboard";
 import { EMPLOYEE } from "../constants/ui_text/employee";
 import { INVENTORY } from "../constants/ui_text/inventory";
@@ -17,6 +17,7 @@ import { VOUCHER } from "../constants/ui_text/voucher";
 export const UI_TEXT = {
   COMMON,
   SIDE_BAR,
+  NAVIGATION,
   FORM,
   ROLE,
   BUTTON,

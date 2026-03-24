@@ -112,10 +112,23 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
             {UI_TEXT.COMMON.CURRENCY}
           </span>
         </div>
+        {voucherCode && (
+          <div className="flex justify-between items-center text-primary gap-2 px-1">
+            <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-tight">
+              <Ticket className="w-3.5 h-3.5" />
+              <span>
+                {UI_TEXT.VOUCHER.SIDEBAR_TITLE} {voucherCode}
+              </span>
+            </div>
+            <span className="text-[11px] font-semibold text-primary/80">
+              {UI_TEXT.VOUCHER.APPLIED}
+            </span>
+          </div>
+        )}
         {discount > 0 && (
           <div className="flex justify-between items-center text-red-500 gap-2 px-1">
             <span className="text-[10px] uppercase font-bold">
-              {UI_TEXT.VOUCHER.SIDEBAR_TITLE} {voucherCode && `(${voucherCode})`}
+              {UI_TEXT.ORDER.CURRENT.DISCOUNT}
             </span>
             <span className="font-bold text-xs">
               {UI_TEXT.COMMON.MINUS}
@@ -162,7 +175,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
               {UI_TEXT.ORDER.CURRENT.PROCESSING}
             </>
           ) : (
-            "Thêm vào đơn"
+            UI_TEXT.ORDER.CURRENT.ADD_TO_ORDER || "Thêm vào đơn"
           )}
         </Button>
         <Button

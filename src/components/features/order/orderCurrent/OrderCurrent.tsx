@@ -59,6 +59,7 @@ const OrderCurrent = () => {
   const voucherCode =
     activeOrderDetails?.voucherCode ??
     activeOrderDetails?.appliedVoucherCode ??
+    activeOrderDetails?.promotionCode ??
     activeOrderDetails?.voucher?.voucherCode ??
     undefined;
 

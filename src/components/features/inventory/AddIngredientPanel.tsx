@@ -61,6 +61,14 @@ export function AddIngredientPanel({
     },
   });
   const defaultLowStockThreshold = settings?.defaultLowStockThreshold ?? 10;
+  const resolvedUseDefaultLowStockThreshold =
+    ingredient?.useDefaultLowStockThreshold ??
+    (ingredient ? ingredient.lowStockThreshold === defaultLowStockThreshold : true);
+  const resolvedIngredientLowStockThreshold = resolvedUseDefaultLowStockThreshold
+    ? defaultLowStockThreshold
+    : (ingredient?.lowStockThreshold ?? defaultLowStockThreshold);
+  const watchedName = watch("name");
+  const useDefaultLowStockThreshold = watch("useDefaultLowStockThreshold");
 
   const {
     register,
@@ -77,8 +85,8 @@ export function AddIngredientPanel({
           name: ingredient.name,
           code: ingredient.code,
           unit: ingredient.unit,
-          useDefaultLowStockThreshold: ingredient.lowStockThreshold === defaultLowStockThreshold,
-          lowStockThreshold: ingredient.lowStockThreshold,
+          useDefaultLowStockThreshold: resolvedUseDefaultLowStockThreshold,
+          lowStockThreshold: resolvedIngredientLowStockThreshold,
           costPrice: ingredient.costPrice,
           currentStock: ingredient.currentStock,
           description: ingredient.description || "",
@@ -106,8 +114,8 @@ export function AddIngredientPanel({
           code: ingredient.code,
           unit: ingredient.unit,
           currentStock: ingredient.currentStock,
-          useDefaultLowStockThreshold: ingredient.lowStockThreshold === defaultLowStockThreshold,
-          lowStockThreshold: ingredient.lowStockThreshold,
+          useDefaultLowStockThreshold: resolvedUseDefaultLowStockThreshold,
+          lowStockThreshold: resolvedIngredientLowStockThreshold,
           costPrice: ingredient.costPrice,
           description: ingredient.description || "",
           isActive: ingredient.isActive,
@@ -128,24 +136,23 @@ export function AddIngredientPanel({
       setError(null);
       setHasCustomCode(false);
     }
-  }, [defaultLowStockThreshold, open, ingredient, reset]);
+  }, [defaultLowStockThreshold, open, ingredient, reset, resolvedUseDefaultLowStockThreshold]);
 
   React.useEffect(() => {
-    if (!open || isEditing || isDirty) {
+    if (!open || isDirty) {
       return;
     }
 
-    setValue("lowStockThreshold", defaultLowStockThreshold, {
-      shouldDirty: false,
-      shouldValidate: true,
-    });
-  }, [defaultLowStockThreshold, isDirty, isEditing, open, setValue]);
-
-  const watchedName = watch("name");
-  const useDefaultLowStockThreshold = watch("useDefaultLowStockThreshold");
+    if (useDefaultLowStockThreshold || !isEditing) {
+      setValue("lowStockThreshold", defaultLowStockThreshold, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [defaultLowStockThreshold, isDirty, isEditing, open, setValue, useDefaultLowStockThreshold]);
 
   React.useEffect(() => {
-    if (!open || isEditing || !useDefaultLowStockThreshold) {
+    if (!open || !useDefaultLowStockThreshold) {
       return;
     }
 

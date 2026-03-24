@@ -14,6 +14,8 @@ import {
 import { usePathname } from "next/navigation";
 import React, { useMemo } from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
+
 import { InventoryNavigation } from "../features/inventory/components/InventoryNavigation";
 import { MenuNavigation } from "../features/menu/components/MenuNavigation";
 import { OrderNavigation } from "../features/order/components/OrderNavigation";
@@ -21,32 +23,36 @@ import { TableNavigation } from "../features/table-layout/components/TableNaviga
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 
-const ROUTE_CONFIG: Record<string, { label: string; icon: React.ReactNode }> = {
-  dashboard: { label: "Tổng quan", icon: <LayoutDashboard className="size-3.5" /> },
-  order: { label: "Bán hàng", icon: <ShoppingCart className="size-3.5" /> },
-  "billing-history": { label: "Lịch sử thanh toán", icon: <CreditCard className="size-3.5" /> },
-  "audit-log": { label: "Nhật ký thao tác", icon: <History className="size-3.5" /> },
-  menu: { label: "Thực đơn", icon: <Utensils className="size-3.5" /> },
-  employee: { label: "Nhân viên", icon: <Users className="size-3.5" /> },
-  profile: { label: "Cá nhân", icon: <User className="size-3.5" /> },
-  table: { label: "Sơ đồ bàn", icon: <TableIcon className="size-3.5" /> },
-  inventory: { label: "Kho hàng", icon: <Utensils className="size-3.5" /> },
-  "stock-in": { label: "Xuất nhập kho", icon: <History className="size-3.5" /> },
-  voucher: { label: "Voucher", icon: <Tag className="size-3.5" /> },
-};
-
 const HeaderBar = () => {
+  const t = UI_TEXT.NAVIGATION;
+  const ROUTE_CONFIG = useMemo<Record<string, { label: string; icon: React.ReactNode }>>(
+    () => ({
+      dashboard: { label: t.DASHBOARD, icon: <LayoutDashboard className="size-3.5" /> },
+      order: { label: t.SALES, icon: <ShoppingCart className="size-3.5" /> },
+      "billing-history": { label: t.BILLING_HISTORY, icon: <CreditCard className="size-3.5" /> },
+      "audit-log": { label: t.AUDIT_LOG, icon: <History className="size-3.5" /> },
+      menu: { label: t.MENU, icon: <Utensils className="size-3.5" /> },
+      employee: { label: t.EMPLOYEE, icon: <Users className="size-3.5" /> },
+      profile: { label: t.PROFILE, icon: <User className="size-3.5" /> },
+      table: { label: t.TABLE_MAP, icon: <TableIcon className="size-3.5" /> },
+      inventory: { label: t.INVENTORY, icon: <Utensils className="size-3.5" /> },
+      "stock-in": { label: t.STOCK_HISTORY, icon: <History className="size-3.5" /> },
+      voucher: { label: t.VOUCHER, icon: <Tag className="size-3.5" /> },
+    }),
+    [t]
+  );
+
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((seg) => seg);
   const segment = pathSegments[pathSegments.length - 1];
   const pageLabel = useMemo(() => {
     if (pathname === "/manager/order") return ROUTE_CONFIG.order.label;
-    if (pathname === "/manager/order/list") return "Danh sách đơn hàng";
+    if (pathname === "/manager/order/list") return t.ORDER_LIST;
     if (pathname === "/manager/order/billing-history") return ROUTE_CONFIG["billing-history"].label;
     if (pathname === "/manager/order/audit-log") return ROUTE_CONFIG["audit-log"].label;
-    if (pathname.startsWith("/manager/order/")) return "Chi tiết đơn hàng";
+    if (pathname.startsWith("/manager/order/")) return t.ORDER_DETAIL;
     return ROUTE_CONFIG[segment]?.label || segment;
-  }, [pathname, segment]);
+  }, [pathname, segment, t, ROUTE_CONFIG]);
 
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-md transition-all">

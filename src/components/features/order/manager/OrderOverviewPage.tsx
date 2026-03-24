@@ -147,7 +147,7 @@ export default function OrderOverviewPage() {
 
   return (
     <div className={cn(INVENTORY_PAGE_CLASS, "gap-5 pt-3")}>
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_680px] xl:items-start">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_440px] xl:items-start">
         <div className="space-y-5">
           <PageHeader
             icon={ClipboardList}
@@ -213,9 +213,9 @@ export default function OrderOverviewPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] xl:items-start">
         <RecentOrders seedOrders={overview?.topActiveOrders ?? []} />
-        <div className="space-y-6">
+        <div className="space-y-4 xl:space-y-5">
           <BillingHistoryPreview records={billingHistory} loading={loading} error={billingError} />
           <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
         </div>

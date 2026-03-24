@@ -127,4 +127,5 @@ export const VOUCHER = {
   LOADING_LIST: "Đang tải danh sách...",
   EXPIRY_SHORT: "HSD:",
   EMPTY_LIST: "Không có voucher nào khả dụng lúc này",
+  APPLIED: "Đã áp dụng",
 };

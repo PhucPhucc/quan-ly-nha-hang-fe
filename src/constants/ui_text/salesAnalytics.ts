@@ -44,4 +44,6 @@ export const SALES_ANALYTICS = {
   BEST_ITEM_INSIGHT: (name: string, percent: number) =>
     `Món ${name} hiệu quả nhất, đóng góp ${percent}% doanh thu.`,
   CATEGORY_INSIGHT: (name: string) => `Danh mục ${name} dẫn đầu. Nên tối ưu menu.`,
+  EXPORT_SUCCESS: "Xuất báo cáo Excel thành công!",
+  EXPORT_ERROR: "Xuất báo cáo thất bại, vui lòng thử lại!",
 };

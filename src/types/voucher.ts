@@ -59,8 +59,10 @@ export interface ApplyVoucherResult {
   orderCode: string;
   oldPromotionId?: string;
   oldPromotionCode?: string;
-  newPromotionId: string;
-  newPromotionCode: string;
+  newPromotionId?: string;
+  newPromotionCode?: string;
+  subTotal?: number;
+  vatAmount?: number;
   discountAmount: number;
   totalAmount: number;
 }

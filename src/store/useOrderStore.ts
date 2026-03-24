@@ -40,6 +40,7 @@ export interface OrderBoardState {
   setSortOrder: (s: string) => void;
   resetFilters: () => void;
   updateActiveOrderDiscount: (discount: number, voucherCode?: string) => void;
+  patchActiveOrderDetails: (patch: Partial<Order>) => void;
 
   // order mutations
   addOrder: (order: Order) => void;
@@ -201,6 +202,18 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
             discountAmount: discount,
             voucherCode: voucherCode || undefined,
             appliedVoucherCode: voucherCode || undefined,
+          },
+        };
+      });
+    },
+
+    patchActiveOrderDetails: (patch) => {
+      set((state) => {
+        if (!state.activeOrderDetails) return state;
+        return {
+          activeOrderDetails: {
+            ...state.activeOrderDetails,
+            ...patch,
           },
         };
       });

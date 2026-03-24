@@ -1,6 +1,6 @@
 import { DollarSign, Loader2 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
+import { useTableStore } from "@/store/useTableStore";
 import { OrderStatus, PaymentMethod } from "@/types/enums";
 
 interface CheckoutModalProps {
@@ -54,6 +55,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
       fetchOrders: state.fetchOrders,
     })
   );
+  const { selectedAreaId, fetchTablesByArea } = useTableStore((state) => ({
+    selectedAreaId: state.selectedAreaId,
+    fetchTablesByArea: state.fetchTablesByArea,
+  }));
+
+  const refreshBoardState = useCallback(async () => {
+    await Promise.all([
+      fetchOrders(),
+      selectedAreaId ? fetchTablesByArea(selectedAreaId) : Promise.resolve(),
+    ]);
+  }, [fetchOrders, selectedAreaId, fetchTablesByArea]);
 
   useEffect(() => {
     let isMounted = true;
@@ -115,10 +127,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           const res = await orderService.getOrderById(selectedOrderId);
 
           if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
-            await fetchOrders();
+            await refreshBoardState();
             toast.success("Hệ thống đã nhận được tiền!");
             onClose();
             clearOrderDetails();
+            useOrderBoardStore.getState().setSelectedOrderId(null);
             clearInterval(interval);
           }
         } catch (error) {
@@ -128,7 +141,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     }
 
     return () => clearInterval(interval);
-  }, [isOpen, selectedMethod, payOSUrl, selectedOrderId, onClose, clearOrderDetails, fetchOrders]);
+  }, [
+    isOpen,
+    selectedMethod,
+    payOSUrl,
+    selectedOrderId,
+    onClose,
+    clearOrderDetails,
+    refreshBoardState,
+  ]);
 
   const handleCheckout = async () => {
     if (!selectedOrderId) return;
@@ -156,9 +177,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
       const success = await checkoutOrder(selectedOrderId, selectedMethod, amountReceived);
 
       if (success) {
+        await refreshBoardState();
         toast.success("Thanh toán thành công!");
         onClose();
         clearOrderDetails();
+        useOrderBoardStore.getState().setSelectedOrderId(null);
       } else {
         toast.error("Thanh toán thất bại, vui lòng thử lại.");
       }

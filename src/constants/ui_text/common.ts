@@ -104,6 +104,7 @@ export const COMMON = {
   HYPHEN: " - ",
   LOCALE_VI: "vi-VN",
   VALIDATION_ERROR: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.",
+  LIVE: "TRỰC TIẾP",
   PAGINATION: {
     PAGE: "Trang",
     OF: "/",
@@ -199,4 +200,19 @@ export const API = {
   NETWORK_ERROR: "Không thể kết nối server",
   TIMEOUT: "Hết thời gian phản hồi",
   UNAUTHORIZED: "Bạn chưa đăng nhập",
+};
+export const NAVIGATION = {
+  DASHBOARD: "Tổng quan",
+  SALES: "Bán hàng",
+  BILLING_HISTORY: "Lịch sử thanh toán",
+  AUDIT_LOG: "Nhật ký thao tác",
+  MENU: "Thực đơn",
+  EMPLOYEE: "Nhân viên",
+  PROFILE: "Cá nhân",
+  TABLE_MAP: "Sơ đồ bàn",
+  INVENTORY: "Kho hàng",
+  STOCK_HISTORY: "Xuất nhập kho",
+  VOUCHER: "Voucher",
+  ORDER_LIST: "Danh sách đơn hàng",
+  ORDER_DETAIL: "Chi tiết đơn hàng",
 };
