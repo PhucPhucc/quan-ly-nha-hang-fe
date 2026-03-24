@@ -45,8 +45,21 @@ const OrderCurrent = () => {
   );
 
   const subtotal = subtotalCart + subtotalRemote;
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  // Try all possible backend naming conventions robustly
+  const discount =
+    activeOrderDetails?.discountAmount ??
+    activeOrderDetails?.discount ??
+    activeOrderDetails?.voucher?.discountAmount ??
+    0;
+
+  const voucherCode =
+    activeOrderDetails?.voucherCode ??
+    activeOrderDetails?.appliedVoucherCode ??
+    activeOrderDetails?.voucher?.voucherCode ??
+    undefined;
+
+  const tax = (subtotal - discount) * 0.1;
+  const total = subtotal - discount + tax;
 
   if (orderDetailsLoading && !activeOrderDetails) {
     return (
@@ -72,7 +85,13 @@ const OrderCurrent = () => {
           }
           onRemoveItem={(key) => selectedOrderId && removeItem(selectedOrderId, key)}
         />
-        <OrderSummaryFooter subtotal={subtotal} tax={tax} total={total} />
+        <OrderSummaryFooter
+          subtotal={subtotal}
+          tax={tax}
+          total={total}
+          discount={discount}
+          voucherCode={voucherCode}
+        />
       </div>
     </CardContainer>
   );

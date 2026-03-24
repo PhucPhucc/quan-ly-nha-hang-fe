@@ -121,6 +121,7 @@ export const SIDE_BAR = {
   STATION_BAR: "Quầy Bar",
   SETTINGS: "Cài đặt",
   LOGOUT: "Đăng xuất",
+  VOUCHER: "Voucher",
 };
 
 export const FORM = {

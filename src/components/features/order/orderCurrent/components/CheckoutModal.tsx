@@ -278,7 +278,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
 
               {bankInfo && (
                 <div className="w-full space-y-1 mt-1 text-[11px] bg-muted/40 p-2 rounded-md border border-muted">
-                  {/* Gộp Tên và Số tài khoản: Quan trọng nhất để đối soát nhanh */}
                   <div className="flex flex-col border-b border-muted/50 pb-1">
                     <span className="text-muted-foreground uppercase text-[9px] font-medium">
                       {BANK_LABELS.accountName}
@@ -292,16 +291,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                       </span>
                     </div>
                   </div>
-
-                  {/* Số tiền: Phải to và rõ */}
                   <div className="flex justify-between items-center border-b border-muted/50 py-1">
                     <span className="text-muted-foreground">{BANK_LABELS.amount}</span>
                     <span className="font-black text-right text-red-600 text-xs">
                       {(bankInfo.amount ?? totalAmount).toLocaleString()} {BANK_LABELS.currency}
                     </span>
                   </div>
-
-                  {/* Nội dung: Chỉ hiện nếu có, dùng truncate */}
                   <div className="flex justify-between items-center pt-0.5">
                     <span className="text-muted-foreground shrink-0 mr-2">{BANK_LABELS.desc}</span>
                     <span className="font-bold text-right text-orange-600 truncate">

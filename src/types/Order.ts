@@ -29,6 +29,14 @@ export interface Order {
 
   note?: string;
   totalAmount: number;
+  discountAmount?: number;
+  discount?: number;
+  voucherCode?: string;
+  appliedVoucherCode?: string;
+  voucher?: {
+    voucherCode?: string;
+    discountAmount?: number;
+  };
   isPriority: boolean;
   createdAt: string;
   updatedAt?: string;

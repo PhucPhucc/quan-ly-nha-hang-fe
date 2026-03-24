@@ -15,6 +15,7 @@ import {
   Settings,
   SquareMenu,
   Table,
+  Tag,
   Users,
   UtensilsCrossed,
 } from "lucide-react";
@@ -66,6 +67,11 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
       title: UI_TEXT.SIDE_BAR.EMPLOYEE,
       url: "/manager/employee",
       icon: Users,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.VOUCHER,
+      url: "/manager/voucher",
+      icon: Tag,
     },
     {
       title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
