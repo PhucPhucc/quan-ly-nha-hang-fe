@@ -20,6 +20,7 @@ export enum Feature {
   MERGE = "MERGE",
   SPLIT = "SPLIT",
   MOVE_TABLE = "MOVE_TABLE",
+  CANCEL = "CANCEL",
 }
 
 const DropdownFeature = ({ table }: { table: Table }) => {
@@ -51,6 +52,14 @@ const DropdownFeature = ({ table }: { table: Table }) => {
           <DropdownMenuItem onClick={() => setFeature(Feature.MOVE_TABLE)}>
             {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE}
           </DropdownMenuItem>
+          {(!table.price || table.price === "0" || parseFloat(table.price) === 0) && (
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={() => setFeature(Feature.CANCEL)}
+            >
+              {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -61,7 +70,9 @@ const DropdownFeature = ({ table }: { table: Table }) => {
               ? UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE
               : feature === Feature.SPLIT
                 ? UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT
-                : UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE}
+                : feature === Feature.MOVE_TABLE
+                  ? UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MOVE_TABLE
+                  : UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL}
           </DialogTitle>
           {feature && <CardFeature feature={feature} table={table} onClose={setFeature} />}
         </DialogContent>

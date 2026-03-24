@@ -115,6 +115,10 @@ export const ORDER = {
       MOVE_TABLE_SELECT_PLACEHOLDER: "Chọn đơn hàng",
       MOVE_TABLE_ORDER_REQUIRED: "Không tìm thấy đơn hàng của bàn này",
       MOVE_TABLE_DESTINATION_REQUIRED: "Chọn bàn đích để chuyển",
+      CANCEL: "Hủy đơn",
+      CANCEL_CONFIRM: "Bạn có chắc chắn muốn hủy đơn hàng trống này không?",
+      CANCEL_SUCCESS: "Hủy đơn hàng thành công",
+      CANCEL_ERROR: "Hủy đơn hàng thất bại",
     },
   },
   CURRENT: {

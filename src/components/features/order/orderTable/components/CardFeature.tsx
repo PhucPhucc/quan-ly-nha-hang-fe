@@ -250,6 +250,36 @@ export default function CardFeature({
         await refreshBoardData();
         onClose(null);
       }
+      return;
+    }
+
+    if (feature === Feature.CANCEL) {
+      if (!orderId) {
+        toast.error("Không tìm thấy order của bàn này");
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        await orderService.cancelOrder(orderId, "Nhân viên hủy đơn trống");
+        toast.success(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL_SUCCESS);
+      } catch (error: unknown) {
+        let errorMessage = UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL_ERROR;
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (error && typeof error === "object" && "message" in error) {
+          errorMessage = String(error.message);
+        } else if (typeof error === "string") {
+          errorMessage = error;
+        }
+        toast.error(errorMessage);
+        console.error("Error occurred while cancelling order:", error);
+      } finally {
+        setIsSubmitting(false);
+        await refreshBoardData();
+        onClose(null);
+      }
+      return;
     }
 
     await fetchOrders();
@@ -265,6 +295,22 @@ export default function CardFeature({
         {feature === Feature.MOVE_TABLE && <ChangeTable table={table} />}
 
         {feature === Feature.MERGE && <MergeOrder table={table} />}
+
+        {feature === Feature.CANCEL && (
+          <div className="py-4 px-2 text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL_CONFIRM}
+            </p>
+            <div className="rounded-2xl border bg-muted/20 p-4 mb-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                {UI_TEXT.ORDER.BOARD.ORDER_CODE}
+              </p>
+              <p className="text-lg font-bold text-primary">
+                {sourceOrder?.orderCode || table.label}
+              </p>
+            </div>
+          </div>
+        )}
 
         {feature === Feature.SPLIT && (
           <div className="space-y-4 px-1 py-2">
@@ -489,6 +535,9 @@ export default function CardFeature({
               (splitDestinationMode === "new-table"
                 ? UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_NEW
                 : UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_EXISTING)}
+            {!isSubmitting &&
+              feature === Feature.CANCEL &&
+              UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL}
           </Button>
         </div>
       </form>
