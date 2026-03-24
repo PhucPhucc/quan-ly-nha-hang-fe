@@ -119,6 +119,7 @@ describe("AddIngredientPanel", () => {
           code: "APPLE-AUTO",
           unit: "kg",
           lowStockThreshold: 3,
+          useDefaultLowStockThreshold: true,
           description: "",
           isActive: true,
         })

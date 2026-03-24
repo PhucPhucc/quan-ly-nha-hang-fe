@@ -141,13 +141,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
         <PrintTempDialog />
         <Button
           variant="outline"
-          onClick={() => {
-            if (selectedOrderId && (cartData[selectedOrderId] || []).length > 0) {
-              toast.warning("Vui lòng 'Thêm vào đơn' các món mới trước khi áp dụng mã giảm giá.");
-              return;
-            }
-            setIsVoucherOpen(true);
-          }}
+          onClick={() => setIsVoucherOpen(true)}
           disabled={!selectedOrderId || isSubmitting}
           className={voucherCode ? "text-primary border-primary bg-primary/5 font-bold" : ""}
         >

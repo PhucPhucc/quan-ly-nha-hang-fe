@@ -77,6 +77,7 @@ export function AddIngredientPanel({
           name: ingredient.name,
           code: ingredient.code,
           unit: ingredient.unit,
+          useDefaultLowStockThreshold: ingredient.lowStockThreshold === defaultLowStockThreshold,
           lowStockThreshold: ingredient.lowStockThreshold,
           costPrice: ingredient.costPrice,
           currentStock: ingredient.currentStock,
@@ -88,6 +89,7 @@ export function AddIngredientPanel({
           code: "",
           currentStock: 0,
           unit: InventoryUnit.KG,
+          useDefaultLowStockThreshold: true,
           lowStockThreshold: defaultLowStockThreshold,
           costPrice: 0,
           description: "",
@@ -104,6 +106,7 @@ export function AddIngredientPanel({
           code: ingredient.code,
           unit: ingredient.unit,
           currentStock: ingredient.currentStock,
+          useDefaultLowStockThreshold: ingredient.lowStockThreshold === defaultLowStockThreshold,
           lowStockThreshold: ingredient.lowStockThreshold,
           costPrice: ingredient.costPrice,
           description: ingredient.description || "",
@@ -115,6 +118,7 @@ export function AddIngredientPanel({
           code: "",
           currentStock: 0,
           unit: InventoryUnit.KG,
+          useDefaultLowStockThreshold: true,
           lowStockThreshold: defaultLowStockThreshold,
           costPrice: 0,
           description: "",
@@ -138,6 +142,18 @@ export function AddIngredientPanel({
   }, [defaultLowStockThreshold, isDirty, isEditing, open, setValue]);
 
   const watchedName = watch("name");
+  const useDefaultLowStockThreshold = watch("useDefaultLowStockThreshold");
+
+  React.useEffect(() => {
+    if (!open || isEditing || !useDefaultLowStockThreshold) {
+      return;
+    }
+
+    setValue("lowStockThreshold", defaultLowStockThreshold, {
+      shouldDirty: false,
+      shouldValidate: true,
+    });
+  }, [defaultLowStockThreshold, isEditing, open, setValue, useDefaultLowStockThreshold]);
 
   React.useEffect(() => {
     if (isEditing || hasCustomCode) return;
@@ -183,6 +199,7 @@ export function AddIngredientPanel({
         isActive: data.isActive,
         ingredientId: ingredient?.ingredientId,
         status: isEditing ? ingredient.status : AlertThresholdStatus.NORMAL,
+        useDefaultLowStockThreshold: data.useDefaultLowStockThreshold,
       };
 
       let res;
@@ -252,6 +269,7 @@ export function AddIngredientPanel({
               control={control}
               isEditing={isEditing}
               setHasCustomCode={setHasCustomCode}
+              defaultLowStockThreshold={defaultLowStockThreshold}
             />
           </form>
         </div>

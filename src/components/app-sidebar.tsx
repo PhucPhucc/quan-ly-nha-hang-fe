@@ -112,7 +112,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 icon: ClipboardList,
               },
               {
-                title: UI_TEXT.SIDE_BAR.VOUCHER,
+                title: UI_TEXT.VOUCHER.TITLE,
                 url: "/manager/voucher",
                 icon: Tag,
               },

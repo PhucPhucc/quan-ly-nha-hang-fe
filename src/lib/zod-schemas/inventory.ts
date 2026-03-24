@@ -4,7 +4,7 @@ export const inventorySettingsSchema = z.object({
   expiryWarningDays: z.number().min(1, "Số ngày cảnh báo phải ≥ 1"),
   defaultLowStockThreshold: z.number().min(0, "Ngưỡng cảnh báo phải ≥ 0"),
   autoDeductOnCompleted: z.boolean(),
-  costMethod: z.string(),
+  costMethod: z.string().min(1, "Vui lòng chọn phương pháp tính giá vốn"),
   maxCostRecalcDays: z
     .number()
     .min(1, "Số ngày tối đa phải ≥ 1")

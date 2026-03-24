@@ -42,12 +42,12 @@ interface CreateVoucherModalProps {
 const V = UI_TEXT.VOUCHER;
 
 const initialFormData: CreateVoucherPayload = {
-  voucherCode: "",
-  voucherType: VoucherType.Percent,
-  discountValue: 0,
+  code: "",
+  type: VoucherType.Percent,
+  value: 0,
   maxDiscount: undefined,
   minOrderValue: undefined,
-  itemtId: undefined,
+  itemId: undefined,
   freeQuantity: undefined,
   startDate: "",
   endDate: "",
@@ -73,12 +73,12 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
     if (open) {
       if (editingVoucher) {
         setFormData({
-          voucherCode: editingVoucher.voucherCode,
-          voucherType: editingVoucher.voucherType,
-          discountValue: editingVoucher.discountValue,
+          code: editingVoucher.code,
+          type: editingVoucher.type,
+          value: editingVoucher.value,
           maxDiscount: editingVoucher.maxDiscount || undefined,
           minOrderValue: editingVoucher.minOrderValue || undefined,
-          itemtId: editingVoucher.itemtId || undefined,
+          itemId: editingVoucher.itemId || undefined,
           freeQuantity: editingVoucher.freeQuantity || undefined,
           startDate: editingVoucher.startDate
             ? new Date(editingVoucher.startDate).toISOString().split("T")[0]
@@ -108,7 +108,7 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
     setLoading(true);
 
     try {
-      if (!formData.voucherCode.trim()) {
+      if (!formData.code.trim()) {
         throw new Error(V.VALIDATE_CODE_REQUIRED);
       }
       if (!formData.startDate || !formData.endDate) {
@@ -127,9 +127,9 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
       if (isEditing && editingVoucher) {
         const updatePayload: UpdateVoucherPayload = {
           ...payload,
-          voucherId: editingVoucher.voucherId,
+          promotionId: editingVoucher.promotionId,
         };
-        await voucherService.update(editingVoucher.voucherId, updatePayload);
+        await voucherService.update(editingVoucher.promotionId, updatePayload);
       } else {
         await voucherService.create(payload);
       }
@@ -144,9 +144,7 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
   };
 
   const discountLabel =
-    formData.voucherType === VoucherType.Percent
-      ? V.FIELD_DISCOUNT_PERCENT
-      : V.FIELD_DISCOUNT_FIXED;
+    formData.type === VoucherType.Percent ? V.FIELD_DISCOUNT_PERCENT : V.FIELD_DISCOUNT_FIXED;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -168,29 +166,29 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="voucherCode">
+                <Label htmlFor="code">
                   {V.FIELD_CODE} {UI_TEXT.COMMON.ASTERISK}
                 </Label>
                 <Input
-                  id="voucherCode"
+                  id="code"
                   placeholder={V.FIELD_CODE_PLACEHOLDER}
-                  value={formData.voucherCode ?? ""}
-                  onChange={(e) => handleChange("voucherCode", e.target.value.toUpperCase())}
+                  value={formData.code ?? ""}
+                  onChange={(e) => handleChange("code", e.target.value.toUpperCase())}
                   className="font-mono uppercase"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="voucherType">{V.FIELD_TYPE}</Label>
+                <Label htmlFor="type">{V.FIELD_TYPE}</Label>
                 <Select
-                  value={formData.voucherType}
-                  onValueChange={(v) => handleChange("voucherType", v)}
+                  value={formData.type.toString()}
+                  onValueChange={(v) => handleChange("type", parseInt(v))}
                 >
-                  <SelectTrigger id="voucherType" className="rounded-xl">
+                  <SelectTrigger id="type" className="rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
                     {VOUCHER_TYPE_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
+                      <SelectItem key={opt.value.toString()} value={opt.value.toString()}>
                         {opt.label}
                       </SelectItem>
                     ))}
@@ -210,24 +208,21 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
             </h3>
 
             <div className="grid grid-cols-3 gap-4">
-              {formData.voucherType !== VoucherType.FreeItem && (
+              {formData.type !== VoucherType.FreeItem && (
                 <div className="space-y-2">
-                  <Label htmlFor="discountValue">{discountLabel}</Label>
+                  <Label htmlFor="value">{discountLabel}</Label>
                   <Input
-                    id="discountValue"
+                    id="value"
                     type="number"
                     min={0}
-                    value={formData.discountValue ?? ""}
+                    value={formData.value ?? ""}
                     onChange={(e) =>
-                      handleChange(
-                        "discountValue",
-                        e.target.value === "" ? 0 : Number(e.target.value)
-                      )
+                      handleChange("value", e.target.value === "" ? 0 : Number(e.target.value))
                     }
                   />
                 </div>
               )}
-              {formData.voucherType === VoucherType.Percent && (
+              {formData.type === VoucherType.Percent && (
                 <div className="space-y-2">
                   <Label htmlFor="maxDiscount">{V.FIELD_MAX_DISCOUNT}</Label>
                   <Input
@@ -263,7 +258,7 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
               </div>
             </div>
 
-            {formData.voucherType === VoucherType.FreeItem && (
+            {formData.type === VoucherType.FreeItem && (
               <div className="rounded-lg border border-rose-200 bg-rose-50/50 dark:border-rose-800 dark:bg-rose-950/20 p-4 space-y-3">
                 <span className="text-xs font-semibold text-rose-600 dark:text-rose-400">
                   {V.FREE_ITEM_TITLE}
@@ -273,8 +268,8 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
                     <Label>{V.FREE_ITEM_ID}</Label>
                     <Input
                       placeholder={V.FREE_ITEM_ID}
-                      value={formData.itemtId ?? ""}
-                      onChange={(e) => handleChange("itemtId", e.target.value || undefined)}
+                      value={formData.itemId ?? ""}
+                      onChange={(e) => handleChange("itemId", e.target.value || undefined)}
                     />
                   </div>
                   <div className="space-y-2">

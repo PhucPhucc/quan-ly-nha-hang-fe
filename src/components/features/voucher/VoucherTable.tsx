@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 
 import TableSkeleton from "@/components/shared/TableSkeleton";
@@ -32,13 +32,14 @@ import VoucherAction from "./VoucherAction";
 interface VoucherTableProps {
   onView: (voucher: Voucher) => void;
   onEdit: (voucher: Voucher) => void;
+  onCreate: () => void;
   refreshKey: number;
 }
 
 const V = UI_TEXT.VOUCHER;
 const C = UI_TEXT.COMMON;
 
-const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, refreshKey }) => {
+const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, refreshKey }) => {
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -94,9 +95,11 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, refreshKey 
 
   const handleToggleStatus = async (voucher: Voucher) => {
     try {
-      await voucherService.toggleStatus(voucher.voucherId, !voucher.isActive);
+      await voucherService.toggleStatus(voucher.promotionId, !voucher.isActive);
       setVouchers((prev) =>
-        prev.map((v) => (v.voucherId === voucher.voucherId ? { ...v, isActive: !v.isActive } : v))
+        prev.map((v) =>
+          v.promotionId === voucher.promotionId ? { ...v, isActive: !v.isActive } : v
+        )
       );
     } catch (err) {
       console.error("Failed to toggle voucher status:", err);
@@ -104,9 +107,9 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, refreshKey 
   };
 
   const handleDelete = async (voucher: Voucher) => {
-    if (!confirm(V.DELETE_CONFIRM(voucher.voucherCode))) return;
+    if (!confirm(V.DELETE_CONFIRM(voucher.code))) return;
     try {
-      await voucherService.delete(voucher.voucherId);
+      await voucherService.delete(voucher.promotionId);
       fetchVouchers();
     } catch (err) {
       console.error("Failed to delete voucher:", err);
@@ -134,9 +137,9 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, refreshKey 
   };
 
   const formatValue = (voucher: Voucher) => {
-    if (voucher.voucherType === VoucherType.Percent) return `${voucher.discountValue}${C.PERCENT}`;
-    if (voucher.voucherType === VoucherType.Fixed)
-      return `${voucher.discountValue.toLocaleString(C.LOCALE_VI)}${C.CURRENCY}`;
+    if (voucher.type === VoucherType.Percent) return `${voucher.value}${C.PERCENT}`;
+    if (voucher.type === VoucherType.Fixed)
+      return `${voucher.value.toLocaleString(C.LOCALE_VI)}${C.CURRENCY}`;
     return C.MINUS;
   };
 
@@ -179,7 +182,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, refreshKey 
           <SelectContent className="rounded-xl">
             <SelectItem value="all">{V.FILTER_ALL}</SelectItem>
             {VOUCHER_TYPE_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
+              <SelectItem key={opt.value.toString()} value={opt.value.toString()}>
                 {opt.label}
               </SelectItem>
             ))}
@@ -207,6 +210,14 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, refreshKey 
             {inactiveCount} {V.STATS_INACTIVE}
           </span>
         </div>
+
+        <Button
+          onClick={onCreate}
+          className="h-10 rounded-xl bg-primary hover:bg-primary-hover shadow-sm gap-2 font-semibold px-4"
+        >
+          <Plus className="size-4" />
+          <span className="text-xs uppercase tracking-tight">{V.CREATE}</span>
+        </Button>
       </div>
 
       {/* Table */}
@@ -252,18 +263,18 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, refreshKey 
               vouchers.map((voucher) => {
                 const active = isVoucherActive(voucher);
                 const statusLabel = getStatusLabel(voucher);
-                const typePill = getTypePill(voucher.voucherType);
+                const typePill = getTypePill(voucher.type);
                 const usagePercent =
-                  voucher.usageLimit > 0
+                  voucher.usageLimit && voucher.usageLimit > 0
                     ? Math.round((voucher.usedCount / voucher.usageLimit) * 100)
                     : 0;
 
                 return (
-                  <TableRow key={voucher.voucherId} className="group">
+                  <TableRow key={voucher.promotionId} className="group">
                     {/* Code */}
                     <TableCell>
                       <span className="text-sm font-bold text-table-text-strong tracking-wide">
-                        {voucher.voucherCode}
+                        {voucher.code}
                       </span>
                     </TableCell>
 

@@ -5,7 +5,6 @@ import { Box, CircleAlert, Info, Save } from "lucide-react";
 import React, { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -20,6 +19,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { type InventorySettingsInput, inventorySettingsSchema } from "@/lib/zod-schemas/inventory";
+import { InventoryCostMethod } from "@/types/Inventory";
 
 import { DEFAULT_INVENTORY_SETTINGS } from "./inventorySettings.constants";
 
@@ -60,6 +60,11 @@ export function InventorySettingsForm({
     control,
     name: "costMethod",
   });
+
+  const costMethodLabel =
+    costMethodValue === InventoryCostMethod.WeightedAverage
+      ? SETTINGS.COST_METHOD_W_AVG
+      : costMethodValue;
 
   return (
     <div className="w-full p-4 pb-10 md:p-6 md:pb-12">
@@ -126,15 +131,22 @@ export function InventorySettingsForm({
                   {SETTINGS.COST_METHOD}
                 </FieldLabel>
                 <FieldContent>
-                  <div className="flex h-10 items-center">
-                    <Badge
-                      variant="secondary"
-                      className="px-3 py-1 text-sm bg-secondary text-secondary-foreground"
-                    >
-                      {costMethodValue || "Bình quân gia quyền"}
-                    </Badge>
+                  <input
+                    type="hidden"
+                    defaultValue={InventoryCostMethod.WeightedAverage}
+                    {...register("costMethod")}
+                  />
+                  <div className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-muted/40 px-3 text-sm text-foreground">
+                    <span className="font-semibold">{SETTINGS.COST_METHOD_W_AVG}</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {SETTINGS.DEFAULT}
+                    </span>
                   </div>
-                  <FieldDescription>{SETTINGS.COST_METHOD_DESC}</FieldDescription>
+                  <FieldDescription>
+                    {SETTINGS.COST_METHOD_DESC} {SETTINGS.COST_METHOD_SUPPORT}{" "}
+                    <span className="font-semibold">{costMethodLabel}</span>
+                    {UI_TEXT.COMMON.DOT}
+                  </FieldDescription>
                 </FieldContent>
               </Field>
 

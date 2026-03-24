@@ -1,4 +1,4 @@
-import { Control, Controller, FieldErrors, UseFormRegister } from "react-hook-form";
+import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -15,6 +15,7 @@ type Props = {
   control: Control<IngredientFormValues>;
   isEditing?: boolean;
   setHasCustomCode?: (custom: boolean) => void;
+  defaultLowStockThreshold?: number;
 };
 
 export function IngredientFormFields({
@@ -23,7 +24,13 @@ export function IngredientFormFields({
   control,
   isEditing,
   setHasCustomCode,
+  defaultLowStockThreshold,
 }: Props) {
+  const useDefaultLowStockThreshold = useWatch({
+    control,
+    name: "useDefaultLowStockThreshold",
+  });
+
   return (
     <div className="space-y-4">
       <div className="grid gap-2">
@@ -115,14 +122,44 @@ export function IngredientFormFields({
       </div>
 
       <div className="grid gap-2">
+        <div className="flex items-center justify-between gap-4 rounded-lg border bg-muted/20 p-3">
+          <div className="space-y-0.5">
+            <label className="text-sm font-semibold text-foreground">
+              {UI_TEXT.INVENTORY.FORM.USE_DEFAULT_THRESHOLD}
+            </label>
+            <p className="text-xs text-muted-foreground">
+              {UI_TEXT.INVENTORY.FORM.USE_DEFAULT_THRESHOLD_DESC}
+            </p>
+          </div>
+          <Controller
+            name="useDefaultLowStockThreshold"
+            control={control}
+            render={({ field }) => (
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
+            )}
+          />
+        </div>
         <label className="text-sm font-semibold text-foreground">
           {UI_TEXT.INVENTORY.FORM.ALERT_THRESHOLD}
         </label>
         <Input
           type="number"
+          disabled={useDefaultLowStockThreshold}
           {...register("lowStockThreshold", { valueAsNumber: true })}
-          className={cn(errors.lowStockThreshold && "border-destructive")}
+          className={cn(
+            errors.lowStockThreshold && "border-destructive",
+            useDefaultLowStockThreshold && "bg-muted text-muted-foreground"
+          )}
         />
+        {typeof defaultLowStockThreshold === "number" && (
+          <p className="text-xs text-muted-foreground">
+            {UI_TEXT.INVENTORY.FORM.CURRENT_DEFAULT_THRESHOLD} {defaultLowStockThreshold}
+            {UI_TEXT.COMMON.DOT}
+            {useDefaultLowStockThreshold
+              ? UI_TEXT.INVENTORY.FORM.USING_DEFAULT_THRESHOLD
+              : UI_TEXT.INVENTORY.FORM.CUSTOM_THRESHOLD_HELP}
+          </p>
+        )}
         {errors.lowStockThreshold?.message && (
           <span className="text-xs text-destructive">{errors.lowStockThreshold.message}</span>
         )}

@@ -50,11 +50,13 @@ const VoucherDetailsModal: React.FC<VoucherDetailsModalProps> = ({
     return V.STATUS_ACTIVE;
   };
 
-  const typeBadge = VOUCHER_TYPE_OPTIONS.find((o) => o.value === voucher.voucherType);
+  const typeBadge = VOUCHER_TYPE_OPTIONS.find((o) => o.value === voucher.type);
   const active = isActive();
   const statusLabel = getStatusLabel();
   const usagePercent =
-    voucher.usageLimit > 0 ? Math.round((voucher.usedCount / voucher.usageLimit) * 100) : 0;
+    voucher.usageLimit && voucher.usageLimit > 0
+      ? Math.round((voucher.usedCount / voucher.usageLimit) * 100)
+      : 0;
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -97,7 +99,7 @@ const VoucherDetailsModal: React.FC<VoucherDetailsModalProps> = ({
               </div>
               <span className="text-[10px] text-muted-foreground font-mono">
                 {C.HASH}
-                {voucher.voucherId.slice(0, 8).toUpperCase()}
+                {voucher.promotionId.slice(0, 8).toUpperCase()}
               </span>
             </div>
           </SheetDescription>
@@ -114,19 +116,19 @@ const VoucherDetailsModal: React.FC<VoucherDetailsModalProps> = ({
                 <InfoCard
                   icon={<Hash className="size-4 text-primary" />}
                   label={V.DETAIL_CODE}
-                  value={voucher.voucherCode}
+                  value={voucher.code}
                 />
                 <InfoCard
                   icon={<Tag className="size-4 text-primary" />}
                   label={V.DETAIL_NAME}
-                  value={voucher.voucherTypeName || C.DASH}
+                  value={voucher.code || C.DASH}
                 />
                 <InfoCard
                   icon={<Percent className="size-4 text-primary" />}
                   label={V.DETAIL_TYPE}
                   value={
                     <span className="table-pill table-pill-primary border-0 text-[10px]">
-                      {typeBadge?.label || voucher.voucherType}
+                      {typeBadge?.label || voucher.type}
                     </span>
                   }
                 />
@@ -134,11 +136,11 @@ const VoucherDetailsModal: React.FC<VoucherDetailsModalProps> = ({
                   icon={<TrendingUp className="size-4 text-primary" />}
                   label={V.DETAIL_VALUE}
                   value={
-                    voucher.voucherType === VoucherType.FreeItem
+                    voucher.type === VoucherType.FreeItem
                       ? V.DETAIL_FREE_ITEM_LABEL
-                      : voucher.voucherType === VoucherType.Percent
-                        ? `${voucher.discountValue}${C.PERCENT}`
-                        : formatCurrency(voucher.discountValue)
+                      : voucher.type === VoucherType.Percent
+                        ? `${voucher.value}${C.PERCENT}`
+                        : formatCurrency(voucher.value)
                   }
                 />
               </div>
@@ -180,14 +182,14 @@ const VoucherDetailsModal: React.FC<VoucherDetailsModalProps> = ({
                       : V.DETAIL_ALL_DAY
                   }
                 />
-                {voucher.voucherType === VoucherType.FreeItem && (
+                {voucher.type === VoucherType.FreeItem && (
                   <DetailRow
                     icon={<Gift className="size-3.5 text-muted-foreground" />}
                     label={V.DETAIL_FREE_ITEM}
                     value={
                       voucher.itemName
                         ? `${voucher.itemName} ${C.PAREN_LEFT}x${voucher.freeQuantity}${C.PAREN_RIGHT}`
-                        : `ID${C.COLON} ${voucher.itemtId || C.DASH} ${C.PAREN_LEFT}x${voucher.freeQuantity}${C.PAREN_RIGHT}`
+                        : `ID${C.COLON} ${voucher.itemId || C.DASH} ${C.PAREN_LEFT}x${voucher.freeQuantity}${C.PAREN_RIGHT}`
                     }
                   />
                 )}

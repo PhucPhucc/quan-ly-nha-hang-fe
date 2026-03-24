@@ -1,54 +1,53 @@
 // ===== Voucher Types =====
 
 export enum VoucherType {
-  Percent = "Percent",
-  Fixed = "Fixed",
-  FreeItem = "FreeItem",
+  Percent = 1,
+  Fixed = 2,
+  FreeItem = 3,
 }
 
 export interface Voucher {
-  voucherId: string;
-  voucherCode: string;
-  voucherType: VoucherType;
-  voucherTypeName: string;
-  discountValue: number;
-  maxDiscount: number;
-  minOrderValue: number;
-  itemtId?: string;
-  itemName?: string;
-  freeQuantity: number;
-  startDate: string;
-  endDate: string;
-  startTime?: string;
-  endTime?: string;
-  isActive: boolean;
-  usageLimit: number;
-  usedCount: number;
-}
-
-export interface CreateVoucherPayload {
-  voucherCode: string;
-  voucherType: VoucherType;
-  discountValue: number;
+  promotionId: string;
+  code: string;
+  type: VoucherType;
+  value: number;
   maxDiscount?: number;
   minOrderValue?: number;
-  itemtId?: string;
+  itemId?: string;
+  itemName?: string;
   freeQuantity?: number;
   startDate: string;
   endDate: string;
   startTime?: string;
   endTime?: string;
-  usageLimit: number;
+  isActive: boolean;
+  usageLimit?: number;
+  usedCount: number;
+}
+
+export interface CreateVoucherPayload {
+  code: string;
+  type: VoucherType;
+  value: number;
+  maxDiscount?: number;
+  minOrderValue?: number;
+  itemId?: string;
+  freeQuantity?: number;
+  startDate: string;
+  endDate: string;
+  startTime?: string;
+  endTime?: string;
+  usageLimit?: number;
   isActive: boolean;
 }
 
 export interface UpdateVoucherPayload extends CreateVoucherPayload {
-  voucherId: string;
+  promotionId: string;
 }
 
 export interface ApplyVoucherPayload {
   orderId: string;
-  voucherId: string;
+  code: string;
 }
 
 export interface UnapplyVoucherPayload {
@@ -58,10 +57,10 @@ export interface UnapplyVoucherPayload {
 export interface ApplyVoucherResult {
   orderId: string;
   orderCode: string;
-  oldVoucherId?: string;
-  oldVoucherCode?: string;
-  newVoucherId: string;
-  newVoucherCode: string;
+  oldPromotionId?: string;
+  oldPromotionCode?: string;
+  newPromotionId: string;
+  newPromotionCode: string;
   discountAmount: number;
   totalAmount: number;
 }
@@ -69,8 +68,8 @@ export interface ApplyVoucherResult {
 export interface UnapplyVoucherResult {
   orderId: string;
   orderCode: string;
-  oldVoucherId?: string;
-  oldVoucherCode?: string;
+  oldPromotionId?: string;
+  oldPromotionCode?: string;
   totalAmount: number;
 }
 
@@ -95,7 +94,19 @@ export interface GetVouchersQuery {
 
 // Helper to get display info for voucher type
 export const VOUCHER_TYPE_OPTIONS = [
-  { value: VoucherType.Percent, label: "Phần trăm", color: "bg-blue-500/15 text-blue-600" },
-  { value: VoucherType.Fixed, label: "Cố định", color: "bg-emerald-500/15 text-emerald-600" },
-  { value: VoucherType.FreeItem, label: "Tặng món", color: "bg-rose-500/15 text-rose-600" },
+  {
+    value: VoucherType.Percent,
+    label: "Phần trăm",
+    color: "bg-blue-500/15 text-blue-600",
+  },
+  {
+    value: VoucherType.Fixed,
+    label: "Cố định",
+    color: "bg-emerald-500/15 text-emerald-600",
+  },
+  {
+    value: VoucherType.FreeItem,
+    label: "Tặng món",
+    color: "bg-rose-500/15 text-rose-600",
+  },
 ];

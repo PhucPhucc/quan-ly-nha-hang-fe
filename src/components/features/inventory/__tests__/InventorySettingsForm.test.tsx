@@ -52,7 +52,7 @@ const initialValues = {
   expiryWarningDays: 10,
   defaultLowStockThreshold: 5,
   autoDeductOnCompleted: true,
-  costMethod: "Bình quân gia quyền",
+  costMethod: "WeightedAverage",
   maxCostRecalcDays: 30,
 };
 

@@ -16,7 +16,7 @@ describe("inventoryService", () => {
         expiryWarningDays: 7,
         defaultLowStockThreshold: 0,
         autoDeductOnCompleted: true,
-        costMethod: "Bình quân gia quyền",
+        costMethod: "WeightedAverage",
         maxCostRecalcDays: 31,
       },
     });

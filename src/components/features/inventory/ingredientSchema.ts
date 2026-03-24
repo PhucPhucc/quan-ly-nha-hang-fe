@@ -8,6 +8,7 @@ export const ingredientSchema = z.object({
   unit: z.nativeEnum(InventoryUnit, {
     error: "Vui lòng chọn đơn vị tính",
   }),
+  useDefaultLowStockThreshold: z.boolean(),
   // Stock and cost are system-managed; keep for display only.
   currentStock: z.number().min(0, "Số lượng phải lớn hơn hoặc bằng 0"),
   lowStockThreshold: z.number().min(0),

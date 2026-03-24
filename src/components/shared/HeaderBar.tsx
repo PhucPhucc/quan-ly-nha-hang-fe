@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   ShoppingCart,
   Table as TableIcon,
+  Tag,
   User,
   Users,
   Utensils,
@@ -31,7 +32,7 @@ const ROUTE_CONFIG: Record<string, { label: string; icon: React.ReactNode }> = {
   table: { label: "Sơ đồ bàn", icon: <TableIcon className="size-3.5" /> },
   inventory: { label: "Kho hàng", icon: <Utensils className="size-3.5" /> },
   "stock-in": { label: "Xuất nhập kho", icon: <History className="size-3.5" /> },
-  voucher: { label: "Voucher", icon: <Utensils className="size-3.5" /> },
+  voucher: { label: "Voucher", icon: <Tag className="size-3.5" /> },
 };
 
 const HeaderBar = () => {
@@ -46,7 +47,7 @@ const HeaderBar = () => {
     if (pathname.startsWith("/manager/order/")) return "Chi tiết đơn hàng";
     return ROUTE_CONFIG[segment]?.label || segment;
   }, [pathname, segment]);
-  const NOTIF_COUNT = "3";
+
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-md transition-all">
       <div className="flex flex-1 items-center overflow-hidden">
@@ -56,7 +57,7 @@ const HeaderBar = () => {
         </div>
 
         <div className="ml-2 hidden flex-1 items-center overflow-hidden md:flex">
-          {pathname.startsWith("/manager/order") ? (
+          {pathname.startsWith("/manager/order") || pathname.startsWith("/manager/voucher") ? (
             <OrderNavigation />
           ) : pathname.startsWith("/manager/menu") ? (
             <MenuNavigation />

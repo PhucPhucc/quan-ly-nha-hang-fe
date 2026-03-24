@@ -24,48 +24,48 @@ export const voucherService = {
       query.filters.forEach((f) => params.append("Filters", f));
     }
 
-    return apiFetch<VoucherPaginatedResult>(`/vouchers?${params.toString()}`);
+    return apiFetch<VoucherPaginatedResult>(`/promotions?${params.toString()}`);
   },
 
   getById: (id: string): Promise<ApiResponse<Voucher>> => {
-    return apiFetch<Voucher>(`/vouchers/${id}`);
+    return apiFetch<Voucher>(`/promotions/${id}`);
   },
 
   create: (data: CreateVoucherPayload): Promise<ApiResponse<Voucher>> => {
-    return apiFetch<Voucher>("/vouchers", {
+    return apiFetch<Voucher>("/promotions", {
       method: "POST",
       body: data,
     });
   },
 
   update: (id: string, data: UpdateVoucherPayload): Promise<ApiResponse<Voucher>> => {
-    return apiFetch<Voucher>(`/vouchers/${id}`, {
+    return apiFetch<Voucher>(`/promotions/${id}`, {
       method: "PUT",
       body: data,
     });
   },
 
   delete: (id: string): Promise<ApiResponse<Voucher>> => {
-    return apiFetch<Voucher>(`/vouchers/${id}`, {
+    return apiFetch<Voucher>(`/promotions/${id}`, {
       method: "DELETE",
     });
   },
 
   toggleStatus: (id: string, isActive: boolean): Promise<ApiResponse<Voucher>> => {
-    return apiFetch<Voucher>(`/vouchers/${id}/status?isActive=${isActive}`, {
+    return apiFetch<Voucher>(`/promotions/${id}/status?isActive=${isActive}`, {
       method: "PATCH",
     });
   },
 
   apply: (data: ApplyVoucherPayload): Promise<ApiResponse<ApplyVoucherResult>> => {
-    return apiFetch<ApplyVoucherResult>("/vouchers/apply", {
+    return apiFetch<ApplyVoucherResult>("/promotions/apply", {
       method: "POST",
       body: data,
     });
   },
 
   unapply: (data: UnapplyVoucherPayload): Promise<ApiResponse<UnapplyVoucherResult>> => {
-    return apiFetch<UnapplyVoucherResult>("/vouchers/unapply", {
+    return apiFetch<UnapplyVoucherResult>("/promotions/unapply", {
       method: "POST",
       body: data,
     });

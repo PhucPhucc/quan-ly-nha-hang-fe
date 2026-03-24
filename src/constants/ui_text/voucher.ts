@@ -123,4 +123,8 @@ export const VOUCHER = {
   ERROR_ALREADY_APPLIED: "Đơn hàng này đã áp dụng mã giảm giá rồi",
   REMOVE_SUCCESS: "Đã gỡ mã giảm giá",
   REMOVE_ERROR: "Không thể gỡ mã giảm giá",
+  LIST_AVAILABLE: "Danh sách voucher khả dụng",
+  LOADING_LIST: "Đang tải danh sách...",
+  EXPIRY_SHORT: "HSD:",
+  EMPTY_LIST: "Không có voucher nào khả dụng lúc này",
 };

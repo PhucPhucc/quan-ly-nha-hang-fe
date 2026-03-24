@@ -8,6 +8,10 @@ export enum InventoryUnit {
   BOX = "box",
 }
 
+export enum InventoryCostMethod {
+  WeightedAverage = "WeightedAverage",
+}
+
 export enum AlertThresholdStatus {
   NORMAL = "NORMAL",
   LOW_STOCK = "LOW_STOCK",
@@ -27,6 +31,7 @@ export interface Ingredient {
   baseUnit?: string;
   currentStock: number;
   lowStockThreshold: number;
+  useDefaultLowStockThreshold?: boolean;
   costPrice: number;
   status?: AlertThresholdStatus;
   description?: string;

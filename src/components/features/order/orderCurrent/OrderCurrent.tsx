@@ -39,13 +39,17 @@ const OrderCurrent = () => {
   const remoteItems = activeOrderDetails?.orderItems || [];
 
   const subtotalCart = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
-  const subtotalRemote = remoteItems.reduce(
-    (acc, item) => acc + item.unitPriceSnapshot * item.quantity,
-    0
-  );
+
+  const subtotalRemote = remoteItems.reduce((acc, item) => {
+    const base = item.unitPriceSnapshot * item.quantity;
+    const options = (item.optionGroups || []).reduce((gAcc, g) => {
+      return gAcc + g.optionValues.reduce((vAcc, v) => vAcc + v.extraPriceSnapshot * v.quantity, 0);
+    }, 0);
+    return acc + base + options;
+  }, 0);
 
   const subtotal = subtotalCart + subtotalRemote;
-  // Try all possible backend naming conventions robustly
+
   const discount =
     activeOrderDetails?.discountAmount ??
     activeOrderDetails?.discount ??
@@ -58,8 +62,14 @@ const OrderCurrent = () => {
     activeOrderDetails?.voucher?.voucherCode ??
     undefined;
 
-  const tax = (subtotal - discount) * 0.1;
-  const total = subtotal - discount + tax;
+  // Use server total if no items in cart to match backend logic precisely
+  const serverTotal = activeOrderDetails?.totalAmount;
+  const hasCartItems = cartItems.length > 0;
+
+  const tax = Math.round((subtotal - discount) * 0.1);
+  const total = hasCartItems
+    ? subtotal - discount + tax
+    : (serverTotal ?? subtotal - discount + tax);
 
   if (orderDetailsLoading && !activeOrderDetails) {
     return (

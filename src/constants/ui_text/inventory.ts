@@ -133,6 +133,12 @@ export const INVENTORY = {
     SUCCESS_EDIT: "Cập nhật nguyên liệu thành công",
     BTN_SAVING: "Đang lưu...",
     BTN_SAVE: "Lưu nguyên liệu",
+    USE_DEFAULT_THRESHOLD: "Dùng ngưỡng mặc định của kho",
+    USE_DEFAULT_THRESHOLD_DESC:
+      "Bật để lấy ngưỡng cảnh báo chung, tắt để nhập ngưỡng riêng cho nguyên liệu.",
+    CURRENT_DEFAULT_THRESHOLD: "Ngưỡng mặc định của kho hiện là",
+    USING_DEFAULT_THRESHOLD: " Nguyên liệu này đang dùng ngưỡng mặc định.",
+    CUSTOM_THRESHOLD_HELP: " Bạn có thể nhập ngưỡng riêng cho nguyên liệu này.",
   },
   TOOLBAR: {
     SEARCH_PLACEHOLDER: "Tìm mã hoặc tên NVL...",
@@ -218,6 +224,9 @@ export const INVENTORY = {
     MAX_RECALC_DAYS_DESC: "Khoảng thời gian tối đa để thực hiện tính toán lại giá vốn định kỳ.",
     SUCCESS_UPDATE: "Cập nhật cấu hình kho thành công",
     ERROR_FETCH: "Không thể tải cấu hình kho",
+    COST_METHOD_W_AVG: "Bình quân gia quyền",
+    DEFAULT: "Mặc định",
+    COST_METHOD_SUPPORT: "Hiện tại hệ thống mới hỗ trợ.",
   },
   OPENING_STOCK: {
     TITLE: "Nhập số dư ban đầu",

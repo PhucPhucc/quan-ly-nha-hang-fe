@@ -246,6 +246,10 @@ function mapInventoryTransaction(item: InventoryTransaction): InventoryTransacti
   };
 }
 
+interface IngredientMutationRequest extends Partial<Ingredient> {
+  useDefaultLowStockThreshold?: boolean;
+}
+
 function normalizePagination<T>(
   data: PaginationEnvelope<T>,
   mapper?: (item: T) => T
@@ -300,7 +304,7 @@ export const inventoryService = {
   },
 
   // Thêm nguyên liệu mới
-  addIngredient: async (data: Partial<Ingredient>): Promise<ApiResponse<Ingredient>> => {
+  addIngredient: async (data: IngredientMutationRequest): Promise<ApiResponse<Ingredient>> => {
     const response = await apiFetch<Ingredient>("/ingredients", {
       method: "POST",
       body: data,
@@ -345,7 +349,7 @@ export const inventoryService = {
   // Cập nhật nguyên liệu
   updateIngredient: async (
     id: string,
-    data: Partial<Ingredient>
+    data: IngredientMutationRequest
   ): Promise<ApiResponse<Ingredient>> => {
     const response = await apiFetch<Ingredient>(`/ingredients/${id}`, {
       method: "PUT",
