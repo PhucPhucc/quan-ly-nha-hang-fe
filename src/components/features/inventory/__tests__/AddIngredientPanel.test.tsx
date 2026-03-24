@@ -15,6 +15,7 @@ vi.mock("@/services/inventory.service", () => ({
     addIngredient: vi.fn(),
     generateIngredientCode: vi.fn(),
     getInventorySettings: vi.fn(),
+    getInventoryGroups: vi.fn(),
   },
 }));
 
@@ -50,6 +51,10 @@ describe("AddIngredientPanel", () => {
         costMethod: "WeightedAverage",
         maxCostRecalcDays: 31,
       },
+    });
+    vi.mocked(inventoryService.getInventoryGroups).mockResolvedValue({
+      isSuccess: true,
+      data: [],
     });
 
     vi.mocked(inventoryService.generateIngredientCode).mockResolvedValue({
@@ -102,7 +107,8 @@ describe("AddIngredientPanel", () => {
     const spinbuttons = within(dialog).getAllByRole("spinbutton");
     const qtyInput = spinbuttons[0];
     expect(qtyInput).toHaveAttribute("readonly");
-    await user.selectOptions(within(dialog).getByRole("combobox"), "kg");
+    const [unitSelect] = within(dialog).getAllByRole("combobox");
+    await user.selectOptions(unitSelect, "kg");
 
     const costInput = spinbuttons[1];
     expect(costInput).toHaveAttribute("readonly");
@@ -120,6 +126,7 @@ describe("AddIngredientPanel", () => {
           unit: "kg",
           lowStockThreshold: 3,
           useDefaultLowStockThreshold: true,
+          inventoryGroupId: null,
           description: "",
           isActive: true,
         })

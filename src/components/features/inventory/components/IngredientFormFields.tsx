@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
-import { InventoryUnit } from "@/types/Inventory";
+import { InventoryGroup, InventoryUnit } from "@/types/Inventory";
 
 import { IngredientFormValues } from "../ingredientSchema";
 
@@ -16,6 +16,7 @@ type Props = {
   isEditing?: boolean;
   setHasCustomCode?: (custom: boolean) => void;
   defaultLowStockThreshold?: number;
+  inventoryGroups?: InventoryGroup[];
 };
 
 export function IngredientFormFields({
@@ -25,6 +26,7 @@ export function IngredientFormFields({
   isEditing,
   setHasCustomCode,
   defaultLowStockThreshold,
+  inventoryGroups = [],
 }: Props) {
   const useDefaultLowStockThreshold = useWatch({
     control,
@@ -119,6 +121,30 @@ export function IngredientFormFields({
             className={cn("bg-muted text-foreground/80", errors.costPrice && "border-destructive")}
           />
         </div>
+      </div>
+
+      <div className="grid gap-2">
+        <label className="text-sm font-semibold text-foreground">
+          {UI_TEXT.INVENTORY.FORM.GROUP}
+        </label>
+        <select
+          {...register("inventoryGroupId")}
+          className={cn(
+            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            errors.inventoryGroupId && "border-destructive"
+          )}
+        >
+          <option value="">{UI_TEXT.INVENTORY.FORM.GROUP_NONE}</option>
+          {inventoryGroups.map((group) => (
+            <option key={group.inventoryGroupId} value={group.inventoryGroupId}>
+              {group.name}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-muted-foreground">{UI_TEXT.INVENTORY.FORM.GROUP_DESC}</p>
+        {errors.inventoryGroupId?.message && (
+          <span className="text-xs text-destructive">{errors.inventoryGroupId.message}</span>
+        )}
       </div>
 
       <div className="grid gap-2">

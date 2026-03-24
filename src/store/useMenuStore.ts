@@ -18,6 +18,12 @@ interface MenuState {
   isModalOpen: boolean;
   editingItem: MenuItem | SetMenu | null;
 
+  // Pagination UI States
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+  pageSize: number;
+
   // Actions
   setFilter: (filter: Partial<MenuFilter>) => void;
   setSearchQuery: (query: string) => void;
@@ -25,6 +31,7 @@ interface MenuState {
   setShowOutOfStock: (show: boolean) => void;
   setModalOpen: (isOpen: boolean) => void;
   setEditingItem: (item: MenuItem | SetMenu | null) => void;
+  setCurrentPage: (page: number) => void;
   fetchMenuItems: (page?: number, pageSize?: number) => Promise<void>;
   fetchSetMenus: (page?: number, pageSize?: number) => Promise<void>;
   addMenuItem: (item: Partial<MenuItem>) => Promise<MenuItem | undefined>;
@@ -50,19 +57,31 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   isModalOpen: false,
   editingItem: null,
 
-  setFilter: (filter) => set((state) => ({ filter: { ...state.filter, ...filter } })),
-  setSearchQuery: (searchQuery) => set({ searchQuery }),
-  setCategoryId: (categoryId) => set({ categoryId }),
-  setShowOutOfStock: (showOutOfStock) => set({ showOutOfStock }),
+  currentPage: 1,
+  totalItems: 0,
+  totalPages: 1,
+  pageSize: 10,
+
+  setFilter: (filter) =>
+    set((state) => ({ filter: { ...state.filter, ...filter }, currentPage: 1 })),
+  setSearchQuery: (searchQuery) => set({ searchQuery, currentPage: 1 }),
+  setCategoryId: (categoryId) => set({ categoryId, currentPage: 1 }),
+  setShowOutOfStock: (showOutOfStock) => set({ showOutOfStock, currentPage: 1 }),
   setModalOpen: (isModalOpen) => set({ isModalOpen }),
   setEditingItem: (editingItem) => set({ editingItem }),
+  setCurrentPage: (currentPage) => set({ currentPage }),
 
-  fetchMenuItems: async (page = 1, pageSize = 100) => {
+  fetchMenuItems: async (page = 1, pageSize = get().pageSize) => {
     set({ isLoading: true });
     try {
       const response = await menuService.getAll(page, pageSize);
       if (response.isSuccess && response.data) {
-        set({ menuItems: response.data.items });
+        set({
+          menuItems: response.data.items,
+          totalItems: response.data.totalCount,
+          totalPages: response.data.totalPages,
+          currentPage: response.data.currentPage,
+        });
       }
     } catch (error) {
       console.error("Failed to fetch menu items:", error);
@@ -71,12 +90,17 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     }
   },
 
-  fetchSetMenus: async (page = 1, pageSize = 100) => {
+  fetchSetMenus: async (page = 1, pageSize = get().pageSize) => {
     set({ isLoading: true });
     try {
       const response = await menuService.getAllSetMenu(page, pageSize);
       if (response.isSuccess && response.data) {
-        set({ setMenus: response.data.items });
+        set({
+          setMenus: response.data.items,
+          totalItems: response.data.totalCount,
+          totalPages: response.data.totalPages,
+          currentPage: response.data.currentPage,
+        });
       }
     } catch (error) {
       console.error("Failed to fetch set menus:", error);

@@ -65,7 +65,6 @@ export function InventoryStatCard({
 }: InventoryStatCardProps) {
   const styles = variantStyles[variant];
 
-  // Sizes for Horizontal Layout (Compact)
   const padding = compact ? "p-3 py-2.5" : "p-5";
   const gap = compact ? "gap-3" : "gap-3";
   const iconSize = compact ? "h-9 w-9" : "h-10 w-10";

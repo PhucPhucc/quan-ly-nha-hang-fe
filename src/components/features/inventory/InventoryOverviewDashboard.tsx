@@ -16,9 +16,10 @@ import {
 import Link from "next/link";
 import React, { useMemo } from "react";
 
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useInventoryAlerts } from "@/hooks/useInventoryAlerts";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
@@ -27,7 +28,6 @@ import { InventoryAlertsResponse } from "@/types/Inventory";
 
 import { InventoryAlertSummary } from "./components/InventoryAlertSummary";
 import { InventoryStatCard } from "./components/InventoryStatCard";
-import { INVENTORY_PAGE_CLASS } from "./components/inventoryStyles";
 
 function formatCurrency(value: number): string {
   if (value >= 1_000_000_000) {
@@ -179,65 +179,50 @@ export function InventoryOverviewDashboard() {
   );
 
   return (
-    <div className={cn(INVENTORY_PAGE_CLASS, "gap-4 pb-8")}>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-              <Warehouse className="h-5 w-5" />
+    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
+      <PageHeader
+        icon={Warehouse}
+        title={UI_TEXT.INVENTORY.TITLE}
+        description={UI_TEXT.INVENTORY.WIP_DESC}
+        actions={
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-1 items-center gap-6">
+              {shouldShowOpeningStockReminder(settings) ? (
+                <div className="hidden h-10 items-center gap-3 rounded-xl border border-amber-300 bg-amber-50 px-3 text-amber-950 shadow-sm md:flex lg:px-4">
+                  <div className="flex items-center gap-2">
+                    <CircleAlert className="h-4 w-4 shrink-0 text-amber-600" />
+                    <p className="text-[13px] font-semibold">{OPENING_STOCK_REMINDER.title}</p>
+                  </div>
+                  <div className="h-4 w-px bg-amber-300/50" />
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 p-2 text-xs font-bold hover:bg-primary/80 hover:text-primary-foreground"
+                  >
+                    <Link href="/manager/inventory/opening-stock">
+                      {OPENING_STOCK_REMINDER.action} <ArrowRight className="ml-1 h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </div>
+              ) : null}
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">{UI_TEXT.INVENTORY.TITLE}</h1>
-              <p className="text-[11px] text-muted-foreground">{UI_TEXT.INVENTORY.WIP_DESC}</p>
-            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="shrink-0 gap-2 rounded-xl text-xs"
+              onClick={() => refetchStats()}
+              disabled={isFetching}
+            >
+              <RefreshCw className={cn("h-3.5 w-3.5", isFetching && "animate-spin")} />
+              {UI_TEXT.INVENTORY.OVERVIEW.REFRESH}
+            </Button>
           </div>
+        }
+      />
 
-          {shouldShowOpeningStockReminder(settings) ? (
-            <div className="hidden h-10 items-center gap-3 rounded-xl border border-amber-300 bg-amber-50 px-3 text-amber-950 shadow-sm md:flex lg:px-4">
-              <div className="flex items-center gap-2">
-                <CircleAlert className="h-4 w-4 shrink-0 text-amber-600" />
-                <p className="text-[13px] font-semibold">{OPENING_STOCK_REMINDER.title}</p>
-              </div>
-              <div className="h-4 w-px bg-amber-300/50" />
-              <Button
-                asChild
-                size="sm"
-                variant="ghost"
-                className="h-8 px-2 text-xs font-bold text-amber-800 hover:bg-amber-200/50 hover:text-amber-900"
-              >
-                <Link href="/manager/inventory/opening-stock">
-                  {OPENING_STOCK_REMINDER.action} <ArrowRight className="ml-1 h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </div>
-          ) : null}
-        </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          className="shrink-0 gap-2 rounded-xl text-xs"
-          onClick={() => refetchStats()}
-          disabled={isFetching}
-        >
-          <RefreshCw className={cn("h-3.5 w-3.5", isFetching && "animate-spin")} />
-          {UI_TEXT.INVENTORY.OVERVIEW.REFRESH}
-        </Button>
-      </div>
-
-      {shouldShowOpeningStockReminder(settings) ? (
-        <div className="flex items-center justify-between gap-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-amber-950 shadow-sm md:hidden">
-          <div className="flex items-center gap-2">
-            <CircleAlert className="h-4 w-4 shrink-0 text-amber-600" />
-            <p className="text-xs font-semibold">{OPENING_STOCK_REMINDER.title}</p>
-          </div>
-          <Button asChild size="sm" className="h-7 px-3 text-[10px] font-bold">
-            <Link href="/manager/inventory/opening-stock">{OPENING_STOCK_REMINDER.action}</Link>
-          </Button>
-        </div>
-      ) : null}
-
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2.5 px-4 md:grid-cols-2 xl:grid-cols-4">
         <InventoryStatCard
           icon={Package}
           label={UI_TEXT.INVENTORY.TOTAL_ITEMS}
@@ -278,7 +263,7 @@ export function InventoryOverviewDashboard() {
       </div>
 
       {!statsLoading && totalAlerts > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 px-4">
           {outOfStockCount > 0 && (
             <AlertBadgePill
               href="/manager/inventory/alerts"
@@ -314,7 +299,7 @@ export function InventoryOverviewDashboard() {
         </div>
       )}
 
-      <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-1 gap-4 px-4">
         <SectionHeader
           title={UI_TEXT.INVENTORY.ALERTS_TITLE}
           description={UI_TEXT.INVENTORY.ALERTS_DESC}
@@ -325,7 +310,7 @@ export function InventoryOverviewDashboard() {
         <InventoryAlertSummary />
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-1 gap-4 px-4">
         <SectionHeader
           title={UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_ITEMS_TITLE}
           description={UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_ITEMS_DESC}
@@ -334,13 +319,7 @@ export function InventoryOverviewDashboard() {
           icon={Info}
         />
         <Card className="border-none shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base font-bold">
-              <Info className="h-4 w-4 text-primary" />
-              <span>{UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_LIST}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <CardContent className="grid grid-cols-1 gap-4 lg:grid-cols-2 my-4">
             {priorityLoading
               ? Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="h-36 animate-pulse rounded-xl bg-muted/70" />

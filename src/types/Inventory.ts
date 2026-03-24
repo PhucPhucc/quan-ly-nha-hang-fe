@@ -12,6 +12,18 @@ export enum InventoryCostMethod {
   WeightedAverage = "WeightedAverage",
 }
 
+export interface InventoryGroup {
+  inventoryGroupId: string;
+  name: string;
+  description?: string | null;
+  lowStockThreshold?: number | null;
+  expiryWarningDays?: number | null;
+  defaultCostMethod?: InventoryCostMethod | null;
+  ingredientCount: number;
+  createdAt: string;
+  updatedAt?: string | null;
+}
+
 export enum AlertThresholdStatus {
   NORMAL = "NORMAL",
   LOW_STOCK = "LOW_STOCK",
@@ -32,6 +44,8 @@ export interface Ingredient {
   currentStock: number;
   lowStockThreshold: number;
   useDefaultLowStockThreshold?: boolean;
+  inventoryGroupId?: string | null;
+  inventoryGroupName?: string | null;
   costPrice: number;
   status?: AlertThresholdStatus;
   description?: string;

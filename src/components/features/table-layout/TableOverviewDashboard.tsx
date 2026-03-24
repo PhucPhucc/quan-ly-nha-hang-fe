@@ -5,7 +5,7 @@ import { ArrowRight, Layout, RefreshCw, Users, Utensils } from "lucide-react";
 import React, { useMemo } from "react";
 
 import { InventoryStatCard } from "@/components/features/inventory/components/InventoryStatCard";
-import { INVENTORY_PAGE_CLASS } from "@/components/features/inventory/components/inventoryStyles";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
@@ -75,35 +75,28 @@ export function TableOverviewDashboard() {
   const isRefreshing = areasLoading || tablesLoading;
 
   return (
-    <div className={cn(INVENTORY_PAGE_CLASS, "gap-4 pb-8")}>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <Layout className="h-5 w-5" />
+    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
+      <PageHeader
+        icon={Layout}
+        title={UI_TEXT.TABLE.OVERVIEW.TITLE}
+        description={UI_TEXT.TABLE.OVERVIEW.DESCRIPTION}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="shrink-0 gap-2 rounded-xl text-xs"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={cn("h-3.5 w-3.5", isRefreshing && "animate-spin")} />
+              {UI_TEXT.TABLE.OVERVIEW.REFRESH}
+            </Button>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-foreground">{UI_TEXT.TABLE.OVERVIEW.TITLE}</h1>
-            <p className="text-[11px] text-muted-foreground">
-              {UI_TEXT.TABLE.OVERVIEW.DESCRIPTION}
-            </p>
-          </div>
-        </div>
+        }
+      />
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="shrink-0 gap-2 rounded-xl text-xs"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isRefreshing && "animate-spin")} />
-            {UI_TEXT.TABLE.OVERVIEW.REFRESH}
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2.5 px-4 md:grid-cols-2 xl:grid-cols-4">
         <InventoryStatCard
           icon={Layout}
           label={UI_TEXT.TABLE.OVERVIEW.TOTAL_TABLES}
@@ -138,22 +131,13 @@ export function TableOverviewDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-1">
-          <StatusSummaryCard stats={stats} isLoading={tablesLoading} className="h-full" />
-        </div>
-
-        <div className="lg:col-span-2">
-          <AreaDistributionCard
-            areas={areas}
-            tables={tables}
-            isLoading={areasLoading}
-            className="h-full"
-          />
-        </div>
+      <div className="grid grid-cols-1 gap-4 px-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <StatusSummaryCard stats={stats} isLoading={tablesLoading} />
+        <AreaDistributionCard areas={areas} tables={tables} isLoading={areasLoading} />
       </div>
-
-      <AuditLogSection logs={logs} isLoading={auditLoading} />
+      <div className="gap-4 px-4">
+        <AuditLogSection logs={logs} isLoading={auditLoading} />
+      </div>
     </div>
   );
 }

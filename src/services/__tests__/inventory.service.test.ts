@@ -48,6 +48,17 @@ describe("inventoryService", () => {
     });
   });
 
+  it("calls getInventoryGroups with the groups endpoint", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({
+      isSuccess: true,
+      data: [],
+    });
+
+    await inventoryService.getInventoryGroups();
+
+    expect(apiFetch).toHaveBeenCalledWith("/inventory/groups");
+  });
+
   it("calls generateIngredientCode with encoded name query", async () => {
     vi.mocked(apiFetch).mockResolvedValue({
       isSuccess: true,

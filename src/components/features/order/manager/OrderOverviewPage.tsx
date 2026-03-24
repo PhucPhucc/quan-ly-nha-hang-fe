@@ -14,7 +14,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { RecentOrders } from "@/components/features/Dashboard/RecentOrders";
 import { InventoryStatCard } from "@/components/features/inventory/components/InventoryStatCard";
-import { INVENTORY_PAGE_CLASS } from "@/components/features/inventory/components/inventoryStyles";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -146,8 +145,8 @@ export default function OrderOverviewPage() {
   }, [overview]);
 
   return (
-    <div className={cn(INVENTORY_PAGE_CLASS, "gap-5 pt-3")}>
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_440px] xl:items-start">
+    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_690px] xl:items-start">
         <div className="space-y-5">
           <PageHeader
             icon={ClipboardList}
@@ -159,7 +158,7 @@ export default function OrderOverviewPage() {
               {error}
             </div>
           ) : null}
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 px-4 md:grid-cols-2 xl:grid-cols-3">
             <InventoryStatCard
               icon={ClipboardList}
               label={UI_TEXT.ORDER.OVERVIEW.STATS.ACTIVE}
@@ -213,13 +212,11 @@ export default function OrderOverviewPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] xl:items-start">
+      <div className="grid grid-cols-2 gap-6 ">
         <RecentOrders seedOrders={overview?.topActiveOrders ?? []} />
-        <div className="space-y-4 xl:space-y-5">
-          <BillingHistoryPreview records={billingHistory} loading={loading} error={billingError} />
-          <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
-        </div>
+        <BillingHistoryPreview records={billingHistory} loading={loading} error={billingError} />
       </div>
+      <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
     </div>
   );
 }
@@ -252,7 +249,7 @@ function PromotionOverviewCard({
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-4 space-y-4">
+      <CardContent className="pt-4 pb-4 space-y-4">
         {loading ? (
           <div className="space-y-3">
             <div className="h-10 animate-pulse rounded-lg bg-slate-50 dark:bg-slate-800/50" />
@@ -301,7 +298,7 @@ function PromotionOverviewCard({
                     </span>
                   </div>
                 </div>
-                <div className="absolute top-0 right-0 p-1 opacity-5 transition-opacity group-hover:opacity-10">
+                <div className="absolute top-0 right-0 pt-4 opacity-5 transition-opacity group-hover:opacity-10">
                   <Gift className="size-12 -mr-3 -mt-3 rotate-12" />
                 </div>
               </div>
@@ -385,8 +382,8 @@ function AuditLogPreview({ rows, loading }: { rows: AuditPreviewRow[]; loading: 
   const visibleRows = rows.slice(0, 10);
 
   return (
-    <Card className="self-start border-none shadow-md">
-      <CardHeader className="pb-3">
+    <Card className="self-start border-none shadow-md mt-3">
+      <CardHeader className="pt-3">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
           <History className="h-4 w-4 text-primary" />
           <span>{UI_TEXT.ORDER.OVERVIEW.AUDIT.TITLE}</span>
@@ -463,7 +460,7 @@ function DistributionCard({
   }));
 
   return (
-    <Card className="border-none shadow-md">
+    <Card className="border-none shadow-md py-5">
       <CardHeader className="space-y-1">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
           <Icon className="h-4 w-4 text-primary" />

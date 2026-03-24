@@ -105,6 +105,9 @@ export const COMMON = {
   LOCALE_VI: "vi-VN",
   VALIDATION_ERROR: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.",
   LIVE: "TRỰC TIẾP",
+  PAGINATION_SHOWING: "Đang hiển thị",
+  TO: "đến",
+  OF: "trên",
   PAGINATION: {
     PAGE: "Trang",
     OF: "/",

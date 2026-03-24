@@ -3,6 +3,7 @@ export * from "./InventoryAlertsTable";
 export * from "./InventoryCheckForm";
 export * from "./InventoryCheckTable";
 export * from "./InventoryCogsContainer";
+export * from "./InventoryGroupsManager";
 export * from "./InventoryLedgerTable";
 export * from "./InventoryLotsTable";
 export * from "./InventoryReportTable";
