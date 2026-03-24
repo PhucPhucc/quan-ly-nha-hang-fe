@@ -1,2 +1,5 @@
+echo "🔍 Running lint-staged..."
 npx lint-staged
 
+echo "🔍 Running TypeScript check..."
+npm run type-check
