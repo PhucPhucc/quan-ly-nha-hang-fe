@@ -10,6 +10,7 @@ export interface CartItemOptionValue {
 
 export interface CartItemOptionGroup {
   optionGroupId: string;
+  groupName?: string;
   selectedValues: CartItemOptionValue[];
 }
 

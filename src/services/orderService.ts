@@ -1,4 +1,5 @@
 import { ApiResponse, PaginationResult } from "@/types/Api";
+import { EmployeeRole } from "@/types/Employee";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order, OrderDashboardOverview } from "@/types/Order";
 
@@ -46,7 +47,7 @@ export interface AddOrderItemRequest {
 
 export interface SubmitOrderToKitchenRequest {
   orderId: string;
-  tableId: string;
+  tableId: string | null;
   orderType: OrderType;
   note?: string;
   items: {
@@ -107,7 +108,7 @@ export interface OrderAuditLogResponse {
   actionName: string;
   employeeId: string;
   actorName: string;
-  actorRole: string;
+  actorRole: EmployeeRole;
   oldValue?: string | null;
   newValue?: string | null;
   changeReason?: string | null;
@@ -123,6 +124,13 @@ export const orderService = {
     apiFetch<Order>("/orders", {
       method: "POST",
       body: data,
+    }),
+  createTakeAwayOrder: (): Promise<ApiResponse<string>> =>
+    apiFetch<string>("/orders", {
+      method: "POST",
+      body: {
+        orderType: OrderType.Takeaway,
+      },
     }),
 
   getOrderById: (id: string): Promise<ApiResponse<Order>> => apiFetch<Order>(`/orders/${id}`),
@@ -178,13 +186,13 @@ export const orderService = {
   cancelOrder: (id: string, reason: string): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/orders/${id}/cancel`, {
       method: "PATCH",
-      body: { orderId: id, reason },
+      body: { orderId: id, reason, status: OrderStatus.Cancelled },
     }),
 
   cancelOrderItem: (id: string, itemId: string, reason: string): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/orders/${id}/items/${itemId}/cancel`, {
       method: "PATCH",
-      body: { orderId: id, orderItemId: itemId, reason },
+      body: { orderId: id, orderItemId: itemId, reason, status: OrderStatus.Cancelled },
     }),
 
   completeOrder: (id: string): Promise<ApiResponse<string>> =>
@@ -228,4 +236,10 @@ export const orderService = {
       method: "POST",
       body: data,
     }),
+
+  getOrderHistory: (
+    orderId: string
+  ): Promise<ApiResponse<PaginationResult<OrderAuditLogResponse>>> => {
+    return apiFetch<PaginationResult<OrderAuditLogResponse>>(`/orders/${orderId}/audit-logs`);
+  },
 };

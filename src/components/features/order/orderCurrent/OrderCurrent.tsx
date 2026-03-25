@@ -33,7 +33,7 @@ const OrderCurrent = () => {
 
   // Cart items for this specific order
   const cartItems = selectedOrderId ? cartData[selectedOrderId] || [] : [];
-
+  console.log(cartData);
   // Map remote items to a format ItemList can display, or just pass them as a separate prop
   // For now, let's keep OrderItemList simple and pass everything as "items" or enhance it.
   const remoteItems = activeOrderDetails?.orderItems || [];

@@ -38,6 +38,10 @@ const TableList = ({ areaId }: TableListProps) => {
   const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
   const setActiveView = useOrderBoardStore((s) => s.setActiveView);
   const setSelectedOrderId = useOrderBoardStore((s) => s.setSelectedOrderId);
+  const searchQuery =
+    useOrderBoardStore((s) => s.searchQuery)
+      ?.trim()
+      .toLowerCase() || "";
 
   const tables = useTableStore((s) => s.tables);
   const isLoading = useTableStore((s) => s.isLoading);
@@ -121,7 +125,13 @@ const TableList = ({ areaId }: TableListProps) => {
     );
   }
 
-  if (sortedTables.length === 0) {
+  const filteredTables = sortedTables.filter((table) => {
+    if (!searchQuery) return true;
+    const currentOrders = servingOrdersByTableId.get(table.tableId) || [];
+    return currentOrders.some((o) => o.orderCode?.toLowerCase().includes(searchQuery));
+  });
+
+  if (filteredTables.length === 0) {
     return (
       <p className="col-span-full px-4 text-sm text-muted-foreground">{EMPTY_TABLE_MESSAGE}</p>
     );
@@ -129,7 +139,7 @@ const TableList = ({ areaId }: TableListProps) => {
 
   return (
     <>
-      {sortedTables.map((table) => {
+      {filteredTables.map((table) => {
         const currentOrders = servingOrdersByTableId.get(table.tableId) || [];
         const currentOrder = currentOrders[0];
 

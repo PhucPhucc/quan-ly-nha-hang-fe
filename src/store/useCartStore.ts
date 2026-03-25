@@ -43,7 +43,7 @@ export const useCartStore = create<CartState>((set) => ({
 
     const extraPrice = selectedOptions
       .flatMap((g) => g.selectedValues)
-      .reduce((acc, v) => acc + v.extraPrice, 0);
+      .reduce((acc, v) => acc + Number(v.extraPrice || 0) * (v.quantity || 1), 0);
 
     const unitPrice = baseUnitPrice + extraPrice;
     const cartItemKey = buildCartItemKey(menuItem.menuItemId, selectedOptions);

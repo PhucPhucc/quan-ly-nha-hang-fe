@@ -11,19 +11,22 @@ import { UI_TEXT } from "@/lib/UI_Text";
 export function BlogSection() {
   const blogs = [
     {
-      img: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=600",
-      title: "Xu hướng 'Smart Kitchen' 2026: Tự động hóa và AI",
+      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC6Sj8M56b_ZV7gRmV3GbBw6atD7B5klFOy8Kggy3y-BObZPputtQvRhLOFDdENE2dBRxjTr6K7lolR8gyPoCDsJuqlHVOOO3nk8_N8PiNAwtafdb7SKcQ6ifaGqPqrqrCDIkYGD5fVec8J-zPGtfm9xqCPcfJ732iw2kg4omyYckxmPZSTp0X2g8RXenepBV3EphJj-6OaNA-g4dPyKLu6qOQC8eIImwdymYzwg_VLqWxhw3JLQrP1fF4nIJxcTdW4W2s5RCAW1_CX",
+      title: "Câu chuyện của chúng tôi",
       date: "Jan 12, 2026",
+      href: "/news/our-story",
     },
     {
       img: "https://images.unsplash.com/photo-1551218808-94e220e084d2?q=80&w=600",
       title: "Kế hoạch mở rộng FoodHub sang thị trường SEA",
       date: "Feb 03, 2026",
+      href: "/news/expansion",
     },
     {
       img: "https://images.unsplash.com/photo-1507041957456-9c397ce39c97?q=80&w=600",
       title: "Bí quyết quản lý nhân sự hiệu quả trong giờ cao điểm",
       date: "Mar 15, 2026",
+      href: "/news/hr",
     },
   ];
 
@@ -45,7 +48,11 @@ export function BlogSection() {
 
         <div className="grid gap-10 md:grid-cols-3">
           {blogs.map((blog) => (
-            <div key={blog.title} className="group cursor-pointer flex flex-col h-full">
+            <a
+              href={blog.href || "#"}
+              key={blog.title}
+              className="group cursor-pointer flex flex-col h-full block"
+            >
               <div className="overflow-hidden rounded-2xl mb-6 aspect-4/3 relative">
                 <Image
                   src={blog.img}
@@ -66,7 +73,7 @@ export function BlogSection() {
               <h3 className="font-bold text-2xl text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                 {blog.title}
               </h3>
-            </div>
+            </a>
           ))}
         </div>
       </div>

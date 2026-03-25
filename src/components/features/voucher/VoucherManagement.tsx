@@ -37,9 +37,11 @@ const VoucherManagement = () => {
 
   const handleToggleStatus = async (voucher: Voucher) => {
     try {
-      await voucherService.toggleStatus(voucher.voucherId, !voucher.isActive);
+      await voucherService.toggleStatus(voucher.promotionId, !voucher.isActive);
       setViewingVoucher((prev) =>
-        prev && prev.voucherId === voucher.voucherId ? { ...prev, isActive: !prev.isActive } : prev
+        prev && prev.promotionId === voucher.promotionId
+          ? { ...prev, isActive: !prev.isActive }
+          : prev
       );
       refresh();
     } catch (err) {

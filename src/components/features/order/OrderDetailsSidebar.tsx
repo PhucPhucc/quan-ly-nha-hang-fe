@@ -1,14 +1,14 @@
 "use client";
 
-import { Armchair, UtensilsCrossed } from "lucide-react";
+import { Armchair } from "lucide-react";
 
-import { EmptyState } from "@/components/ui/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { OrderType } from "@/types/enums";
 
 import OrderCurrent from "./orderCurrent/OrderCurrent";
+import OrderHistory from "./orderCurrent/OrderHistory";
 
 const OrderDetailsSidebar = () => {
   const order = useOrderBoardStore((state) => state.activeOrderDetails);
@@ -19,7 +19,7 @@ const OrderDetailsSidebar = () => {
       : `Bàn ${order.tableId?.slice(-2) || "--"}`
     : "Chưa chọn bàn";
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0 w-full">
+    <div className="flex-1 flex flex-col h-full min-h-0 w-full overflow-x-hidden">
       <Tabs
         defaultValue="detail"
         className="flex-1 flex flex-col h-full min-h-0 w-full border bg-background rounded-xl shadow-sm overflow-hidden"
@@ -57,11 +57,12 @@ const OrderDetailsSidebar = () => {
           value="history"
           className="flex-1 m-0 p-0 min-h-0 overflow-hidden flex flex-col"
         >
-          <EmptyState
+          {/* <EmptyState
             title={UI_TEXT.AUDIT_LOG.EMPTY}
             description="Bàn này chưa có đơn hàng nào được hoàn thành"
             icon={UtensilsCrossed}
-          />
+          /> */}
+          <OrderHistory />
         </TabsContent>
       </Tabs>
     </div>

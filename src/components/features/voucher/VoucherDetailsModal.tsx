@@ -155,7 +155,7 @@ const VoucherDetailsModal: React.FC<VoucherDetailsModalProps> = ({
                 <DetailRow
                   label={V.DETAIL_MIN_ORDER}
                   value={
-                    voucher.minOrderValue > 0
+                    voucher.minOrderValue && voucher.minOrderValue > 0
                       ? formatCurrency(voucher.minOrderValue)
                       : V.DETAIL_UNLIMITED
                   }
@@ -163,7 +163,7 @@ const VoucherDetailsModal: React.FC<VoucherDetailsModalProps> = ({
                 <DetailRow
                   label={V.DETAIL_MAX_DISCOUNT}
                   value={
-                    voucher.maxDiscount > 0
+                    voucher.maxDiscount && voucher.maxDiscount > 0
                       ? formatCurrency(voucher.maxDiscount)
                       : V.DETAIL_UNLIMITED
                   }

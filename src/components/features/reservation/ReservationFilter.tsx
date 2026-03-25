@@ -139,7 +139,7 @@ export const ReservationFilter = ({
 
         <div className="flex items-center gap-3">
           <Button
-            className="h-12 shrink-0 bg-primary hover:bg-primary/90 text-white font-bold px-8 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-95"
+            className="h-12 shrink-0 bg-primary hover:bg-primary/90 text-white font-bold px-8 shadow-lg shadow-primary/20 transition-all active:scale-95"
             onClick={() => setIsCreateOpen(true)}
           >
             <Plus className="h-5 w-5 mr-2 stroke-[3px]" />

@@ -47,4 +47,4 @@ export type ChecklistData = {
   groupsInUse: number;
   totalGroups: number;
 };
-export { OptionGroup };
+export type { OptionGroup };

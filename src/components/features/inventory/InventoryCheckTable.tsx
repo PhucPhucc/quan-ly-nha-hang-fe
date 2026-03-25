@@ -62,7 +62,7 @@ export function InventoryCheckTable() {
     <div className="space-y-4">
       <InventoryToolbar
         actions={
-          <Button asChild className="h-10 rounded-xl px-4 text-sm font-medium shadow-sm">
+          <Button asChild className="h-10 px-4 text-sm font-medium shadow-sm">
             <Link href="/manager/inventory/check/new">
               <LucidePlus className="h-4 w-4" />
               {UI_TEXT.INVENTORY.CHECK.CREATE_BTN}

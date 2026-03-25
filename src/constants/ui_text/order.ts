@@ -14,6 +14,7 @@ export const ORDER = {
     ORDER_COUNT: (count: number) => `${count} đơn`,
     PICK_ORDER_TITLE: "Chọn đơn",
     PICK_ORDER_DESC: "Chọn một đơn đang phục vụ trên bàn này để mở chi tiết.",
+    CREATE_TAKEAWAY_ORDER: "Tạo đơn mang đi",
     TAKEAWAY_ORDERS: "Đơn mang đi",
     AVAILABLE_LCT: "Sẵn",
     AT_TABLE: "Tại bàn",
@@ -118,6 +119,10 @@ export const ORDER = {
       MOVE_TABLE_SELECT_PLACEHOLDER: "Chọn đơn hàng",
       MOVE_TABLE_ORDER_REQUIRED: "Không tìm thấy đơn hàng của bàn này",
       MOVE_TABLE_DESTINATION_REQUIRED: "Chọn bàn đích để chuyển",
+      CANCEL: "Hủy đơn",
+      CANCEL_CONFIRM: "Bạn có chắc chắn muốn hủy đơn hàng trống này không?",
+      CANCEL_SUCCESS: "Hủy đơn hàng thành công",
+      CANCEL_ERROR: "Hủy đơn hàng thất bại",
     },
   },
   CURRENT: {

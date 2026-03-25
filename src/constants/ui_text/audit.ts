@@ -22,6 +22,8 @@ export const AUDIT_LOG = {
     "BE đã có `OrderAuditLog`, nhưng hiện chưa có query riêng cho FE. Màn này giữ layout để gắn endpoint sau.",
   TIME: "Thời gian",
   ACTOR: "Người thực hiện",
+  ACTOR_NAME: "Tên người thực hiện",
+  ACTOR_ROLE: "Vai trò",
   ACTIONS_METADATA: "Hành động, lý do, metadata trước/sau",
   TIMELINE_TITLE: "Dòng thời gian gần nhất",
   EMPTY_TITLE: "Chọn một đơn để xem audit preview",

@@ -30,6 +30,7 @@ interface TableState {
     payload: { tableNumber: number; capacity: number; areaId: string }
   ) => Promise<void>;
   updateTableCurrentStatus: (tableId: string, isActive: boolean) => Promise<void>;
+  updateTableStatusRealtime: (tableId: string, statusKey: string) => void;
 }
 
 export const useTableStore = createWithEqualityFn<TableState>(
@@ -72,7 +73,7 @@ export const useTableStore = createWithEqualityFn<TableState>(
     fetchTablesByArea: async (areaId: string) => {
       set({ isLoading: true });
       try {
-        const response = await tableService.getTablesByArea(areaId);
+        const response = await tableService.getTables(areaId);
         if (response.isSuccess && response.data) {
           set({ tables: response.data });
         }
@@ -141,6 +142,24 @@ export const useTableStore = createWithEqualityFn<TableState>(
       } catch {
         toast.error("Thao tác thất bại");
       }
+    },
+
+    updateTableStatusRealtime: (tableId: string, statusKey: string) => {
+      // statusKey: "Available", "Occupied", "Cleaning", "Reserved", "OutOfService"
+      const mappedStatus =
+        TableStatus[statusKey as keyof typeof TableStatus] || TableStatus.Available;
+
+      set((state) => ({
+        tables: state.tables.map((t) => {
+          if (t.tableId === tableId) {
+            return {
+              ...t,
+              status: mappedStatus,
+            };
+          }
+          return t;
+        }),
+      }));
     },
   }),
   shallow

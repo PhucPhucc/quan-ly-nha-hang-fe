@@ -151,7 +151,7 @@ export default function StockInPage() {
                 }}
                 className="shrink-0"
               >
-                <TabsList className="inline-flex h-11 rounded-xl bg-muted/50 p-1 border">
+                <TabsList className="inline-flex h-11 bg-muted/50 p-1 border">
                   <TabsTrigger
                     value="in"
                     className="h-full rounded-lg px-4 text-xs font-black uppercase tracking-widest transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
