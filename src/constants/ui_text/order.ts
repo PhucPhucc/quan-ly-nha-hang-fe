@@ -85,6 +85,7 @@ export const ORDER = {
         `${lineCount} món | ${itemTotal} phần`,
       SPLIT_DESTINATION_LABEL: "Nơi nhận món",
       SPLIT_DESTINATION_DESC: "Chọn đơn đang có hoặc bàn trống để tạo đơn mới.",
+      SPLIT_MODE_SAME: "Cùng bàn",
       SPLIT_MODE_EXISTING: "Đơn đang có",
       SPLIT_MODE_NEW: "Bàn trống",
       SPLIT_DESTINATION_ORDER: "Đơn đích",

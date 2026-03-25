@@ -353,7 +353,16 @@ export default function CardFeature({
                 }}
                 className="w-full"
               >
-                <TabsList className="grid h-10 w-full grid-cols-2 rounded-xl bg-muted/40 p-1">
+                <TabsList className="grid h-10 w-full grid-cols-3 rounded-xl bg-muted/40 p-1">
+                  <TabsTrigger value="same-order" asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    >
+                      {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_MODE_SAME}
+                    </Button>
+                  </TabsTrigger>
                   <TabsTrigger
                     value="existing-order"
                     disabled={servingTargetOrders.length === 0}
@@ -369,7 +378,9 @@ export default function CardFeature({
                   </TabsTrigger>
                   <TabsTrigger
                     value="new-table"
-                    disabled={servingTargetOrders.length === 0}
+                    disabled={
+                      candidateTables.filter((t) => t.status === TableStatus.Available).length === 0
+                    }
                     asChild
                   >
                     <Button
@@ -538,13 +549,14 @@ export default function CardFeature({
               UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.MERGE}
             {!isSubmitting &&
               feature === Feature.SPLIT &&
-              (splitDestinationMode === "new-table"
-                ? UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_NEW
-                : UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_EXISTING)}
+              (splitDestinationMode === "same-order"
+                ? UI_TEXT.ORDER.DETAIL.SPLIT_BILL
+                : splitDestinationMode === "new-table"
+                  ? UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_NEW
+                  : UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ACTION_EXISTING)}
             {!isSubmitting &&
               feature === Feature.CANCEL &&
               UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL}
-            {!isSubmitting && feature === Feature.SPLIT && UI_TEXT.ORDER.DETAIL.SPLIT_BILL}
           </Button>
         </div>
       </form>
