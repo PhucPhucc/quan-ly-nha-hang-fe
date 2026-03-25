@@ -144,7 +144,7 @@ export const VoucherApplyModal: React.FC<VoucherApplyModalProps> = ({
           <VoucherList
             vouchers={availableVouchers}
             isLoading={isLoadingList}
-            onSelect={(v) => handleApply(v.code)}
+            onSelect={(v) => setVoucherCode(v.code)}
             disabled={isSubmitting}
           />
         </div>
@@ -194,7 +194,7 @@ export const VoucherApplyModal: React.FC<VoucherApplyModalProps> = ({
                 setIsSwitchConfirmOpen(false);
                 const voucher = pendingVoucher;
                 setPendingVoucher(null);
-                await applyVoucher(voucher);
+                await applyVoucher(voucher, true);
               }}
               className="h-11 rounded-xl bg-primary text-primary-foreground"
             >

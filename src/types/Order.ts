@@ -30,6 +30,7 @@ export interface OrderItem {
   status: OrderItemStatus;
   quantity: number;
   unitPriceSnapshot: number;
+  isFreeItem?: boolean;
   itemNote?: string;
   itemOptions?: string;
 
@@ -61,9 +62,15 @@ export interface Order {
   discount?: number;
   voucherCode?: string;
   appliedVoucherCode?: string;
+  giftItemId?: string;
+  giftItemName?: string;
+  giftQuantity?: number;
   voucher?: {
     voucherCode?: string;
     discountAmount?: number;
+    itemId?: string;
+    itemName?: string;
+    freeQuantity?: number;
   };
   isPriority: boolean;
   createdAt: string;

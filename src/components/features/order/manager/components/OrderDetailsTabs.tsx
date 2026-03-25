@@ -135,6 +135,7 @@ export function OrderDetailsTabs({
             {(current.note ||
               current.promotionCode ||
               current.appliedVoucherCode ||
+              current.giftItemName ||
               (current.discountAmount ?? 0) > 0 ||
               preCheckBill?.customerName ||
               preCheckBill?.customerPhone) && (
@@ -199,13 +200,37 @@ export function OrderDetailsTabs({
                       </Badge>
                     </div>
                   )}
+                  {current.giftItemName && (
+                    <div className="space-y-1 sm:col-span-2">
+                      <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                        {UI_TEXT.VOUCHER.GIFT_TITLE}
+                      </p>
+                      <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 shadow-sm">
+                        <Badge
+                          variant="outline"
+                          className="border-emerald-300 bg-white text-emerald-700 font-semibold"
+                        >
+                          {UI_TEXT.VOUCHER.GIFT_LABEL}
+                        </Badge>
+                        <span className="text-sm font-semibold text-emerald-900">
+                          {current.giftItemName}
+                        </span>
+                        {current.giftQuantity && current.giftQuantity > 1 && (
+                          <span className="ml-auto text-xs font-bold text-emerald-700">
+                            {UI_TEXT.COMMON.QUANTITY_X}
+                            {current.giftQuantity}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   {(current.discountAmount ?? 0) > 0 && (
                     <div className="space-y-1 text-right sm:col-span-1">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground">
                         {UI_TEXT.ORDER.DETAIL.DISCOUNT_AMOUNT}
                       </p>
                       <p className="font-bold text-danger">
-                        {"-"}
+                        {UI_TEXT.COMMON.MINUS}
                         {money.format(current.discountAmount!)}
                       </p>
                     </div>
@@ -271,9 +296,19 @@ export function OrderDetailsTabs({
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h4 className="text-base font-bold text-table-text-strong">
-                          {item.itemNameSnapshot}
-                        </h4>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4 className="text-base font-bold text-table-text-strong">
+                            {item.itemNameSnapshot}
+                          </h4>
+                          {(item.isFreeItem || item.unitPriceSnapshot === 0) && (
+                            <Badge
+                              variant="outline"
+                              className="border-emerald-200 bg-emerald-50 text-emerald-700"
+                            >
+                              {UI_TEXT.VOUCHER.GIFT_BADGE}
+                            </Badge>
+                          )}
+                        </div>
                         <div className="mt-1 flex flex-wrap items-center gap-x-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                           <span className="inline-flex items-center rounded-md border px-1.5 py-0.5">
                             {item.itemCodeSnapshot}
@@ -307,7 +342,7 @@ export function OrderDetailsTabs({
                           {UI_TEXT.ORDER.DETAIL.PRICE_LABEL}
                         </span>
                         <span className="text-table-text-strong">
-                          {money.format(item.unitPriceSnapshot)}
+                          {money.format(item.isFreeItem ? 0 : item.unitPriceSnapshot)}
                         </span>
                       </div>
                     </div>
@@ -345,7 +380,7 @@ export function OrderDetailsTabs({
                         {UI_TEXT.ORDER.DETAIL.LINE_TOTAL}
                       </p>
                       <p className="text-xl font-bold tracking-tight text-primary">
-                        {money.format(item.quantity * item.unitPriceSnapshot)}
+                        {money.format(item.isFreeItem ? 0 : item.quantity * item.unitPriceSnapshot)}
                       </p>
                     </div>
                     {current.status === OrderStatus.Serving && handleSplitBill && (

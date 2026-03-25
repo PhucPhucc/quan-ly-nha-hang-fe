@@ -130,4 +130,7 @@ export const VOUCHER = {
   EXPIRY_SHORT: "HSD:",
   EMPTY_LIST: "Không có voucher nào khả dụng lúc này",
   APPLIED: "Đã áp dụng",
+  GIFT_BADGE: "Món tặng",
+  GIFT_LABEL: "Tặng",
+  GIFT_TITLE: "Món tặng",
 };

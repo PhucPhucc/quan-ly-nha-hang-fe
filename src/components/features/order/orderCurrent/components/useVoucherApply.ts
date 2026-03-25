@@ -58,9 +58,15 @@ export function useVoucherApply(
     }
   };
 
-  const applyVoucher = async (targetVoucher: Voucher) => {
+  const applyVoucher = async (targetVoucher: Voucher, forceUnapply = false) => {
     try {
       setIsSubmitting(true);
+
+      if (forceUnapply) {
+        await voucherService.unapply({
+          orderId,
+        });
+      }
 
       const res = await voucherService.apply({
         orderId,
@@ -123,7 +129,13 @@ export function useVoucherApply(
 
       const normalizedCurrent = currentVoucherCode?.trim().toUpperCase();
       const normalizedTarget = targetVoucher.code.trim().toUpperCase();
-      const isSwitchingVoucher = !!normalizedCurrent && normalizedCurrent !== normalizedTarget;
+
+      if (normalizedCurrent === normalizedTarget) {
+        toast.error(TEXT.ERROR_ALREADY_APPLIED);
+        return;
+      }
+
+      const isSwitchingVoucher = !!normalizedCurrent;
 
       if (isSwitchingVoucher) {
         setPendingVoucher(targetVoucher);
@@ -135,7 +147,11 @@ export function useVoucherApply(
     } catch (error: unknown) {
       console.error("Apply voucher failed:", error);
       const message = error instanceof Error ? error.message : "";
-      toast.error(message || TEXT.ERROR_UNKNOWN);
+      if (message.includes("Common.DatabaseUpdateError")) {
+        toast.error("Lỗi cập nhật dữ liệu. Vui lòng thử gỡ mã cũ trước khi áp dụng mã mới.");
+      } else {
+        toast.error(message || TEXT.ERROR_UNKNOWN);
+      }
     } finally {
       setIsSubmitting(false);
     }

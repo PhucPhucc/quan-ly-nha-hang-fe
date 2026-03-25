@@ -63,7 +63,12 @@ export function InventorySettingsFormContainer({
     setSaving(true);
 
     try {
-      const response = await inventoryService.updateInventorySettings(data);
+      const payload = {
+        ...settingsMetadata,
+        ...data,
+      } as InventorySettings;
+
+      const response = await inventoryService.updateInventorySettings(payload);
 
       if (response.isSuccess && response.data) {
         const nextValues = getInventorySettingsFormValues(response.data);

@@ -124,6 +124,7 @@ export const COMMON = {
   DOT_SEP: "·",
   REMAINING: "Còn",
   DAYS: "ngày",
+  QUANTITY_X: "x",
 };
 
 export const SIDE_BAR = {

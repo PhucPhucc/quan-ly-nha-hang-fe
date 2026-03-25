@@ -126,7 +126,13 @@ export function useInventoryGroups() {
     };
 
     if (editingGroup) {
-      await updateMutation.mutateAsync({ id: editingGroup.inventoryGroupId, payload });
+      await updateMutation.mutateAsync({
+        id: editingGroup.inventoryGroupId,
+        payload: {
+          ...payload,
+          updatedAt: editingGroup.updatedAt,
+        },
+      });
       return;
     }
 

@@ -1,10 +1,11 @@
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Ticket, Trash2 } from "lucide-react";
 import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { cn } from "@/lib/utils";
 import { CartItem, CartItemOptionGroup } from "@/types/Cart";
 import { OrderItemStatus } from "@/types/enums";
 import { OrderItem } from "@/types/Order";
@@ -149,80 +150,114 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
             ))}
 
             {/* Remote Items (Ordered) */}
-            {remoteItems.map((item) => (
-              <div
-                key={item.orderItemId}
-                className="group relative flex flex-col gap-2 p-3 rounded-xl border border-border/50 bg-secondary/20 transition-all"
-              >
-                <div className="flex justify-between flex-1 text-muted-foreground">
-                  <div>
-                    <h4 className="font-semibold text-sm leading-tight">{item.itemNameSnapshot}</h4>
-                    {item.optionGroups && item.optionGroups.length > 0 ? (
-                      <div className="mt-1 space-y-0.5">
-                        {item.optionGroups
-                          .flatMap((g) =>
-                            g.optionValues.map((v) => ({
-                              ...v,
-                              groupNameSnapshot: g.groupNameSnapshot,
-                            }))
-                          )
-                          .map((val) => (
-                            <p
-                              key={val.orderItemOptionValueId}
-                              className="text-[10px] text-muted-foreground flex items-center justify-between"
-                            >
-                              <span>
-                                {val.groupNameSnapshot ? `${val.groupNameSnapshot}: ` : ""}
-                                {val.labelSnapshot}
-                              </span>
-                              {val.extraPriceSnapshot > 0 && (
-                                <span className="ml-2">
-                                  {UI_TEXT.COMMON.PLUS}
-                                  {val.extraPriceSnapshot.toLocaleString()}
-                                  {UI_TEXT.COMMON.CURRENCY}
-                                </span>
-                              )}
-                            </p>
-                          ))}
-                      </div>
-                    ) : (
-                      item.itemOptions && (
-                        <p className="text-[10px] text-muted-foreground mt-1">
-                          {item.itemOptions.split(";").join(", ")}
-                        </p>
-                      )
-                    )}
-                    {item.itemNote && (
-                      <p className="text-[10px] italic mt-1">{UI_TEXT.ORDER.NOTE(item.itemNote)}</p>
-                    )}
-                  </div>
-                  <div className="text-sm font-medium text-right">
-                    <p>
-                      {(
-                        item.unitPriceSnapshot +
-                        (item.optionGroups
-                          ?.flatMap((g) => g.optionValues)
-                          .reduce(
-                            (sum, v) => sum + Number(v.extraPriceSnapshot || 0) * (v.quantity || 1),
-                            0
-                          ) || 0)
-                      ).toLocaleString()}
-                    </p>
-                    <p>{UI_TEXT.ORDER.QUANTITY(item.quantity)}</p>
-                  </div>
-                </div>
+            {remoteItems.map((item) => {
+              const itemIsFree = item.isFreeItem || item.unitPriceSnapshot === 0;
 
-                <div className="flex items-center justify-between mt-1">
-                  <div className="animate-fade-in-right">{getStatusBadge(item.status)}</div>
-                  <span className="text-[10px] text-muted-foreground font-mono">
-                    {new Date(item.createdAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+              return (
+                <div
+                  key={item.orderItemId}
+                  className={cn(
+                    "group relative flex flex-col gap-2 p-3 rounded-xl border transition-all",
+                    itemIsFree
+                      ? "bg-emerald-500/10 border-emerald-500/20"
+                      : "border-border/50 bg-secondary/20"
+                  )}
+                >
+                  <div className="flex justify-between flex-1 text-muted-foreground">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h4
+                          className={cn(
+                            "font-semibold text-sm leading-tight",
+                            itemIsFree ? "text-emerald-700" : "text-foreground"
+                          )}
+                        >
+                          {item.itemNameSnapshot}
+                        </h4>
+                        {itemIsFree && (
+                          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-[10px] py-0 gap-1">
+                            <Ticket className="w-3 h-3" />
+                            {UI_TEXT.VOUCHER.GIFT_BADGE}
+                          </Badge>
+                        )}
+                      </div>
+                      {item.optionGroups && item.optionGroups.length > 0 ? (
+                        <div className="mt-1 space-y-0.5">
+                          {item.optionGroups
+                            .flatMap((g) =>
+                              g.optionValues.map((v) => ({
+                                ...v,
+                                groupNameSnapshot: g.groupNameSnapshot,
+                              }))
+                            )
+                            .map((val) => (
+                              <p
+                                key={val.orderItemOptionValueId}
+                                className="text-[10px] text-muted-foreground flex items-center justify-between"
+                              >
+                                <span>
+                                  {val.groupNameSnapshot ? `${val.groupNameSnapshot}: ` : ""}
+                                  {val.labelSnapshot}
+                                </span>
+                                {val.extraPriceSnapshot > 0 && (
+                                  <span className="ml-2">
+                                    {UI_TEXT.COMMON.PLUS}
+                                    {val.extraPriceSnapshot.toLocaleString()}
+                                    {UI_TEXT.COMMON.CURRENCY}
+                                  </span>
+                                )}
+                              </p>
+                            ))}
+                        </div>
+                      ) : (
+                        item.itemOptions && (
+                          <p className="text-[10px] text-muted-foreground mt-1">
+                            {item.itemOptions.split(";").join(", ")}
+                          </p>
+                        )
+                      )}
+                      {item.itemNote && (
+                        <p className="text-[10px] italic mt-1">
+                          {UI_TEXT.ORDER.NOTE(item.itemNote)}
+                        </p>
+                      )}
+                    </div>
+                    <div
+                      className={cn(
+                        "text-sm font-medium text-right",
+                        itemIsFree ? "text-emerald-600" : ""
+                      )}
+                    >
+                      <p>
+                        {(itemIsFree
+                          ? 0
+                          : item.unitPriceSnapshot +
+                            (item.optionGroups
+                              ?.flatMap((g) => g.optionValues)
+                              .reduce(
+                                (sum, v) =>
+                                  sum + Number(v.extraPriceSnapshot || 0) * (v.quantity || 1),
+                                0
+                              ) || 0)
+                        ).toLocaleString()}
+                        {UI_TEXT.COMMON.CURRENCY}
+                      </p>
+                      <p>{UI_TEXT.ORDER.QUANTITY(item.quantity)}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="animate-fade-in-right">{getStatusBadge(item.status)}</div>
+                    <span className="text-[10px] text-muted-foreground font-mono">
+                      {new Date(item.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </>
         )}
       </div>

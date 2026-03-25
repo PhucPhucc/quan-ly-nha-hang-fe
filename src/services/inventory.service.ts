@@ -257,6 +257,7 @@ export interface InventoryGroupMutationRequest {
   lowStockThreshold?: number | null;
   expiryWarningDays?: number | null;
   defaultCostMethod?: string | null;
+  updatedAt?: string | null;
 }
 
 function normalizePagination<T>(
