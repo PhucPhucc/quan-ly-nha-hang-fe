@@ -1,11 +1,14 @@
 "use client";
 
-import { Armchair, ShoppingCart } from "lucide-react";
-import { useEffect } from "react";
+import { Armchair, Plus, ShoppingCart } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
 import { OrderStatus } from "@/types/enums";
@@ -22,6 +25,31 @@ const OrderBoard = () => {
   const { loading, activeTab, filteredTakeaways } = useOrderBoardStore();
   const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
   const setActiveTab = useOrderBoardStore((s) => s.setActiveTab);
+  const setActiveView = useOrderBoardStore((s) => s.setActiveView);
+  const setSelectedOrderId = useOrderBoardStore((s) => s.setSelectedOrderId);
+
+  const [loadingTakeaway, setLoadingTakeaway] = useState(false);
+
+  const handleCreateTakeaway = async () => {
+    if (loadingTakeaway) return;
+    setLoadingTakeaway(true);
+    try {
+      const res = await orderService.createTakeAwayOrder();
+      console.log("res: " + JSON.stringify(res));
+      if (res.isSuccess) {
+        const newOrderId = res.data;
+        setSelectedOrderId(newOrderId);
+        setActiveView("menu");
+      } else {
+        toast.error(UI_TEXT.ORDER.BOARD.CREATE_ORDER_ERROR || "Lỗi tạo đơn");
+      }
+    } catch (e) {
+      toast.error(UI_TEXT.ORDER.BOARD.CREATE_ORDER_ERROR || "Lỗi tạo đơn");
+      console.error(e);
+    } finally {
+      setLoadingTakeaway(false);
+    }
+  };
 
   const areas = useTableStore((s) => s.areas);
   const fetchAreas = useTableStore((s) => s.fetchAreas);
@@ -70,15 +98,15 @@ const OrderBoard = () => {
           )}
 
           {isTakeaway && (
-            <section className="mt-8">
-              <div className="flex items-center gap-2 mb-4 px-2 text-slate-500">
-                <ShoppingCart className="size-4" />
+            <section className="my-4 mx-2">
+              <div className="flex items-end gap-2 text-slate-500 mb-5">
+                <ShoppingCart className="size-5" />
                 <h3 className="text-xs font-black uppercase">
                   {UI_TEXT.ORDER.BOARD.TAKEAWAY_ORDERS}
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 items-center justify-center gap-6">
                 {filteredTakeaways().map((o) => (
                   <TakeawayItem
                     key={o.orderId}
@@ -91,8 +119,21 @@ const OrderBoard = () => {
                       price: currencyFormatter.format(o.totalAmount) + UI_TEXT.COMMON.CURRENCY,
                       elapsedTime: "5" + UI_TEXT.COMMON.MINUTES,
                     }}
+                    onClick={() => {
+                      setSelectedOrderId(o.orderId);
+                    }}
                   />
                 ))}
+                <Button
+                  variant="ghost"
+                  onClick={handleCreateTakeaway}
+                  disabled={loadingTakeaway}
+                  size="icon"
+                  className="size-24 mx-auto bg-muted-foreground/10 border-dashed border-2 border-muted-foreground
+                   rounded-full hover:scale-105 transition duration-200 cursor-pointer"
+                >
+                  <Plus className="size-12 text-muted-foreground" />
+                </Button>
               </div>
             </section>
           )}

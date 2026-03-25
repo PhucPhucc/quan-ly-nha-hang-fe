@@ -33,16 +33,19 @@ const OrderCurrent = () => {
 
   // Cart items for this specific order
   const cartItems = selectedOrderId ? cartData[selectedOrderId] || [] : [];
-
+  console.log(cartData);
   // Map remote items to a format ItemList can display, or just pass them as a separate prop
   // For now, let's keep OrderItemList simple and pass everything as "items" or enhance it.
   const remoteItems = activeOrderDetails?.orderItems || [];
 
   const subtotalCart = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
-  const subtotalRemote = remoteItems.reduce(
-    (acc, item) => acc + item.unitPriceSnapshot * item.quantity,
-    0
-  );
+  const subtotalRemote = remoteItems.reduce((acc, item) => {
+    const itemExtraPrice =
+      item.optionGroups
+        ?.flatMap((g) => g.optionValues)
+        .reduce((sum, v) => sum + Number(v.extraPriceSnapshot || 0) * (v.quantity || 1), 0) || 0;
+    return acc + (item.unitPriceSnapshot + itemExtraPrice) * item.quantity;
+  }, 0);
 
   const subtotal = subtotalCart + subtotalRemote;
   const tax = subtotal * 0.1;

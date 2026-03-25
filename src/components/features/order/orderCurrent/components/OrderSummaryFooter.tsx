@@ -49,7 +49,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({ subtotal, tax, 
 
       const submitData = {
         orderId: selectedOrderId,
-        tableId: activeOrder.tableId || "",
+        tableId: activeOrder.tableId || null,
         orderType: activeOrder.orderType,
         note: activeOrder.note || "",
         items: items.map((item) => ({

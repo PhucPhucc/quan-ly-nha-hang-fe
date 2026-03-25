@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { CartItem, CartItemOptionGroup, CartItemOptionValue } from "@/types/Cart";
+import { CartItem, CartItemOptionGroup } from "@/types/Cart";
 import { OrderItemStatus } from "@/types/enums";
 import { OrderItem } from "@/types/Order";
 
@@ -77,14 +77,17 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                       .length > 0 && (
                       <div className="mt-1 space-y-0.5">
                         {item.selectedOptions
-                          .flatMap((g: CartItemOptionGroup) => g.selectedValues)
-                          .map((val: CartItemOptionValue) => (
+                          .flatMap((g: CartItemOptionGroup) =>
+                            g.selectedValues.map((v) => ({ ...v, groupName: g.groupName }))
+                          )
+                          .map((val) => (
                             <p
                               key={val.optionItemId}
                               className="text-[10px] text-muted-foreground flex items-center justify-between"
                             >
                               <span>
                                 {UI_TEXT.COMMON.BULLET}
+                                {val.groupName ? `${val.groupName}: ` : ""}
                                 {val.label}
                               </span>
                               {val.extraPrice > 0 && (
@@ -157,18 +160,23 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                     {item.optionGroups && item.optionGroups.length > 0 ? (
                       <div className="mt-1 space-y-0.5">
                         {item.optionGroups
-                          .flatMap((g) => g.optionValues)
+                          .flatMap((g) =>
+                            g.optionValues.map((v) => ({
+                              ...v,
+                              groupNameSnapshot: g.groupNameSnapshot,
+                            }))
+                          )
                           .map((val) => (
                             <p
                               key={val.orderItemOptionValueId}
                               className="text-[10px] text-muted-foreground flex items-center justify-between"
                             >
                               <span>
-                                {UI_TEXT.COMMON.BULLET}
+                                {val.groupNameSnapshot ? `${val.groupNameSnapshot}: ` : ""}
                                 {val.labelSnapshot}
                               </span>
                               {val.extraPriceSnapshot > 0 && (
-                                <span>
+                                <span className="ml-2">
                                   {UI_TEXT.COMMON.PLUS}
                                   {val.extraPriceSnapshot.toLocaleString()}
                                   {UI_TEXT.COMMON.CURRENCY}
@@ -189,7 +197,17 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
                     )}
                   </div>
                   <div className="text-sm font-medium text-right">
-                    <p>{item.unitPriceSnapshot.toLocaleString()}</p>
+                    <p>
+                      {(
+                        item.unitPriceSnapshot +
+                        (item.optionGroups
+                          ?.flatMap((g) => g.optionValues)
+                          .reduce(
+                            (sum, v) => sum + Number(v.extraPriceSnapshot || 0) * (v.quantity || 1),
+                            0
+                          ) || 0)
+                      ).toLocaleString()}
+                    </p>
                     <p>{UI_TEXT.ORDER.QUANTITY(item.quantity)}</p>
                   </div>
                 </div>

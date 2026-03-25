@@ -113,15 +113,19 @@ export function MenuOptionSelectionDialog({
   };
 
   const buildCartOptionGroups = (): CartItemOptionGroup[] => {
-    return Object.entries(selectedOptions).map(([groupId, items]) => ({
-      optionGroupId: groupId,
-      selectedValues: items.map((item) => ({
-        optionItemId: item.optionItemId,
-        quantity: 1,
-        label: item.label,
-        extraPrice: item.extraPrice,
-      })),
-    }));
+    return Object.entries(selectedOptions).map(([groupId, items]) => {
+      const groupInfo = optionGroups.find((g) => g.optionGroupId === groupId);
+      return {
+        optionGroupId: groupId,
+        groupName: groupInfo?.name || "",
+        selectedValues: items.map((item) => ({
+          optionItemId: item.optionItemId,
+          quantity: 1,
+          label: item.label,
+          extraPrice: item.extraPrice,
+        })),
+      };
+    });
   };
 
   const handleAddToCart = () => {

@@ -40,7 +40,7 @@ const eslintConfig = defineConfig([
         "error",
         {
           noStrings: true,
-          allowedStrings: [],
+          allowedStrings: [":", " ", ": "],
           ignoreProps: true,
         },
       ],

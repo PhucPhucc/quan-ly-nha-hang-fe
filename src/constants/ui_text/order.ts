@@ -14,6 +14,7 @@ export const ORDER = {
     ORDER_COUNT: (count: number) => `${count} đơn`,
     PICK_ORDER_TITLE: "Chọn đơn",
     PICK_ORDER_DESC: "Chọn một đơn đang phục vụ trên bàn này để mở chi tiết.",
+    CREATE_TAKEAWAY_ORDER: "Tạo đơn mang đi",
     TAKEAWAY_ORDERS: "Đơn mang đi",
     AVAILABLE_LCT: "Sẵn",
     AT_TABLE: "Tại bàn",

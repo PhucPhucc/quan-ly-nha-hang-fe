@@ -1,4 +1,5 @@
 import { ApiResponse, PaginationResult } from "@/types/Api";
+import { EmployeeRole } from "@/types/Employee";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order, OrderDashboardOverview } from "@/types/Order";
 
@@ -46,7 +47,7 @@ export interface AddOrderItemRequest {
 
 export interface SubmitOrderToKitchenRequest {
   orderId: string;
-  tableId: string;
+  tableId: string | null;
   orderType: OrderType;
   note?: string;
   items: {
@@ -97,11 +98,34 @@ export interface SplitOrderResponse {
   createdNewOrder: boolean;
 }
 
+export interface OrderHistoryItem {
+  logId: string;
+  createdAt: string;
+  formattedTime: string;
+  orderId: string;
+  orderCode: string;
+  action: string;
+  actionName: string;
+  employeeId: string;
+  actorName: string;
+  actorRole: EmployeeRole;
+  oldValue: string | null;
+  newValue: string | null;
+  changeReason: string | null;
+}
+
 export const orderService = {
   createOrder: (data: CreateOrderRequest): Promise<ApiResponse<Order>> =>
     apiFetch<Order>("/orders", {
       method: "POST",
       body: data,
+    }),
+  createTakeAwayOrder: (): Promise<ApiResponse<string>> =>
+    apiFetch<string>("/orders", {
+      method: "POST",
+      body: {
+        orderType: OrderType.Takeaway,
+      },
     }),
 
   getOrderById: (id: string): Promise<ApiResponse<Order>> => apiFetch<Order>(`/orders/${id}`),
@@ -193,4 +217,8 @@ export const orderService = {
       method: "POST",
       body: data,
     }),
+
+  getOrderHistory: (orderId: string): Promise<ApiResponse<PaginationResult<OrderHistoryItem>>> => {
+    return apiFetch<PaginationResult<OrderHistoryItem>>(`/orders/${orderId}/audit-logs`);
+  },
 };
