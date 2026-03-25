@@ -50,7 +50,7 @@ export function KdsBacklogWidget() {
   }
 
   return (
-    <Card className="h-full border border-muted/60 shadow-none rounded-xl overflow-hidden bg-white">
+    <Card className="h-full border border-muted/60 shadow-none rounded-xl overflow-hidden bg-white pb-5">
       <CardHeader className="bg-primary/90 pb-6 pt-5 border-b border-muted/20">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-black uppercase tracking-[0.15em] text-foreground/70">

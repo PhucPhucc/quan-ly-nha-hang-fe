@@ -57,7 +57,7 @@ export function InventoryAlertWidget() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 relative -mt-4 bg-card rounded-t-[20px] shadow-lg border-t border-white/10">
+      <CardContent className="flex flex-col justify-between pt-6 relative -mt-4 bg-card rounded-t-[20px] shadow-lg border-t border-white/10 h-full">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-[10px] font-black uppercase text-muted-foreground/80 tracking-widest">
             {t.INGREDIENT_STATUS}
