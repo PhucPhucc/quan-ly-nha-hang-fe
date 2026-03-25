@@ -85,6 +85,7 @@ export const PROFILE = {
     "Quản lý mật khẩu và các cài đặt bảo mật cho tài khoản của bạn để đảm bảo an toàn thông tin.",
   ACCOUNT_INFO: "Thông tin tài khoản",
   PERSONAL_INFO: "Thông tin cá nhân",
+  ADMIN_USER: "Admin User",
 };
 
 export const UNAUTHORIZED = {

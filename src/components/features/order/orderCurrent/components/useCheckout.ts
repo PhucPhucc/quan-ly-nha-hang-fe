@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
@@ -73,11 +74,11 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
             });
           }
         } else if (isMounted) {
-          toast.error("Không thể tạo mã QR thanh toán.");
+          toast.error(UI_TEXT.ORDER.CURRENT.QR_CREATE_ERROR);
         }
       } catch (error) {
         if (isMounted) {
-          toast.error("Đã xảy ra lỗi khi tải mã QR.");
+          toast.error(UI_TEXT.ORDER.CURRENT.QR_FETCH_ERROR);
           console.error(error);
         }
       } finally {
@@ -103,7 +104,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
 
           if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
             await refreshBoardState();
-            toast.success("Hệ thống đã nhận được tiền!");
+            toast.success(UI_TEXT.ORDER.CURRENT.PAYMENT_RECEIVED);
             onClose();
             clearOrderDetails();
             useOrderBoardStore.getState().setSelectedOrderId(null);
@@ -132,12 +133,12 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     let amountReceived = undefined;
     if (selectedMethod === PaymentMethod.Cash) {
       if (!customerGiven) {
-        toast.error("Vui lòng nhập số tiền khách đưa");
+        toast.error(UI_TEXT.ORDER.CURRENT.INPUT_AMOUNT_REQUIRED);
         return;
       }
       amountReceived = parseFloat(customerGiven.replace(/,/g, ""));
       if (isNaN(amountReceived) || amountReceived < totalAmount) {
-        toast.error("Số tiền khách đưa không hợp lệ hoặc nhỏ hơn tổng tiền");
+        toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
         return;
       }
     }
@@ -153,15 +154,15 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
 
       if (success) {
         await refreshBoardState();
-        toast.success("Thanh toán thành công!");
+        toast.success(UI_TEXT.ORDER.CURRENT.PAYMENT_SUCCESS);
         onClose();
         clearOrderDetails();
         useOrderBoardStore.getState().setSelectedOrderId(null);
       } else {
-        toast.error("Thanh toán thất bại, vui lòng thử lại.");
+        toast.error(UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED);
       }
     } catch (error) {
-      toast.error("Đã xảy ra lỗi trong quá trình thanh toán.");
+      toast.error(UI_TEXT.ORDER.CURRENT.PAYMENT_ERROR);
       console.error(error);
     } finally {
       setIsProcessing(false);

@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { inventoryService } from "@/services/inventory.service";
+import { InventorySettings } from "@/types/Inventory";
 
 import { DispatchRulesSection } from "./sections/DispatchRulesSection";
 import { StockAlertsSection } from "./sections/StockAlertsSection";
@@ -19,21 +21,23 @@ const { SETTINGS } = UI_TEXT;
 
 // ── Schema ───────────────────────────────────────────────────────────────────
 const schema = z.object({
-  lowStockEnabled: z.boolean(),
-  lowStockThreshold: z.number().min(0),
-  expiryWarningDays: z.number().int().min(1),
-  costMethod: z.enum(["FIFO", "LIFO", "AVG"]),
+  lowStockThreshold: z.number().min(0, "Ngưỡng cảnh báo phải ≥ 0"),
+  expiryWarningDays: z.number().int().min(1, "Số ngày cảnh báo phải ≥ 1"),
+  costMethod: z.string(),
   autoDeductOnCompleted: z.boolean(),
+  maxCostRecalcDays: z.number().min(1).max(365),
+  openingStockImportCooldownHours: z.number().min(0),
 });
 
 export type WarehouseSettingsInput = z.infer<typeof schema>;
 
 const DEFAULT_VALUES: WarehouseSettingsInput = {
-  lowStockEnabled: true,
   lowStockThreshold: 10,
   expiryWarningDays: 7,
-  costMethod: "AVG",
+  costMethod: "WeightedAverage",
   autoDeductOnCompleted: true,
+  maxCostRecalcDays: 31,
+  openingStockImportCooldownHours: 0,
 };
 
 // ── Form ─────────────────────────────────────────────────────────────────────
@@ -59,7 +63,6 @@ export function WarehouseSettingsForm({
     defaultValues: initialValues,
   });
 
-  const lowStockEnabled = useWatch({ control, name: "lowStockEnabled" });
   const autoDeduct = useWatch({ control, name: "autoDeductOnCompleted" });
 
   return (
@@ -72,19 +75,15 @@ export function WarehouseSettingsForm({
 
         <CardContent className="px-6 pb-8 sm:px-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            <StockAlertsSection
-              lowStockEnabled={lowStockEnabled}
-              register={register}
-              setValue={setValue}
-              errors={errors}
-            />
+            <StockAlertsSection register={register} errors={errors} />
 
             <div className="border-t border-border" />
 
             <DispatchRulesSection
               autoDeduct={autoDeduct}
-              initialCostMethod={initialValues.costMethod}
               setValue={setValue}
+              register={register}
+              errors={errors}
             />
 
             <div className="flex justify-end pt-2">
@@ -107,12 +106,44 @@ export function WarehouseSettingsForm({
 // ── Container ─────────────────────────────────────────────────────────────────
 export function WarehouseSettingsContainer() {
   const [saving, setSaving] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [initialValues, setInitialValues] = React.useState<WarehouseSettingsInput>(DEFAULT_VALUES);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSubmit = async (_data: WarehouseSettingsInput) => {
+  React.useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await inventoryService.getInventorySettings();
+        if (res.isSuccess && res.data) {
+          setInitialValues({
+            lowStockThreshold: res.data.defaultLowStockThreshold,
+            expiryWarningDays: res.data.expiryWarningDays,
+            costMethod: res.data.costMethod,
+            autoDeductOnCompleted: res.data.autoDeductOnCompleted,
+            maxCostRecalcDays: res.data.maxCostRecalcDays,
+            openingStockImportCooldownHours: res.data.openingStockImportCooldownHours,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleSubmit = async (data: WarehouseSettingsInput) => {
     setSaving(true);
     try {
-      await new Promise((r) => setTimeout(r, 800)); // TODO: inventoryService.updateSettings
+      const payload: InventorySettings = {
+        expiryWarningDays: data.expiryWarningDays,
+        defaultLowStockThreshold: data.lowStockThreshold,
+        autoDeductOnCompleted: data.autoDeductOnCompleted,
+        costMethod: data.costMethod,
+        maxCostRecalcDays: data.maxCostRecalcDays,
+        openingStockImportCooldownHours: data.openingStockImportCooldownHours,
+      };
+      await inventoryService.updateInventorySettings(payload);
       toast.success(SETTINGS.SUCCESS_WAREHOUSE);
     } catch {
       toast.error(UI_TEXT.API.NETWORK_ERROR);
@@ -121,5 +152,15 @@ export function WarehouseSettingsContainer() {
     }
   };
 
-  return <WarehouseSettingsForm saving={saving} onSubmit={handleSubmit} />;
+  if (loading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Spinner className="h-8 w-8 text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <WarehouseSettingsForm initialValues={initialValues} saving={saving} onSubmit={handleSubmit} />
+  );
 }

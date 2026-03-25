@@ -95,4 +95,8 @@ export const KDS = {
     STATUS_NORMAL: "BÌNH THƯỜNG",
     SYSTEM_ONLINE: "HỆ THỐNG TRỰC TUYẾN",
   },
+  FETCH_ERROR: "Khong the tai du lieu KDS",
+  START_COOKING_SUCCESS: "Da bat dau nau!",
+  COMPLETE_COOKING_SUCCESS: "Mon da hoan thanh!",
+  REJECT_ITEM_SUCCESS: "Da tu choi mon!",
 };

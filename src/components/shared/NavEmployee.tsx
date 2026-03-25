@@ -33,34 +33,19 @@ import { Separator } from "../ui/separator";
 
 const FeutureCashier = [
   {
-    title: "Quản lý đặt bàn",
-    des: "Xem và quản lý các đặt bàn của khách hàng",
+    title: UI_TEXT.PREFERENCE.NAVIGATION_RESERVATION,
+    des: UI_TEXT.PREFERENCE.NAVIGATION_RESERVATION_DESC,
     href: "/reservation",
   },
   {
-    title: "Quản lý doanh thu",
-    des: "Xem báo cáo doanh thu hàng ngày, hàng tuần, hàng tháng",
+    title: UI_TEXT.PREFERENCE.NAVIGATION_REVENUE,
+    des: UI_TEXT.PREFERENCE.NAVIGATION_REVENUE_DESC,
     href: "/revenue",
   },
   {
-    title: "Xem nhật ký hoạt động",
-    des: "Theo dõi các hoạt động của nhân viên và hệ thống",
+    title: UI_TEXT.PREFERENCE.NAVIGATION_LOG,
+    des: UI_TEXT.PREFERENCE.NAVIGATION_LOG_DESC,
     href: "/log",
-  },
-  {
-    title: "Quản lý đặt bàn",
-    des: "Xem và quản lý các đặt bàn của khách hàng",
-    href: "/reservation1",
-  },
-  {
-    title: "Quản lý doanh thu",
-    des: "Xem báo cáo doanh thu hàng ngày, hàng tuần, hàng tháng",
-    href: "/revenue1",
-  },
-  {
-    title: "Xem nhật ký hoạt động",
-    des: "Theo dõi các hoạt động của nhân viên và hệ thống",
-    href: "/log1",
   },
 ];
 
@@ -107,7 +92,7 @@ const NavEmployee = () => {
           </div>
           <Separator className="my-2" />
 
-          <FeatureItem title="Thông tin nhân viên" des="Xem thông tin cá nhân và vai trò">
+          <FeatureItem title={UI_TEXT.PREFERENCE.EMP_INFO} des={UI_TEXT.PREFERENCE.EMP_INFO_DESC}>
             <div className="text-sm text-muted-foreground text-right">
               <p className="">{employee?.username}</p>
               <p className="">{employee?.role}</p>

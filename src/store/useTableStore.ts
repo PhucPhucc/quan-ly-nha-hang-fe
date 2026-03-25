@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { tableService } from "@/services/tableService";
 import { Area, AreaStatus, Table, TableStatus } from "@/types/Table-Layout";
 
@@ -64,7 +65,7 @@ export const useTableStore = createWithEqualityFn<TableState>(
         }
       } catch (error) {
         console.error("Failed to fetch areas:", error);
-        toast.error("Không thể tải danh sách khu vực");
+        toast.error(UI_TEXT.TABLE.FETCH_AREA_ERROR);
       } finally {
         set({ isLoading: false });
       }
@@ -79,7 +80,7 @@ export const useTableStore = createWithEqualityFn<TableState>(
         }
       } catch (error) {
         console.error("Failed to fetch tables:", error);
-        toast.error("Không thể tải danh sách bàn");
+        toast.error(UI_TEXT.TABLE.FETCH_TABLE_ERROR);
       } finally {
         set({ isLoading: false });
       }
@@ -93,13 +94,13 @@ export const useTableStore = createWithEqualityFn<TableState>(
         });
 
         if (response.isSuccess) {
-          toast.success("Thêm bàn thành công");
+          toast.success(UI_TEXT.TABLE.ADD_TABLE_SUCCESS);
           // Refresh tables
           await get().fetchTablesByArea(areaId);
         }
       } catch (error) {
         console.error("Failed to create table:", error);
-        toast.error("Không thể thêm bàn");
+        toast.error(UI_TEXT.TABLE.ADD_TABLE_ERROR);
       }
     },
 
@@ -107,7 +108,7 @@ export const useTableStore = createWithEqualityFn<TableState>(
       try {
         const response = await tableService.updateTable(tableId, payload);
         if (response.isSuccess && response.data) {
-          toast.success("Cập nhật thành công");
+          toast.success(UI_TEXT.TABLE.UPDATE_SUCCESS);
           // Instead of refetching all tables, let's update the specific one in state
           const updatedTable = response.data;
           set((state) => ({
@@ -117,7 +118,7 @@ export const useTableStore = createWithEqualityFn<TableState>(
           }));
         }
       } catch (err) {
-        toast.error((err as Error).message || "Không thể cập nhật");
+        toast.error((err as Error).message || UI_TEXT.TABLE.UPDATE_ERROR);
       }
     },
 
@@ -125,7 +126,9 @@ export const useTableStore = createWithEqualityFn<TableState>(
       try {
         const response = await tableService.updateTableStatus(tableId, isActive);
         if (response.isSuccess) {
-          toast.success(isActive ? "Đã kích hoạt bàn" : "Đã ngưng hoạt động bàn");
+          toast.success(
+            isActive ? UI_TEXT.TABLE.ACTIVATE_SUCCESS : UI_TEXT.TABLE.DEACTIVATE_SUCCESS
+          );
           // Update the table status locally
           set((state) => ({
             tables: state.tables.map((t) => {
@@ -140,7 +143,7 @@ export const useTableStore = createWithEqualityFn<TableState>(
           }));
         }
       } catch {
-        toast.error("Thao tác thất bại");
+        toast.error(UI_TEXT.TABLE.OPERATION_FAILED);
       }
     },
 

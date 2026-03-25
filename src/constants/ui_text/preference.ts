@@ -21,4 +21,6 @@ export const PREFERENCE = {
   NAVIGATION_RESERVATION_DESC: "Đặt bàn cho khách hàng tại nhà hàng",
   NAVIGATION_REVENUE_DESC: "Xem thông tin doanh thu của nhà hàng",
   NAVIGATION_LOG_DESC: "Xem thông tin nhật ký hoạt động của nhà hàng",
+  EMP_INFO: "Thông tin nhân viên",
+  EMP_INFO_DESC: "Xem thông tin cá nhân và vai trò",
 };

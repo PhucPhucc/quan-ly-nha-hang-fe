@@ -35,12 +35,7 @@ export function NavUser() {
     router.replace("/login");
   };
 
-  const name = employee?.fullName || "Admin User";
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+  const name = employee?.fullName || UI_TEXT.PROFILE.ADMIN_USER;
 
   return (
     <SidebarMenu>

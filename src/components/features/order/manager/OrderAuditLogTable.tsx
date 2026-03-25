@@ -2,6 +2,12 @@
 
 import { Eye, History, ShieldAlert, UserRound } from "lucide-react";
 
+import {
+  INVENTORY_TH_CLASS,
+  INVENTORY_THEAD_CLASS,
+  INVENTORY_THEAD_ROW_CLASS,
+  INVENTORY_TROW_CLASS,
+} from "@/components/features/inventory/components/inventoryStyles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -61,24 +67,21 @@ export function OrderAuditLogTable({
           !noSurface ? "rounded-2xl bg-card shadow-sm" : "border-none"
         )}
       >
-        <TableHeader className="bg-secondary/50 sticky top-0 z-20">
-          <TableRow className="hover:bg-transparent border-b border-border/50">
-            <TableHead className="w-[180px] text-[10px] font-black uppercase tracking-widest text-muted-foreground px-4">
+        <TableHeader className={INVENTORY_THEAD_CLASS}>
+          <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
+            <TableHead className={cn(INVENTORY_TH_CLASS, "px-4 w-[180px]")}>
               {UI_TEXT.AUDIT_LOG.TIME}
             </TableHead>
-            <TableHead className="w-[120px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+            <TableHead className={cn(INVENTORY_TH_CLASS, "w-[120px]")}>
               {UI_TEXT.ORDER.BOARD.ORDER_CODE}
             </TableHead>
-            <TableHead className="w-[140px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+            <TableHead className={cn(INVENTORY_TH_CLASS, "flex-1")}>
               {UI_TEXT.AUDIT_LOG.ACTION}
             </TableHead>
-            <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-              {UI_TEXT.AUDIT_LOG.REASON}
-            </TableHead>
-            <TableHead className="w-[200px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+            <TableHead className={cn(INVENTORY_TH_CLASS, "w-[200px]")}>
               {UI_TEXT.AUDIT_LOG.ACTOR}
             </TableHead>
-            <TableHead className="w-[100px] text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right border-l border-border/10 pr-4">
+            <TableHead className={cn(INVENTORY_TH_CLASS, "w-[100px] text-right pr-4")}>
               {UI_TEXT.BUTTON.DETAIL}
             </TableHead>
           </TableRow>
@@ -86,7 +89,7 @@ export function OrderAuditLogTable({
         <TableBody className="divide-y divide-border/30">
           {!orderIdSelected ? (
             <TableRow>
-              <TableCell colSpan={6} className="h-64 text-center">
+              <TableCell colSpan={5} className="h-64 text-center">
                 <EmptyState
                   title={UI_TEXT.AUDIT_LOG.EMPTY_TITLE}
                   description={UI_TEXT.AUDIT_LOG.EMPTY_DESC}
@@ -97,28 +100,29 @@ export function OrderAuditLogTable({
           ) : error ? (
             <TableRow>
               <TableCell
-                colSpan={6}
+                colSpan={5}
                 className="h-32 text-center text-destructive font-medium bg-destructive/5"
               >
                 {error}
               </TableCell>
             </TableRow>
           ) : logs.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={6} className="h-64 text-center">
-                <EmptyState
-                  icon={ShieldAlert}
-                  title={UI_TEXT.AUDIT_LOG.EMPTY}
-                  description={UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC}
-                />
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={5} className="h-[400px] text-center align-middle">
+                <div className="flex flex-col items-center justify-center py-10">
+                  <EmptyState
+                    icon={ShieldAlert}
+                    title={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_TITLE}
+                    description={
+                      UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_DESC || UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC
+                    }
+                  />
+                </div>
               </TableCell>
             </TableRow>
           ) : (
             logs.map((log) => (
-              <TableRow
-                key={log.logId}
-                className="group border-b border-border/20 hover:bg-muted/30 transition-all duration-300"
-              >
+              <TableRow key={log.logId} className={INVENTORY_TROW_CLASS}>
                 <TableCell className="py-4 px-4">
                   <div className="flex flex-col gap-0.5">
                     <span className="font-bold text-foreground text-sm tracking-tight">
@@ -136,7 +140,7 @@ export function OrderAuditLogTable({
                   </span>
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="flex-1">
                   <div className="flex flex-col gap-1">
                     <Badge
                       variant={getActionVariant(log.action)}
@@ -148,12 +152,6 @@ export function OrderAuditLogTable({
                       {log.action}
                     </span>
                   </div>
-                </TableCell>
-
-                <TableCell>
-                  <p className="text-sm text-foreground font-medium leading-tight max-w-[300px]">
-                    {log.changeReason || "-"}
-                  </p>
                 </TableCell>
 
                 <TableCell>

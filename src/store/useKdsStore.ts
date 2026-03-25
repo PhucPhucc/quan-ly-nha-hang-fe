@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { KdsItemResponse, KdsQueueResponse, kdsService } from "@/services/kdsService";
 import { KDSStation, OrderItemStatus } from "@/types/enums";
 import { Order, OrderItem } from "@/types/Order";
@@ -118,14 +119,14 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         });
       } catch (error) {
         console.error("Failed to fetch KDS data:", error);
-        toast.error("Khong the tai du lieu KDS");
+        toast.error(UI_TEXT.KDS.FETCH_ERROR);
       }
     },
 
     startCooking: async (orderItemId) => {
       try {
         await kdsService.startCooking(orderItemId);
-        toast.success("Da bat dau nau!");
+        toast.success(UI_TEXT.KDS.START_COOKING_SUCCESS);
         get().fetchKdsData();
       } catch (error: unknown) {
         toast.error(error instanceof Error ? error.message : "Loi khi bat dau nau");
@@ -135,7 +136,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
     completeItemCooking: async (orderItemId) => {
       try {
         await kdsService.completeCooking(orderItemId);
-        toast.success("Mon da hoan thanh!");
+        toast.success(UI_TEXT.KDS.COMPLETE_COOKING_SUCCESS);
         get().fetchKdsData();
       } catch (e: unknown) {
         toast.error(e instanceof Error ? e.message : "Loi khi hoan thanh mon");
@@ -145,7 +146,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
     rejectItem: async (orderItemId, reason) => {
       try {
         await kdsService.rejectItem(orderItemId, reason);
-        toast.success("Da tu choi mon!");
+        toast.success(UI_TEXT.KDS.REJECT_ITEM_SUCCESS);
         get().fetchKdsData();
       } catch (e: unknown) {
         toast.error(e instanceof Error ? e.message : "Loi khi tu choi mon");

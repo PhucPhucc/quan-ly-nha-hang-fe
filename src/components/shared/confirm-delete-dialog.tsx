@@ -21,8 +21,8 @@ export function ConfirmDeleteDialog({
   open,
   onOpenChange,
   onConfirm,
-  title = "Xác nhận xóa",
-  description = "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa không?",
+  title = UI_TEXT.COMMON.DELETE_TITLE,
+  description = UI_TEXT.COMMON.DELETE_CONFIRM,
 }: ConfirmDeleteProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

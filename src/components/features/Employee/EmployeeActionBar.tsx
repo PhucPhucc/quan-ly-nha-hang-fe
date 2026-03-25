@@ -58,7 +58,7 @@ const EmployeeActionBar = () => {
       <div className="relative flex-1 w-full">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
         <Input
-          placeholder="Tìm nhân viên theo tên, email, mã số..."
+          placeholder={UI_TEXT.EMPLOYEE.SEARCH_BAR_PLACEHOLDER}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-11 h-11 bg-slate-50/80 border-slate-100 rounded-2xl focus-visible:ring-primary/20 focus-visible:bg-white transition-all font-medium text-sm"
@@ -99,7 +99,7 @@ const EmployeeActionBar = () => {
           onClick={handleReset}
           disabled={!search && role === "all"}
           className="h-11 w-11 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all disabled:opacity-30"
-          title="Làm mới"
+          title={UI_TEXT.COMMON.REFRESH}
         >
           <RotateCcw className="h-4 w-4" />
         </Button>

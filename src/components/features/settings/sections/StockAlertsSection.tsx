@@ -1,6 +1,6 @@
 import { AlertTriangle, Box } from "lucide-react";
 import React from "react";
-import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import {
   Field,
@@ -10,7 +10,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 import { SectionHeader } from "../shared/SectionHeader";
@@ -19,13 +18,11 @@ import type { WarehouseSettingsInput } from "../WarehouseSettingsForm";
 const { SETTINGS } = UI_TEXT;
 
 type Props = {
-  lowStockEnabled: boolean;
   register: UseFormRegister<WarehouseSettingsInput>;
-  setValue: UseFormSetValue<WarehouseSettingsInput>;
   errors: FieldErrors<WarehouseSettingsInput>;
 };
 
-export function StockAlertsSection({ lowStockEnabled, register, setValue, errors }: Props) {
+export function StockAlertsSection({ register, errors }: Props) {
   return (
     <div className="space-y-4">
       <SectionHeader
@@ -33,17 +30,6 @@ export function StockAlertsSection({ lowStockEnabled, register, setValue, errors
         title={SETTINGS.STOCK_SECTION}
         description={SETTINGS.STOCK_SECTION_DESC}
       />
-
-      <Field
-        orientation="horizontal"
-        className="items-start justify-between gap-4 rounded-lg border border-border bg-muted/20 p-4"
-      >
-        <div className="max-w-md space-y-0.5">
-          <FieldLabel>{SETTINGS.FIELD_LOW_STOCK_ENABLED}</FieldLabel>
-          <FieldDescription>{SETTINGS.FIELD_LOW_STOCK_ENABLED_DESC}</FieldDescription>
-        </div>
-        <Switch checked={lowStockEnabled} onCheckedChange={(v) => setValue("lowStockEnabled", v)} />
-      </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field>
@@ -55,7 +41,6 @@ export function StockAlertsSection({ lowStockEnabled, register, setValue, errors
             <Input
               type="number"
               min={0}
-              disabled={!lowStockEnabled}
               className="max-w-sm"
               {...register("lowStockThreshold", { valueAsNumber: true })}
             />

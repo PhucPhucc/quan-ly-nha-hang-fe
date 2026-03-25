@@ -1,15 +1,11 @@
 import { Shuffle } from "lucide-react";
 import React from "react";
 import { UseFormSetValue } from "react-hook-form";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import { Field, FieldContent, FieldDescription, FieldLabel } from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { FieldError } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";
 
@@ -20,11 +16,12 @@ const { SETTINGS } = UI_TEXT;
 
 type Props = {
   autoDeduct: boolean;
-  initialCostMethod: WarehouseSettingsInput["costMethod"];
   setValue: UseFormSetValue<WarehouseSettingsInput>;
+  register: UseFormRegister<WarehouseSettingsInput>;
+  errors: FieldErrors<WarehouseSettingsInput>;
 };
 
-export function DispatchRulesSection({ autoDeduct, initialCostMethod, setValue }: Props) {
+export function DispatchRulesSection({ autoDeduct, setValue, register, errors }: Props) {
   return (
     <div className="space-y-4">
       <SectionHeader
@@ -34,21 +31,20 @@ export function DispatchRulesSection({ autoDeduct, initialCostMethod, setValue }
       />
 
       <Field>
-        <FieldLabel>{SETTINGS.FIELD_COST_METHOD}</FieldLabel>
+        <FieldLabel>{UI_TEXT.INVENTORY.SETTINGS.COST_METHOD}</FieldLabel>
         <FieldContent>
-          <Select
-            defaultValue={initialCostMethod}
-            onValueChange={(v) => setValue("costMethod", v as WarehouseSettingsInput["costMethod"])}
-          >
-            <SelectTrigger className="max-w-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="FIFO">{SETTINGS.FIELD_COST_METHOD_FIFO}</SelectItem>
-              <SelectItem value="LIFO">{SETTINGS.FIELD_COST_METHOD_LIFO}</SelectItem>
-              <SelectItem value="AVG">{SETTINGS.FIELD_COST_METHOD_AVG}</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-muted/40 px-3 text-sm text-foreground">
+            <span className="font-semibold text-primary">
+              {UI_TEXT.INVENTORY.SETTINGS.COST_METHOD_W_AVG}
+            </span>
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+              {UI_TEXT.INVENTORY.SETTINGS.DEFAULT}
+            </span>
+          </div>
+          <FieldDescription>
+            {UI_TEXT.INVENTORY.SETTINGS.COST_METHOD_DESC}{" "}
+            {UI_TEXT.INVENTORY.SETTINGS.COST_METHOD_SUPPORT}
+          </FieldDescription>
         </FieldContent>
       </Field>
 
@@ -65,6 +61,40 @@ export function DispatchRulesSection({ autoDeduct, initialCostMethod, setValue }
           onCheckedChange={(v) => setValue("autoDeductOnCompleted", v)}
         />
       </Field>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Field>
+          <FieldLabel>{UI_TEXT.INVENTORY.SETTINGS.MAX_RECALC_DAYS}</FieldLabel>
+          <FieldContent>
+            <Input
+              type="number"
+              min={1}
+              max={365}
+              {...register("maxCostRecalcDays", { valueAsNumber: true })}
+            />
+            <FieldDescription>{UI_TEXT.INVENTORY.SETTINGS.MAX_RECALC_DAYS_DESC}</FieldDescription>
+            <FieldError errors={[errors.maxCostRecalcDays]} />
+          </FieldContent>
+        </Field>
+
+        <Field>
+          <FieldLabel>{UI_TEXT.INVENTORY.SETTINGS.OPENING_STOCK_IMPORT_COOLDOWN}</FieldLabel>
+          <FieldContent>
+            <Input
+              type="number"
+              min={0}
+              {...register("openingStockImportCooldownHours", { valueAsNumber: true })}
+            />
+            <FieldDescription>
+              {UI_TEXT.INVENTORY.SETTINGS.OPENING_STOCK_IMPORT_COOLDOWN_DESC}
+            </FieldDescription>
+            <FieldDescription>
+              {UI_TEXT.INVENTORY.SETTINGS.OPENING_STOCK_IMPORT_COOLDOWN_HELP}
+            </FieldDescription>
+            <FieldError errors={[errors.openingStockImportCooldownHours]} />
+          </FieldContent>
+        </Field>
+      </div>
     </div>
   );
 }

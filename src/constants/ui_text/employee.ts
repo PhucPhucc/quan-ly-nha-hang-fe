@@ -65,4 +65,5 @@ export const EMPLOYEE = {
   CHANGE_SUCCESS: "Thay đổi vai trò thành công",
   CHANGE_FAILED: "Thay đổi vai trò thất bại",
   REASON_PLACEHOLDER: "Nhập lý do thăng chức, chuyển bộ phận...",
+  SEARCH_BAR_PLACEHOLDER: "Tìm nhân viên theo tên, email, mã số...",
 };

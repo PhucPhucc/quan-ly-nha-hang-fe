@@ -129,6 +129,8 @@ export const COMMON = {
   TODAY: "Hôm nay",
   STATUS: "Trạng thái",
   ACTIVE: "Hoạt động",
+  REFRESH: "Làm mới",
+  DELETE_TITLE: "Xác nhận xóa",
 };
 
 export const SIDE_BAR = {

@@ -38,19 +38,19 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
 
   const handleSendRequest = async () => {
     if (!selectedOrderId) {
-      toast.error("Vui lòng chọn bàn trước khi gửi yêu cầu");
+      toast.error(UI_TEXT.ORDER.CURRENT.SELECT_TABLE_REQUIRED);
       return;
     }
 
     const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
     if (!activeOrder) {
-      toast.error("Không tìm thấy thông tin đơn hàng");
+      toast.error(UI_TEXT.ORDER.CURRENT.ORDER_NOT_FOUND);
       return;
     }
 
     const items = cartData[selectedOrderId] || [];
     if (items.length === 0) {
-      toast.error("Giỏ hàng đang trống");
+      toast.error(UI_TEXT.ORDER.CURRENT.CART_EMPTY);
       return;
     }
 
@@ -79,17 +79,17 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
 
       const submitRes = await orderService.submitToKitchen(submitData);
       if (submitRes.isSuccess) {
-        toast.success("Đã gửi yêu cầu vào bếp thành công!");
+        toast.success(UI_TEXT.ORDER.CURRENT.SUBMIT_SUCCESS);
         clearCart(selectedOrderId);
         fetchOrders(); // Refresh order board
         fetchOrderDetails(selectedOrderId); // Refresh sidebar items
         setActiveView("order"); // Switch to order view to show updated items
       } else {
-        toast.error("Gửi vào bếp thất bại: " + submitRes.message);
+        toast.error(`${UI_TEXT.ORDER.CURRENT.SUBMIT_FAILED}: ${submitRes.message}`);
       }
     } catch (error) {
       console.error("Order submission failed:", error);
-      toast.error("Đã có lỗi xảy ra khi gửi yêu cầu");
+      toast.error(UI_TEXT.ORDER.CURRENT.SUBMIT_ERROR);
     } finally {
       setIsSubmitting(false);
     }
@@ -175,7 +175,7 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
               {UI_TEXT.ORDER.CURRENT.PROCESSING}
             </>
           ) : (
-            UI_TEXT.ORDER.CURRENT.ADD_TO_ORDER || "Thêm vào đơn"
+            UI_TEXT.ORDER.CURRENT.ADD_TO_ORDER
           )}
         </Button>
         <Button
