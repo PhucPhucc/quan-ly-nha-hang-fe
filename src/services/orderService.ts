@@ -167,13 +167,13 @@ export const orderService = {
   cancelOrder: (id: string, reason: string): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/orders/${id}/cancel`, {
       method: "PATCH",
-      body: { orderId: id, reason },
+      body: { orderId: id, reason, status: OrderStatus.Cancelled },
     }),
 
   cancelOrderItem: (id: string, itemId: string, reason: string): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/orders/${id}/items/${itemId}/cancel`, {
       method: "PATCH",
-      body: { orderId: id, orderItemId: itemId, reason },
+      body: { orderId: id, orderItemId: itemId, reason, status: OrderStatus.Cancelled },
     }),
 
   completeOrder: (id: string): Promise<ApiResponse<string>> =>
