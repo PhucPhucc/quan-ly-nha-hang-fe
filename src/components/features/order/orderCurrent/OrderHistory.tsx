@@ -13,6 +13,7 @@ const OrderHistory = () => {
         orderId={selectedId}
         title={UI_TEXT.ORDER.DETAIL.TAB_AUDIT}
         description={UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC}
+        className="h-full"
       />
     </div>
   );
