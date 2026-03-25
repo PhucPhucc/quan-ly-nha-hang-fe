@@ -125,6 +125,10 @@ export const COMMON = {
   REMAINING: "Còn",
   DAYS: "ngày",
   QUANTITY_X: "x",
+  CHANGE_AVATAR: "Thay đổi ảnh",
+  TODAY: "Hôm nay",
+  STATUS: "Trạng thái",
+  ACTIVE: "Hoạt động",
 };
 
 export const SIDE_BAR = {

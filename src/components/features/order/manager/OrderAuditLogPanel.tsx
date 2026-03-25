@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import {
@@ -229,13 +229,7 @@ export default function OrderAuditLogPanel({
 
   return (
     <Card>
-      <CardHeader className="pt-5">
-        <CardTitle className="flex items-center gap-2">
-          <ShieldAlert className="h-5 w-5 text-primary" />
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 pb-5">
+      <CardContent className="space-y-4 py-5">
         <p className="text-sm text-muted-foreground">{description}</p>
 
         {globalMode && (
