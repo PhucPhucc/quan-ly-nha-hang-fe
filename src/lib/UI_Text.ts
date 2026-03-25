@@ -2,7 +2,7 @@ import { PREFERENCE } from "@/constants/ui_text/preference";
 
 import { AUDIT_LOG } from "../constants/ui_text/audit";
 import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_text/auth";
-import { API, BUTTON, COMMON, FORM, ROLE, SIDE_BAR } from "../constants/ui_text/common";
+import { API, BUTTON, COMMON, FORM, NAVIGATION, ROLE, SIDE_BAR } from "../constants/ui_text/common";
 import { DASHBOARD } from "../constants/ui_text/dashboard";
 import { EMPLOYEE } from "../constants/ui_text/employee";
 import { INVENTORY } from "../constants/ui_text/inventory";
@@ -13,9 +13,11 @@ import { ORDER } from "../constants/ui_text/order";
 import { RESERVATION } from "../constants/ui_text/reservation";
 import { SALES_ANALYTICS } from "../constants/ui_text/salesAnalytics";
 import { TABLE } from "../constants/ui_text/table";
+import { VOUCHER } from "../constants/ui_text/voucher";
 export const UI_TEXT = {
   COMMON,
   SIDE_BAR,
+  NAVIGATION,
   FORM,
   ROLE,
   BUTTON,
@@ -36,4 +38,5 @@ export const UI_TEXT = {
   SALES_ANALYTICS,
   INVENTORY,
   PREFERENCE,
+  VOUCHER,
 };

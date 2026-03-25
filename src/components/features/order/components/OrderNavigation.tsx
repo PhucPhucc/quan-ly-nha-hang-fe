@@ -1,10 +1,11 @@
 "use client";
 
-import { Activity, CalendarDays, CreditCard, Sparkles } from "lucide-react";
+import { Activity, CalendarDays, CreditCard, Sparkles, Tag } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -16,23 +17,28 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Tổng quan",
+    label: UI_TEXT.ORDER.BOARD.OVERVIEW,
     href: "/manager/order",
     icon: Sparkles,
     exact: true,
   },
   {
-    label: "Danh sách đơn",
+    label: UI_TEXT.ORDER.MANAGEMENT.TABS.ORDERS,
     href: "/manager/order/list",
     icon: Activity,
   },
   {
-    label: "Lịch sử thanh toán",
+    label: UI_TEXT.VOUCHER.TITLE,
+    href: "/manager/voucher",
+    icon: Tag,
+  },
+  {
+    label: UI_TEXT.ORDER.MANAGEMENT.TABS.BILLING,
     href: "/manager/order/billing-history",
     icon: CreditCard,
   },
   {
-    label: "Nhật ký thao tác",
+    label: UI_TEXT.ORDER.MANAGEMENT.TABS.AUDIT,
     href: "/manager/order/audit-log",
     icon: CalendarDays,
   },
@@ -48,7 +54,7 @@ export function OrderNavigation() {
 
   return (
     <nav
-      className="flex items-center gap-1 overflow-x-auto scrollbar-none"
+      className="flex min-w-0 items-center gap-1 overflow-x-auto scrollbar-none"
       aria-label="Điều hướng đơn hàng"
     >
       {NAV_ITEMS.map((item) => {

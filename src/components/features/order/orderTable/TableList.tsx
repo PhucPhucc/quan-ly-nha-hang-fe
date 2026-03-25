@@ -230,9 +230,7 @@ const getTableInfo = (table: ApiTable, order?: Order): Omit<TableCard, "label" |
         orderId: order.orderId,
         status: OrderStatus.Serving,
         people: table.capacity,
-        price: order.totalAmount
-          ? currencyFormatter.format(order.totalAmount) + UI_TEXT.COMMON.CURRENCY
-          : "0" + UI_TEXT.COMMON.CURRENCY,
+        price: currencyFormatter.format(getTableBasePrice(order)) + UI_TEXT.COMMON.CURRENCY,
         createdAt: order.createdAt,
       };
     case OrderStatus.Reserved:
@@ -255,4 +253,20 @@ const mapTableStatus = (status: TableStatus): OrderStatus => {
     default:
       return OrderStatus.Ready;
   }
+};
+
+const getTableBasePrice = (order: Order) => {
+  if (order.subTotal && order.subTotal > 0) {
+    return order.subTotal;
+  }
+
+  const vatRate = order.vatRate ?? 0;
+  const discountAmount = order.discountAmount ?? 0;
+  const hasVatOrDiscount = (order.vatAmount ?? 0) > 0 || discountAmount > 0;
+
+  if (hasVatOrDiscount && vatRate >= 0) {
+    return Math.max(order.totalAmount / (1 + vatRate) + discountAmount, 0);
+  }
+
+  return Math.max(order.totalAmount, 0);
 };

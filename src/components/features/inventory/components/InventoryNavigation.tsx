@@ -67,6 +67,11 @@ const NAV_ITEMS: NavItem[] = [
     icon: BookOpen,
   },
   {
+    label: UI_TEXT.INVENTORY.NAV.GROUPS,
+    href: "/manager/inventory/groups",
+    icon: Layers,
+  },
+  {
     label: UI_TEXT.INVENTORY.NAV.LOTS,
     href: "/manager/inventory/lots",
     icon: Layers,

@@ -30,6 +30,11 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
       <TableCell className="text-center font-semibold text-slate-800 text-sm">
         {item.name}
       </TableCell>
+      <TableCell className="text-center text-sm">
+        <span className="rounded-full border border-border bg-muted/40 px-2.5 py-1 font-medium text-foreground">
+          {item.inventoryGroupName || UI_TEXT.INVENTORY.TABLE.GROUP_NONE}
+        </span>
+      </TableCell>
       <TableCell className="text-center">
         <span className="font-semibold text-slate-800 text-sm">
           {item.currentStock} {item.unit}

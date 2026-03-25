@@ -55,6 +55,16 @@ export interface Order {
   vatRate?: number;
   vatAmount?: number;
   totalAmount: number;
+  discountAmount?: number;
+  promotionId?: string;
+  promotionCode?: string;
+  discount?: number;
+  voucherCode?: string;
+  appliedVoucherCode?: string;
+  voucher?: {
+    voucherCode?: string;
+    discountAmount?: number;
+  };
   isPriority: boolean;
   createdAt: string;
   updatedAt?: string;

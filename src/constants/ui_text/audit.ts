@@ -86,6 +86,7 @@ export const AUDIT_LOG = {
     NO_SHOW: "Khách không đến",
   },
   FIELDS: {
+    Field: "TRƯỜNG",
     CustomerName: "Khách hàng",
     CustomerPhone: "Số điện thoại",
     ReservationDate: "Ngày đặt bàn",
@@ -132,4 +133,6 @@ export const AUDIT_LOG = {
     STATUS_CHANGE: "{actor} đã đổi trạng thái {subject}.",
     GENERIC: "{actor} đã {action} {subject}.",
   },
+  TECHNICAL_LOG_HINT:
+    "Bản ghi này chứa các thay đổi thuộc về hệ thống kỹ thuật. Vui lòng xem chi tiết ở mục phía dưới.",
 };

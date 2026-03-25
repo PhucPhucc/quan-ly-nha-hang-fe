@@ -136,6 +136,8 @@ export const ORDER = {
     PROCESSING: "Đang xử lý...",
     SUBTOTAL: "Tạm tính",
     TAX: "Thuế (VAT 10%)",
+    DISCOUNT: "Giảm giá",
+    ADD_TO_ORDER: "Thêm vào đơn",
     PAY: "Thanh toán",
     PRINT_TEMP_ACTION: "In tạm tính",
     EMPTY: "Chưa có món nào trong đơn hàng",

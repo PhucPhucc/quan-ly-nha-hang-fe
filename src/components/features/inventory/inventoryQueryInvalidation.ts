@@ -2,6 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 
 const INVENTORY_QUERY_PREFIXES = [
   ["inventory-settings"],
+  ["inventory-groups"],
   ["opening-stock-ingredients"],
   ["ingredients"],
   ["inventory-report"],

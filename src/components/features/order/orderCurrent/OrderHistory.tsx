@@ -21,11 +21,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { OrderHistoryItem, orderService } from "@/services/orderService";
+import { OrderAuditLogResponse, orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 
 const OrderHistory = () => {
-  const [history, setHistory] = useState<OrderHistoryItem[] | null>(null);
+  const [history, setHistory] = useState<OrderAuditLogResponse[] | null>(null);
   const selectedId = useOrderBoardStore((state) => state.selectedOrderId);
 
   useEffect(() => {

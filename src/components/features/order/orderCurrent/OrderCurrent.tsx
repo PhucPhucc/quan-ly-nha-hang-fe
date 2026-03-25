@@ -39,17 +39,38 @@ const OrderCurrent = () => {
   const remoteItems = activeOrderDetails?.orderItems || [];
 
   const subtotalCart = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
+
   const subtotalRemote = remoteItems.reduce((acc, item) => {
-    const itemExtraPrice =
-      item.optionGroups
-        ?.flatMap((g) => g.optionValues)
-        .reduce((sum, v) => sum + Number(v.extraPriceSnapshot || 0) * (v.quantity || 1), 0) || 0;
-    return acc + (item.unitPriceSnapshot + itemExtraPrice) * item.quantity;
+    const base = item.unitPriceSnapshot * item.quantity;
+    const options = (item.optionGroups || []).reduce((gAcc, g) => {
+      return gAcc + g.optionValues.reduce((vAcc, v) => vAcc + v.extraPriceSnapshot * v.quantity, 0);
+    }, 0);
+    return acc + base + options;
   }, 0);
 
   const subtotal = subtotalCart + subtotalRemote;
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+
+  const discount =
+    activeOrderDetails?.discountAmount ??
+    activeOrderDetails?.discount ??
+    activeOrderDetails?.voucher?.discountAmount ??
+    0;
+
+  const voucherCode =
+    activeOrderDetails?.voucherCode ??
+    activeOrderDetails?.appliedVoucherCode ??
+    activeOrderDetails?.promotionCode ??
+    activeOrderDetails?.voucher?.voucherCode ??
+    undefined;
+
+  // Use server total if no items in cart to match backend logic precisely
+  const serverTotal = activeOrderDetails?.totalAmount;
+  const hasCartItems = cartItems.length > 0;
+
+  const tax = Math.round((subtotal - discount) * 0.1);
+  const total = hasCartItems
+    ? subtotal - discount + tax
+    : (serverTotal ?? subtotal - discount + tax);
 
   if (orderDetailsLoading && !activeOrderDetails) {
     return (
@@ -75,7 +96,13 @@ const OrderCurrent = () => {
           }
           onRemoveItem={(key) => selectedOrderId && removeItem(selectedOrderId, key)}
         />
-        <OrderSummaryFooter subtotal={subtotal} tax={tax} total={total} />
+        <OrderSummaryFooter
+          subtotal={subtotal}
+          tax={tax}
+          total={total}
+          discount={discount}
+          voucherCode={voucherCode}
+        />
       </div>
     </CardContainer>
   );

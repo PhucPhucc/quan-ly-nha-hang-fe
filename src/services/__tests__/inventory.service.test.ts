@@ -16,7 +16,7 @@ describe("inventoryService", () => {
         expiryWarningDays: 7,
         defaultLowStockThreshold: 0,
         autoDeductOnCompleted: true,
-        costMethod: "Bình quân gia quyền",
+        costMethod: "WeightedAverage",
         maxCostRecalcDays: 31,
       },
     });
@@ -46,6 +46,17 @@ describe("inventoryService", () => {
       method: "PUT",
       body: payload,
     });
+  });
+
+  it("calls getInventoryGroups with the groups endpoint", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({
+      isSuccess: true,
+      data: [],
+    });
+
+    await inventoryService.getInventoryGroups();
+
+    expect(apiFetch).toHaveBeenCalledWith("/inventory/groups");
   });
 
   it("calls generateIngredientCode with encoded name query", async () => {

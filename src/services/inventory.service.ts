@@ -16,6 +16,7 @@ import {
   InventoryCheckStatus,
   InventoryDashboardOverview,
   InventoryExpiryAlertItem,
+  InventoryGroup,
   InventoryLedgerItem,
   InventoryReportItem,
   InventorySettings,
@@ -246,6 +247,18 @@ function mapInventoryTransaction(item: InventoryTransaction): InventoryTransacti
   };
 }
 
+interface IngredientMutationRequest extends Partial<Ingredient> {
+  useDefaultLowStockThreshold?: boolean;
+}
+
+export interface InventoryGroupMutationRequest {
+  name: string;
+  description?: string | null;
+  lowStockThreshold?: number | null;
+  expiryWarningDays?: number | null;
+  defaultCostMethod?: string | null;
+}
+
 function normalizePagination<T>(
   data: PaginationEnvelope<T>,
   mapper?: (item: T) => T
@@ -300,7 +313,7 @@ export const inventoryService = {
   },
 
   // Thêm nguyên liệu mới
-  addIngredient: async (data: Partial<Ingredient>): Promise<ApiResponse<Ingredient>> => {
+  addIngredient: async (data: IngredientMutationRequest): Promise<ApiResponse<Ingredient>> => {
     const response = await apiFetch<Ingredient>("/ingredients", {
       method: "POST",
       body: data,
@@ -345,7 +358,7 @@ export const inventoryService = {
   // Cập nhật nguyên liệu
   updateIngredient: async (
     id: string,
-    data: Partial<Ingredient>
+    data: IngredientMutationRequest
   ): Promise<ApiResponse<Ingredient>> => {
     const response = await apiFetch<Ingredient>(`/ingredients/${id}`, {
       method: "PUT",
@@ -377,6 +390,35 @@ export const inventoryService = {
   // Lấy thống kê tổng quan (Dashboard)
   getStats: async (): Promise<ApiResponse<InventoryStats>> => {
     return apiFetch<InventoryStats>("/inventory/stats");
+  },
+
+  getInventoryGroups: async (): Promise<ApiResponse<InventoryGroup[]>> => {
+    return apiFetch<InventoryGroup[]>("/inventory/groups");
+  },
+
+  createInventoryGroup: async (
+    data: InventoryGroupMutationRequest
+  ): Promise<ApiResponse<InventoryGroup>> => {
+    return apiFetch<InventoryGroup>("/inventory/groups", {
+      method: "POST",
+      body: data,
+    });
+  },
+
+  updateInventoryGroup: async (
+    id: string,
+    data: InventoryGroupMutationRequest
+  ): Promise<ApiResponse<InventoryGroup>> => {
+    return apiFetch<InventoryGroup>(`/inventory/groups/${id}`, {
+      method: "PUT",
+      body: data,
+    });
+  },
+
+  deleteInventoryGroup: async (id: string): Promise<ApiResponse<boolean>> => {
+    return apiFetch<boolean>(`/inventory/groups/${id}`, {
+      method: "DELETE",
+    });
   },
 
   getDashboardOverview: async (): Promise<ApiResponse<InventoryDashboardOverview>> => {

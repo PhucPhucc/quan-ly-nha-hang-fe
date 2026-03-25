@@ -1,6 +1,6 @@
 import { DollarSign, Loader2 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
+import { useTableStore } from "@/store/useTableStore";
 import { OrderStatus, PaymentMethod } from "@/types/enums";
 
 interface CheckoutModalProps {
@@ -54,6 +55,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
       fetchOrders: state.fetchOrders,
     })
   );
+  const { selectedAreaId, fetchTablesByArea } = useTableStore((state) => ({
+    selectedAreaId: state.selectedAreaId,
+    fetchTablesByArea: state.fetchTablesByArea,
+  }));
+
+  const refreshBoardState = useCallback(async () => {
+    await Promise.all([
+      fetchOrders(),
+      selectedAreaId ? fetchTablesByArea(selectedAreaId) : Promise.resolve(),
+    ]);
+  }, [fetchOrders, selectedAreaId, fetchTablesByArea]);
 
   useEffect(() => {
     let isMounted = true;
@@ -115,10 +127,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           const res = await orderService.getOrderById(selectedOrderId);
 
           if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
-            await fetchOrders();
+            await refreshBoardState();
             toast.success("Hệ thống đã nhận được tiền!");
             onClose();
             clearOrderDetails();
+            useOrderBoardStore.getState().setSelectedOrderId(null);
             clearInterval(interval);
           }
         } catch (error) {
@@ -128,7 +141,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     }
 
     return () => clearInterval(interval);
-  }, [isOpen, selectedMethod, payOSUrl, selectedOrderId, onClose, clearOrderDetails, fetchOrders]);
+  }, [
+    isOpen,
+    selectedMethod,
+    payOSUrl,
+    selectedOrderId,
+    onClose,
+    clearOrderDetails,
+    refreshBoardState,
+  ]);
 
   const handleCheckout = async () => {
     if (!selectedOrderId) return;
@@ -156,9 +177,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
       const success = await checkoutOrder(selectedOrderId, selectedMethod, amountReceived);
 
       if (success) {
+        await refreshBoardState();
         toast.success("Thanh toán thành công!");
         onClose();
         clearOrderDetails();
+        useOrderBoardStore.getState().setSelectedOrderId(null);
       } else {
         toast.error("Thanh toán thất bại, vui lòng thử lại.");
       }
@@ -278,7 +301,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
 
               {bankInfo && (
                 <div className="w-full space-y-1 mt-1 text-[11px] bg-muted/40 p-2 rounded-md border border-muted">
-                  {/* Gộp Tên và Số tài khoản: Quan trọng nhất để đối soát nhanh */}
                   <div className="flex flex-col border-b border-muted/50 pb-1">
                     <span className="text-muted-foreground uppercase text-[9px] font-medium">
                       {BANK_LABELS.accountName}
@@ -292,16 +314,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                       </span>
                     </div>
                   </div>
-
-                  {/* Số tiền: Phải to và rõ */}
                   <div className="flex justify-between items-center border-b border-muted/50 py-1">
                     <span className="text-muted-foreground">{BANK_LABELS.amount}</span>
                     <span className="font-black text-right text-red-600 text-xs">
                       {(bankInfo.amount ?? totalAmount).toLocaleString()} {BANK_LABELS.currency}
                     </span>
                   </div>
-
-                  {/* Nội dung: Chỉ hiện nếu có, dùng truncate */}
                   <div className="flex justify-between items-center pt-0.5">
                     <span className="text-muted-foreground shrink-0 mr-2">{BANK_LABELS.desc}</span>
                     <span className="font-bold text-right text-orange-600 truncate">

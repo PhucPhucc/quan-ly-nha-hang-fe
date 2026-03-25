@@ -26,7 +26,7 @@ export function AreaDistributionCard({
   className,
 }: AreaDistributionCardProps) {
   return (
-    <Card className={cn("border-none bg-card shadow-md h-full flex flex-col", className)}>
+    <Card className={cn("py-5", className)}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-sm font-bold">

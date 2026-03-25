@@ -5,7 +5,6 @@ import React from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
 
 import { StatusItem } from "./StatusItem";
 
@@ -23,10 +22,9 @@ interface StatusSummaryCardProps {
 export function StatusSummaryCard({
   stats,
   isLoading,
-  className,
 }: StatusSummaryCardProps & { className?: string }) {
   return (
-    <Card className={cn("border-none bg-card shadow-md h-full flex flex-col", className)}>
+    <Card className="py-5">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-bold">
           <div className="rounded-lg bg-primary/10 p-1.5 text-primary">

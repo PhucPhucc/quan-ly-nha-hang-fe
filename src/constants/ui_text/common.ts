@@ -104,12 +104,19 @@ export const COMMON = {
   HYPHEN: " - ",
   LOCALE_VI: "vi-VN",
   VALIDATION_ERROR: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.",
+  LIVE: "TRỰC TIẾP",
+  PAGINATION_SHOWING: "Đang hiển thị",
+  TO: "đến",
+  OF: "trên",
   PAGINATION: {
     PAGE: "Trang",
     OF: "/",
     TOTAL: "Tổng số",
     PREV: "Trước",
-    NEXT: "Tiếp",
+    NEXT: "Sau",
+    BACK_TO_TOP: "Về đầu trang",
+    QUOTE_LEFT: "\u201C",
+    QUOTE_RIGHT: "\u201D",
   },
   SYSTEM: "Hệ thống",
   MINUTES: "p",
@@ -135,6 +142,7 @@ export const SIDE_BAR = {
   STATION_BAR: "Quầy Bar",
   SETTINGS: "Cài đặt",
   LOGOUT: "Đăng xuất",
+  VOUCHER: "Voucher",
 };
 
 export const FORM = {
@@ -195,4 +203,19 @@ export const API = {
   NETWORK_ERROR: "Không thể kết nối server",
   TIMEOUT: "Hết thời gian phản hồi",
   UNAUTHORIZED: "Bạn chưa đăng nhập",
+};
+export const NAVIGATION = {
+  DASHBOARD: "Tổng quan",
+  SALES: "Bán hàng",
+  BILLING_HISTORY: "Lịch sử thanh toán",
+  AUDIT_LOG: "Nhật ký thao tác",
+  MENU: "Thực đơn",
+  EMPLOYEE: "Nhân viên",
+  PROFILE: "Cá nhân",
+  TABLE_MAP: "Sơ đồ bàn",
+  INVENTORY: "Kho hàng",
+  STOCK_HISTORY: "Xuất nhập kho",
+  VOUCHER: "Voucher",
+  ORDER_LIST: "Danh sách đơn hàng",
+  ORDER_DETAIL: "Chi tiết đơn hàng",
 };

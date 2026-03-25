@@ -23,11 +23,17 @@ export const DASHBOARD = {
   MAIN_LOBBY: "Sảnh chính",
   STALE_DURATION: (mins: number) => `(${mins} phút)`,
 
+  SIGNALR_CONNECTED: "SIGNALR: ĐÃ KẾT NỐI",
+  KPI_LABEL: "(KPI)",
   STATS: {
     REVENUE: "Tổng doanh thu",
     ORDERS: "Đơn hàng mới",
     TABLES: "Bàn hoạt động",
     STAFF: "Nhân viên trực ca",
+    REVENUE_TREND: (v: string) => `${v} vs hqua`,
+    ORDERS_TREND: (v: string) => `${v} vs tuần trước`,
+    TABLES_TREND: (v: string) => `${v} lấp đầy`,
+    STAFF_TREND: "Đang trực",
     REVENUE_DESC: (percent: string) => `${percent} so với tháng trước`,
     ORDERS_DESC: (percent: string) => `${percent} so với hôm qua`,
     TABLES_DESC: (percent: string) => `${percent} tỉ lệ sử dụng`,
@@ -85,5 +91,43 @@ export const DASHBOARD = {
   TOP_DISHES: {
     TITLE: "Món ăn bán chạy",
     ORDERS_COUNT: (count: number) => `${count} đơn trong tuần`,
+  },
+
+  ALERT_STRIP: {
+    PRINTER_ERROR: (station: string) => `Lỗi máy in bếp: ${station} mất kết nối`,
+    DELAYED_ORDER: (id: string, mins: number) => `Đơn hàng #${id} trễ > ${mins} phút chưa ra món`,
+  },
+
+  OPERATIONS: {
+    TITLE: "Trung tâm điều hành",
+    KDS_BACKLOG: "KDS Backlog (Bếp)",
+    INVENTORY_ALERTS: "Cảnh báo kho",
+    PROCESSING_ITEMS: (count: number) => `Có ${count} món đang xử lý`,
+    WAITING: "Đang đợi",
+    PREPARING: "Đang làm",
+    PREPARING_PROGRESS: "TIẾN ĐỘ CHẾ BIẾN",
+    ITEMS_COUNT: (count: number) => `${count} món`,
+    DELAYED_WARNING: (count: number, mins: number) => `CẢNH BÁO: ${count} MÓN TRỄ > ${mins}P`,
+    INGREDIENT_STATUS: "TRẠNG THÁI NGUYÊN LIỆU",
+    OUT_OF_STOCK: "Hết hàng",
+    LOW_STOCK: "Sắp hết hàng",
+    STABLE_INVENTORY: "Kho hàng ổn định",
+    VIEW_DETAILS: "XEM CHI TIẾT KHO",
+  },
+
+  ANALYTICS: {
+    TITLE: "Phân tích chuyên sâu",
+    KPI_TITLE: "Chỉ số quan trọng",
+    VS_YESTERDAY: "so với hôm qua",
+    REVENUE_CHANNEL: "Tỉ trọng kênh bán hàng",
+    UPDATED_JUST_NOW: "CẬP NHẬT: VỪA XONG",
+    VIEW_REPORT: "XEM BÁO CÁO CHI TIẾT",
+    ADD_WIDGET: "Thêm báo cáo mới",
+    ADD_WIDGET_DESC: "Kéo thả các biểu đồ hoặc chỉ số bạn muốn theo dõi tại đây",
+    LIVE_MONITORING: "Live Monitoring",
+    DINE_IN: "Tại chỗ",
+    DELIVERY: "Giao hàng",
+    BEST_SELLERS_ANALYSIS: "Phân tích món bán chạy",
+    QUICK_INSIGHTS: "Xem phân tích sâu",
   },
 };

@@ -3,16 +3,17 @@
 import {
   ClipboardList,
   CreditCard,
+  Gift,
   History,
   LayoutGrid,
   ShieldAlert,
+  Ticket,
   UtensilsCrossed,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { RecentOrders } from "@/components/features/Dashboard/RecentOrders";
 import { InventoryStatCard } from "@/components/features/inventory/components/InventoryStatCard";
-import { INVENTORY_PAGE_CLASS } from "@/components/features/inventory/components/inventoryStyles";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,36 +22,50 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { billingService } from "@/services/billingService";
 import { orderService } from "@/services/orderService";
+import { voucherService } from "@/services/voucherService";
 import { BillingHistoryRecord } from "@/types/Billing";
 import { OrderType } from "@/types/enums";
 import { OrderDashboardOverview, OrderDashboardTopOrderItem } from "@/types/Order";
+import { Voucher } from "@/types/voucher";
 
 export default function OrderOverviewPage() {
   const [overview, setOverview] = useState<OrderDashboardOverview | null>(null);
   const [billingHistory, setBillingHistory] = useState<BillingHistoryRecord[]>([]);
+  const [promotions, setPromotions] = useState<Voucher[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [billingError, setBillingError] = useState("");
+  const [promoError, setPromoError] = useState("");
 
   const fetchOverview = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
+      setBillingError("");
+      setPromoError("");
 
-      const [overviewRes, billingRes] = await Promise.all([
+      const [overviewRes, billingRes, promoRes] = await Promise.all([
         orderService.getDashboardOverview(),
         billingService.getBillingHistory({ pageNumber: 1, pageSize: 10 }),
+        voucherService.getAll({ pageSize: 10, filters: ["isActive==true"] }),
       ]);
 
       if (overviewRes.isSuccess && overviewRes.data) {
         setOverview(overviewRes.data);
+      } else if (!overviewRes.isSuccess) {
+        setError(overviewRes.message || UI_TEXT.ORDER.OVERVIEW.FETCH_ERROR);
       }
 
       if (billingRes.isSuccess && billingRes.data) {
         setBillingHistory(billingRes.data.items || []);
+      } else if (!billingRes.isSuccess) {
+        setBillingError(billingRes.message || "Không thể tải lịch sử thanh toán");
       }
 
-      if (!overviewRes.isSuccess && !billingRes.isSuccess) {
-        setError(overviewRes.message || billingRes.message || UI_TEXT.ORDER.OVERVIEW.FETCH_ERROR);
+      if (promoRes.isSuccess && promoRes.data) {
+        setPromotions(promoRes.data.items || []);
+      } else if (!promoRes.isSuccess) {
+        setPromoError(promoRes.message || "Không thể tải thông tin khuyến mãi");
       }
     } catch (err) {
       setError(getErrorMessage(err));
@@ -130,20 +145,20 @@ export default function OrderOverviewPage() {
   }, [overview]);
 
   return (
-    <div className={cn(INVENTORY_PAGE_CLASS, "gap-5 pt-3")}>
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_680px] xl:items-start">
+    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_690px] xl:items-start">
         <div className="space-y-5">
-          {error ? (
-            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-              {error}
-            </div>
-          ) : null}
           <PageHeader
             icon={ClipboardList}
             title={UI_TEXT.ORDER.OVERVIEW.HERO_TITLE}
             description={UI_TEXT.ORDER.OVERVIEW.HERO_DESC}
           />
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          {error ? (
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {error}
+            </div>
+          ) : null}
+          <div className="grid grid-cols-1 gap-2.5 px-4 md:grid-cols-2 xl:grid-cols-3">
             <InventoryStatCard
               icon={ClipboardList}
               label={UI_TEXT.ORDER.OVERVIEW.STATS.ACTIVE}
@@ -197,20 +212,117 @@ export default function OrderOverviewPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-2 gap-6 ">
         <RecentOrders seedOrders={overview?.topActiveOrders ?? []} />
-        <BillingHistoryPreview records={billingHistory} loading={loading} />
+        <BillingHistoryPreview records={billingHistory} loading={loading} error={billingError} />
       </div>
+      <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
     </div>
+  );
+}
+
+function PromotionOverviewCard({
+  promotions,
+  loading,
+  error,
+}: {
+  promotions: Voucher[];
+  loading: boolean;
+  error?: string;
+}) {
+  const activePromos = promotions.filter((p) => p.isActive);
+  const topPromo = [...promotions].sort((a, b) => b.usedCount - a.usedCount)[0];
+
+  return (
+    <Card className="border-none shadow-md overflow-hidden bg-white dark:bg-slate-900">
+      <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+        <CardTitle className="flex items-center justify-between gap-2 text-base font-bold text-slate-800 dark:text-slate-100 uppercase tracking-tight">
+          <div className="flex items-center gap-2">
+            <Ticket className="h-4 w-4 text-primary" />
+            <span>{UI_TEXT.VOUCHER.TITLE}</span>
+          </div>
+          <Badge
+            variant="outline"
+            className="text-[10px] font-bold py-0 h-5 px-2 bg-slate-50 border-slate-200"
+          >
+            {activePromos.length} {UI_TEXT.VOUCHER.STATUS_ACTIVE}
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-4 pb-4 space-y-4">
+        {loading ? (
+          <div className="space-y-3">
+            <div className="h-10 animate-pulse rounded-lg bg-slate-50 dark:bg-slate-800/50" />
+            <div className="h-10 animate-pulse rounded-lg bg-slate-50 dark:bg-slate-800/50" />
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-6 text-center text-danger/70 bg-danger/5 rounded-xl border border-danger/10">
+            <ShieldAlert className="size-6 mb-2 opacity-40" />
+            <span className="text-xs font-semibold">{error}</span>
+          </div>
+        ) : promotions.length > 0 ? (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-xl bg-primary/5 border border-primary/10 transition-all hover:bg-primary/10">
+                <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest mb-1">
+                  {UI_TEXT.VOUCHER.FILTER_ACTIVE}
+                </p>
+                <p className="text-xl font-black text-primary leading-tight">
+                  {activePromos.length}
+                </p>
+              </div>
+              <div className="p-3 rounded-xl bg-orange-50/50 border border-orange-100 transition-all hover:bg-orange-50">
+                <p className="text-[10px] font-bold text-orange-600/70 uppercase tracking-widest mb-1">
+                  {UI_TEXT.VOUCHER.TABLE_USAGE}
+                </p>
+                <p className="text-xl font-black text-orange-600 leading-tight">
+                  {promotions.reduce((acc, p) => acc + p.usedCount, 0)}
+                </p>
+              </div>
+            </div>
+
+            {topPromo && (
+              <div className="group relative p-3 rounded-xl border border-slate-100 bg-slate-50/30 overflow-hidden transition-all hover:border-primary/20 hover:bg-primary/5">
+                <div className="flex items-start justify-between relative z-10">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                      {UI_TEXT.VOUCHER.DETAIL_STATS}
+                    </p>
+                    <p className="text-sm font-black text-slate-700 dark:text-slate-200 truncate">
+                      {topPromo.code}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                      {topPromo.usedCount} {UI_TEXT.VOUCHER.DETAIL_USED}
+                    </span>
+                  </div>
+                </div>
+                <div className="absolute top-0 right-0 pt-4 opacity-5 transition-opacity group-hover:opacity-10">
+                  <Gift className="size-12 -mr-3 -mt-3 rotate-12" />
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-6 text-center text-slate-400">
+            <Ticket className="size-8 mb-2 opacity-20" />
+            <span className="text-xs font-medium italic">{UI_TEXT.VOUCHER.EMPTY_LIST}</span>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
 function BillingHistoryPreview({
   records,
   loading,
+  error,
 }: {
   records: BillingHistoryRecord[];
   loading: boolean;
+  error?: string;
 }) {
   const recentRecords = records.slice(0, 5);
 
@@ -226,6 +338,11 @@ function BillingHistoryPreview({
         {loading ? (
           <div className="flex h-full min-h-[160px] items-center justify-center text-sm text-muted-foreground">
             <span>{UI_TEXT.ORDER.OVERVIEW.BILLING_HISTORY.LOADING}</span>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-6 text-center text-danger/70 bg-danger/5 rounded-xl border border-danger/10">
+            <ShieldAlert className="size-6 mb-2 opacity-40" />
+            <span className="text-xs font-semibold">{error}</span>
           </div>
         ) : recentRecords.length > 0 ? (
           recentRecords.map((record) => (
@@ -265,8 +382,8 @@ function AuditLogPreview({ rows, loading }: { rows: AuditPreviewRow[]; loading: 
   const visibleRows = rows.slice(0, 10);
 
   return (
-    <Card className="self-start border-none shadow-md">
-      <CardHeader className="pb-3">
+    <Card className="self-start border-none shadow-md mt-3">
+      <CardHeader className="pt-3">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
           <History className="h-4 w-4 text-primary" />
           <span>{UI_TEXT.ORDER.OVERVIEW.AUDIT.TITLE}</span>
@@ -343,7 +460,7 @@ function DistributionCard({
   }));
 
   return (
-    <Card className="border-none shadow-md">
+    <Card className="border-none shadow-md py-5">
       <CardHeader className="space-y-1">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
           <Icon className="h-4 w-4 text-primary" />

@@ -2,7 +2,8 @@
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Download } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { BestSellersTable } from "@/components/features/sales-analytics/BestSellersTable";
 import { CategoryDistributionCard } from "@/components/features/sales-analytics/CategoryDistribution";
@@ -11,7 +12,13 @@ import { StatsGrid } from "@/components/features/sales-analytics/StatsGrid";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MOCK_SALES_ANALYTICS } from "@/data/mockSalesAnalytics";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { salesAnalyticsService } from "@/services/salesAnalyticsService";
@@ -21,24 +28,49 @@ export default function AnalyticsPage() {
   const [data, setData] = useState<SalesAnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [timeRange, setTimeRange] = useState<"day" | "month">("day");
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (timeRange === "day" && date) {
+        const formattedDate = format(date, "yyyy-MM-dd");
+        const result = await salesAnalyticsService.getSummary(formattedDate);
+        setData(result);
+      } else if (timeRange === "month" && date) {
+        const result = await salesAnalyticsService.getMonthlySummary(
+          date.getFullYear(),
+          date.getMonth() + 1
+        );
+        setData(result);
+      }
+    } catch (error) {
+      console.error("Failed to fetch analytics:", error);
+      toast.error(UI_TEXT.COMMON.ERROR);
+    } finally {
+      setLoading(false);
+    }
+  }, [date, timeRange]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const result = await salesAnalyticsService.getSummary();
-        setData(result);
-      } catch (error) {
-        console.error("Failed to fetch analytics:", error);
-        // Fallback to mock data for demonstration purposes as per user request
-        setData(MOCK_SALES_ANALYTICS);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [fetchData]);
+
+  const handleExport = async () => {
+    try {
+      if (timeRange === "day" && date) {
+        await salesAnalyticsService.exportToExcel({ date: format(date, "yyyy-MM-dd") });
+      } else if (timeRange === "month" && date) {
+        await salesAnalyticsService.exportToExcel({
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,
+        });
+      }
+      toast.success(UI_TEXT.SALES_ANALYTICS.EXPORT_SUCCESS);
+    } catch {
+      toast.error(UI_TEXT.SALES_ANALYTICS.EXPORT_ERROR);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-8 p-6 md:p-10 animate-fade-in-up">
@@ -52,6 +84,20 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Select value={timeRange} onValueChange={(v: "day" | "month") => setTimeRange(v)}>
+            <SelectTrigger className="h-10 w-[120px] bg-card text-[11px] font-bold border-muted/60">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day" className="text-xs">
+                {UI_TEXT.SALES_ANALYTICS.DAILY}
+              </SelectItem>
+              <SelectItem value="month" className="text-xs">
+                {UI_TEXT.SALES_ANALYTICS.MONTHLY}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -62,7 +108,15 @@ export default function AnalyticsPage() {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>{UI_TEXT.SALES_ANALYTICS.SELECT_DATE}</span>}
+                {date ? (
+                  timeRange === "day" ? (
+                    format(date, "PPP")
+                  ) : (
+                    format(date, "MMMM yyyy")
+                  )
+                ) : (
+                  <span>{UI_TEXT.SALES_ANALYTICS.SELECT_DATE}</span>
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">
@@ -70,7 +124,7 @@ export default function AnalyticsPage() {
             </PopoverContent>
           </Popover>
 
-          <Button className="gap-2 shadow-glow">
+          <Button className="gap-2 shadow-glow" onClick={handleExport}>
             <Download className="h-4 w-4" />
             <span>{UI_TEXT.SALES_ANALYTICS.EXPORT_REPORT}</span>
           </Button>

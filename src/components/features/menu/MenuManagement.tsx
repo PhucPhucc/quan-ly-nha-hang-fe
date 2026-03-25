@@ -12,14 +12,24 @@ import { MenuList } from "./MenuList";
 import MenuPagination from "./MenuPagination";
 
 export const MenuManagement: React.FC = () => {
-  const fetchMenuItems = useMenuStore((state) => state.fetchMenuItems);
-  const fetchSetMenus = useMenuStore((state) => state.fetchSetMenus);
+  const { fetchMenuItems, fetchSetMenus, currentPage, categoryId, pageSize } = useMenuStore();
+
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    fetchMenuItems();
-    fetchSetMenus();
+    const isComboCategorySelected = categories.find((c) => c.categoryId === categoryId)?.type === 2;
 
+    if (categoryId === "all") {
+      fetchMenuItems(currentPage, pageSize);
+      fetchSetMenus(currentPage, pageSize);
+    } else if (isComboCategorySelected) {
+      fetchSetMenus(currentPage, pageSize);
+    } else {
+      fetchMenuItems(currentPage, pageSize);
+    }
+  }, [fetchMenuItems, fetchSetMenus, currentPage, categoryId, pageSize, categories]);
+
+  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await categoryService.getAll();
@@ -42,7 +52,7 @@ export const MenuManagement: React.FC = () => {
   }, [fetchMenuItems, fetchSetMenus]);
 
   return (
-    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
+    <div className="p-6 space-y-6">
       <MenuFilterBar categories={categories} />
 
       <MenuList categories={categories} />

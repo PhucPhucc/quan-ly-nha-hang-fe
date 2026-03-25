@@ -135,6 +135,9 @@ export default function OrderManagementWorkspace() {
   const openDetails = (order: Order) => {
     setSelectedOrder(order);
     setDetailsOpen(true);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("foodhub:lastAuditOrderId", order.orderId);
+    }
   };
 
   const orderStats = useMemo(() => {
@@ -353,7 +356,7 @@ export default function OrderManagementWorkspace() {
         </TabsContent>
 
         <TabsContent value="audit" className="m-0 flex min-h-0 flex-1 flex-col gap-4">
-          <OrderAuditLogPanel selectedOrder={selectedOrder} />
+          <OrderAuditLogPanel orderId={selectedOrder?.orderId ?? null} />
         </TabsContent>
       </Tabs>
 

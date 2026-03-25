@@ -136,6 +136,9 @@ export function IngredientTable() {
                 {UI_TEXT.INVENTORY.TABLE.COL_NAME}
               </TableHead>
               <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
+                {UI_TEXT.INVENTORY.TABLE.COL_GROUP}
+              </TableHead>
+              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
               </TableHead>
               <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>

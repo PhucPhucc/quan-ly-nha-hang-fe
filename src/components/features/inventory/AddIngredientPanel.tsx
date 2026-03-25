@@ -60,7 +60,20 @@ export function AddIngredientPanel({
       return response.data;
     },
   });
+  const { data: inventoryGroups = [] } = useQuery({
+    queryKey: ["inventory-groups"],
+    queryFn: async () => {
+      const response = await inventoryService.getInventoryGroups();
+      return response.data ?? [];
+    },
+  });
   const defaultLowStockThreshold = settings?.defaultLowStockThreshold ?? 10;
+  const resolvedUseDefaultLowStockThreshold =
+    ingredient?.useDefaultLowStockThreshold ??
+    (ingredient ? ingredient.lowStockThreshold === defaultLowStockThreshold : true);
+  const resolvedIngredientLowStockThreshold = resolvedUseDefaultLowStockThreshold
+    ? defaultLowStockThreshold
+    : (ingredient?.lowStockThreshold ?? defaultLowStockThreshold);
 
   const {
     register,
@@ -77,7 +90,9 @@ export function AddIngredientPanel({
           name: ingredient.name,
           code: ingredient.code,
           unit: ingredient.unit,
-          lowStockThreshold: ingredient.lowStockThreshold,
+          useDefaultLowStockThreshold: resolvedUseDefaultLowStockThreshold,
+          lowStockThreshold: resolvedIngredientLowStockThreshold,
+          inventoryGroupId: ingredient.inventoryGroupId ?? "",
           costPrice: ingredient.costPrice,
           currentStock: ingredient.currentStock,
           description: ingredient.description || "",
@@ -88,12 +103,16 @@ export function AddIngredientPanel({
           code: "",
           currentStock: 0,
           unit: InventoryUnit.KG,
+          useDefaultLowStockThreshold: true,
           lowStockThreshold: defaultLowStockThreshold,
+          inventoryGroupId: "",
           costPrice: 0,
           description: "",
           isActive: true,
         },
   });
+  const watchedName = watch("name");
+  const useDefaultLowStockThreshold = watch("useDefaultLowStockThreshold");
 
   // Reset form when ingredient changes or panel opens
   React.useEffect(() => {
@@ -104,7 +123,9 @@ export function AddIngredientPanel({
           code: ingredient.code,
           unit: ingredient.unit,
           currentStock: ingredient.currentStock,
-          lowStockThreshold: ingredient.lowStockThreshold,
+          useDefaultLowStockThreshold: resolvedUseDefaultLowStockThreshold,
+          lowStockThreshold: resolvedIngredientLowStockThreshold,
+          inventoryGroupId: ingredient.inventoryGroupId ?? "",
           costPrice: ingredient.costPrice,
           description: ingredient.description || "",
           isActive: ingredient.isActive,
@@ -115,7 +136,9 @@ export function AddIngredientPanel({
           code: "",
           currentStock: 0,
           unit: InventoryUnit.KG,
+          useDefaultLowStockThreshold: true,
           lowStockThreshold: defaultLowStockThreshold,
+          inventoryGroupId: "",
           costPrice: 0,
           description: "",
           isActive: true,
@@ -124,10 +147,30 @@ export function AddIngredientPanel({
       setError(null);
       setHasCustomCode(false);
     }
-  }, [defaultLowStockThreshold, open, ingredient, reset]);
+  }, [
+    defaultLowStockThreshold,
+    open,
+    ingredient,
+    reset,
+    resolvedUseDefaultLowStockThreshold,
+    resolvedIngredientLowStockThreshold,
+  ]);
 
   React.useEffect(() => {
-    if (!open || isEditing || isDirty) {
+    if (!open || isDirty) {
+      return;
+    }
+
+    if (useDefaultLowStockThreshold || !isEditing) {
+      setValue("lowStockThreshold", defaultLowStockThreshold, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [defaultLowStockThreshold, isDirty, isEditing, open, setValue, useDefaultLowStockThreshold]);
+
+  React.useEffect(() => {
+    if (!open || !useDefaultLowStockThreshold) {
       return;
     }
 
@@ -135,9 +178,7 @@ export function AddIngredientPanel({
       shouldDirty: false,
       shouldValidate: true,
     });
-  }, [defaultLowStockThreshold, isDirty, isEditing, open, setValue]);
-
-  const watchedName = watch("name");
+  }, [defaultLowStockThreshold, isEditing, open, setValue, useDefaultLowStockThreshold]);
 
   React.useEffect(() => {
     if (isEditing || hasCustomCode) return;
@@ -179,10 +220,12 @@ export function AddIngredientPanel({
         code: data.code,
         baseUnit: data.unit,
         lowStockThreshold: data.lowStockThreshold,
+        inventoryGroupId: data.inventoryGroupId || null,
         description: data.description,
         isActive: data.isActive,
         ingredientId: ingredient?.ingredientId,
         status: isEditing ? ingredient.status : AlertThresholdStatus.NORMAL,
+        useDefaultLowStockThreshold: data.useDefaultLowStockThreshold,
       };
 
       let res;
@@ -252,6 +295,8 @@ export function AddIngredientPanel({
               control={control}
               isEditing={isEditing}
               setHasCustomCode={setHasCustomCode}
+              defaultLowStockThreshold={defaultLowStockThreshold}
+              inventoryGroups={inventoryGroups}
             />
           </form>
         </div>

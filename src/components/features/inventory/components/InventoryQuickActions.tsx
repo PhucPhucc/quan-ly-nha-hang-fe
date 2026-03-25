@@ -65,6 +65,13 @@ const QUICK_ACTIONS: QuickAction[] = [
     variant: "neutral",
   },
   {
+    icon: Layers,
+    label: UI_TEXT.INVENTORY.OVERVIEW.QUICK_GROUPS,
+    description: UI_TEXT.INVENTORY.OVERVIEW.QUICK_GROUPS_DESC,
+    href: "/manager/inventory/groups",
+    variant: "neutral",
+  },
+  {
     icon: Settings,
     label: UI_TEXT.INVENTORY.OVERVIEW.QUICK_SETTINGS,
     description: UI_TEXT.INVENTORY.OVERVIEW.QUICK_SETTINGS_DESC,

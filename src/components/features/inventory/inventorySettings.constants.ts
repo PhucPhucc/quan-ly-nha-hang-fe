@@ -1,11 +1,12 @@
 import type { InventorySettingsInput } from "@/lib/zod-schemas/inventory";
 import type { InventorySettings } from "@/types/Inventory";
+import { InventoryCostMethod } from "@/types/Inventory";
 
 export const DEFAULT_INVENTORY_SETTINGS: InventorySettingsInput = {
   expiryWarningDays: 7,
   defaultLowStockThreshold: 0,
   autoDeductOnCompleted: true,
-  costMethod: "Bình quân gia quyền",
+  costMethod: InventoryCostMethod.WeightedAverage,
   maxCostRecalcDays: 31,
 };
 
