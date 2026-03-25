@@ -95,9 +95,9 @@ export const RESERVATION = {
   PAGINATION_UNIT: "đặt bàn",
 
   // Validations & Errors
-  VALIDATION_MIN_LEAD_TIME: "Vui lòng đặt chỗ trước ít nhất 45 phút.",
-  VALIDATION_WITHIN_OPERATING_HOURS: "Đặt bàn phải nằm trong giờ hoạt động từ 10:30 đến 23:00.",
-  VALIDATION_BREAK_TIME: "Nhà hàng nghỉ giữa ca từ 14:00 đến 17:00. Vui lòng chọn giờ khác.",
+  VALIDATION_MIN_LEAD_TIME: "Vui lòng đặt chỗ trước ít nhất theo quy định.",
+  VALIDATION_WITHIN_OPERATING_HOURS: "Đặt bàn phải nằm trong giờ hoạt động của nhà hàng.",
+  VALIDATION_BREAK_TIME: "Nhà hàng đang nghỉ giữa ca. Vui lòng chọn giờ khác.",
   VALIDATION_REQUIRED_NAME_PHONE: "Vui lòng nhập tên và số điện thoại khách hàng",
   VALIDATION_REQUIRED_DATE_TIME: "Vui lòng chọn ngày và giờ đặt bàn",
   VALIDATION_VIP_REQUIRED: "Đoàn khách trên 12 người vui lòng đặt phòng VIP.",

@@ -1,34 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { RESERVATION_RULES } from "@/constants/reservation";
+import {
+  createReservationTimeSlots,
+  DEFAULT_RESERVATION_SETTINGS,
+  parseTimeToMinutes,
+  type ReservationSettingsLike,
+} from "@/lib/reservation-settings";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { reservationService } from "@/services/reservationService";
 import { tableService } from "@/services/tableService";
 import { Area, AreaStatus, AreaType } from "@/types/Table-Layout";
 
-const OPEN_TIME_MINUTES = 10 * 60 + 30; // 10:30
-const CLOSE_TIME_MINUTES = 22 * 60; // 22:00
-const BREAK_START_MINUTES = 13 * 60; // 13:00
-const BREAK_END_MINUTES = 17 * 60; // 17:00
-const MIN_LEAD_TIME_MINUTES = 45;
-const LAST_BOOKING_MINUTES = CLOSE_TIME_MINUTES;
 const VIP_GUEST_THRESHOLD = RESERVATION_RULES.VIP_MIN_GUEST_COUNT;
-
-const generateTimeSlots = () => {
-  const slots: string[] = [];
-  for (let mins = OPEN_TIME_MINUTES; mins <= CLOSE_TIME_MINUTES; mins += 15) {
-    if (mins >= BREAK_START_MINUTES && mins < BREAK_END_MINUTES) continue;
-    const hours = Math.floor(mins / 60);
-    const m = mins % 60;
-    slots.push(`${hours.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`);
-  }
-  return slots;
-};
-
-export const TIME_SLOTS = generateTimeSlots();
 
 const formatReservationTime = (value: string) => {
   const segments = value.split(":");
@@ -51,6 +38,9 @@ export function useCreateBooking(
   onSuccess?: () => void
 ) {
   const [loading, setLoading] = useState(false);
+  const [reservationSettings, setReservationSettings] = useState<ReservationSettingsLike>(
+    DEFAULT_RESERVATION_SETTINGS
+  );
   const [formData, setFormData] = useState<FormData>({
     customerName: "",
     customerPhone: "",
@@ -65,18 +55,47 @@ export function useCreateBooking(
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const res = await tableService.getAreas();
-        if (res.isSuccess) setAreas(res.data.filter((a) => a.status === AreaStatus.Active));
+        const [areasRes, settingsRes] = await Promise.all([
+          tableService.getAreas(),
+          reservationService.getPublicReservationSettings(),
+        ]);
+
+        if (areasRes.isSuccess) {
+          setAreas(areasRes.data.filter((a) => a.status === AreaStatus.Active));
+        }
+
+        if (settingsRes.isSuccess && settingsRes.data) {
+          setReservationSettings((current) => ({
+            ...current,
+            openTime: settingsRes.data.openTime ?? current.openTime,
+            closeTime: settingsRes.data.closeTime ?? current.closeTime,
+            breakEnabled: settingsRes.data.breakEnabled ?? current.breakEnabled,
+            breakStart: settingsRes.data.breakStart ?? current.breakStart,
+            breakEnd: settingsRes.data.breakEnd ?? current.breakEnd,
+            overlapBufferMinutes:
+              settingsRes.data.overlapBufferMinutes ?? current.overlapBufferMinutes,
+            minLeadTimeMinutes: settingsRes.data.minLeadTimeMinutes ?? current.minLeadTimeMinutes,
+          }));
+        }
       } catch (err) {
         console.error(err);
+        setReservationSettings(DEFAULT_RESERVATION_SETTINGS);
       }
     };
-    if (open) fetchAreas();
+
+    if (open) {
+      void fetchAreas();
+    }
   }, [open]);
 
   const handleChange = (field: keyof FormData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  const timeSlots = useMemo(() => {
+    const selectedDate = formData.reservationDate ? new Date(formData.reservationDate) : undefined;
+    return createReservationTimeSlots(reservationSettings, 15, selectedDate);
+  }, [formData.reservationDate, reservationSettings]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,19 +115,32 @@ export function useCreateBooking(
     }
 
     const leadMinutes = (reservationDateTime.getTime() - Date.now()) / (1000 * 60);
-    if (leadMinutes < MIN_LEAD_TIME_MINUTES) {
-      toast.error(UI_TEXT.RESERVATION.VALIDATION_MIN_LEAD_TIME);
+    if (leadMinutes < reservationSettings.minLeadTimeMinutes) {
+      toast.error(`Vui lòng đặt chỗ trước ít nhất ${reservationSettings.minLeadTimeMinutes} phút.`);
       return;
     }
 
     const minutesOfDay = reservationDateTime.getHours() * 60 + reservationDateTime.getMinutes();
-    if (minutesOfDay < OPEN_TIME_MINUTES || minutesOfDay > LAST_BOOKING_MINUTES) {
-      toast.error(UI_TEXT.RESERVATION.VALIDATION_WITHIN_OPERATING_HOURS);
+    const openTimeMinutes = parseTimeToMinutes(reservationSettings.openTime);
+    const closeTimeMinutes = parseTimeToMinutes(reservationSettings.closeTime);
+    const breakStartMinutes = parseTimeToMinutes(reservationSettings.breakStart);
+    const breakEndMinutes = parseTimeToMinutes(reservationSettings.breakEnd);
+
+    if (minutesOfDay < openTimeMinutes || minutesOfDay > closeTimeMinutes) {
+      toast.error(
+        `Đặt bàn phải nằm trong giờ hoạt động ${reservationSettings.openTime} - ${reservationSettings.closeTime}.`
+      );
       return;
     }
 
-    if (minutesOfDay >= BREAK_START_MINUTES && minutesOfDay < BREAK_END_MINUTES) {
-      toast.error(UI_TEXT.RESERVATION.VALIDATION_BREAK_TIME);
+    if (
+      reservationSettings.breakEnabled &&
+      minutesOfDay >= breakStartMinutes &&
+      minutesOfDay < breakEndMinutes
+    ) {
+      toast.error(
+        `Nhà hàng nghỉ giữa ca từ ${reservationSettings.breakStart} đến ${reservationSettings.breakEnd}. Vui lòng chọn giờ khác.`
+      );
       return;
     }
 
@@ -126,7 +158,6 @@ export function useCreateBooking(
 
       if (res.isSuccess) {
         onOpenChange(false);
-        // Reset form to initial state
         setFormData({
           customerName: "",
           customerPhone: "",
@@ -171,6 +202,7 @@ export function useCreateBooking(
     loading,
     formData,
     areas: filteredAreas,
+    timeSlots,
     requiresVipArea,
     handleChange,
     handleSubmit,

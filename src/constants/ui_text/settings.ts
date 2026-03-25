@@ -98,8 +98,8 @@ export const SETTINGS = {
 
   BOOKING_RULES_SECTION: "Quy tắc đặt bàn",
   BOOKING_RULES_SECTION_DESC: "Giới hạn và ràng buộc cho mỗi lượt đặt",
-  FIELD_MIN_GUESTS: "Số khách tối thiểu",
-  FIELD_MAX_GUESTS: "Số khách tối đa",
+  FIELD_OVERLAP_BUFFER: "Khoảng đệm chồng lịch (phút)",
+  FIELD_OVERLAP_BUFFER_DESC: "Thời gian đệm để tránh trùng lịch giữa các booking",
   FIELD_MIN_LEAD_TIME: "Đặt trước tối thiểu (phút)",
   FIELD_MIN_LEAD_TIME_DESC: "Khách cần đặt trước ít nhất bao nhiêu phút",
   FIELD_GRACE_PERIOD: "Thời gian giữ bàn (phút)",

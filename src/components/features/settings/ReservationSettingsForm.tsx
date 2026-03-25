@@ -10,7 +10,9 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { DEFAULT_RESERVATION_SETTINGS } from "@/lib/reservation-settings";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { reservationService } from "@/services/reservationService";
 
 import { BookingHoursSection } from "./sections/BookingHoursSection";
 import { BookingNotifySection } from "./sections/BookingNotifySection";
@@ -24,34 +26,34 @@ const schema = z.object({
   openTime: z.string().min(1, "Giờ mở cửa không được để trống"),
   closeTime: z.string().min(1, "Giờ đóng cửa không được để trống"),
   breakEnabled: z.boolean(),
-  breakStart: z.string().optional(),
-  breakEnd: z.string().optional(),
-  minGuests: z.number().int().min(1),
-  maxGuests: z.number().int().min(1),
+  breakStart: z.string().min(1, "Giờ bắt đầu nghỉ không được để trống"),
+  breakEnd: z.string().min(1, "Giờ kết thúc nghỉ không được để trống"),
+  overlapBufferMinutes: z.number().int().min(0),
   minLeadTimeMinutes: z.number().int().min(0),
   gracePeriodMinutes: z.number().int().min(0),
   depositEnabled: z.boolean(),
-  depositAmountPerPerson: z.number().min(0),
+  depositAmountPerPerson: z.number().int().min(0),
   notifyNewBooking: z.boolean(),
   notifyUpcoming: z.boolean(),
+  notifyUpcomingMinutes: z.number().int().min(0).optional(),
 });
 
 export type ReservationSettingsInput = z.infer<typeof schema>;
 
 const DEFAULT_VALUES: ReservationSettingsInput = {
-  openTime: "10:30",
-  closeTime: "23:00",
-  breakEnabled: true,
-  breakStart: "14:00",
-  breakEnd: "17:00",
-  minGuests: 1,
-  maxGuests: 20,
-  minLeadTimeMinutes: 45,
+  openTime: DEFAULT_RESERVATION_SETTINGS.openTime,
+  closeTime: DEFAULT_RESERVATION_SETTINGS.closeTime,
+  breakEnabled: DEFAULT_RESERVATION_SETTINGS.breakEnabled,
+  breakStart: DEFAULT_RESERVATION_SETTINGS.breakStart,
+  breakEnd: DEFAULT_RESERVATION_SETTINGS.breakEnd,
+  overlapBufferMinutes: DEFAULT_RESERVATION_SETTINGS.overlapBufferMinutes,
+  minLeadTimeMinutes: DEFAULT_RESERVATION_SETTINGS.minLeadTimeMinutes,
   gracePeriodMinutes: 15,
   depositEnabled: false,
   depositAmountPerPerson: 0,
   notifyNewBooking: true,
   notifyUpcoming: true,
+  notifyUpcomingMinutes: 0,
 };
 
 // ── Form ─────────────────────────────────────────────────────────────────────
@@ -71,11 +73,16 @@ export function ReservationSettingsForm({
     handleSubmit,
     setValue,
     control,
+    reset,
     formState: { errors },
   } = useForm<ReservationSettingsInput>({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
   });
+
+  React.useEffect(() => {
+    reset(initialValues);
+  }, [initialValues, reset]);
 
   const breakEnabled = useWatch({ control, name: "breakEnabled" });
   const depositEnabled = useWatch({ control, name: "depositEnabled" });
@@ -104,7 +111,7 @@ export function ReservationSettingsForm({
 
             <div className="border-t border-border" />
             <DepositSection
-              depositEnabled={depositEnabled}
+              depositEnabled={Boolean(depositEnabled)}
               register={register}
               setValue={setValue}
               errors={errors}
@@ -112,8 +119,8 @@ export function ReservationSettingsForm({
 
             <div className="border-t border-border" />
             <BookingNotifySection
-              notifyNewBooking={notifyNewBooking}
-              notifyUpcoming={notifyUpcoming}
+              notifyNewBooking={Boolean(notifyNewBooking)}
+              notifyUpcoming={Boolean(notifyUpcoming)}
               setValue={setValue}
             />
 
@@ -136,13 +143,77 @@ export function ReservationSettingsForm({
 
 // ── Container ─────────────────────────────────────────────────────────────────
 export function ReservationSettingsContainer() {
+  const [initialValues, setInitialValues] =
+    React.useState<ReservationSettingsInput>(DEFAULT_VALUES);
+  const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSubmit = async (_data: ReservationSettingsInput) => {
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const loadSettings = async () => {
+      setLoading(true);
+      try {
+        const response = await reservationService.getReservationSettings();
+        if (response.isSuccess && response.data && isMounted) {
+          setInitialValues((current) => ({
+            ...current,
+            openTime: response.data.openTime ?? current.openTime,
+            closeTime: response.data.closeTime ?? current.closeTime,
+            breakEnabled: response.data.breakEnabled ?? current.breakEnabled,
+            breakStart: response.data.breakStart ?? current.breakStart,
+            breakEnd: response.data.breakEnd ?? current.breakEnd,
+            overlapBufferMinutes:
+              response.data.overlapBufferMinutes ?? current.overlapBufferMinutes,
+            minLeadTimeMinutes: response.data.minLeadTimeMinutes ?? current.minLeadTimeMinutes,
+            gracePeriodMinutes: response.data.gracePeriodMinutes ?? current.gracePeriodMinutes,
+            depositEnabled: response.data.depositEnabled ?? current.depositEnabled,
+            depositAmountPerPerson:
+              response.data.depositAmountPerPerson ?? current.depositAmountPerPerson,
+            notifyNewBooking: response.data.notifyNewBooking ?? current.notifyNewBooking,
+            notifyUpcoming: response.data.notifyUpcoming ?? current.notifyUpcoming,
+          }));
+        }
+      } catch {
+        toast.error(UI_TEXT.API.NETWORK_ERROR);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadSettings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleSubmit = async (data: ReservationSettingsInput) => {
     setSaving(true);
     try {
-      await new Promise((r) => setTimeout(r, 800)); // TODO: reservationService.updateSettings
+      const response = await reservationService.updateReservationSettings(data);
+
+      if (response.isSuccess && response.data) {
+        setInitialValues((current) => ({
+          ...current,
+          openTime: response.data.openTime ?? data.openTime,
+          closeTime: response.data.closeTime ?? data.closeTime,
+          breakEnabled: response.data.breakEnabled ?? data.breakEnabled,
+          breakStart: response.data.breakStart ?? data.breakStart,
+          breakEnd: response.data.breakEnd ?? data.breakEnd,
+          overlapBufferMinutes: response.data.overlapBufferMinutes ?? data.overlapBufferMinutes,
+          minLeadTimeMinutes: response.data.minLeadTimeMinutes ?? data.minLeadTimeMinutes,
+          gracePeriodMinutes: response.data.gracePeriodMinutes ?? data.gracePeriodMinutes,
+          depositEnabled: response.data.depositEnabled ?? data.depositEnabled,
+          depositAmountPerPerson:
+            response.data.depositAmountPerPerson ?? data.depositAmountPerPerson,
+          notifyNewBooking: response.data.notifyNewBooking ?? data.notifyNewBooking,
+          notifyUpcoming: response.data.notifyUpcoming ?? data.notifyUpcoming,
+        }));
+      }
+
       toast.success(SETTINGS.SUCCESS_RESERVATION);
     } catch {
       toast.error(UI_TEXT.API.NETWORK_ERROR);
@@ -151,5 +222,19 @@ export function ReservationSettingsContainer() {
     }
   };
 
-  return <ReservationSettingsForm saving={saving} onSubmit={handleSubmit} />;
+  if (loading) {
+    return (
+      <div className="flex min-h-[320px] items-center justify-center">
+        <Spinner className="h-6 w-6" />
+      </div>
+    );
+  }
+
+  return (
+    <ReservationSettingsForm
+      initialValues={initialValues}
+      saving={saving}
+      onSubmit={handleSubmit}
+    />
+  );
 }
