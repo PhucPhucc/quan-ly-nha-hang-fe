@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   BarChart3,
   BookOpen,
+  Boxes,
   ClipboardCheck,
   History,
   Layers,
@@ -42,6 +43,11 @@ const NAV_ITEMS: NavItem[] = [
     icon: Package,
   },
   {
+    label: UI_TEXT.INVENTORY.NAV.GROUPS,
+    href: "/manager/inventory/groups",
+    icon: Layers,
+  },
+  {
     label: UI_TEXT.INVENTORY.NAV.STOCK_IO,
     href: "/manager/inventory/stock-in",
     icon: PackagePlus,
@@ -67,14 +73,9 @@ const NAV_ITEMS: NavItem[] = [
     icon: BookOpen,
   },
   {
-    label: UI_TEXT.INVENTORY.NAV.GROUPS,
-    href: "/manager/inventory/groups",
-    icon: Layers,
-  },
-  {
     label: UI_TEXT.INVENTORY.NAV.LOTS,
     href: "/manager/inventory/lots",
-    icon: Layers,
+    icon: Boxes,
   },
   {
     label: UI_TEXT.INVENTORY.NAV.ALERTS,
@@ -111,7 +112,7 @@ export function InventoryNavigation() {
             key={item.href}
             href={item.href}
             className={cn(
-              "group relative flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200",
+              "group relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-200",
               active
                 ? "bg-primary text-primary-foreground shadow-sm"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"

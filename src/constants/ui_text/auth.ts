@@ -79,6 +79,12 @@ export const PROFILE = {
   PROFILE_DESC: "Thông tin & Bảo mật",
   SETTINGS_TAB: "Cài đặt",
   SETTINGS_DESC: "Tùy chỉnh hệ thống",
+  SECURE_DATA: "Dữ liệu bảo mật",
+  LAST_UPDATED: "Cập nhật lần cuối",
+  SECURITY_DESC:
+    "Quản lý mật khẩu và các cài đặt bảo mật cho tài khoản của bạn để đảm bảo an toàn thông tin.",
+  ACCOUNT_INFO: "Thông tin tài khoản",
+  PERSONAL_INFO: "Thông tin cá nhân",
 };
 
 export const UNAUTHORIZED = {

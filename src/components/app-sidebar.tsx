@@ -3,22 +3,27 @@
 import {
   Bell,
   Boxes,
+  Building2,
   CalendarDays,
   ChartColumn,
   ClipboardList,
   CreditCard,
   Flame,
   History,
+  Layers,
   LayoutDashboard,
   Library,
   Map,
   Martini,
   Package,
+  PackagePlus,
+  Settings2,
   SquareMenu,
   Table,
   Tag,
   Users,
   UtensilsCrossed,
+  Warehouse,
 } from "lucide-react";
 import * as React from "react";
 
@@ -145,14 +150,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 icon: LayoutDashboard,
               },
               {
+                title: UI_TEXT.INVENTORY.NAV.INGREDIENTS,
+                url: "/manager/inventory/ingredients",
+                icon: Package,
+              },
+              {
+                title: UI_TEXT.INVENTORY.NAV.GROUPS,
+                url: "/manager/inventory/groups",
+                icon: Layers,
+              },
+              {
                 title: UI_TEXT.INVENTORY.NAV.STOCK_IO,
                 url: "/manager/inventory/stock-in",
-                icon: Boxes,
+                icon: PackagePlus,
               },
               {
                 title: UI_TEXT.INVENTORY.NAV.OPENING_STOCK,
                 url: "/manager/inventory/opening-stock",
-                icon: Package,
+                icon: Warehouse,
               },
               {
                 title: UI_TEXT.INVENTORY.NAV.CHECK,
@@ -184,6 +199,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 title: UI_TEXT.INVENTORY.NAV.TRANSACTIONS,
                 url: "/manager/inventory/transactions",
                 icon: History,
+              },
+            ],
+          },
+          {
+            title: UI_TEXT.SIDE_BAR.SETTINGS,
+            url: "/manager/settings",
+            icon: Settings2,
+            items: [
+              {
+                title: UI_TEXT.SETTINGS.NAV_GENERAL,
+                url: "/manager/settings",
+                icon: Building2,
+              },
+              {
+                title: UI_TEXT.SETTINGS.NAV_WAREHOUSE,
+                url: "/manager/settings/warehouse",
+                icon: Warehouse,
+              },
+              {
+                title: UI_TEXT.SETTINGS.NAV_RESERVATION,
+                url: "/manager/settings/reservation",
+                icon: CalendarDays,
               },
             ],
           },

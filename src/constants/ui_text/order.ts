@@ -175,8 +175,7 @@ export const ORDER = {
   },
   DETAIL: {
     TITLE: "Chi tiết đơn hàng",
-    DESCRIPTION_MANAGER:
-      "Đơn hàng được tách thành route riêng để manager mở từ danh sách sang mà không rối màn tổng.",
+    DESCRIPTION_MANAGER: "Theo dõi thông tin, món, thanh toán và nhật ký thao tác của đơn hàng.",
     BACK_TO_LIST: "Quay lại danh sách",
     LOADING: "Đang tải chi tiết đơn...",
     EMPTY_TITLE: "Chưa có dữ liệu đơn hàng",
@@ -219,7 +218,7 @@ export const ORDER = {
     AUDIT_TIMELINE: "Dòng thời gian đơn",
     AUDIT_BE_TITLE: "Audit log BE",
     AUDIT_BE_DESC:
-      "BE đã có OrderAuditLog, nhưng hiện chưa có query riêng để FE đổ danh sách. Màn này giữ đúng layout để gắn API sau.",
+      "Theo dõi các thao tác đã xảy ra trên đơn hàng, bao gồm người thực hiện, thời gian và dữ liệu thay đổi.",
     ITEM_COUNT: (count: number) => `${count} món trong đơn`,
     SPLIT_BILL: "Tách bill",
     SPLIT_BILL_PROMPT: (name: string) => `Nhập số lượng muốn tách từ "${name}"`,
@@ -227,6 +226,16 @@ export const ORDER = {
     SPLIT_BILL_SUCCESS: "Tách bill thành công.",
     SPLIT_BILL_FAILED: "Tách bill thất bại.",
     ORDER_NOT_FOUND_FOR_TABLE: "Không tìm thấy đơn hàng của bàn này",
+    DISCOUNT_AMOUNT: "Giảm giá",
+    PROMOTION_CODE: "Mã khuyến mãi",
+    VOUCHER_CODE: "Mã Voucher",
+    NOTE: "Ghi chú đơn hàng",
+    VAT_RATE: (rate: number) => `Thuế (VAT ${rate}%)`,
+    PAYMENT_INFO: "Thông tin thanh toán",
+    CUSTOMER_INFO: "Thông tin khách hàng",
+    RESERVATION_ID: "Mã đặt chỗ",
+    TABLE_ID: "Số bàn",
+    SUBTOTAL_BEFORE_DISCOUNT: "Tạm tính (trước giảm)",
   },
   MANAGEMENT: {
     WORKSPACE_TITLE: "Workspace quản lý đơn hàng",

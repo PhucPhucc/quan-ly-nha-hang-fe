@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: "Chi tiết đơn hàng dành cho Quản lý",
 };
 
-export default function OrderDetailRoute({ params }: { params: { id: string } }) {
-  return <OrderDetailPage orderId={params.id} />;
+export default async function OrderDetailRoute({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <OrderDetailPage orderId={id} />;
 }

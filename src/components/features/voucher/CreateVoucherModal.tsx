@@ -32,6 +32,8 @@ import {
   VoucherType,
 } from "@/types/voucher";
 
+import { ItemSearchSelect } from "./components/ItemSearchSelect";
+
 interface CreateVoucherModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -268,10 +270,10 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>{V.FREE_ITEM_ID}</Label>
-                      <Input
-                        placeholder={V.FREE_ITEM_ID}
-                        value={formData.itemId ?? ""}
-                        onChange={(e) => handleChange("itemId", e.target.value || undefined)}
+                      <ItemSearchSelect
+                        value={formData.itemId}
+                        initialName={editingVoucher?.itemName}
+                        onChange={(val) => handleChange("itemId", val)}
                       />
                     </div>
                     <div className="space-y-2">

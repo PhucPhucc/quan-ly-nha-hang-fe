@@ -108,8 +108,11 @@ export interface InventorySettings {
   autoDeductOnCompleted: boolean;
   costMethod: string;
   maxCostRecalcDays: number;
+  openingStockImportCooldownHours: number;
   openingStockStatus?: number | string;
   lockedAt?: string | null;
+  lastOpeningStockImportedAt?: string | null;
+  nextOpeningStockImportAllowedAt?: string | null;
 }
 
 export enum InventoryTransactionType {
@@ -151,6 +154,9 @@ export interface ImportOpeningStockResponse {
   updatedCount: number;
   transactionCount: number;
   updatedAt: string;
+  lockedAt?: string | null;
+  lastOpeningStockImportedAt?: string | null;
+  nextOpeningStockImportAllowedAt?: string | null;
 }
 
 // Inventory Check

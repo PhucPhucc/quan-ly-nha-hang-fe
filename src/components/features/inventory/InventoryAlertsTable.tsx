@@ -113,7 +113,7 @@ export function InventoryAlertsTable() {
       >
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="border-b border-border/30 bg-background/50 p-4">
-            <TabsList className="grid h-11 w-full grid-cols-2 rounded-xl bg-muted/30 p-1">
+            <TabsList className="grid h-11 w-full grid-cols-2 rounded-lg bg-muted/30 p-1">
               <TabsTrigger
                 value="low-stock"
                 className="flex h-9 gap-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm"

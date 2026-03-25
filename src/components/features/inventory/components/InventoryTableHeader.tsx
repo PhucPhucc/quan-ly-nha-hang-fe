@@ -1,27 +1,7 @@
-import {
-  Calculator,
-  EllipsisVertical,
-  RotateCcw,
-  Search,
-  Settings,
-  SlidersHorizontal,
-} from "lucide-react";
+import { Calculator, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -30,10 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 import { InventoryCogsContainer } from "../InventoryCogsContainer";
-import { InventorySettingsFormContainer } from "../InventorySettingsFormContainer";
 import type { StatusFilter } from "../useInventoryTable";
 import { AddIngredientTrigger } from "./AddIngredientTrigger";
 import { CreateStockInTrigger } from "./CreateStockInTrigger";
@@ -60,7 +40,6 @@ export function InventoryTableHeader({
   onReset,
 }: Props) {
   const [isCogsDialogOpen, setIsCogsDialogOpen] = useState(false);
-  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
 
   return (
     <>
@@ -69,40 +48,15 @@ export function InventoryTableHeader({
           <>
             <CreateStockInTrigger />
             <AddIngredientTrigger />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className={INVENTORY_ICON_BUTTON_CLASS}
-                  aria-label={UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
-                >
-                  <EllipsisVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 rounded-xl">
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onSelect={(event) => {
-                    event.preventDefault();
-                    setIsCogsDialogOpen(true);
-                  }}
-                >
-                  <Calculator className="h-4 w-4 text-rose-500" />
-                  <span>{UI_TEXT.INVENTORY.COGS.TITLE}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-2"
-                    onClick={() => setIsSettingsDialogOpen(true)}
-                  >
-                    <Settings className="h-4 w-4 text-slate-500" />
-                    <span>{UI_TEXT.INVENTORY.SETTINGS.TITLE}</span>
-                  </button>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              type="button"
+              variant="ghost"
+              className={INVENTORY_ICON_BUTTON_CLASS}
+              aria-label={UI_TEXT.INVENTORY.COGS.TITLE}
+              onClick={() => setIsCogsDialogOpen(true)}
+            >
+              <Calculator className="h-4 w-4" />
+            </Button>
           </>
         }
       >
@@ -126,7 +80,7 @@ export function InventoryTableHeader({
                 <SelectValue placeholder={UI_TEXT.INVENTORY.TOOLBAR.FILTER_STATUS} />
               </div>
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
+            <SelectContent className="rounded-lg">
               <SelectItem value="all">{UI_TEXT.INVENTORY.TOOLBAR.STATUS_ALL}</SelectItem>
               <SelectItem value="normal">{UI_TEXT.INVENTORY.STOCK.STATUS_NORMAL}</SelectItem>
               <SelectItem value="low">{UI_TEXT.INVENTORY.STOCK.STATUS_LOW}</SelectItem>
@@ -149,45 +103,28 @@ export function InventoryTableHeader({
         </div>
       </InventoryToolbar>
 
-      <Dialog open={isCogsDialogOpen} onOpenChange={setIsCogsDialogOpen}>
-        <DialogContent className="!left-3 !top-3 !right-3 !bottom-3 !grid !h-auto !w-[92vw] !max-w-[1180px] !translate-x-0 !translate-y-0 overflow-hidden rounded-[2rem] p-0 sm:!max-w-[1180px]">
-          <div className="flex h-full flex-col overflow-hidden">
-            <DialogHeader className="shrink-0 px-6 pt-6 pr-14 sm:px-8 sm:pt-8">
-              <DialogTitle className="flex items-center gap-2 text-xl font-bold">
-                <Calculator className="h-5 w-5 text-primary" />
-                {UI_TEXT.INVENTORY.COGS.TITLE}
-              </DialogTitle>
-              <DialogDescription className="text-sm text-muted-foreground">
-                {UI_TEXT.INVENTORY.COGS.DESC}
-              </DialogDescription>
-            </DialogHeader>
+      <Sheet open={isCogsDialogOpen} onOpenChange={setIsCogsDialogOpen}>
+        <SheetContent
+          side="right"
+          className="flex h-full w-full flex-col gap-0 border-l border-slate-200 p-0 shadow-2xl sm:max-w-[720px] sm:rounded-l-lg bg-white"
+        >
+          <SheetHeader className="shrink-0 px-6 pt-8 pr-14 sm:px-10 sm:pt-10 bg-slate-50/50 border-b border-slate-100 pb-8">
+            <SheetTitle className="flex items-center gap-3 text-xl font-bold tracking-tight text-slate-900">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-slate-200 text-primary shadow-sm">
+                <Calculator className="h-5 w-5" />
+              </div>
+              {UI_TEXT.INVENTORY.COGS.TITLE}
+            </SheetTitle>
+            <p className="mt-2 ml-13 text-sm font-medium text-slate-500">
+              {UI_TEXT.INVENTORY.COGS.DESC}
+            </p>
+          </SheetHeader>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 sm:px-8 sm:pb-8">
-              <InventoryCogsContainer embedded />
-            </div>
+          <div className="mt-4 min-h-0 flex-1 overflow-y-auto px-6 pb-10 sm:px-10 sm:pb-12">
+            <InventoryCogsContainer embedded />
           </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isSettingsDialogOpen} onOpenChange={setIsSettingsDialogOpen}>
-        <DialogContent className="!left-3 !top-3 !right-3 !bottom-3 !grid !h-auto !w-auto !max-w-none !translate-x-0 !translate-y-0 overflow-hidden rounded-[2rem] p-0 sm:!max-w-none">
-          <div className="flex h-full flex-col overflow-hidden">
-            <DialogHeader className="shrink-0 px-6 pt-6 pr-14 sm:px-8 sm:pt-8">
-              <DialogTitle className="flex items-center gap-2 text-xl font-bold">
-                <Settings className="h-5 w-5 text-primary" />
-                {UI_TEXT.INVENTORY.SETTINGS.TITLE}
-              </DialogTitle>
-              <DialogDescription className="text-sm text-muted-foreground">
-                {UI_TEXT.INVENTORY.SETTINGS.DESC}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 sm:px-8 sm:pb-8">
-              <InventorySettingsFormContainer />
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     </>
   );
 }

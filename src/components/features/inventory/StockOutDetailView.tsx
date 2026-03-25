@@ -39,7 +39,7 @@ export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetail
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" className="gap-2 rounded-xl hover:bg-muted" onClick={onBack}>
+        <Button variant="ghost" className="gap-2 rounded-lg hover:bg-muted" onClick={onBack}>
           <ArrowLeft className="size-4" />
           {UI_TEXT.COMMON.BACK}
         </Button>
@@ -47,7 +47,7 @@ export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetail
           <Button
             variant="destructive"
             onClick={onDelete}
-            className="gap-2 rounded-xl shadow-lg shadow-destructive/10"
+            className="gap-2 rounded-lg shadow-lg shadow-destructive/10"
           >
             <Trash2 className="size-4" />
             {UI_TEXT.BUTTON.DELETE}

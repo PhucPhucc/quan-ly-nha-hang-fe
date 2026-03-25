@@ -89,13 +89,13 @@ export function IngredientTable() {
   const renderLoading = () => (
     <div className="space-y-4">
       {Array.from({ length: 5 }).map((_, index) => (
-        <Skeleton key={index} className="h-12 w-full rounded-xl" />
+        <Skeleton key={index} className="h-12 w-full rounded-lg" />
       ))}
     </div>
   );
 
   const renderError = () => (
-    <div className="rounded-xl border bg-destructive/5 p-8 text-center text-destructive">
+    <div className="rounded-lg border bg-destructive/5 p-8 text-center text-destructive">
       <p>
         {UI_TEXT.INVENTORY.TABLE.ERROR_PREFIX} {(error as Error).message}
       </p>
@@ -206,7 +206,7 @@ export function IngredientTable() {
         hideTrigger={true}
       />
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="rounded-xl">
+        <DialogContent className="rounded-lg">
           <DialogHeader>
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription asChild>

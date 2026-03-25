@@ -41,6 +41,7 @@ const OrderCurrent = () => {
   const subtotalCart = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
 
   const subtotalRemote = remoteItems.reduce((acc, item) => {
+    if (item.isFreeItem) return acc;
     const base = item.unitPriceSnapshot * item.quantity;
     const options = (item.optionGroups || []).reduce((gAcc, g) => {
       return gAcc + g.optionValues.reduce((vAcc, v) => vAcc + v.extraPriceSnapshot * v.quantity, 0);
@@ -50,11 +51,8 @@ const OrderCurrent = () => {
 
   const subtotal = subtotalCart + subtotalRemote;
 
-  const discount =
-    activeOrderDetails?.discountAmount ??
-    activeOrderDetails?.discount ??
-    activeOrderDetails?.voucher?.discountAmount ??
-    0;
+  const serverTotal = activeOrderDetails?.totalAmount;
+  const hasCartItems = cartItems.length > 0;
 
   const voucherCode =
     activeOrderDetails?.voucherCode ??
@@ -63,14 +61,24 @@ const OrderCurrent = () => {
     activeOrderDetails?.voucher?.voucherCode ??
     undefined;
 
-  // Use server total if no items in cart to match backend logic precisely
-  const serverTotal = activeOrderDetails?.totalAmount;
-  const hasCartItems = cartItems.length > 0;
+  const tax = activeOrderDetails?.vatAmount ?? Math.round(subtotal * 0.1);
 
-  const tax = Math.round((subtotal - discount) * 0.1);
+  const baseDiscount =
+    activeOrderDetails?.discountAmount ??
+    activeOrderDetails?.discount ??
+    activeOrderDetails?.voucher?.discountAmount ??
+    0;
+
+  // If we have a voucher but the discount amount didn't come through,
+  // and we have a server total, we can infer the discount to keep the UI consistent.
+  const discount =
+    baseDiscount === 0 && voucherCode && serverTotal && !hasCartItems
+      ? Math.max(0, subtotal + tax - serverTotal)
+      : baseDiscount;
+
   const total = hasCartItems
-    ? subtotal - discount + tax
-    : (serverTotal ?? subtotal - discount + tax);
+    ? subtotal + tax - discount
+    : (serverTotal ?? subtotal + tax - discount);
 
   if (orderDetailsLoading && !activeOrderDetails) {
     return (

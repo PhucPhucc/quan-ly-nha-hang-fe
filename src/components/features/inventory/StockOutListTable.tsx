@@ -131,7 +131,7 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 rounded-xl hover:bg-muted/80 text-muted-foreground transition-all"
+                          className="h-8 w-8 rounded-lg hover:bg-muted/80 text-muted-foreground transition-all"
                         >
                           <MoreHorizontal className="size-4" />
                         </Button>
@@ -144,7 +144,7 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                           {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
                         </DropdownMenuLabel>
                         <DropdownMenuItem
-                          className="rounded-xl px-2 py-2 text-xs font-bold gap-3 focus:bg-primary/5 focus:text-primary transition-colors cursor-pointer"
+                          className="rounded-lg px-2 py-2 text-xs font-bold gap-3 focus:bg-primary/5 focus:text-primary transition-colors cursor-pointer"
                           onClick={() => onViewDetail(item.id)}
                         >
                           <Eye className="size-4 opacity-50" /> {UI_TEXT.BUTTON.DETAIL}
@@ -152,7 +152,7 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                         <DropdownMenuSeparator className="my-1 opacity-50" />
                         {onDelete && (
                           <DropdownMenuItem
-                            className="rounded-xl px-2 py-2 text-xs font-bold gap-3 text-destructive focus:bg-destructive/5 focus:text-destructive transition-colors cursor-pointer"
+                            className="rounded-lg px-2 py-2 text-xs font-bold gap-3 text-destructive focus:bg-destructive/5 focus:text-destructive transition-colors cursor-pointer"
                             onClick={() => onDelete(item.id)}
                           >
                             <Trash2 className="size-4 opacity-50" /> {UI_TEXT.BUTTON.DELETE}

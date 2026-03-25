@@ -1,5 +1,6 @@
 "use client";
 
+import { KeyRound, Lock } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
 import FieldPassword from "@/components/shared/FieldPassword";
@@ -72,8 +73,19 @@ export default function ChangePasswordDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full">
-          {UI_TEXT.CHANGE_PASSWORD.BUTTON}
+        <Button
+          variant="outline"
+          className="w-full flex items-center justify-between rounded-2xl py-6 px-4 group hover:border-success hover:bg-success/5 transition-all duration-300"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-success/10 p-2 rounded-xl group-hover:bg-success/20 transition-colors">
+              <KeyRound className="h-4 w-4 text-success" />
+            </div>
+            <span className="font-semibold text-foreground/80">
+              {UI_TEXT.CHANGE_PASSWORD.BUTTON}
+            </span>
+          </div>
+          <Lock className="h-4 w-4 text-muted-foreground group-hover:text-success transition-colors" />
         </Button>
       </DialogTrigger>
 

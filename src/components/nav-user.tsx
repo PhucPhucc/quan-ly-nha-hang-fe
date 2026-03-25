@@ -1,11 +1,11 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,10 +51,9 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-2xl transition-all"
             >
-              <Avatar className="h-9 w-9 border-2 border-primary/10 shadow-sm">
-                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`} />
-                <AvatarFallback className="bg-primary/5 font-bold text-primary">
-                  {initials}
+              <Avatar className="h-9 w-9 border-2 border-primary/10 shadow-sm overflow-hidden bg-slate-100 flex items-center justify-center">
+                <AvatarFallback className="bg-slate-100 p-2">
+                  <User className="size-5 text-slate-400" />
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight ml-1">
@@ -76,10 +75,9 @@ export function NavUser() {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-3 py-2.5 text-left">
-                <Avatar className="h-10 w-10 border-2 border-primary/10">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`} />
-                  <AvatarFallback className="bg-primary/5 font-semibold text-primary">
-                    {initials}
+                <Avatar className="h-10 w-10 border-2 border-primary/10 overflow-hidden bg-slate-100 flex items-center justify-center">
+                  <AvatarFallback className="bg-slate-100 p-2">
+                    <User className="size-6 text-slate-400" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -92,8 +90,8 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuGroup className="space-y-1">
-              <DropdownMenuItem className="rounded-xl p-2.5 gap-3 cursor-pointer">
-                <Link href="/manager/profile" className="flex items-center gap-3">
+              <DropdownMenuItem className="rounded-xl p-2.5 gap-3 cursor-pointer" asChild>
+                <Link href="/profile" className="flex items-center gap-3">
                   <div className="bg-primary/10 p-2 rounded-lg">
                     <User className="size-4 text-primary" />
                   </div>
@@ -104,17 +102,6 @@ export function NavUser() {
                     </span>
                   </div>
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-xl p-2.5 gap-3 cursor-pointer">
-                <div className="bg-blue-50 p-2 rounded-lg">
-                  <Settings className="size-4 text-blue-600" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-sm">{UI_TEXT.PROFILE.SETTINGS_TAB}</span>
-                  <span className="text-[10px] text-muted-foreground">
-                    {UI_TEXT.PROFILE.SETTINGS_DESC}
-                  </span>
-                </div>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="my-2" />

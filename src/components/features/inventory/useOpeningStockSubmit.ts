@@ -51,14 +51,17 @@ export function useOpeningStockSubmit() {
 
       return response;
     },
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       queryClient.setQueryData(["inventory-settings"], (current) => ({
         ...((typeof current === "object" && current !== null ? current : {}) as Record<
           string,
           unknown
         >),
         openingStockStatus: 2,
-        lockedAt: new Date().toISOString(),
+        lockedAt: response.data?.lockedAt ?? new Date().toISOString(),
+        lastOpeningStockImportedAt:
+          response.data?.lastOpeningStockImportedAt ?? new Date().toISOString(),
+        nextOpeningStockImportAllowedAt: response.data?.nextOpeningStockImportAllowedAt ?? null,
       }));
 
       await invalidateInventoryQueries(queryClient);

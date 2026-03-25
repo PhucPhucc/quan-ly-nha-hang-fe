@@ -87,7 +87,7 @@ export function InventoryStatCard({
       {/* Icon Section */}
       <div
         className={cn(
-          "flex shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-105",
+          "flex shrink-0 items-center justify-center rounded-lg transition-transform group-hover:scale-105",
           iconSize,
           styles.iconWrap
         )}

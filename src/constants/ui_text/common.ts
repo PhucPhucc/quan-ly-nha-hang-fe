@@ -124,6 +124,11 @@ export const COMMON = {
   DOT_SEP: "·",
   REMAINING: "Còn",
   DAYS: "ngày",
+  QUANTITY_X: "x",
+  CHANGE_AVATAR: "Thay đổi ảnh",
+  TODAY: "Hôm nay",
+  STATUS: "Trạng thái",
+  ACTIVE: "Hoạt động",
 };
 
 export const SIDE_BAR = {
@@ -218,4 +223,5 @@ export const NAVIGATION = {
   VOUCHER: "Voucher",
   ORDER_LIST: "Danh sách đơn hàng",
   ORDER_DETAIL: "Chi tiết đơn hàng",
+  SETTINGS: "Cài đặt hệ thống",
 };

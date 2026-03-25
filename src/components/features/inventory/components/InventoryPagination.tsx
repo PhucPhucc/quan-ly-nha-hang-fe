@@ -27,7 +27,7 @@ export function InventoryPagination({
   return (
     <div className="flex items-center justify-between px-8 py-3 bg-muted/5 border-t border-border/20 shrink-0">
       <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2 bg-background p-1 pr-4 rounded-xl shadow-sm border border-border/40">
+        <div className="flex items-center gap-2 bg-background p-1 pr-4 rounded-lg shadow-sm border border-border/40">
           <div className="flex h-7 w-12 items-center justify-center rounded-lg bg-primary/5">
             <span className="text-xs font-black tabular-nums text-primary/80">{currentPage}</span>
           </div>
@@ -55,7 +55,7 @@ export function InventoryPagination({
           size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className={`${INVENTORY_PAGINATION_BUTTON_CLASS} h-9 px-4 rounded-xl hover:bg-muted text-[10px] font-black uppercase tracking-widest gap-2`}
+          className={`${INVENTORY_PAGINATION_BUTTON_CLASS} h-9 px-4 rounded-lg hover:bg-muted text-[10px] font-black uppercase tracking-widest gap-2`}
         >
           <ChevronLeft className="h-3 w-3" />
           {UI_TEXT.COMMON.PAGINATION.PREV}
@@ -65,7 +65,7 @@ export function InventoryPagination({
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className={`${INVENTORY_PAGINATION_BUTTON_CLASS} h-9 px-4 rounded-xl hover:bg-muted text-[10px] font-black uppercase tracking-widest gap-2`}
+          className={`${INVENTORY_PAGINATION_BUTTON_CLASS} h-9 px-4 rounded-lg hover:bg-muted text-[10px] font-black uppercase tracking-widest gap-2`}
         >
           {UI_TEXT.COMMON.PAGINATION.NEXT}
           <ChevronRight className="h-3 w-3" />

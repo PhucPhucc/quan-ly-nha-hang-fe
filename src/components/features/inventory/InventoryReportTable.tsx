@@ -79,7 +79,7 @@ export function InventoryReportTable() {
       <InventoryToolbar
         actions={
           <div className="flex items-center gap-4 bg-primary/5 px-6 py-2.5 rounded-[1.5rem] border border-primary/10 shadow-sm">
-            <div className="p-2 bg-primary/10 rounded-xl">
+            <div className="p-2 bg-primary/10 rounded-lg">
               <Wallet className="h-5 w-5 text-primary" />
             </div>
             <div className="flex flex-col">
@@ -107,10 +107,10 @@ export function InventoryReportTable() {
           value={ingredientId ?? "all"}
           onValueChange={(value) => setIngredientId(value === "all" ? undefined : value)}
         >
-          <SelectTrigger className="h-11 w-full rounded-xl border-none bg-muted/30 font-bold sm:w-[240px]">
+          <SelectTrigger className="h-11 w-full rounded-lg border-none bg-muted/30 font-bold sm:w-[240px]">
             <SelectValue placeholder={UI_TEXT.INVENTORY.REPORT.SELECT_MATERIAL} />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-lg">
             <SelectItem value="all">{UI_TEXT.INVENTORY.REPORT.CATEGORY_ALL}</SelectItem>
             {ingredients.map((ingredient) => (
               <SelectItem key={ingredient.ingredientId} value={ingredient.ingredientId}>
@@ -204,7 +204,7 @@ export function InventoryReportTable() {
                         variant="ghost"
                         size="sm"
                         asChild
-                        className="h-9 w-9 p-0 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+                        className="h-9 w-9 p-0 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         <Link
                           href={`/manager/inventory/ledger?ingredientId=${item.ingredientId}&name=${item.ingredientName}`}

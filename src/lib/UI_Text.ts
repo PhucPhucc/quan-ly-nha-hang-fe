@@ -1,4 +1,5 @@
 import { PREFERENCE } from "@/constants/ui_text/preference";
+import { SETTINGS } from "@/constants/ui_text/settings";
 
 import { AUDIT_LOG } from "../constants/ui_text/audit";
 import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_text/auth";
@@ -38,5 +39,6 @@ export const UI_TEXT = {
   SALES_ANALYTICS,
   INVENTORY,
   PREFERENCE,
+  SETTINGS,
   VOUCHER,
 };

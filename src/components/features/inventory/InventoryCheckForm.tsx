@@ -1,39 +1,16 @@
 "use client";
 
-import {
-  LucideArrowLeft,
-  LucideCalendar,
-  LucideCheckCircle2,
-  LucideMessageSquare,
-  LucideSave,
-} from "lucide-react";
+import { LucideArrowLeft, LucideCheckCircle2, LucideSave } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { DateRange } from "react-day-picker";
 
-import { DateRangePicker } from "@/components/shared/DateRangePicker";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryCheckStatus } from "@/types/Inventory";
 
-import {
-  INVENTORY_DETAIL_CARD_CLASS,
-  INVENTORY_TH_CLASS,
-  INVENTORY_THEAD_ROW_CLASS,
-  INVENTORY_TROW_CLASS,
-} from "./components/inventoryStyles";
+import { InventoryCheckSidebar } from "./components/InventoryCheckSidebar";
+import { InventoryCheckTable } from "./components/InventoryCheckTable";
 import { useInventoryCheckForm } from "./useInventoryCheckForm";
 
 interface InventoryCheckFormProps {
@@ -64,29 +41,29 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
   const isProcessed = check?.status === InventoryCheckStatus.Processed;
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
+    <div className="flex flex-col gap-6 p-6 lg:p-10">
+      {/* Header Area */}
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
             asChild
-            className="h-12 w-12 p-0 rounded-2xl bg-background border-2 shadow-sm hover:bg-muted/50 transition-all"
+            className="h-10 w-10 rounded-lg bg-white border border-slate-200 shadow-sm hover:bg-slate-50 transition-all"
           >
             <Link href="/manager/inventory/check">
-              <LucideArrowLeft className="h-5 w-5" />
+              <LucideArrowLeft className="h-5 w-5 text-slate-500" />
             </Link>
           </Button>
           <div className="flex flex-col">
-            <h2 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-4">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
               {isNew
                 ? UI_TEXT.INVENTORY.CHECK.CREATE.TITLE
                 : `${UI_TEXT.INVENTORY.CHECK.TITLE} #${check?.inventoryCheckId.substring(0, 8).toUpperCase()}`}
               {!isNew && (
                 <Badge
                   variant={isProcessed ? "default" : "secondary"}
-                  className={`rounded-xl px-4 py-1 text-[10px] font-black uppercase tracking-widest shadow-md border-none ${
+                  className={`rounded-md px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest border-none ${
                     isProcessed ? "bg-emerald-500 text-white" : "bg-amber-500 text-white"
                   }`}
                 >
@@ -95,20 +72,20 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
                     : UI_TEXT.INVENTORY.CHECK.STATUS_DRAFT}
                 </Badge>
               )}
-            </h2>
-            <p className="text-sm text-muted-foreground font-bold uppercase tracking-widest opacity-60">
+            </h1>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
               {UI_TEXT.INVENTORY.CHECK.CREATE.DESC}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {(isNew || !isProcessed) && (
             <Button
               variant="outline"
               disabled={isSaving}
               onClick={handleSaveDraft}
-              className="gap-2 rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-[11px] border-2 hover:bg-muted transition-all"
+              className="h-10 gap-2 rounded-lg border-slate-200 px-6 text-xs font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 shadow-sm"
             >
               <LucideSave className="h-4 w-4" />
               {UI_TEXT.INVENTORY.CHECK.CREATE.SAVE_DRAFT}
@@ -118,7 +95,7 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
             <Button
               disabled={isSaving}
               onClick={handleProcess}
-              className="gap-2 rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-[11px] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="h-10 gap-2 rounded-lg bg-primary px-8 text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <LucideCheckCircle2 className="h-4 w-4" />
               {UI_TEXT.INVENTORY.CHECK.CREATE.PROCESS}
@@ -128,173 +105,26 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Left Side: Form Details */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="rounded-[2.5rem] border bg-card shadow-sm overflow-hidden min-h-[500px] flex flex-col">
-            <div className="flex-1 overflow-auto">
-              <Table>
-                <TableHeader className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 shadow-sm border-b">
-                  <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
-                    <TableHead className={`${INVENTORY_TH_CLASS} pl-8`}>
-                      {UI_TEXT.INVENTORY.TABLE.COL_SKU}
-                    </TableHead>
-                    <TableHead className={INVENTORY_TH_CLASS}>
-                      {UI_TEXT.INVENTORY.TABLE.COL_NAME}
-                    </TableHead>
-                    <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                      {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
-                    </TableHead>
-                    <TableHead className={`${INVENTORY_TH_CLASS} w-[150px] text-center`}>
-                      {UI_TEXT.INVENTORY.CHECK.CREATE.COL_PHYSICAL_QTY}
-                    </TableHead>
-                    <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                      {UI_TEXT.INVENTORY.CHECK.CREATE.COL_DIFF_QTY}
-                    </TableHead>
-                    <TableHead className={`${INVENTORY_TH_CLASS} pr-8`}>
-                      {UI_TEXT.INVENTORY.CHECK.CREATE.COL_REASON}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {items.map((item) => {
-                    const diff = normalizeInventoryQuantity(item.differenceQuantity || 0);
-                    const diffColor =
-                      diff > 0
-                        ? "text-emerald-500"
-                        : diff < 0
-                          ? "text-destructive"
-                          : "text-muted-foreground/40";
-
-                    return (
-                      <TableRow key={item.ingredientId} className={INVENTORY_TROW_CLASS}>
-                        <TableCell className="font-mono text-[11px] font-bold text-muted-foreground/60 uppercase pl-8">
-                          {item.ingredientCode}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-sm font-black text-foreground/80 tracking-tight">
-                              {item.ingredientName}
-                            </span>
-                            <span className="text-[10px] text-muted-foreground/50 uppercase font-black tracking-widest">
-                              {item.unit || UI_TEXT.COMMON.DASH}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-center font-black tabular-nums text-foreground/80">
-                          {formatInventoryQuantity(item.bookQuantity || 0)}
-                        </TableCell>
-                        <TableCell className="px-4 py-3">
-                          <Input
-                            type="number"
-                            step="0.001"
-                            disabled={isProcessed || isSaving}
-                            value={item.physicalQuantity}
-                            onChange={(e) =>
-                              updatePhysicalQty(item.ingredientId!, Number(e.target.value))
-                            }
-                            className="text-center font-black bg-muted/20 border-border/50 focus:bg-background h-11 rounded-xl transition-all shadow-inner"
-                          />
-                        </TableCell>
-                        <TableCell
-                          className={`text-center font-black tabular-nums text-lg ${diffColor} bg-muted/5`}
-                        >
-                          {diff > 0
-                            ? `${UI_TEXT.INVENTORY.TABLE.PLUS_SIGN}${formatInventoryQuantity(diff)}`
-                            : formatInventoryQuantity(diff)}
-                        </TableCell>
-                        <TableCell className="pr-8">
-                          <Input
-                            disabled={isProcessed || isSaving}
-                            value={item.reason || ""}
-                            onChange={(e) => updateReason(item.ingredientId!, e.target.value)}
-                            placeholder={
-                              item.differenceQuantity !== 0
-                                ? UI_TEXT.INVENTORY.FORM.PLACEHOLDER_DESCRIPTION
-                                : ""
-                            }
-                            className="bg-transparent border-none px-0 text-sm font-medium italic h-11 focus-visible:ring-0 placeholder:text-muted-foreground/20"
-                          />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-            <div className="h-12 bg-muted/5 border-t border-border/30" />
-          </div>
+          <InventoryCheckTable
+            items={items}
+            isProcessed={isProcessed}
+            isSaving={isSaving}
+            updatePhysicalQty={updatePhysicalQty}
+            updateReason={updateReason}
+          />
         </div>
-
-        {/* Right Side: Meta Info */}
         <div className="space-y-6">
-          <div
-            className={`${INVENTORY_DETAIL_CARD_CLASS} bg-card p-8 space-y-8 shadow-xl border-border/40 rounded-[2.5rem]`}
-          >
-            <div className="space-y-5">
-              <div className="flex items-center gap-3 text-primary/60">
-                <LucideCalendar className="h-4 w-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">
-                  {UI_TEXT.INVENTORY.CHECK.COL_DATE}
-                </span>
-              </div>
-              {isProcessed ? (
-                <div className="p-4 bg-muted/30 rounded-2xl text-sm font-black text-foreground/60 border border-dashed text-center">
-                  {new Date(checkDate).toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI, {
-                    dateStyle: "long",
-                  })}
-                </div>
-              ) : (
-                <div className="[&_button]:h-12 [&_button]:rounded-2xl [&_button]:bg-muted/20 [&_button]:border-none [&_button]:font-black [&_button]:text-[11px] [&_button]:uppercase [&_button]:tracking-widest shadow-none">
-                  <DateRangePicker
-                    value={{ from: checkDate, to: checkDate }}
-                    onChange={(range: DateRange | undefined) =>
-                      range?.from && setCheckDate(range.from)
-                    }
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-5">
-              <div className="flex items-center gap-3 text-primary/60">
-                <LucideMessageSquare className="h-4 w-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">
-                  {UI_TEXT.INVENTORY.FORM.DESCRIPTION}
-                </span>
-              </div>
-              <Textarea
-                disabled={isProcessed || isSaving}
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder={UI_TEXT.INVENTORY.FORM.PLACEHOLDER_DESCRIPTION}
-                className="min-h-[160px] bg-muted/10 border-border/30 rounded-2xl resize-none text-sm font-medium p-5 focus:bg-background transition-all focus:ring-primary/20 shadow-inner"
-              />
-            </div>
-
-            {!isNew && (
-              <div className="pt-8 border-t border-border/50 space-y-4">
-                <div className="flex justify-between items-center text-[10px] uppercase font-black tracking-widest">
-                  <span className="text-muted-foreground/50">
-                    {UI_TEXT.INVENTORY.CHECK.COL_CREATOR}
-                  </span>
-                  <Badge
-                    variant="outline"
-                    className="text-foreground/70 bg-muted/30 px-3 py-1 rounded-lg border-none font-black"
-                  >
-                    {check?.createdBy || UI_TEXT.COMMON.DASH}
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center text-[10px] uppercase font-black tracking-widest">
-                  <span className="text-muted-foreground/50">
-                    {UI_TEXT.INVENTORY.TABLE.COL_DATE}
-                  </span>
-                  <span className="text-foreground/70 font-black">
-                    {new Date(check?.createdAt || "").toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
+          <InventoryCheckSidebar
+            check={check}
+            isNew={isNew}
+            isProcessed={isProcessed}
+            isSaving={isSaving}
+            checkDate={checkDate}
+            setCheckDate={setCheckDate}
+            note={note}
+            setNote={setNote}
+          />
         </div>
       </div>
     </div>
