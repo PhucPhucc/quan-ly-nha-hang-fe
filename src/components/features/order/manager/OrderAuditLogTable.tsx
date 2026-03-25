@@ -90,11 +90,7 @@ export function OrderAuditLogTable({
           {!orderIdSelected ? (
             <TableRow>
               <TableCell colSpan={5} className="h-64 text-center">
-                <EmptyState
-                  title={UI_TEXT.AUDIT_LOG.EMPTY_TITLE}
-                  description={UI_TEXT.AUDIT_LOG.EMPTY_DESC}
-                  icon={History}
-                />
+                <EmptyState icon={History} title={UI_TEXT.AUDIT_LOG.EMPTY_TITLE} />
               </TableCell>
             </TableRow>
           ) : error ? (
@@ -110,13 +106,7 @@ export function OrderAuditLogTable({
             <TableRow className="hover:bg-transparent">
               <TableCell colSpan={5} className="h-[400px] text-center align-middle">
                 <div className="flex flex-col items-center justify-center py-10">
-                  <EmptyState
-                    icon={ShieldAlert}
-                    title={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_TITLE}
-                    description={
-                      UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_DESC || UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC
-                    }
-                  />
+                  <EmptyState icon={ShieldAlert} title={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_TITLE} />
                 </div>
               </TableCell>
             </TableRow>

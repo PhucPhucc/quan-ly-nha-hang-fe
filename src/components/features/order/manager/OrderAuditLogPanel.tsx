@@ -25,6 +25,7 @@ interface OrderAuditLogPanelProps {
   globalMode?: boolean;
   title?: string;
   description?: string;
+  className?: string;
 }
 
 const ACTION_STYLES: Record<string, string> = {
@@ -106,8 +107,8 @@ function AuditValueBlock({ label, value }: { label: string; value?: string | nul
 export default function OrderAuditLogPanel({
   orderId,
   globalMode = false,
-  title = UI_TEXT.AUDIT_LOG.TIMELINE_TITLE,
   description = UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC,
+  className,
 }: OrderAuditLogPanelProps) {
   const [logs, setLogs] = useState<OrderAuditLogResponse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -200,36 +201,35 @@ export default function OrderAuditLogPanel({
   const renderEmpty = () => {
     if (globalMode) {
       return (
-        <EmptyState
-          title={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_TITLE}
-          description={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_DESC}
-          icon={History}
-        />
+        <div className="flex flex-1 items-center justify-center py-10">
+          <EmptyState title={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_TITLE} icon={History} />
+        </div>
       );
     }
 
     if (!orderId) {
       return (
-        <EmptyState
-          title={UI_TEXT.AUDIT_LOG.EMPTY_TITLE}
-          description={UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC}
-          icon={History}
-        />
+        <div className="flex flex-1 items-center justify-center py-10">
+          <EmptyState title={UI_TEXT.AUDIT_LOG.EMPTY_TITLE} icon={History} />
+        </div>
       );
     }
 
     return (
-      <EmptyState
-        title={UI_TEXT.AUDIT_LOG.EMPTY_TITLE}
-        description={UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC}
-        icon={ShieldAlert}
-      />
+      <div className="flex flex-1 items-center justify-center py-10">
+        <EmptyState title={UI_TEXT.AUDIT_LOG.EMPTY_TITLE} icon={ShieldAlert} />
+      </div>
     );
   };
 
   return (
-    <Card>
-      <CardContent className="space-y-4 py-5">
+    <Card className={cn("flex min-h-0 flex-col", className)}>
+      <CardContent
+        className={cn(
+          "flex flex-1 flex-col space-y-4 py-5",
+          !loading && !error && logs.length === 0 && "justify-center"
+        )}
+      >
         <p className="text-sm text-muted-foreground">{description}</p>
 
         {globalMode && (
