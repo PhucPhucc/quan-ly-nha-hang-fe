@@ -289,7 +289,7 @@ export const ORDER = {
     SEARCH_PLACEHOLDER: "Tìm theo mã đơn hoặc khách",
     METHOD_PLACEHOLDER: "Phương thức",
     TYPE_PLACEHOLDER: "Loại đơn",
-    ALL_METHODS: "Tất cả phương thức",
+    ALL_METHODS: "Phương thức thanh toán",
     CASH: "Tiền mặt",
     TRANSFER: "Chuyển khoản",
     CARD: "Thẻ",

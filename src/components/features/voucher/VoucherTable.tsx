@@ -180,7 +180,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, r
             <SelectValue placeholder={V.FILTER_TYPE} />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="all">{V.FILTER_ALL}</SelectItem>
+            <SelectItem value="all">{V.FILTER_ALL_TYPE}</SelectItem>
             {VOUCHER_TYPE_OPTIONS.map((opt) => (
               <SelectItem key={opt.value.toString()} value={opt.value.toString()}>
                 {opt.label}
@@ -194,7 +194,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, r
             <SelectValue placeholder={V.FILTER_STATUS} />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="all">{V.FILTER_ALL}</SelectItem>
+            <SelectItem value="all">{V.FILTER_ALL_STATUS}</SelectItem>
             <SelectItem value="true">{V.FILTER_ACTIVE}</SelectItem>
             <SelectItem value="false">{V.FILTER_INACTIVE}</SelectItem>
           </SelectContent>
@@ -213,7 +213,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, r
 
         <Button
           onClick={onCreate}
-          className="h-10 rounded-xl bg-primary hover:bg-primary-hover shadow-sm gap-2 font-semibold px-4"
+          className="rounded-xl bg-primary hover:bg-primary-hover shadow-sm gap-2 font-semibold px-4"
         >
           <Plus className="size-4" />
           <span className="text-xs uppercase tracking-tight">{V.CREATE}</span>
@@ -225,12 +225,12 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, r
         <Table>
           <TableHeader>
             <TableRow variant="header">
-              <TableHead>{V.TABLE_CODE}</TableHead>
-              <TableHead>{V.TABLE_TYPE}</TableHead>
-              <TableHead>{V.TABLE_VALUE}</TableHead>
-              <TableHead>{V.TABLE_USAGE}</TableHead>
-              <TableHead>{V.TABLE_VALIDITY}</TableHead>
-              <TableHead>{V.TABLE_STATUS}</TableHead>
+              <TableHead className="px-3">{V.TABLE_CODE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_TYPE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_VALUE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_USAGE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_VALIDITY}</TableHead>
+              <TableHead className="px-3">{V.TABLE_STATUS}</TableHead>
               <TableHead className="text-right">{V.TABLE_ACTIONS}</TableHead>
             </TableRow>
           </TableHeader>

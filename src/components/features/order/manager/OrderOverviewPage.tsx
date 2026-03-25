@@ -146,7 +146,7 @@ export default function OrderOverviewPage() {
 
   return (
     <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
-      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_690px] xl:items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_690px] xl:items-start gap-5">
         <div className="space-y-5">
           <PageHeader
             icon={ClipboardList}
@@ -158,7 +158,7 @@ export default function OrderOverviewPage() {
               {error}
             </div>
           ) : null}
-          <div className="grid grid-cols-1 gap-2.5 px-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
             <InventoryStatCard
               icon={ClipboardList}
               label={UI_TEXT.ORDER.OVERVIEW.STATS.ACTIVE}
@@ -210,12 +210,10 @@ export default function OrderOverviewPage() {
           loading={loading}
           emptyText={UI_TEXT.ORDER.OVERVIEW.DISTRIBUTION.EMPTY_STATUS}
         />
-      </div>
-
-      <div className="grid grid-cols-2 gap-6 ">
         <RecentOrders seedOrders={overview?.topActiveOrders ?? []} />
         <BillingHistoryPreview records={billingHistory} loading={loading} error={billingError} />
       </div>
+
       <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
     </div>
   );
@@ -234,8 +232,8 @@ function PromotionOverviewCard({
   const topPromo = [...promotions].sort((a, b) => b.usedCount - a.usedCount)[0];
 
   return (
-    <Card className="border-none shadow-md overflow-hidden bg-white dark:bg-slate-900">
-      <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+    <Card className="border-none shadow-md overflow-hidden bg-card py-5">
+      <CardHeader className="border-b border-border pb-2">
         <CardTitle className="flex items-center justify-between gap-2 text-base font-bold text-slate-800 dark:text-slate-100 uppercase tracking-tight">
           <div className="flex items-center gap-2">
             <Ticket className="h-4 w-4 text-primary" />
@@ -327,7 +325,7 @@ function BillingHistoryPreview({
   const recentRecords = records.slice(0, 5);
 
   return (
-    <Card className="h-[clamp(320px,45vh,400px)] min-h-0 overflow-hidden border-none shadow-md">
+    <Card className="py-5 min-h-0 overflow-hidden border-none shadow-soft">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg font-bold">
           <CreditCard className="h-4 w-4 text-primary" />

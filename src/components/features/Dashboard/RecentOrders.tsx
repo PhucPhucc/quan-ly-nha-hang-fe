@@ -109,7 +109,7 @@ export function RecentOrders({ seedOrders = [] }: RecentOrdersProps) {
   }
 
   return (
-    <Card className="h-[clamp(330px,38vh,320px)] min-h-0 overflow-hidden border-none shadow-md">
+    <Card className="py-5 min-h-0 overflow-hidden border-none shadow-soft gap-0">
       <CardHeader>
         <CardTitle className="text-lg font-bold">{t.TITLE}</CardTitle>
       </CardHeader>
@@ -117,11 +117,11 @@ export function RecentOrders({ seedOrders = [] }: RecentOrdersProps) {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="w-[120px]">{t.ORDER_ID}</TableHead>
-              <TableHead>{t.TABLE}</TableHead>
-              <TableHead>{t.AMOUNT}</TableHead>
-              <TableHead>{t.STATUS}</TableHead>
-              <TableHead className="text-right">{t.TIME}</TableHead>
+              <TableHead className="w-[120px] px-3">{t.ORDER_ID}</TableHead>
+              <TableHead className="px-3">{t.TABLE}</TableHead>
+              <TableHead className="px-3">{t.AMOUNT}</TableHead>
+              <TableHead className="px-3">{t.STATUS}</TableHead>
+              <TableHead className="text-right px-3">{t.TIME}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

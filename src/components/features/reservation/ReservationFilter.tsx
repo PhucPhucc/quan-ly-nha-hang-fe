@@ -60,7 +60,7 @@ export const ReservationFilter = ({
 
   return (
     <div className="flex flex-col gap-4 mb-6">
-      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-slate-50/50 p-2.5 rounded-[2rem] border border-slate-100">
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-background p-2.5 rounded-2xl border">
         <div className="flex flex-1 flex-wrap items-center gap-3 w-full">
           {/* Search Box */}
           <div className="flex-1 min-w-[280px] max-w-md">
@@ -70,7 +70,7 @@ export const ReservationFilter = ({
                 value={search}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={UI_TEXT.RESERVATION.SEARCH_PLACEHOLDER}
-                className="pl-10 h-12 bg-white border-transparent text-[13px] rounded-full focus-visible:ring-primary/20 shadow-sm hover:border-slate-200 transition-all"
+                className="pl-10 bg-white border text-[13px] rounded-xl focus-visible:ring-primary/20 shadow-sm hover:border-slate-200 transition-all"
               />
             </div>
           </div>
@@ -84,19 +84,19 @@ export const ReservationFilter = ({
                   type="date"
                   value={date}
                   onChange={(e) => onDateChange(e.target.value)}
-                  className="pl-10 h-12 bg-white border-transparent text-[13px] rounded-full text-slate-600 focus-visible:ring-primary/20 shadow-sm hover:border-slate-200 transition-all cursor-pointer"
+                  className="pl-10 bg-white border text-[13px] rounded-full text-slate-600 focus-visible:ring-primary/20 shadow-sm hover:border-slate-200 transition-all cursor-pointer"
                 />
               </div>
             </div>
 
-            <div className="w-40">
+            <div>
               <Select value={area} onValueChange={onAreaChange}>
-                <SelectTrigger className="h-12 bg-white border-transparent text-[13px] rounded-full text-slate-600 shadow-sm hover:border-slate-200 transition-all focus:ring-primary/20">
+                <SelectTrigger className="bg-white border text-[13px] rounded-full text-slate-600 shadow-sm hover:border-slate-200 transition-all focus:ring-primary/20">
                   <div className="flex items-center gap-2">
                     <SelectValue placeholder={UI_TEXT.RESERVATION.AREA_FILTER} />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="rounded-2xl border-slate-100 shadow-xl">
+                <SelectContent className="rounded-xl border-slate-100 shadow-xl">
                   <SelectItem value="all">{UI_TEXT.RESERVATION.ALL_AREAS}</SelectItem>
                   {areas.map((a) => (
                     <SelectItem key={a.areaId} value={a.areaId}>
@@ -107,12 +107,12 @@ export const ReservationFilter = ({
               </Select>
             </div>
 
-            <div className="w-44">
+            <div>
               <Select value={status} onValueChange={onStatusChange}>
-                <SelectTrigger className="h-12 bg-white border-transparent text-[13px] rounded-full text-slate-600 shadow-sm hover:border-slate-200 transition-all focus:ring-primary/20">
+                <SelectTrigger className="bg-white border text-[13px] rounded-full text-slate-600 shadow-sm hover:border-slate-200 transition-all focus:ring-primary/20">
                   <SelectValue placeholder={UI_TEXT.RESERVATION.STATUS_FILTER} />
                 </SelectTrigger>
-                <SelectContent className="rounded-2xl border-slate-100 shadow-xl">
+                <SelectContent className="rounded-xl border-slate-100 shadow-xl">
                   <SelectItem value="all">{UI_TEXT.RESERVATION.ALL_STATUSES}</SelectItem>
                   <SelectItem value="booked">{UI_TEXT.RESERVATION.STATUS_FILTER_BOOKED}</SelectItem>
                   <SelectItem value="checked_in">
@@ -129,7 +129,7 @@ export const ReservationFilter = ({
               onClick={onReset}
               variant="outline"
               size="icon"
-              className="h-12 w-12 shrink-0 rounded-full border-white bg-white text-slate-400 hover:text-primary hover:bg-white hover:border-primary/20 transition-all shadow-sm"
+              className="p-2 shrink-0 rounded-full border-white bg-white text-slate-400 hover:text-primary hover:bg-white hover:border-primary/20 transition-all shadow-sm"
               title="Làm mới bộ lọc"
             >
               <RotateCw className="h-4 w-4" />
@@ -139,7 +139,7 @@ export const ReservationFilter = ({
 
         <div className="flex items-center gap-3">
           <Button
-            className="h-12 shrink-0 bg-primary hover:bg-primary/90 text-white font-bold px-8 shadow-lg shadow-primary/20 transition-all active:scale-95"
+            className="shrink-0 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold px-8 shadow-lg shadow-primary/20 transition-all active:scale-95"
             onClick={() => setIsCreateOpen(true)}
           >
             <Plus className="h-5 w-5 mr-2 stroke-[3px]" />

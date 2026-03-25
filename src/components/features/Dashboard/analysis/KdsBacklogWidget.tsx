@@ -41,7 +41,7 @@ export function KdsBacklogWidget() {
 
   if (loading && total === 0) {
     return (
-      <Card className="h-full border border-muted/60 bg-white">
+      <Card className="h-full border border-muted/60 bg-white rounded-xl">
         <CardContent className="h-44 flex items-center justify-center">
           <Loader2 className="animate-spin text-primary/20" />
         </CardContent>
@@ -50,13 +50,13 @@ export function KdsBacklogWidget() {
   }
 
   return (
-    <Card className="h-full border border-muted/60 shadow-none rounded-xl overflow-hidden bg-white pb-5">
-      <CardHeader className="bg-primary/90 pb-6 pt-5 border-b border-muted/20">
+    <Card className="h-full border-none hover:ring-1 hover:ring-primary shadow-soft rounded-lg overflow-hidden bg-card transition-shadow hover:shadow-md">
+      <CardHeader className="bg-linear-to-br from-primary to-primary/50 pb-6 pt-5 border-b border-muted/20">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-black uppercase tracking-[0.15em] text-foreground/70">
+          <CardTitle className="text-sm font-bold uppercase tracking-[0.15em] text-primary-foreground">
             {t.KDS_BACKLOG}
           </CardTitle>
-          <div className="bg-white p-2.5 rounded-2xl shadow-premium border border-muted/30">
+          <div className="bg-card p-2.5 rounded-full shadow-premium border border-muted/30">
             <ChefHat className="size-4.5 text-primary" />
           </div>
         </div>
@@ -73,7 +73,7 @@ export function KdsBacklogWidget() {
           </div>
           <div className="flex gap-4">
             <div className="flex flex-col items-end">
-              <span className="text-sm font-black text-amber-600">{waitingCount}</span>
+              <span className="text-sm font-black text-primary">{waitingCount}</span>
               <span className="text-[9px] font-black uppercase tracking-tighter text-muted-foreground/90">
                 {t.WAITING}
               </span>
@@ -103,7 +103,7 @@ export function KdsBacklogWidget() {
           </div>
 
           <div className="flex gap-4">
-            <div className="flex-1 bg-amber-100/40 p-3 rounded-2xl border border-amber-300/40 flex items-center gap-3">
+            <div className="flex-1 bg-amber-100/50 p-3 rounded-2xl border border-amber-400/40 flex items-center gap-3">
               <div className="size-8 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
                 <Pause className="size-4 text-amber-600" />
               </div>
@@ -133,12 +133,16 @@ export function KdsBacklogWidget() {
         </div>
 
         {delayedCount > 0 && (
-          <div className="mt-4 p-3 bg-red-100/50 rounded-xl border border-red-200/60 flex items-center gap-3 animate-pulse">
-            <div className="p-1.5 bg-red-500 rounded-lg">
+          <div className="relative mt-4 p-3 bg-primary/10 rounded-xl border border-primary/20 flex items-center gap-3">
+            <div className="p-1.5 bg-primary rounded-full">
               <Timer className="size-3.5 text-white" />
             </div>
-            <span className="text-[10px] font-black text-red-700 uppercase tracking-tight">
+            <span className="text-[10px] font-black text-primary uppercase tracking-tight">
               {t.DELAYED_WARNING(delayedCount, 20)}
+            </span>
+            <span className="absolute -top-0.5 -right-0.5 flex size-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex size-3 rounded-full bg-primary"></span>
             </span>
           </div>
         )}

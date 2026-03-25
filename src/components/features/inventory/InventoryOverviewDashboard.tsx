@@ -299,7 +299,7 @@ export function InventoryOverviewDashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 px-4">
+      <div className="grid grid-cols-1 gap-4 px-4 ">
         <SectionHeader
           title={UI_TEXT.INVENTORY.ALERTS_TITLE}
           description={UI_TEXT.INVENTORY.ALERTS_DESC}
@@ -310,7 +310,7 @@ export function InventoryOverviewDashboard() {
         <InventoryAlertSummary />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 px-4">
+      <div className="grid grid-cols-1 gap-4 bg-background">
         <SectionHeader
           title={UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_ITEMS_TITLE}
           description={UI_TEXT.INVENTORY.OVERVIEW.PRIORITY_ITEMS_DESC}
@@ -318,8 +318,8 @@ export function InventoryOverviewDashboard() {
           hrefLabel={UI_TEXT.INVENTORY.OVERVIEW.VIEW_INGREDIENT_LIST}
           icon={Info}
         />
-        <Card className="border-none shadow-md">
-          <CardContent className="grid grid-cols-1 gap-4 lg:grid-cols-2 my-4">
+        <Card className="border-none shadow-none bg-background ">
+          <CardContent className="grid grid-cols-1 gap-4 lg:grid-cols-2 my-4 px-4  ">
             {priorityLoading
               ? Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="h-36 animate-pulse rounded-xl bg-muted/70" />

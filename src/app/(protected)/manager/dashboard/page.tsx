@@ -60,7 +60,7 @@ export default function DashboardPage() {
     <div className="flex flex-col min-h-screen bg-background animate-in fade-in duration-500">
       <RealTimeAlertStrip />
 
-      <div className="flex-1 p-6 md:p-8 max-w-[1600px] mx-auto w-full space-y-8">
+      <div className="flex-1 p-6 md:p-8 max-w-400 mx-auto w-full space-y-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col">
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-3">
@@ -80,7 +80,7 @@ export default function DashboardPage() {
                 {t.USER_ROLE(getRoleName())}
               </p>
               {currentTime && (
-                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-muted/40 rounded-full text-[10px] font-medium text-muted-foreground">
+                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-muted/40 rounded-full text-[10px] font-medium text-foreground">
                   <Clock className="size-3" />
                   <span suppressHydrationWarning>
                     {currentTime.toLocaleTimeString("vi-VN", { hour12: false })}
@@ -91,7 +91,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex h-10 items-center gap-2 px-3 rounded-xl bg-card shadow-sm border text-[11px] font-bold text-muted-foreground">
+            <div className="flex h-10 items-center gap-2 px-3 rounded-xl bg-card shadow-sm border text-[11px] font-bold text-foreground">
               <Zap className="size-3 text-warning fill-warning" />
               {t.SIGNALR_CONNECTED}
             </div>
@@ -99,14 +99,14 @@ export default function DashboardPage() {
         </div>
 
         <section className="space-y-4">
-          <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground opacity-60">
+          <h3 className="text-xs font-black uppercase tracking-widest text--foreground opacity-60">
             {t.ANALYTICS.KPI_TITLE} {t.KPI_LABEL}
           </h3>
           <DashboardStats stats={analyticsData?.stats} />
         </section>
 
         <section className="space-y-4">
-          <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground opacity-60">
+          <h3 className="text-xs font-black uppercase tracking-widest text-foreground opacity-60">
             {t.OPERATIONS.TITLE}
           </h3>
           <div className="grid gap-6 lg:grid-cols-12">
