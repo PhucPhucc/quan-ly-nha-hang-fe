@@ -154,13 +154,13 @@ export function DisposeLotModal({ item, onSuccess }: DisposeLotModalProps) {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-border/60 bg-background px-3 py-3">
+              <div className="rounded-lg border border-border/60 bg-background px-3 py-3">
                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {UI_TEXT.INVENTORY.LOTS.DISPOSE.LABEL_NAME}
                 </p>
                 <p className="text-sm font-bold text-foreground">{item.ingredientName}</p>
               </div>
-              <div className="rounded-xl border border-border/60 bg-background px-3 py-3">
+              <div className="rounded-lg border border-border/60 bg-background px-3 py-3">
                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {UI_TEXT.INVENTORY.LOTS.DISPOSE.LABEL_CODE}
                 </p>
@@ -168,7 +168,7 @@ export function DisposeLotModal({ item, onSuccess }: DisposeLotModalProps) {
                   {item.lotCode || UI_TEXT.COMMON.NOT_APPLICABLE}
                 </p>
               </div>
-              <div className="rounded-xl border border-border/60 bg-background px-3 py-3">
+              <div className="rounded-lg border border-border/60 bg-background px-3 py-3">
                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {UI_TEXT.INVENTORY.LOTS.DISPOSE.LABEL_AVAILABLE}
                 </p>
@@ -218,7 +218,7 @@ export function DisposeLotModal({ item, onSuccess }: DisposeLotModalProps) {
                 aria-invalid={Boolean(quantityError)}
                 autoFocus
               />
-              <div className="flex h-12 min-w-14 items-center justify-center rounded-xl border bg-muted/30 px-3 text-sm font-bold">
+              <div className="flex h-12 min-w-14 items-center justify-center rounded-lg border bg-muted/30 px-3 text-sm font-bold">
                 {item.unit}
               </div>
             </div>

@@ -49,7 +49,6 @@ export function InventoryLedgerTable() {
     transactionType,
     setTransactionType,
     ingredientId,
-    ingredientName,
     setIngredient,
     isLoading,
   } = useInventoryLedger();
@@ -99,19 +98,19 @@ export function InventoryLedgerTable() {
           }}
         >
           <SelectTrigger
-            className={`${INVENTORY_SELECT_TRIGGER_CLASS} h-11 w-full sm:w-64 rounded-xl border-none bg-muted/30 font-bold`}
+            className={`${INVENTORY_SELECT_TRIGGER_CLASS} h-11 w-full sm:w-64 rounded-lg border-none bg-muted/30 font-bold`}
           >
             <SelectValue placeholder={UI_TEXT.INVENTORY.REPORT.SELECT_MATERIAL} />
           </SelectTrigger>
           <SelectContent className="rounded-2xl border-border/40 shadow-2xl p-1.5">
-            <SelectItem value="all" className="rounded-xl px-3 py-2 text-xs font-bold">
+            <SelectItem value="all" className="rounded-lg px-3 py-2 text-xs font-bold">
               {UI_TEXT.INVENTORY.REPORT.CATEGORY_ALL}
             </SelectItem>
             {ingredients.map((ingredient) => (
               <SelectItem
                 key={ingredient.ingredientId}
                 value={ingredient.ingredientId}
-                className="rounded-xl px-3 py-2 text-xs font-bold"
+                className="rounded-lg px-3 py-2 text-xs font-bold"
               >
                 {ingredient.name}
               </SelectItem>
@@ -124,7 +123,7 @@ export function InventoryLedgerTable() {
           onValueChange={(val) => setTransactionType(val === "all" ? undefined : Number(val))}
         >
           <SelectTrigger
-            className={`${INVENTORY_SELECT_TRIGGER_CLASS} h-11 w-full sm:w-64 rounded-xl border-none bg-muted/30 font-bold uppercase tracking-widest text-[10px]`}
+            className={`${INVENTORY_SELECT_TRIGGER_CLASS} h-11 w-full sm:w-64 rounded-lg border-none bg-muted/30 font-bold uppercase tracking-widest text-[10px]`}
           >
             <div className="flex items-center gap-2">
               <span className="opacity-40">
@@ -135,30 +134,30 @@ export function InventoryLedgerTable() {
             </div>
           </SelectTrigger>
           <SelectContent className="rounded-2xl border-border/40 shadow-2xl p-1.5">
-            <SelectItem value="all" className="rounded-xl px-3 py-2 text-xs font-bold">
+            <SelectItem value="all" className="rounded-lg px-3 py-2 text-xs font-bold">
               {UI_TEXT.INVENTORY.TOOLBAR.STATUS_ALL}
             </SelectItem>
             <SelectItem
               value={InventoryTransactionType.StockIn.toString()}
-              className="rounded-xl px-3 py-2 text-xs font-bold"
+              className="rounded-lg px-3 py-2 text-xs font-bold"
             >
               {UI_TEXT.INVENTORY.TABLE.TRANS_TYPE_IN}
             </SelectItem>
             <SelectItem
               value={InventoryTransactionType.SaleDeduction.toString()}
-              className="rounded-xl px-3 py-2 text-xs font-bold"
+              className="rounded-lg px-3 py-2 text-xs font-bold"
             >
               {UI_TEXT.INVENTORY.REPORT.COL_SALE}
             </SelectItem>
             <SelectItem
               value={InventoryTransactionType.InventoryCheck.toString()}
-              className="rounded-xl px-3 py-2 text-xs font-bold"
+              className="rounded-lg px-3 py-2 text-xs font-bold"
             >
               {UI_TEXT.INVENTORY.CHECK.TITLE}
             </SelectItem>
             <SelectItem
               value={InventoryTransactionType.OpeningStock.toString()}
-              className="rounded-xl px-3 py-2 text-xs font-bold"
+              className="rounded-lg px-3 py-2 text-xs font-bold"
             >
               {UI_TEXT.INVENTORY.TABLE.TRANS_TYPE_OPENING}
             </SelectItem>

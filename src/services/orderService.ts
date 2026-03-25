@@ -117,6 +117,8 @@ export interface OrderAuditLogResponse {
 export interface OrderAuditLogsParams {
   pageNumber?: number;
   pageSize?: number;
+  search?: string;
+  action?: string;
 }
 
 export const orderService = {
@@ -142,10 +144,29 @@ export const orderService = {
     const queryParams = new URLSearchParams();
     if (params.pageNumber) queryParams.append("pageNumber", params.pageNumber.toString());
     if (params.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+    if (params.search) queryParams.append("search", params.search);
+    if (params.action && params.action !== "all")
+      queryParams.append("filters", `action:${params.action}`);
 
     const query = queryParams.toString();
     return apiFetch<PaginationResult<OrderAuditLogResponse>>(
       `/orders/${id}/audit-logs${query ? `?${query}` : ""}`
+    );
+  },
+
+  getAllOrderAuditLogs: (
+    params: OrderAuditLogsParams = {}
+  ): Promise<ApiResponse<PaginationResult<OrderAuditLogResponse>>> => {
+    const queryParams = new URLSearchParams();
+    if (params.pageNumber) queryParams.append("pageNumber", params.pageNumber.toString());
+    if (params.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+    if (params.search) queryParams.append("search", params.search);
+    if (params.action && params.action !== "all")
+      queryParams.append("filters", `action:${params.action}`);
+
+    const query = queryParams.toString();
+    return apiFetch<PaginationResult<OrderAuditLogResponse>>(
+      `/orders/audit-logs${query ? `?${query}` : ""}`
     );
   },
 

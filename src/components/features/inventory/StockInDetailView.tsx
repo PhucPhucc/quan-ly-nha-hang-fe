@@ -45,13 +45,13 @@ export const StockInDetailView = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" className="gap-2 rounded-xl hover:bg-muted" onClick={onBack}>
+        <Button variant="ghost" className="gap-2 rounded-lg hover:bg-muted" onClick={onBack}>
           <ArrowLeft className="size-4" />
           {UI_TEXT.COMMON.BACK}
         </Button>
         <div className="flex items-center gap-3">
           {onPrint && (
-            <Button variant="outline" onClick={onPrint} className="gap-2 rounded-xl border-border">
+            <Button variant="outline" onClick={onPrint} className="gap-2 rounded-lg border-border">
               <Printer className="size-4" />
               {UI_TEXT.BUTTON.DETAIL}
             </Button>
@@ -60,7 +60,7 @@ export const StockInDetailView = ({
             <Button
               variant="destructive"
               onClick={onDelete}
-              className="gap-2 rounded-xl shadow-lg shadow-destructive/10"
+              className="gap-2 rounded-lg shadow-lg shadow-destructive/10"
             >
               <Trash2 className="size-4" />
               {UI_TEXT.BUTTON.DELETE}

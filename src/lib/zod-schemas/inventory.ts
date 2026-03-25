@@ -9,6 +9,7 @@ export const inventorySettingsSchema = z.object({
     .number()
     .min(1, "Số ngày tối đa phải ≥ 1")
     .max(365, "Số ngày tối đa phải ≤ 365"),
+  openingStockImportCooldownHours: z.number().min(0, "Thời gian chờ phải ≥ 0"),
 });
 
 export type InventorySettingsInput = z.infer<typeof inventorySettingsSchema>;

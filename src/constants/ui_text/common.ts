@@ -218,4 +218,5 @@ export const NAVIGATION = {
   VOUCHER: "Voucher",
   ORDER_LIST: "Danh sách đơn hàng",
   ORDER_DETAIL: "Chi tiết đơn hàng",
+  SETTINGS: "Cài đặt hệ thống",
 };

@@ -81,117 +81,123 @@ export function InventoryCogsContainer({ embedded = false }: InventoryCogsContai
           : "mx-auto max-w-[1040px] animate-in fade-in pt-4 duration-500 space-y-8"
       }
     >
-      <div className={`grid grid-cols-1 gap-8 ${embedded ? "md:grid-cols-12" : "lg:grid-cols-3"}`}>
-        {/* Left Column: Form/Success Panel */}
-        <div className={`min-w-0 space-y-6 ${embedded ? "md:col-span-7" : "lg:col-span-2"}`}>
+      <div className="flex flex-col gap-6">
+        {/* Top Section: Info & Rules */}
+        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+          <InventoryCogsRules />
+        </div>
+
+        {/* Bottom Section: Form/Success Panel */}
+        <div
+          key={calculationResult ? "success-view" : "setup-view"}
+          className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both"
+        >
           {!calculationResult ? (
-            <div className="rounded-[2rem] border-none bg-background/60 p-8 shadow-2xl shadow-primary/5 ring-1 ring-border/50 backdrop-blur-xl">
-              <div className="mb-8">
-                <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground">
-                  <div className="h-8 w-1.5 rounded-full bg-primary" />
+            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="mb-6">
+                <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-slate-900">
+                  <div className="h-6 w-1 rounded-full bg-primary" />
                   {UI_TEXT.INVENTORY.COGS.FORM_TITLE}
                 </h2>
-                <p className="mt-2 ml-3.5 text-sm text-muted-foreground">
+                <p className="mt-1.5 ml-3 d-block text-sm text-slate-500 font-medium">
                   {UI_TEXT.INVENTORY.COGS.DESC}
                 </p>
               </div>
 
-              <div className="flex flex-col items-stretch gap-6 rounded-2xl border border-border/50 bg-muted/30 p-6 xl:flex-row xl:items-end">
-                <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:items-end">
-                  <div className="min-w-0">
-                    <p className="mb-1.5 ml-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                      {UI_TEXT.INVENTORY.COGS.FROM_DATE}
-                    </p>
-                    <DatePicker
-                      value={fromDate}
-                      onChange={setFromDate}
-                      placeholder={UI_TEXT.INVENTORY.COGS.FROM_DATE}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="mb-1.5 ml-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                      {UI_TEXT.INVENTORY.COGS.TO_DATE}
-                    </p>
-                    <DatePicker
-                      value={toDate}
-                      onChange={setToDate}
-                      placeholder={UI_TEXT.INVENTORY.COGS.TO_DATE}
-                      className="w-full"
-                    />
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/50 p-6 rounded-lg border border-slate-100 mb-6">
+                <div className="space-y-2">
+                  <p className="ml-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    {UI_TEXT.INVENTORY.COGS.FROM_DATE}
+                  </p>
+                  <DatePicker
+                    value={fromDate}
+                    onChange={setFromDate}
+                    placeholder={UI_TEXT.INVENTORY.COGS.FROM_DATE}
+                    className="h-10 w-full rounded-lg border-slate-200 bg-white shadow-sm"
+                  />
                 </div>
-
-                <div className="w-full xl:w-auto">
-                  <Button
-                    onClick={handleCalculateClick}
-                    disabled={!isFormValid || calculateMutation.isPending}
-                    className="h-11 w-full rounded-xl bg-primary px-10 text-base font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 xl:w-auto"
-                  >
-                    {calculateMutation.isPending ? (
-                      <RotateCcw className="mr-2 h-5 w-5 animate-spin" />
-                    ) : (
-                      <Calculator className="mr-2 h-5 w-5" />
-                    )}
-                    {calculateMutation.isPending
-                      ? UI_TEXT.INVENTORY.COGS.BTN_CALCULATING
-                      : UI_TEXT.INVENTORY.COGS.BTN_CALCULATE}
-                  </Button>
+                <div className="space-y-2">
+                  <p className="ml-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    {UI_TEXT.INVENTORY.COGS.TO_DATE}
+                  </p>
+                  <DatePicker
+                    value={toDate}
+                    onChange={setToDate}
+                    placeholder={UI_TEXT.INVENTORY.COGS.TO_DATE}
+                    className="h-10 w-full rounded-lg border-slate-200 bg-white shadow-sm"
+                  />
                 </div>
               </div>
 
-              <div className="mt-8 flex items-start gap-3 rounded-2xl border border-primary/10 bg-primary/5 p-5 text-primary">
-                <Info className="mt-0.5 h-5 w-5 shrink-0" />
-                <p className="text-sm font-medium leading-relaxed opacity-90">
-                  {UI_TEXT.INVENTORY.COGS.NOTE}
-                </p>
+              <div className="flex flex-col gap-6">
+                <div className="flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50/50 p-4 text-blue-700">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" />
+                  <p className="text-xs font-semibold leading-relaxed">
+                    {UI_TEXT.INVENTORY.COGS.NOTE}
+                  </p>
+                </div>
+
+                <Button
+                  onClick={handleCalculateClick}
+                  disabled={!isFormValid || calculateMutation.isPending}
+                  className="h-11 w-full rounded-lg bg-primary text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:scale-[1.01] hover:bg-primary/95 active:scale-[0.99] disabled:opacity-40"
+                >
+                  {calculateMutation.isPending ? (
+                    <RotateCcw className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Calculator className="mr-2 h-4 w-4" />
+                  )}
+                  {calculateMutation.isPending
+                    ? UI_TEXT.INVENTORY.COGS.BTN_CALCULATING
+                    : UI_TEXT.INVENTORY.COGS.BTN_CALCULATE}
+                </Button>
               </div>
             </div>
           ) : (
-            <div className="rounded-[2rem] border-none bg-success/5 p-10 shadow-2xl shadow-success/10 ring-1 ring-success/20 backdrop-blur-xl">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-8 shadow-sm">
               <div className="mb-8 flex items-center gap-5">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-success/20 text-success shadow-inner shadow-success/20">
-                  <CheckCircle2 className="h-8 w-8" />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 shadow-sm border border-emerald-200">
+                  <CheckCircle2 className="h-6 w-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black tracking-tight text-success">
+                  <h2 className="text-xl font-bold tracking-tight text-emerald-900">
                     {UI_TEXT.INVENTORY.COGS.SUCCESS_TITLE}
                   </h2>
-                  <p className="mt-1 text-base font-medium text-success/80">
+                  <p className="mt-1 text-sm font-semibold text-emerald-700/80">
                     {UI_TEXT.INVENTORY.COGS.SUCCESS_DESC_PREFIX}{" "}
-                    <span className="font-bold text-success">
+                    <span className="font-bold text-emerald-900">
                       {fromDate?.toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI)}
                     </span>{" "}
                     {UI_TEXT.INVENTORY.COGS.SUCCESS_DESC_TO}{" "}
-                    <span className="font-bold text-success">
+                    <span className="font-bold text-emerald-900">
                       {toDate?.toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI)}
                     </span>
                   </p>
                 </div>
               </div>
 
-              <div className="mb-10 grid grid-cols-1 gap-5 md:grid-cols-3">
-                <div className="rounded-2xl border border-border/50 bg-background/40 p-5 shadow-sm transition-all hover:shadow-md">
-                  <p className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     {UI_TEXT.INVENTORY.COGS.LABEL_RECEIPTS}
                   </p>
-                  <p className="mt-3 text-3xl font-black tabular-nums text-foreground">
+                  <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">
                     {calculationResult.updatedReceipts}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-border/50 bg-background/40 p-5 shadow-sm transition-all hover:shadow-md">
-                  <p className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     {UI_TEXT.INVENTORY.COGS.LABEL_ITEMS}
                   </p>
-                  <p className="mt-3 text-3xl font-black tabular-nums text-foreground">
+                  <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">
                     {calculationResult.updatedItems}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-success/10 bg-success/10 p-5 shadow-sm transition-all hover:shadow-md">
-                  <p className="text-sm font-bold uppercase tracking-wider text-success/70">
+                <div className="rounded-lg border border-emerald-200 bg-white p-5 shadow-sm">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
                     {UI_TEXT.INVENTORY.COGS.LABEL_ADJUSTMENT}
                   </p>
-                  <p className="mt-3 text-3xl font-black tabular-nums text-success">
+                  <p className="mt-1 text-2xl font-bold tabular-nums text-emerald-800">
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",
                       currency: "VND",
@@ -204,19 +210,14 @@ export function InventoryCogsContainer({ embedded = false }: InventoryCogsContai
                 <Button
                   onClick={handleReset}
                   variant="outline"
-                  className="h-12 rounded-xl px-10 text-base font-bold transition-all hover:bg-muted"
+                  className="h-10 rounded-lg border-slate-200 px-8 text-sm font-bold shadow-sm transition-all hover:bg-slate-50"
                 >
-                  <RotateCcw className="mr-2 h-5 w-5" />
+                  <RotateCcw className="mr-2 h-4 w-4" />
                   {UI_TEXT.INVENTORY.COGS.BTN_RECALCULATE}
                 </Button>
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right Column: Info Card */}
-        <div className={`min-w-0 ${embedded ? "md:col-span-5" : "lg:col-span-1"}`}>
-          <InventoryCogsRules />
         </div>
       </div>
 
@@ -240,11 +241,11 @@ export function InventoryCogsContainer({ embedded = false }: InventoryCogsContai
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="mt-6 flex gap-2">
-            <AlertDialogCancel disabled={calculateMutation.isPending} className="h-11 rounded-xl">
+            <AlertDialogCancel disabled={calculateMutation.isPending} className="h-11 rounded-lg">
               {UI_TEXT.COMMON.CLOSE}
             </AlertDialogCancel>
             <AlertDialogAction
-              className="h-11 rounded-xl bg-primary px-8"
+              className="h-11 rounded-lg bg-primary px-8"
               onClick={(e) => {
                 e.preventDefault();
                 handleConfirmCalculate();

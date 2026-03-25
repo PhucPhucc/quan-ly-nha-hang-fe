@@ -94,7 +94,7 @@ export function InventoryQuickActions() {
               key={action.href}
               href={action.href}
               className={cn(
-                "group flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm transition-all duration-200 hover:shadow-sm hover:-translate-y-px",
+                "group flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition-all duration-200 hover:shadow-sm hover:-translate-y-px",
                 action.variant === "primary"
                   ? "border-primary/20 bg-primary/8 hover:bg-primary/12 hover:border-primary/30"
                   : "border-border bg-card hover:bg-muted/40 hover:border-border/80"

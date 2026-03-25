@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import type { InventorySettingsInput } from "@/lib/zod-schemas/inventory";
 import { inventoryService } from "@/services/inventory.service";
+import type { InventorySettings } from "@/types/Inventory";
 
 import { invalidateInventoryQueries } from "./inventoryQueryInvalidation";
 import {
@@ -29,6 +30,7 @@ export function InventorySettingsFormContainer({
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [formValues, setFormValues] = useState<InventorySettingsInput>(initialValues);
+  const [settingsMetadata, setSettingsMetadata] = useState<Partial<InventorySettings> | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -39,6 +41,7 @@ export function InventorySettingsFormContainer({
 
         if (response.isSuccess && mounted) {
           setFormValues(getInventorySettingsFormValues(response.data));
+          setSettingsMetadata(response.data);
         }
       } catch (error) {
         console.error("Failed to fetch inventory settings:", error);
@@ -66,6 +69,7 @@ export function InventorySettingsFormContainer({
         const nextValues = getInventorySettingsFormValues(response.data);
 
         setFormValues(nextValues);
+        setSettingsMetadata(response.data);
         queryClient.setQueryData(["inventory-settings"], response.data);
         await invalidateInventoryQueries(queryClient);
         toast.success(SETTINGS.SUCCESS_UPDATE);
@@ -89,6 +93,11 @@ export function InventorySettingsFormContainer({
   }
 
   return (
-    <InventorySettingsForm initialValues={formValues} onSubmit={handleSubmit} saving={saving} />
+    <InventorySettingsForm
+      initialValues={formValues}
+      metadata={settingsMetadata ?? undefined}
+      onSubmit={handleSubmit}
+      saving={saving}
+    />
   );
 }

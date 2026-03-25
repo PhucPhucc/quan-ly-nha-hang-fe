@@ -28,6 +28,14 @@ function isOpeningStockLocked(settings?: InventorySettings | null) {
   );
 }
 
+function formatDateTimeValue(value?: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  return new Date(value).toLocaleString();
+}
+
 export function useOpeningStockIngredients() {
   const [search, setSearch] = useState("");
   const [entryOverrides, setEntryOverrides] = useState<OpeningStockEntryValues>({});
@@ -121,8 +129,14 @@ export function useOpeningStockIngredients() {
     loading: isLoading || isSettingsLoading,
     isError: isError || isSettingsError,
     error: error ?? settingsError,
+    settings,
     isLocked: isOpeningStockLocked(settings),
     lockedAt: settings?.lockedAt ?? null,
+    lastImportedAt: settings?.lastOpeningStockImportedAt ?? null,
+    lastImportedAtLabel: formatDateTimeValue(settings?.lastOpeningStockImportedAt),
+    nextImportAllowedAt: settings?.nextOpeningStockImportAllowedAt ?? null,
+    nextImportAllowedAtLabel: formatDateTimeValue(settings?.nextOpeningStockImportAllowedAt),
+    openingStockImportCooldownHours: settings?.openingStockImportCooldownHours ?? 0,
     handleInputChange,
   };
 }

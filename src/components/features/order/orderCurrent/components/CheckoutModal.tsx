@@ -1,7 +1,7 @@
+"use client";
+
 import { DollarSign, Loader2 } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
-import React, { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,10 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { orderService } from "@/services/orderService";
-import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
-import { useTableStore } from "@/store/useTableStore";
-import { OrderStatus, PaymentMethod } from "@/types/enums";
+import { PaymentMethod } from "@/types/enums";
+
+import { BankTransferView } from "./CheckoutComponents";
+import { useCheckout } from "./useCheckout";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -25,184 +25,19 @@ interface CheckoutModalProps {
   totalAmount: number;
 }
 
-const BANK_LABELS = {
-  bank: "Ngân hàng:",
-  accountName: "Chủ tài khoản:",
-  accountNumber: "Số tài khoản:",
-  amount: "Số tiền:",
-  currency: "đ",
-  desc: "Nội dung CT:",
-};
-
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, totalAmount }) => {
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(PaymentMethod.Cash);
-  const [customerGiven, setCustomerGiven] = useState<string>("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [payOSUrl, setPayOSUrl] = useState<string | null>(null);
-  const [bankInfo, setBankInfo] = useState<{
-    accountName?: string;
-    accountNumber?: string;
-    bin?: string;
-    amount?: number;
-    description?: string;
-  } | null>(null);
-
-  const { selectedOrderId, checkoutOrder, clearOrderDetails, fetchOrders } = useOrderBoardStore(
-    (state: OrderBoardState) => ({
-      selectedOrderId: state.selectedOrderId,
-      checkoutOrder: state.checkoutOrder,
-      clearOrderDetails: state.clearOrderDetails,
-      fetchOrders: state.fetchOrders,
-    })
-  );
-  const { selectedAreaId, fetchTablesByArea } = useTableStore((state) => ({
-    selectedAreaId: state.selectedAreaId,
-    fetchTablesByArea: state.fetchTablesByArea,
-  }));
-
-  const refreshBoardState = useCallback(async () => {
-    await Promise.all([
-      fetchOrders(),
-      selectedAreaId ? fetchTablesByArea(selectedAreaId) : Promise.resolve(),
-    ]);
-  }, [fetchOrders, selectedAreaId, fetchTablesByArea]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    if (!isOpen || selectedMethod !== PaymentMethod.BankTransfer) {
-      setPayOSUrl(null);
-      setBankInfo(null);
-      return;
-    }
-
-    const fetchQR = async () => {
-      if (!selectedOrderId) return;
-      setIsProcessing(true);
-      try {
-        const response = await orderService.createPayOsQr(selectedOrderId);
-        if (isMounted && response.isSuccess && response.data) {
-          const qrString =
-            typeof response.data === "string"
-              ? response.data
-              : response.data.qrCode || response.data.checkoutUrl || "";
-          setPayOSUrl(qrString);
-
-          if (typeof response.data === "object" && response.data !== null) {
-            setBankInfo({
-              accountName: response.data.accountName,
-              accountNumber: response.data.accountNumber,
-              bin: response.data.bin,
-              amount: response.data.amount,
-              description: response.data.description,
-            });
-          }
-        } else if (isMounted) {
-          toast.error("Không thể tạo mã QR thanh toán.");
-        }
-      } catch (error) {
-        if (isMounted) {
-          toast.error("Đã xảy ra lỗi khi tải mã QR.");
-          console.error(error);
-        }
-      } finally {
-        if (isMounted) setIsProcessing(false);
-      }
-    };
-
-    fetchQR();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [selectedMethod, isOpen, selectedOrderId]);
-
-  React.useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-
-    if (isOpen && selectedMethod === PaymentMethod.BankTransfer && payOSUrl) {
-      interval = setInterval(async () => {
-        try {
-          if (!selectedOrderId) return;
-          const res = await orderService.getOrderById(selectedOrderId);
-
-          if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
-            await refreshBoardState();
-            toast.success("Hệ thống đã nhận được tiền!");
-            onClose();
-            clearOrderDetails();
-            useOrderBoardStore.getState().setSelectedOrderId(null);
-            clearInterval(interval);
-          }
-        } catch (error) {
-          console.error("Lỗi kiểm tra thanh toán:", error);
-        }
-      }, 3000);
-    }
-
-    return () => clearInterval(interval);
-  }, [
-    isOpen,
+  const {
     selectedMethod,
+    setSelectedMethod,
+    customerGiven,
+    setCustomerGiven,
+    isProcessing,
     payOSUrl,
-    selectedOrderId,
-    onClose,
-    clearOrderDetails,
-    refreshBoardState,
-  ]);
-
-  const handleCheckout = async () => {
-    if (!selectedOrderId) return;
-
-    let amountReceived = undefined;
-    if (selectedMethod === PaymentMethod.Cash) {
-      if (!customerGiven) {
-        toast.error("Vui lòng nhập số tiền khách đưa");
-        return;
-      }
-      amountReceived = parseFloat(customerGiven.replace(/,/g, ""));
-      if (isNaN(amountReceived) || amountReceived < totalAmount) {
-        toast.error("Số tiền khách đưa không hợp lệ hoặc nhỏ hơn tổng tiền");
-        return;
-      }
-    }
-
-    try {
-      setIsProcessing(true);
-
-      if (selectedMethod === PaymentMethod.BankTransfer) {
-        return;
-      }
-
-      const success = await checkoutOrder(selectedOrderId, selectedMethod, amountReceived);
-
-      if (success) {
-        await refreshBoardState();
-        toast.success("Thanh toán thành công!");
-        onClose();
-        clearOrderDetails();
-        useOrderBoardStore.getState().setSelectedOrderId(null);
-      } else {
-        toast.error("Thanh toán thất bại, vui lòng thử lại.");
-      }
-    } catch (error) {
-      toast.error("Đã xảy ra lỗi trong quá trình thanh toán.");
-      console.error(error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const calculateChange = () => {
-    if (!customerGiven || selectedMethod !== PaymentMethod.Cash) return 0;
-    const given = parseFloat(customerGiven.replace(/,/g, ""));
-    if (isNaN(given)) return 0;
-    return Math.max(0, given - totalAmount);
-  };
-
-  const handleQuickAmount = (amount: number) => {
-    setCustomerGiven(amount.toString());
-  };
+    bankInfo,
+    handleCheckout,
+    calculateChange,
+    handleQuickAmount,
+  } = useCheckout(isOpen, onClose, totalAmount);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -294,41 +129,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           )}
 
           {selectedMethod === PaymentMethod.BankTransfer && payOSUrl && (
-            <div className="flex flex-col items-center justify-center space-y-3 py-2 animate-in fade-in slide-in-from-top-2">
-              <div className="p-3 bg-white rounded-xl shadow-sm border border-muted">
-                <QRCodeSVG value={payOSUrl} size={100} level="M" />
-              </div>
-
-              {bankInfo && (
-                <div className="w-full space-y-1 mt-1 text-[11px] bg-muted/40 p-2 rounded-md border border-muted">
-                  <div className="flex flex-col border-b border-muted/50 pb-1">
-                    <span className="text-muted-foreground uppercase text-[9px] font-medium">
-                      {BANK_LABELS.accountName}
-                    </span>
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold uppercase text-foreground">
-                        {bankInfo.accountName || "---"}
-                      </span>
-                      <span className="font-medium text-muted-foreground">
-                        {bankInfo.accountNumber}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-muted/50 py-1">
-                    <span className="text-muted-foreground">{BANK_LABELS.amount}</span>
-                    <span className="font-black text-right text-red-600 text-xs">
-                      {(bankInfo.amount ?? totalAmount).toLocaleString()} {BANK_LABELS.currency}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center pt-0.5">
-                    <span className="text-muted-foreground shrink-0 mr-2">{BANK_LABELS.desc}</span>
-                    <span className="font-bold text-right text-orange-600 truncate">
-                      {bankInfo.description || "---"}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
+            <BankTransferView payOSUrl={payOSUrl} bankInfo={bankInfo} totalAmount={totalAmount} />
           )}
         </div>
         <DialogFooter className="sm:justify-end">

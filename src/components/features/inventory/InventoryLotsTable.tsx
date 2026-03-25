@@ -80,14 +80,14 @@ export function InventoryLotsTable() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder={UI_TEXT.INVENTORY.LOTS.SEARCH_PLACEHOLDER}
-                className="h-11 rounded-xl pl-10"
+                className="h-11 rounded-lg pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border">
+          <div className="overflow-hidden rounded-lg border">
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>

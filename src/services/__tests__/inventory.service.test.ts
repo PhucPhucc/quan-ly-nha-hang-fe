@@ -18,6 +18,7 @@ describe("inventoryService", () => {
         autoDeductOnCompleted: true,
         costMethod: "WeightedAverage",
         maxCostRecalcDays: 31,
+        openingStockImportCooldownHours: 24,
       },
     });
 
@@ -33,6 +34,7 @@ describe("inventoryService", () => {
       autoDeductOnCompleted: false,
       costMethod: "FIFO",
       maxCostRecalcDays: 45,
+      openingStockImportCooldownHours: 24,
     };
 
     vi.mocked(apiFetch).mockResolvedValue({

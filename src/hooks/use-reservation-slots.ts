@@ -2,7 +2,6 @@ import { format } from "date-fns";
 import { useMemo } from "react";
 
 const OPEN_HOUR = 10;
-const OPEN_MINUTE = 30;
 const CLOSE_HOUR = 23;
 const BREAK_START_HOUR = 14;
 const BREAK_END_HOUR = 17;

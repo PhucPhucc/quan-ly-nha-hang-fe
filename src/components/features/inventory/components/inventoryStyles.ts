@@ -11,19 +11,19 @@ export const INVENTORY_FIELD_WRAP_CLASS = "flex min-w-0 items-center gap-2";
 export const INVENTORY_FIELD_LABEL_CLASS = "shrink-0 text-xs font-medium text-slate-500";
 
 export const INVENTORY_INPUT_CLASS =
-  "h-10 rounded-xl border-slate-200 bg-slate-50 text-sm shadow-none transition-colors placeholder:text-slate-400 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-primary/15";
+  "h-10 rounded-lg border-slate-200 bg-slate-50 text-sm shadow-none transition-colors placeholder:text-slate-400 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-primary/15";
 
 export const INVENTORY_SELECT_TRIGGER_CLASS =
-  "h-10 rounded-xl border-slate-200 bg-slate-50 text-sm shadow-none transition-colors focus:ring-2 focus:ring-primary/15";
+  "h-10 rounded-lg border-slate-200 bg-slate-50 text-sm shadow-none transition-colors focus:ring-2 focus:ring-primary/15";
 
 export const INVENTORY_ICON_BUTTON_CLASS =
-  "h-10 w-10 shrink-0 rounded-xl border-slate-200 p-0 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700";
+  "h-10 w-10 shrink-0 rounded-lg border-slate-200 p-0 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700";
 
 export const INVENTORY_PAGINATION_BUTTON_CLASS =
   "h-9 rounded-lg border-slate-200 bg-white px-4 text-slate-600 shadow-sm transition-colors hover:bg-slate-50";
 
 export const INVENTORY_DATE_BUTTON_CLASS =
-  "h-10 justify-start rounded-xl border-slate-200 bg-slate-50 text-left font-normal text-slate-900 shadow-none transition-colors hover:bg-slate-100/70";
+  "h-10 justify-start rounded-lg border-slate-200 bg-slate-50 text-left font-normal text-slate-900 shadow-none transition-colors hover:bg-slate-100/70";
 
 export const INVENTORY_PAGE_CLASS =
   "flex flex-1 min-h-0 flex-col gap-4 bg-slate-50/30 p-4 pt-6 overflow-y-auto";
@@ -58,7 +58,7 @@ export const INVENTORY_AVATAR_CLASS =
   "h-6 w-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground border border-border/50";
 
 // Note block
-export const INVENTORY_NOTE_BLOCK_CLASS = "bg-muted/40 rounded-xl p-3 border border-border/50";
+export const INVENTORY_NOTE_BLOCK_CLASS = "bg-muted/40 rounded-lg p-3 border border-border/50";
 
 // Loading placeholder text
 export const INVENTORY_LOADING_CLASS =

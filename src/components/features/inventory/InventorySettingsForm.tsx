@@ -25,15 +25,39 @@ import { DEFAULT_INVENTORY_SETTINGS } from "./inventorySettings.constants";
 
 const { SETTINGS } = UI_TEXT.INVENTORY;
 
+type InventorySettingsMeta = {
+  lastOpeningStockImportedAt?: string | null;
+  nextOpeningStockImportAllowedAt?: string | null;
+  openingStockImportCooldownHours?: number;
+};
+
 type Props = {
   initialValues?: InventorySettingsInput;
   saving?: boolean;
+  metadata?: InventorySettingsMeta;
   onSubmit: (data: InventorySettingsInput) => Promise<void> | void;
 };
+
+function formatDateTime(value?: string | null) {
+  if (!value) {
+    return SETTINGS.NO_IMPORT_YET;
+  }
+
+  return new Date(value).toLocaleString();
+}
+
+function formatCooldownValue(value?: number) {
+  if (!value) {
+    return SETTINGS.IMPORT_COOLDOWN_NONE;
+  }
+
+  return `${value} ${SETTINGS.HOURS_SUFFIX}`;
+}
 
 export function InventorySettingsForm({
   initialValues = DEFAULT_INVENTORY_SETTINGS,
   saving = false,
+  metadata,
   onSubmit,
 }: Props) {
   const {
@@ -76,6 +100,31 @@ export function InventorySettingsForm({
           <CardDescription>{SETTINGS.DESC}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-8 px-6 pb-8 sm:px-8">
+          <div className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:grid-cols-3">
+            <div>
+              <p className="text-xs font-medium text-slate-500">{SETTINGS.IMPORT_COOLDOWN_VALUE}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {formatCooldownValue(
+                  metadata?.openingStockImportCooldownHours ??
+                    initialValues.openingStockImportCooldownHours
+                )}
+              </p>
+              <p className="mt-1 text-xs text-slate-500">{SETTINGS.IMPORT_COOLDOWN_NOTE}</p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-slate-500">{SETTINGS.LAST_IMPORT_TIME}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {formatDateTime(metadata?.lastOpeningStockImportedAt)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-slate-500">{SETTINGS.NEXT_IMPORT_ALLOWED}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {formatDateTime(metadata?.nextOpeningStockImportAllowedAt)}
+              </p>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2">
               <Field className="md:col-span-1">
@@ -160,6 +209,21 @@ export function InventorySettingsForm({
                   />
                   <FieldDescription>{SETTINGS.MAX_RECALC_DAYS_DESC}</FieldDescription>
                   <FieldError errors={[errors.maxCostRecalcDays]} />
+                </FieldContent>
+              </Field>
+
+              <Field className="md:col-span-1">
+                <FieldLabel>{SETTINGS.OPENING_STOCK_IMPORT_COOLDOWN}</FieldLabel>
+                <FieldContent>
+                  <Input
+                    type="number"
+                    min={0}
+                    className="max-w-sm"
+                    {...register("openingStockImportCooldownHours", { valueAsNumber: true })}
+                  />
+                  <FieldDescription>{SETTINGS.OPENING_STOCK_IMPORT_COOLDOWN_DESC}</FieldDescription>
+                  <FieldDescription>{SETTINGS.OPENING_STOCK_IMPORT_COOLDOWN_HELP}</FieldDescription>
+                  <FieldError errors={[errors.openingStockImportCooldownHours]} />
                 </FieldContent>
               </Field>
             </div>

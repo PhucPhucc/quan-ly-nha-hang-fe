@@ -34,7 +34,7 @@ export function CreateStockInTrigger({ onSuccess }: Props) {
             <ChevronDown className="size-3 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 rounded-xl p-2">
+        <DropdownMenuContent align="end" className="w-56 rounded-lg p-2">
           <DropdownMenuItem
             className="flex items-center gap-2 py-2.5 rounded-lg cursor-pointer transition-colors focus:bg-blue-50 focus:text-blue-600"
             onClick={() => setIsStockInOpen(true)}

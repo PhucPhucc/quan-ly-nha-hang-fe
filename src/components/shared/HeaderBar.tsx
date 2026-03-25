@@ -19,6 +19,7 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryNavigation } from "../features/inventory/components/InventoryNavigation";
 import { MenuNavigation } from "../features/menu/components/MenuNavigation";
 import { OrderNavigation } from "../features/order/components/OrderNavigation";
+import { SettingsNavigation } from "../features/settings/SettingsNavigation";
 import { TableNavigation } from "../features/table-layout/components/TableNavigation";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
@@ -72,6 +73,8 @@ const HeaderBar = () => {
           ) : pathname.startsWith("/manager/table") ||
             pathname.startsWith("/manager/reservation") ? (
             <TableNavigation />
+          ) : pathname.startsWith("/manager/settings") ? (
+            <SettingsNavigation />
           ) : (
             <div
               className="flex items-center gap-1.5 font-semibold text-secondary-foreground"

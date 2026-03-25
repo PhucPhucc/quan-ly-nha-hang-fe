@@ -1,19 +1,28 @@
 "use client";
 
 import { format } from "date-fns";
-import { History, Loader2, ShieldAlert } from "lucide-react";
+import { History, Loader2, Search, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { OrderAuditLogResponse, orderService } from "@/services/orderService";
 
 interface OrderAuditLogPanelProps {
   orderId?: string | null;
+  globalMode?: boolean;
   title?: string;
   description?: string;
 }
@@ -39,6 +48,29 @@ const ACTION_STYLES: Record<string, string> = {
   ADJUST_ORDER_ITEM_QUANTITY: "table-pill-neutral",
   ApplyPromotion: "table-pill-info",
 };
+
+const ACTION_OPTIONS = [
+  { value: "all", label: UI_TEXT.AUDIT_LOG.ALL_ACTION },
+  { value: "CREATE_ORDER", label: "Tạo đơn" },
+  { value: "SUBMIT_ORDER", label: "Gửi bếp" },
+  { value: "ADD_ORDER_ITEM", label: "Thêm món" },
+  { value: "UPDATE_ORDER_ITEM", label: "Cập nhật món" },
+  { value: "CANCEL_ORDER_ITEM", label: "Hủy món" },
+  { value: "CANCEL_ORDER", label: "Hủy đơn" },
+  { value: "COMPLETE_ORDER", label: "Hoàn tất đơn" },
+  { value: "MERGE_ORDER", label: "Gộp đơn" },
+  { value: "SPLIT_ORDER", label: "Tách đơn" },
+  { value: "SPLIT_BILL", label: "Tách bill" },
+  { value: "CHANGE_ORDER_TABLE", label: "Chuyển bàn" },
+  { value: "CHECKOUT_ORDER", label: "Thanh toán" },
+  { value: "KDS_START_COOKING", label: "Bắt đầu nấu" },
+  { value: "KDS_COMPLETE_COOKING", label: "Hoàn thành nấu" },
+  { value: "KDS_REJECT", label: "Từ chối món" },
+  { value: "KDS_RETURN", label: "Trả món về hàng đợi" },
+  { value: "CHECK_IN_RESERVATION", label: "Check-in đặt bàn" },
+  { value: "ADJUST_ORDER_ITEM_QUANTITY", label: "Điều chỉnh số lượng" },
+  { value: "ApplyPromotion", label: "Áp dụng khuyến mãi" },
+] as const;
 
 function formatTime(value?: string | null) {
   if (!value) return UI_TEXT.COMMON.NOT_APPLICABLE;
@@ -73,6 +105,7 @@ function AuditValueBlock({ label, value }: { label: string; value?: string | nul
 
 export default function OrderAuditLogPanel({
   orderId,
+  globalMode = false,
   title = UI_TEXT.AUDIT_LOG.TIMELINE_TITLE,
   description = UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC,
 }: OrderAuditLogPanelProps) {
@@ -81,16 +114,25 @@ export default function OrderAuditLogPanel({
   const [error, setError] = useState<string | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [actionFilter, setActionFilter] = useState("all");
 
   useEffect(() => {
     setPageNumber(1);
   }, [orderId]);
 
   useEffect(() => {
+    if (globalMode) {
+      setPageNumber(1);
+    }
+  }, [globalMode, search, actionFilter]);
+
+  useEffect(() => {
     let alive = true;
 
     const run = async () => {
-      if (!orderId) {
+      if (!globalMode && !orderId) {
         setLogs([]);
         setError(null);
         setLoading(false);
@@ -102,10 +144,17 @@ export default function OrderAuditLogPanel({
       setError(null);
 
       try {
-        const result = await orderService.getOrderAuditLogs(orderId, {
-          pageNumber,
-          pageSize: 8,
-        });
+        const result = globalMode
+          ? await orderService.getAllOrderAuditLogs({
+              pageNumber,
+              pageSize: 8,
+              search,
+              action: actionFilter,
+            })
+          : await orderService.getOrderAuditLogs(orderId!, {
+              pageNumber,
+              pageSize: 8,
+            });
 
         if (!alive) return;
 
@@ -134,9 +183,31 @@ export default function OrderAuditLogPanel({
     return () => {
       alive = false;
     };
-  }, [orderId, pageNumber]);
+  }, [actionFilter, globalMode, orderId, pageNumber, search]);
+
+  const handleApplySearch = () => {
+    setPageNumber(1);
+    setSearch(searchInput.trim());
+  };
+
+  const handleResetFilters = () => {
+    setSearchInput("");
+    setSearch("");
+    setActionFilter("all");
+    setPageNumber(1);
+  };
 
   const renderEmpty = () => {
+    if (globalMode) {
+      return (
+        <EmptyState
+          title={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_TITLE}
+          description={UI_TEXT.AUDIT_LOG.GLOBAL_EMPTY_DESC}
+          icon={History}
+        />
+      );
+    }
+
     if (!orderId) {
       return (
         <EmptyState
@@ -158,38 +229,82 @@ export default function OrderAuditLogPanel({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pt-5">
         <CardTitle className="flex items-center gap-2">
           <ShieldAlert className="h-5 w-5 text-primary" />
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 pb-5">
         <p className="text-sm text-muted-foreground">{description}</p>
 
-        {!orderId && renderEmpty()}
+        {globalMode && (
+          <div className="grid gap-3 rounded-2xl border bg-muted/20 p-4 lg:grid-cols-[minmax(0,1fr)_220px_auto_auto]">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleApplySearch();
+                  }
+                }}
+                placeholder={UI_TEXT.AUDIT_LOG.FILTER.SEARCH_PLACEHOLDER}
+                className="h-10 rounded-xl bg-background pl-9"
+              />
+            </div>
 
-        {orderId && (
+            <Select
+              value={actionFilter}
+              onValueChange={(value) => {
+                setActionFilter(value);
+                setPageNumber(1);
+              }}
+            >
+              <SelectTrigger className="h-10 rounded-xl bg-background">
+                <SelectValue placeholder={UI_TEXT.AUDIT_LOG.FILTER.ACTION_LABEL} />
+              </SelectTrigger>
+              <SelectContent>
+                {ACTION_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button onClick={handleApplySearch}>{UI_TEXT.AUDIT_LOG.FILTER.APPLY}</Button>
+
+            <Button variant="outline" onClick={handleResetFilters}>
+              {UI_TEXT.AUDIT_LOG.FILTER.RESET}
+            </Button>
+          </div>
+        )}
+
+        {!globalMode && !orderId && renderEmpty()}
+
+        {!globalMode && orderId && (
           <div className="inline-flex items-center gap-2 rounded-full border bg-muted/30 px-3 py-1 text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">{UI_TEXT.AUDIT_LOG.ORDER_ID}</span>
             <span>{orderId}</span>
           </div>
         )}
 
-        {orderId && loading && (
+        {(globalMode || orderId) && loading && (
           <div className="flex h-40 items-center justify-center rounded-2xl border bg-card">
             <Loader2 className="mr-2 h-5 w-5 animate-spin text-primary" />
             <span className="text-muted-foreground">{UI_TEXT.COMMON.LOADING}</span>
           </div>
         )}
 
-        {orderId && error && (
+        {(globalMode || orderId) && error && (
           <EmptyState title={error} description={description} icon={ShieldAlert} />
         )}
 
-        {orderId && !loading && !error && logs.length === 0 && renderEmpty()}
+        {(globalMode || orderId) && !loading && !error && logs.length === 0 && renderEmpty()}
 
-        {orderId && !loading && !error && logs.length > 0 && (
+        {(globalMode || orderId) && !loading && !error && logs.length > 0 && (
           <div className="space-y-3">
             {logs.map((log) => (
               <div key={log.logId} className="rounded-2xl border bg-card p-4 shadow-sm">

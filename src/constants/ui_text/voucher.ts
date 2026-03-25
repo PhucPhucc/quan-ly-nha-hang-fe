@@ -76,6 +76,8 @@ export const VOUCHER = {
   FREE_ITEM_TITLE: "Cấu hình tặng món",
   FREE_ITEM_ID: "ID Món tặng",
   FREE_ITEM_QTY: "Số lượng",
+  FREE_ITEM_SEARCH_PLACEHOLDER: "Tìm món tặng...",
+  FREE_ITEM_SELECT_LABEL: "Chọn món tặng",
 
   VALIDATE_CODE_REQUIRED: "Vui lòng nhập mã voucher",
   VALIDATE_DATE_REQUIRED: "Vui lòng chọn ngày bắt đầu và kết thúc",

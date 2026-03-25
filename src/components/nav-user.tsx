@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -104,17 +104,6 @@ export function NavUser() {
                     </span>
                   </div>
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-xl p-2.5 gap-3 cursor-pointer">
-                <div className="bg-blue-50 p-2 rounded-lg">
-                  <Settings className="size-4 text-blue-600" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-sm">{UI_TEXT.PROFILE.SETTINGS_TAB}</span>
-                  <span className="text-[10px] text-muted-foreground">
-                    {UI_TEXT.PROFILE.SETTINGS_DESC}
-                  </span>
-                </div>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="my-2" />
