@@ -32,7 +32,7 @@ export default function OrderOverviewPage() {
 
   return (
     <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
-      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_690px] xl:items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_690px] xl:items-start gap-5">
         <div className="space-y-5">
           <PageHeader
             icon={ClipboardList}
@@ -44,7 +44,7 @@ export default function OrderOverviewPage() {
               {error}
             </div>
           ) : null}
-          <div className="grid grid-cols-1 gap-2.5 px-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
             <InventoryStatCard
               icon={ClipboardList}
               label={UI_TEXT.ORDER.OVERVIEW.STATS.ACTIVE}
@@ -102,6 +102,7 @@ export default function OrderOverviewPage() {
         <RecentOrders seedOrders={overview?.topActiveOrders ?? []} />
         <BillingHistoryPreview records={billingHistory} loading={loading} error={billingError} />
       </div>
+
       <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
     </div>
   );

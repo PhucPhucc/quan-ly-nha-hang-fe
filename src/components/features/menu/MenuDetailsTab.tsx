@@ -48,20 +48,20 @@ export const MenuDetailsTab: React.FC<MenuDetailsTabProps> = ({ form, categories
         </Card>
       </div>
 
-      <div className="sticky bottom-0 bg-white border-t border-neutral-200 p-4 px-8 flex justify-end gap-3 z-20 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+      <div className="sticky bottom-0 bg-card border-t border-border p-4 px-8 flex justify-end gap-3 z-20 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
         <Button
           type="button"
           variant="outline"
           onClick={form.handleClose}
           disabled={form.isUploading}
-          className="h-11 px-8"
+          className="py-4 px-6"
         >
           {UI_TEXT.MENU.BUTTON_CANCEL}
         </Button>
         <Button
           type="submit"
           disabled={form.isUploading}
-          className="h-11 px-10 shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white transition-all active:scale-95"
+          className="py-4 px-6 shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-primary-foreground transition-all active:scale-95"
         >
           {form.isUploading
             ? UI_TEXT.MENU.UPLOADING_IMAGE

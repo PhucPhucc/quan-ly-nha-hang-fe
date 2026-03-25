@@ -84,12 +84,12 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, r
         <Table>
           <TableHeader>
             <TableRow variant="header">
-              <TableHead>{V.TABLE_CODE}</TableHead>
-              <TableHead>{V.TABLE_TYPE}</TableHead>
-              <TableHead>{V.TABLE_VALUE}</TableHead>
-              <TableHead>{V.TABLE_USAGE}</TableHead>
-              <TableHead>{V.TABLE_VALIDITY}</TableHead>
-              <TableHead>{V.TABLE_STATUS}</TableHead>
+              <TableHead className="px-3">{V.TABLE_CODE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_TYPE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_VALUE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_USAGE}</TableHead>
+              <TableHead className="px-3">{V.TABLE_VALIDITY}</TableHead>
+              <TableHead className="px-3">{V.TABLE_STATUS}</TableHead>
               <TableHead className="text-right">{V.TABLE_ACTIONS}</TableHead>
             </TableRow>
           </TableHeader>

@@ -84,12 +84,12 @@ export default function BillingHistoryTable({
         <Table>
           <TableHeader>
             <TableRow variant="header">
-              <TableHead>{UI_TEXT.ORDER.BILLING.COLUMNS.ORDER_CODE}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BILLING.COLUMNS.ORDER_TYPE}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BILLING.COLUMNS.METHOD}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BILLING.COLUMNS.PAID_AT}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BILLING.COLUMNS.TOTAL}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BILLING.COLUMNS.STATUS}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BILLING.COLUMNS.ORDER_CODE}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BILLING.COLUMNS.ORDER_TYPE}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BILLING.COLUMNS.METHOD}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BILLING.COLUMNS.PAID_AT}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BILLING.COLUMNS.TOTAL}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BILLING.COLUMNS.STATUS}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

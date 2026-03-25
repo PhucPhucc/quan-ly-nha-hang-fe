@@ -3,6 +3,7 @@
 import { AlertTriangle, Printer, X } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
@@ -108,13 +109,9 @@ export function RealTimeAlertStrip() {
           </div>
         </div>
 
-        <button
-          onClick={() => setVisible(false)}
-          className="size-8 flex items-center justify-center hover:bg-muted/60 rounded-full transition-colors text-muted-foreground/20 group shrink-0"
-          title={UI_TEXT.COMMON.CLOSE}
-        >
+        <Button onClick={() => setVisible(false)} variant="ghost" title={UI_TEXT.COMMON.CLOSE}>
           <X className="size-3.5 group-hover:text-muted-foreground" />
-        </button>
+        </Button>
       </div>
     </div>
   );

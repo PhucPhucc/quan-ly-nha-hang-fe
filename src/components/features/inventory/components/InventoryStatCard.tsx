@@ -41,13 +41,13 @@ const variantStyles = {
     card: "border-success/20 bg-success/5",
     iconWrap: "bg-success/10 text-success",
     value: "text-success",
-    label: "text-success/70",
+    label: "text-success",
   },
   info: {
     card: "border-info/20 bg-info/5",
     iconWrap: "bg-info/10 text-info",
     value: "text-info",
-    label: "text-info/70",
+    label: "text-info",
   },
 };
 
@@ -75,11 +75,11 @@ export function InventoryStatCard({
   const content = (
     <div
       className={cn(
-        "group relative flex h-full rounded-2xl border shadow-sm transition-all duration-200",
+        "group relative flex h-full rounded-2xl border shadow-sm hover:shadow-md hover:-translate-y-0.5  transition-all duration-200",
         compact ? "flex-row items-center" : "flex-col",
         gap,
         padding,
-        href && "hover:shadow-md hover:-translate-y-0.5 cursor-pointer",
+        href && "cursor-pointer",
         styles.card,
         className
       )}

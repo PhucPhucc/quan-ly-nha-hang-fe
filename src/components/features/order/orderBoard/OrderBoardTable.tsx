@@ -80,12 +80,12 @@ export default function OrderBoardTable({
         <Table>
           <TableHeader>
             <TableRow variant="header">
-              <TableHead className="w-[150px]">{UI_TEXT.ORDER.BOARD.ORDER_CODE}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BOARD.TYPE_TABLE}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BOARD.TIME}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BOARD.TOTAL_AMOUNT}</TableHead>
-              <TableHead>{UI_TEXT.ORDER.BOARD.STATUS_LABEL}</TableHead>
-              <TableHead className="text-right">{UI_TEXT.ORDER.BOARD.VIP}</TableHead>
+              <TableHead className="px-3 w-[150px]">{UI_TEXT.ORDER.BOARD.ORDER_CODE}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BOARD.TYPE_TABLE}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BOARD.TIME}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BOARD.TOTAL_AMOUNT}</TableHead>
+              <TableHead className="px-3">{UI_TEXT.ORDER.BOARD.STATUS_LABEL}</TableHead>
+              <TableHead className="text-right px-3">{UI_TEXT.ORDER.BOARD.VIP}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

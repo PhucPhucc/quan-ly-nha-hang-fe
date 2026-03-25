@@ -3,6 +3,7 @@
 import { AlertCircle, Box, Loader2, Thermometer } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
@@ -37,7 +38,7 @@ export function InventoryAlertWidget() {
 
   if (loading && alerts.length === 0) {
     return (
-      <Card className="h-full border-none shadow-soft rounded-2xl animate-pulse bg-card">
+      <Card className="h-full border-none shadow-soft rounded-xl animate-pulse bg-card">
         <CardContent className="h-44 flex items-center justify-center">
           <Loader2 className="animate-spin text-primary/20" />
         </CardContent>
@@ -46,23 +47,23 @@ export function InventoryAlertWidget() {
   }
 
   return (
-    <Card className="h-full border-none shadow-soft rounded-2xl overflow-hidden bg-card transition-shadow hover:shadow-md">
-      <CardHeader className="bg-linear-to-br from-info to-info/80 text-white pb-6 pt-5">
+    <Card className="h-full border-none hover:ring-info hover:ring-1 shadow-soft rounded-lg overflow-hidden bg-card transition-shadow hover:shadow-md">
+      <CardHeader className="bg-linear-to-br from-info to-info/40 text-primary-foreground pb-6 pt-5">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-bold uppercase tracking-wider opacity-90">
+          <CardTitle className="text-sm font-bold uppercase tracking-[0.15em] opacity-90">
             {t.INVENTORY_ALERTS}
           </CardTitle>
-          <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-            <Box className="size-6" />
+          <div className="bg-card p-2.5 rounded-full shadow-premium border border-muted/30">
+            <Box className="size-6 text-info" />
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col justify-between pt-6 relative -mt-4 bg-card rounded-t-[20px] shadow-lg border-t border-white/10 h-full">
+      <CardContent className="flex flex-col justify-between pt-6 relative -mt-4 bg-card shadow-lg border-t border-white/10 h-full">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-[10px] font-black uppercase text-muted-foreground/80 tracking-widest">
             {t.INGREDIENT_STATUS}
           </h4>
-          <div className="flex items-center gap-1.5 px-2 py-0.5 bg-danger/10 rounded-full border border-danger/20">
+          <div className="flex items-center gap-1.5 px-2 py-0.5 bg-danger/10 rounded-lg border border-danger/20">
             <span className="size-1.5 rounded-full bg-danger animate-pulse" />
             <span className="text-[10px] uppercase font-black text-danger tracking-tighter">
               {t.LOW_STOCK}
@@ -110,9 +111,9 @@ export function InventoryAlertWidget() {
                 <div className="text-right">
                   <span
                     className={cn(
-                      "px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter border",
+                      "px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-tighter border",
                       alert.isOutOfStock
-                        ? "bg-danger text-white border-danger"
+                        ? "bg-danger text-danger-foreground border-danger"
                         : "bg-warning text-warning-foreground border-warning"
                     )}
                   >
@@ -128,9 +129,13 @@ export function InventoryAlertWidget() {
           )}
         </div>
 
-        <button className="w-full mt-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary transition-colors border-t border-dashed border-muted">
+        <Button
+          variant="ghost"
+          className="w-full mt-2 hover:bg-transparent hover:text-primary text-xs font-semibold"
+          // className="w-full mt-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary transition-colors border-t border-dashed border-muted">
+        >
           {t.VIEW_DETAILS}
-        </button>
+        </Button>
       </CardContent>
     </Card>
   );

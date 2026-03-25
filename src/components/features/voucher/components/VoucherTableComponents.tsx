@@ -47,12 +47,12 @@ export const VoucherFilterBar = ({
 
   return (
     <div className="w-full rounded-xl border border-border bg-card shadow-sm px-4 py-3 flex flex-wrap items-center gap-3">
-      <div className="relative flex-1 min-w-[200px]">
+      <div className="relative flex-1 min-w-50">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           type="text"
           placeholder={V.SEARCH_PLACEHOLDER}
-          className="pl-10 bg-card text-foreground placeholder:text-muted-foreground border border-border focus-visible:ring-2 focus-visible:ring-ring/30"
+          className="pl-10 rounded-xl bg-card text-foreground placeholder:text-muted-foreground border border-border focus-visible:ring-2 focus-visible:ring-ring/30"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => {
@@ -64,11 +64,11 @@ export const VoucherFilterBar = ({
       </div>
 
       <Select value={typeFilter} onValueChange={setTypeFilter}>
-        <SelectTrigger className="w-[160px] h-10 rounded-xl bg-card border border-border text-foreground font-medium">
+        <SelectTrigger className="w-40 rounded-xl bg-card border border-border text-foreground font-medium">
           <SelectValue placeholder={V.FILTER_TYPE} />
         </SelectTrigger>
         <SelectContent className="rounded-xl">
-          <SelectItem value="all">{V.FILTER_ALL}</SelectItem>
+          <SelectItem value="all">{V.FILTER_ALL_TYPE}</SelectItem>
           {VOUCHER_TYPE_OPTIONS.map((opt) => (
             <SelectItem key={opt.value.toString()} value={opt.value.toString()}>
               {opt.label}
@@ -78,11 +78,11 @@ export const VoucherFilterBar = ({
       </Select>
 
       <Select value={statusFilter} onValueChange={setStatusFilter}>
-        <SelectTrigger className="w-[160px] h-10 rounded-xl bg-card border border-border text-foreground font-medium">
+        <SelectTrigger className="w-40 rounded-xl bg-card border border-border text-foreground font-medium">
           <SelectValue placeholder={V.FILTER_STATUS} />
         </SelectTrigger>
         <SelectContent className="rounded-xl">
-          <SelectItem value="all">{V.FILTER_ALL}</SelectItem>
+          <SelectItem value="all">{V.FILTER_ALL_STATUS}</SelectItem>
           <SelectItem value="true">{V.FILTER_ACTIVE}</SelectItem>
           <SelectItem value="false">{V.FILTER_INACTIVE}</SelectItem>
         </SelectContent>
@@ -101,7 +101,7 @@ export const VoucherFilterBar = ({
 
       <Button
         onClick={onCreate}
-        className="h-10 rounded-xl bg-primary hover:bg-primary-hover shadow-sm gap-2 font-semibold px-4"
+        className="rounded-xl bg-primary hover:bg-primary-hover shadow-sm gap-2 font-semibold px-4"
       >
         <Plus className="size-4" />
         <span className="text-xs uppercase tracking-tight">{V.CREATE}</span>
