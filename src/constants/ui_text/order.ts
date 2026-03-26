@@ -43,6 +43,7 @@ export const ORDER = {
     PAGE_NEXT: "Trang tiếp",
     FETCH_ERROR: "Lỗi khi lấy danh sách đơn hàng.",
     CREATE_ORDER_ERROR: "Tạo đơn hàng thất bại",
+    NOT_SELECTED_TABLE: "Chưa chọn bàn",
     STATUS_AVAILABLE: "Bàn trống",
     STATUS_SERVING: "Đang sử dụng",
     STATUS_RESERVED: "Đặt trước",
@@ -253,6 +254,7 @@ export const ORDER = {
     SUBTOTAL_BEFORE_DISCOUNT: "Tạm tính (trước giảm)",
   },
   MANAGEMENT: {
+    ARIA_NAV: "Điều hướng đơn hàng",
     WORKSPACE_TITLE: "Workspace quản lý đơn hàng",
     WORKSPACE_DESC:
       "Một màn cho manager: xem đơn, soi thanh toán và giữ layout audit log sẵn sàng.",
@@ -264,7 +266,7 @@ export const ORDER = {
       VIP: "VIP",
     },
     TABS: {
-      ORDERS: "Danh sách đơn",
+      ORDERS: "Danh sách đơn hàng",
       BILLING: "Lịch sử thanh toán",
       AUDIT: "Nhật ký thao tác",
     },

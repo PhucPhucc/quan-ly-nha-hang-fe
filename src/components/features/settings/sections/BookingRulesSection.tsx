@@ -32,22 +32,6 @@ export function BookingRulesSection({ register, errors }: Props) {
       />
       <div className="grid gap-4 sm:grid-cols-2">
         <Field>
-          <FieldLabel>{SETTINGS.FIELD_MIN_GUESTS}</FieldLabel>
-          <FieldContent>
-            <Input type="number" min={1} {...register("minGuests", { valueAsNumber: true })} />
-            <FieldError errors={[errors.minGuests]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel>{SETTINGS.FIELD_MAX_GUESTS}</FieldLabel>
-          <FieldContent>
-            <Input type="number" min={1} {...register("maxGuests", { valueAsNumber: true })} />
-            <FieldError errors={[errors.maxGuests]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
           <FieldLabel>{SETTINGS.FIELD_MIN_LEAD_TIME}</FieldLabel>
           <FieldContent>
             <Input
@@ -57,6 +41,19 @@ export function BookingRulesSection({ register, errors }: Props) {
             />
             <FieldDescription>{SETTINGS.FIELD_MIN_LEAD_TIME_DESC}</FieldDescription>
             <FieldError errors={[errors.minLeadTimeMinutes]} />
+          </FieldContent>
+        </Field>
+
+        <Field>
+          <FieldLabel>{SETTINGS.FIELD_OVERLAP_BUFFER}</FieldLabel>
+          <FieldContent>
+            <Input
+              type="number"
+              min={0}
+              {...register("overlapBufferMinutes", { valueAsNumber: true })}
+            />
+            <FieldDescription>{SETTINGS.FIELD_OVERLAP_BUFFER_DESC}</FieldDescription>
+            <FieldError errors={[errors.overlapBufferMinutes]} />
           </FieldContent>
         </Field>
 

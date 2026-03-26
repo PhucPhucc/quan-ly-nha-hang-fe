@@ -1,4 +1,5 @@
 import { ApiResponse, PaginationResult } from "@/types/Api";
+import { KdsBacklogSummary } from "@/types/Kds";
 
 import { apiFetch } from "./api";
 
@@ -56,6 +57,10 @@ export interface KdsAuditLogsParams {
 }
 
 export const kdsService = {
+  getBacklogSummary: async (): Promise<ApiResponse<KdsBacklogSummary>> => {
+    return apiFetch<KdsBacklogSummary>("/kds/backlog-summary");
+  },
+
   getKdsItems: async (station: string): Promise<ApiResponse<KdsItemResponse[]>> => {
     return apiFetch<KdsItemResponse[]>(`/Kds/items/${encodeURIComponent(station)}`);
   },

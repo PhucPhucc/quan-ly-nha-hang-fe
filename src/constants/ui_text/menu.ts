@@ -110,6 +110,7 @@ export const MENU = {
   LABEL_EXPECTED_TIME: "Thời gian chuẩn bị (phút)",
   LABEL_IMAGE_VIEW: "Xem hình ảnh",
   LABEL_COMBO_ITEMS: "Các món trong Combo",
+  SELECT_ITEM_PLACEHOLDER: "Chọn món",
   PLACEHOLDER_NAME: "VD: Phở Bò Chín",
   PLACEHOLDER_DESC: "Mô tả chi tiết về món ăn...",
   PLACEHOLDER_STATION: "Chọn khu vực",
@@ -137,6 +138,9 @@ export const MENU = {
   ADD_NOW: "Thêm ngay",
   INGREDIENTS_COUNT: (count: number) => `${count} nguyên liệu`,
   PLACEHOLDER_SEARCH: "Tìm kiếm tên món ăn...",
+  MAX_SELECT_REACHED: (max: number) => `Chỉ được chọn tối đa ${max} tùy chọn`,
+  PLEASE_SELECT_GROUP: (name: string) => `Vui lòng chọn "${name}"`,
+  ADDED_TO_ORDER: "Đã thêm vào đơn hàng",
   FILTER_ALL_CATEGORY: "Tất cả danh mục",
   FILTER_OUT_OF_STOCK: "Hết hàng",
   CATEGORY: {

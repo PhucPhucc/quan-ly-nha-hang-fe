@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
 
-import { TIME_SLOTS, useCreateBooking } from "./useCreateBooking";
+import { useCreateBooking } from "./useCreateBooking";
 
 interface CreateBookingDialogProps {
   open: boolean;
@@ -35,7 +35,7 @@ export const CreateBookingDialog = ({
   onOpenChange,
   onSuccess,
 }: CreateBookingDialogProps) => {
-  const { loading, formData, areas, requiresVipArea, handleChange, handleSubmit } =
+  const { loading, formData, areas, timeSlots, requiresVipArea, handleChange, handleSubmit } =
     useCreateBooking(open, onOpenChange, onSuccess);
 
   return (
@@ -114,7 +114,7 @@ export const CreateBookingDialog = ({
                     sideOffset={4}
                     className="max-h-[300px] w-[var(--radix-select-trigger-width)]"
                   >
-                    {TIME_SLOTS.map((slot) => (
+                    {timeSlots.map((slot) => (
                       <SelectItem key={slot} value={slot}>
                         {slot}
                       </SelectItem>

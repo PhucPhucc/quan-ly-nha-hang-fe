@@ -7,8 +7,8 @@ import { RevenueChart } from "../RevenueChart";
 
 describe("RevenueChart", () => {
   const mockData = [
-    { date: "01/01", revenue: 100000 },
-    { date: "02/01", revenue: 200000 },
+    { date: "01/01", revenue: 100000, orderCount: 10 },
+    { date: "02/01", revenue: 200000, orderCount: 20 },
   ];
 
   it("renders chart correctly", () => {

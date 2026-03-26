@@ -37,14 +37,16 @@ export function BookingHoursSection({ breakEnabled, register, setValue, errors }
         <Field>
           <FieldLabel>{SETTINGS.FIELD_OPEN_TIME}</FieldLabel>
           <FieldContent>
-            <Input type="time" {...register("openTime")} />
+            <Input type="text" inputMode="numeric" placeholder="08:30" {...register("openTime")} />
+            <FieldDescription>{SETTINGS.FIELD_OPEN_TIME_DESC}</FieldDescription>
             <FieldError errors={[errors.openTime]} />
           </FieldContent>
         </Field>
         <Field>
           <FieldLabel>{SETTINGS.FIELD_CLOSE_TIME}</FieldLabel>
           <FieldContent>
-            <Input type="time" {...register("closeTime")} />
+            <Input type="text" inputMode="numeric" placeholder="23:00" {...register("closeTime")} />
+            <FieldDescription>{SETTINGS.FIELD_CLOSE_TIME_DESC}</FieldDescription>
             <FieldError errors={[errors.closeTime]} />
           </FieldContent>
         </Field>
@@ -66,13 +68,25 @@ export function BookingHoursSection({ breakEnabled, register, setValue, errors }
           <Field>
             <FieldLabel>{SETTINGS.FIELD_BREAK_START}</FieldLabel>
             <FieldContent>
-              <Input type="time" {...register("breakStart")} />
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="14:00"
+                {...register("breakStart")}
+              />
+              <FieldDescription>{SETTINGS.FIELD_BREAK_START_DESC}</FieldDescription>
             </FieldContent>
           </Field>
           <Field>
             <FieldLabel>{SETTINGS.FIELD_BREAK_END}</FieldLabel>
             <FieldContent>
-              <Input type="time" {...register("breakEnd")} />
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="17:00"
+                {...register("breakEnd")}
+              />
+              <FieldDescription>{SETTINGS.FIELD_BREAK_END_DESC}</FieldDescription>
             </FieldContent>
           </Field>
         </div>

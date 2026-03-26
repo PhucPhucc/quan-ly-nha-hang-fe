@@ -7,6 +7,7 @@ import {
   initialMenuOptionState,
   menuOptionReducer,
 } from "@/hooks/useMenuOptionReducer";
+import { UI_TEXT } from "@/lib/UI_Text";
 import { optionService } from "@/services/optionService";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
@@ -82,7 +83,7 @@ export function MenuOptionSelectionDialog({
 
     if (isChecked) {
       if (currentSelection.length >= group.maxSelect) {
-        toast.warning(`Chỉ được chọn tối đa ${group.maxSelect} tùy chọn`);
+        toast.warning(UI_TEXT.MENU.MAX_SELECT_REACHED(group.maxSelect));
         return;
       }
       dispatch({
@@ -105,7 +106,7 @@ export function MenuOptionSelectionDialog({
     for (const group of optionGroups) {
       const selection = selectedOptions[group.optionGroupId] || [];
       if (group.isRequired && selection.length < group.minSelect) {
-        toast.error(`Vui lòng chọn "${group.name}"`);
+        toast.error(UI_TEXT.MENU.PLEASE_SELECT_GROUP(group.name));
         return false;
       }
     }
@@ -147,7 +148,7 @@ export function MenuOptionSelectionDialog({
     // Chỉ lưu vào CartStore local, không gọi API
     // API sẽ được gọi khi nhấn "Gửi yêu cầu" (submitToKitchen)
     addItem(selectedOrderId, menuItem, quantity, cartOptionGroups, note, menuItem.price);
-    toast.success("Đã thêm vào đơn hàng");
+    toast.success(UI_TEXT.MENU.ADDED_TO_ORDER);
     resetLocalState();
     onOpenChange(false);
   };

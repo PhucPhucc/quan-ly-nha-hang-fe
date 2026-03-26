@@ -41,7 +41,7 @@ export const RESERVATION = {
   FIELD_PHONE: "Số điện thoại",
   FIELD_PHONE_PLACEHOLDER: "Nhập số điện thoại",
   FIELD_DATE: "Ngày đặt",
-  FIELD_TIME: "Giờ đặt",
+  FIELD_TIME: "Giờ đặt (24h)",
   FIELD_AREA: "Khu vực",
   FIELD_PEOPLE_COUNT: "Số người",
   FIELD_PARTY_TYPE: "Loại tiệc",
@@ -95,9 +95,14 @@ export const RESERVATION = {
   PAGINATION_UNIT: "đặt bàn",
 
   // Validations & Errors
-  VALIDATION_MIN_LEAD_TIME: "Vui lòng đặt chỗ trước ít nhất 45 phút.",
-  VALIDATION_WITHIN_OPERATING_HOURS: "Đặt bàn phải nằm trong giờ hoạt động từ 10:30 đến 23:00.",
-  VALIDATION_BREAK_TIME: "Nhà hàng nghỉ giữa ca từ 14:00 đến 17:00. Vui lòng chọn giờ khác.",
+  VALIDATION_MIN_LEAD_TIME: "Vui lòng đặt chỗ trước ít nhất theo quy định.",
+  VALIDATION_MIN_LEAD_TIME_DYNAMIC: (min: number) => `Vui lòng đặt chỗ trước ít nhất ${min} phút.`,
+  VALIDATION_WITHIN_OPERATING_HOURS: "Đặt bàn phải nằm trong giờ hoạt động của nhà hàng (24h).",
+  VALIDATION_WITHIN_OPERATING_HOURS_DYNAMIC: (open: string, close: string) =>
+    `Đặt bàn phải nằm trong giờ hoạt động ${open} - ${close}.`,
+  VALIDATION_BREAK_TIME: "Nhà hàng đang nghỉ giữa ca. Vui lòng chọn giờ khác.",
+  VALIDATION_BREAK_TIME_DYNAMIC: (start: string, end: string) =>
+    `Nhà hàng nghỉ giữa ca từ ${start} đến ${end}. Vui lòng chọn giờ khác.`,
   VALIDATION_REQUIRED_NAME_PHONE: "Vui lòng nhập tên và số điện thoại khách hàng",
   VALIDATION_REQUIRED_DATE_TIME: "Vui lòng chọn ngày và giờ đặt bàn",
   VALIDATION_VIP_REQUIRED: "Đoàn khách trên 12 người vui lòng đặt phòng VIP.",

@@ -6,48 +6,48 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { useKdsStore } from "@/store/useKdsStore";
+import { kdsService } from "@/services/kdsService";
+import { KdsBacklogSummary } from "@/types/Kds";
 
 export function KdsBacklogWidget() {
   const t = UI_TEXT.DASHBOARD.OPERATIONS;
-  const { activeItems, queueItems, fetchKdsData } = useKdsStore();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [summary, setSummary] = useState<KdsBacklogSummary | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchSummary = async () => {
       try {
-        await fetchKdsData();
+        setLoading(true);
+        const response = await kdsService.getBacklogSummary();
+        if (response.isSuccess) {
+          setSummary(response.data);
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch KDS backlog summary:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [fetchKdsData]);
+    fetchSummary();
+  }, []);
 
-  const waitingCount = queueItems.length;
-  const preparingCount = activeItems.length;
-
-  const delayedCount = activeItems.filter((i) => {
-    const createdTime = new Date(i.createdAt).getTime();
-    const now = new Date().getTime();
-    return now - createdTime > 20 * 60 * 1000;
-  }).length;
-
-  const total = waitingCount + preparingCount;
-  const preparingPercentage = total > 0 ? (preparingCount / total) * 100 : 0;
-
-  if (loading && total === 0) {
+  if (loading && !summary) {
     return (
-      <Card className="h-full border border-muted/60 bg-white rounded-xl">
-        <CardContent className="h-44 flex items-center justify-center">
+      <Card className="h-44 border border-muted/60 bg-white rounded-xl">
+        <CardContent className="h-full flex items-center justify-center">
           <Loader2 className="animate-spin text-primary/20" />
         </CardContent>
       </Card>
     );
   }
+
+  const {
+    totalProcessingItems = 0,
+    waitingCount = 0,
+    preparingCount = 0,
+    delayedCount = 0,
+    preparingPercentage = 0,
+  } = summary || {};
 
   return (
     <Card className="h-full border-none hover:ring-1 hover:ring-primary shadow-soft rounded-lg overflow-hidden bg-card transition-shadow hover:shadow-md">
@@ -65,10 +65,10 @@ export function KdsBacklogWidget() {
         <div className="flex items-end justify-between mb-2">
           <div className="flex flex-col">
             <span className="text-3xl font-extrabold tracking-tighter text-foreground">
-              {total}
+              {totalProcessingItems}
             </span>
             <span className="text-[10px] font-bold text-muted-foreground uppercase">
-              {t.PROCESSING_ITEMS(total)}
+              {t.PROCESSING_ITEMS(totalProcessingItems)}
             </span>
           </div>
           <div className="flex gap-4">

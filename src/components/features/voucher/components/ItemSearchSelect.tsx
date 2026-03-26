@@ -95,14 +95,14 @@ export const ItemSearchSelect: React.FC<ItemSearchSelectProps> = ({
           <div className="p-1">
             {filteredItems.length === 0 ? (
               <div className="py-6 text-center text-sm text-muted-foreground">
-                {loading ? "Đang tải..." : UI_TEXT.COMMON.NO_RESULTS}
+                {loading ? UI_TEXT.COMMON.LOADING : UI_TEXT.COMMON.NO_RESULTS}
               </div>
             ) : (
               filteredItems.map((item) => (
                 <button
                   key={item.menuItemId}
                   className={cn(
-                    "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors",
+                    "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 transition-colors",
                     value === item.menuItemId && "bg-accent/50 text-accent-foreground"
                   )}
                   onClick={() => {
@@ -120,7 +120,7 @@ export const ItemSearchSelect: React.FC<ItemSearchSelectProps> = ({
                     <span className="truncate font-medium">{item.name}</span>
                     <span className="truncate text-[10px] text-muted-foreground">
                       {item.code} {"•"} {item.price.toLocaleString("vi-VN")}
-                      {"đ"}
+                      {UI_TEXT.COMMON.CURRENCY}
                     </span>
                   </div>
                 </button>

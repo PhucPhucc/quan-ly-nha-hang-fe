@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { ArrowRight, CalendarDays, CheckCircle2, Loader2, MapPin, Phone, User } from "lucide-react";
+import { ArrowRight, CalendarDays, Clock, Loader2, MapPin, Phone, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -29,6 +29,7 @@ export function ReservationSection() {
     setDate,
     selectedTime,
     setSelectedTime,
+    reservationSettings,
     formData,
     updateField,
     isLoading,
@@ -36,7 +37,7 @@ export function ReservationSection() {
     areas,
   } = useReservation(new Date());
 
-  const timeSlots = useReservationSlots(date);
+  const timeSlots = useReservationSlots(date, reservationSettings);
 
   return (
     <section id="reservation-form" className="py-24 bg-background scroll-mt-24 overflow-hidden">
@@ -117,7 +118,7 @@ export function ReservationSection() {
                     {/* Thêm cursor-pointer và đồng nhất border/height */}
                     <div className="flex items-center gap-3 border-b-2 border-border/50 hover:border-primary transition-colors h-11 pb-1 cursor-pointer">
                       <CalendarDays className="h-5 w-5 text-muted-foreground shrink-0" />
-                      <span className="text-lg font-medium leading-none truncate">
+                      <span className="text-lg font-medium leading-none truncate pb-1">
                         {date
                           ? format(date, "PPP", { locale: vi })
                           : RESERVATION.FORM.DATE_PICKER_EMPTY}
@@ -140,31 +141,16 @@ export function ReservationSection() {
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
                   {RESERVATION.FORM.TIME_LABEL}
                 </Label>
-                <Select
-                  value={selectedTime}
-                  onValueChange={setSelectedTime}
-                  disabled={timeSlots.length === 0}
-                >
-                  <SelectTrigger className="flex items-center gap-3 border-0 border-b-2 border-border/50 rounded-none px-0 h-11 pb-1 bg-transparent focus:ring-0 focus:border-primary transition-colors shadow-none">
-                    <CheckCircle2 className="h-5 w-5 text-muted-foreground shrink-0" />
-                    <div className="text-lg font-medium">
-                      <SelectValue
-                        placeholder={
-                          timeSlots.length > 0
-                            ? RESERVATION.FORM.TIME_PLACEHOLDER
-                            : RESERVATION.FORM.TIME_EMPTY
-                        }
-                      />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {timeSlots.map((t) => (
-                      <SelectItem key={t} value={t}>
-                        {t}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center group border-b-2 border-border/50 focus-within:border-primary transition-colors pb-1">
+                  <Clock className="h-5 w-5 text-muted-foreground shrink-0" />
+                  <Input
+                    type="time"
+                    value={selectedTime}
+                    onFocus={(e) => e.target.showPicker && e.target.showPicker()}
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    className="border-0 pl-3 bg-transparent focus-visible:ring-0 text-lg font-medium h-10 w-full scheme-light cursor-pointer [&::-webkit-calendar-picker-indicator]:hidden"
+                  />
+                </div>
               </div>
               <div className="space-y-2.5">
                 <Label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">
@@ -201,6 +187,7 @@ export function ReservationSection() {
                     min={1}
                     max={20}
                     value={formData.guestCount}
+                    onFocus={(e) => e.target.select()}
                     onChange={(e) => updateField("guestCount", parseInt(e.target.value) || 1)}
                     placeholder="Số người"
                     className="border-0 pl-3 bg-transparent focus-visible:ring-0 text-lg font-medium h-10"

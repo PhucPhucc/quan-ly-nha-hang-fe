@@ -16,13 +16,13 @@ import { BranchInfoSection } from "./sections/BranchInfoSection";
 import { LocalizationSection } from "./sections/LocalizationSection";
 import { NotifySection } from "./sections/NotifySection";
 
-const { SETTINGS } = UI_TEXT;
+const { SETTINGS, FORM } = UI_TEXT;
 
 // ── Schema ───────────────────────────────────────────────────────────────────
 const schema = z.object({
-  restaurantName: z.string().min(1, "Tên nhà hàng không được để trống"),
-  branchName: z.string().min(1, "Tên chi nhánh không được để trống"),
-  branchId: z.string().min(1, "Mã chi nhánh không được để trống"),
+  restaurantName: z.string().min(1, FORM.REQUIRED),
+  branchName: z.string().min(1, FORM.REQUIRED),
+  branchId: z.string().min(1, FORM.REQUIRED),
   address: z.string().optional(),
   phone: z.string().optional(),
   currency: z.string().min(1),
@@ -36,13 +36,13 @@ const schema = z.object({
 export type GeneralSettingsInput = z.infer<typeof schema>;
 
 const DEFAULT_VALUES: GeneralSettingsInput = {
-  restaurantName: "FoodHub Restaurant",
-  branchName: "FoodHub - Quận 1",
-  branchId: "BR-001",
+  restaurantName: SETTINGS.FIELD_RESTAURANT_NAME_PLACEHOLDER.replace("VD: ", ""),
+  branchName: SETTINGS.FIELD_BRANCH_NAME_PLACEHOLDER.replace("VD: ", ""),
+  branchId: SETTINGS.FIELD_BRANCH_ID_PLACEHOLDER.replace("VD: ", ""),
   address: "",
   phone: "",
   currency: "VND",
-  dateFormat: "DD/MM/YYYY",
+  dateFormat: SETTINGS.DATE_FORMAT_DMY,
   timezone: "GMT+7",
   notifyEmail: true,
   notifyPush: true,

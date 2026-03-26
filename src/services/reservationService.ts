@@ -44,6 +44,36 @@ export interface CreateInternalReservationCommand {
   areaId?: string;
 }
 
+export interface PublicReservationSettingsDto {
+  openTime: string;
+  closeTime: string;
+  breakEnabled: boolean;
+  breakStart: string;
+  breakEnd: string;
+  overlapBufferMinutes: number;
+  minLeadTimeMinutes: number;
+  gracePeriodMinutes?: number;
+  depositEnabled?: boolean;
+  depositAmountPerPerson?: number;
+  notifyNewBooking?: boolean;
+  notifyUpcoming?: boolean;
+}
+
+export interface ReservationSettingsDto {
+  openTime: string;
+  closeTime: string;
+  breakEnabled: boolean;
+  breakStart: string;
+  breakEnd: string;
+  overlapBufferMinutes: number;
+  minLeadTimeMinutes: number;
+  gracePeriodMinutes?: number;
+  depositEnabled?: boolean;
+  depositAmountPerPerson?: number;
+  notifyNewBooking?: boolean;
+  notifyUpcoming?: boolean;
+}
+
 export const reservationService = {
   getReservations: (
     query: GetReservationsQuery
@@ -84,6 +114,27 @@ export const reservationService = {
   getAreas: (): Promise<ApiResponse<Area[]>> => {
     return apiFetch<Area[]>("/public/reservations/areas", {
       method: "GET",
+    });
+  },
+
+  getPublicReservationSettings: (): Promise<ApiResponse<PublicReservationSettingsDto>> => {
+    return apiFetch<PublicReservationSettingsDto>("/public/reservations/settings", {
+      method: "GET",
+    });
+  },
+
+  getReservationSettings: (): Promise<ApiResponse<ReservationSettingsDto>> => {
+    return apiFetch<ReservationSettingsDto>("/reservations/settings", {
+      method: "GET",
+    });
+  },
+
+  updateReservationSettings: (
+    data: ReservationSettingsDto
+  ): Promise<ApiResponse<ReservationSettingsDto>> => {
+    return apiFetch<ReservationSettingsDto>("/reservations/settings", {
+      method: "PUT",
+      body: data,
     });
   },
 };

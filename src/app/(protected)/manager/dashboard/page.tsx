@@ -11,10 +11,11 @@ import { KdsBacklogWidget } from "@/components/features/Dashboard/analysis/KdsBa
 import { RealTimeAlertStrip } from "@/components/features/Dashboard/analysis/RealTimeAlertStrip";
 import { Badge } from "@/components/ui/badge";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { dashboardService } from "@/services/dashboardService";
 import { salesAnalyticsService } from "@/services/salesAnalyticsService";
 import { useAuthStore } from "@/store/useAuthStore";
 import { EmployeeRole } from "@/types/Employee";
-import { SalesAnalyticsSummary } from "@/types/salesAnalytics.types";
+import { OperationalStats, SalesAnalyticsSummary } from "@/types/salesAnalytics.types";
 
 export default function DashboardPage() {
   const t = UI_TEXT.DASHBOARD;
@@ -22,6 +23,7 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [analyticsData, setAnalyticsData] = useState<SalesAnalyticsSummary | null>(null);
+  const [operationalStats, setOperationalStats] = useState<OperationalStats | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -31,18 +33,27 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    const fetchAnalytics = async () => {
+    const fetchDashboardData = async () => {
       try {
         const today = format(new Date(), "yyyy-MM-dd");
-        const result = await salesAnalyticsService.getSummary(today);
-        setAnalyticsData(result);
+        const [analyticsResult, operationalResult] = await Promise.all([
+          salesAnalyticsService.getSummary(today),
+          dashboardService.getOperationalStats(),
+        ]);
+
+        setAnalyticsData(analyticsResult);
+        if (operationalResult.isSuccess) {
+          setOperationalStats(operationalResult.data);
+        }
       } catch (error) {
-        console.error("Failed to fetch dashboard analytics:", error);
+        console.error("Failed to fetch dashboard data:", error);
       }
     };
 
     if (mounted) {
-      fetchAnalytics();
+      fetchDashboardData();
+      const interval = setInterval(fetchDashboardData, 30000); // Refresh every 30s
+      return () => clearInterval(interval);
     }
   }, [mounted]);
 
@@ -102,7 +113,11 @@ export default function DashboardPage() {
           <h3 className="text-xs font-black uppercase tracking-widest text--foreground opacity-60">
             {t.ANALYTICS.KPI_TITLE} {t.KPI_LABEL}
           </h3>
-          <DashboardStats stats={analyticsData?.stats} />
+          <DashboardStats
+            stats={analyticsData?.stats}
+            operational={operationalStats}
+            revenueChart={analyticsData?.revenueChart}
+          />
         </section>
 
         <section className="space-y-4">
@@ -161,7 +176,7 @@ export default function DashboardPage() {
 
                 <Link
                   href="/manager/sales-analytics"
-                  className="mt-6 text-[10px] font-black text-primary uppercase tracking-widest text-center hover:underline bg-primary/5 py-2.5 rounded-xl border border-primary/10 flex items-center justify-center gap-2 mt-auto"
+                  className="mt-6 text-[10px] font-black text-primary uppercase tracking-widest text-center hover:underline bg-primary/5 py-2.5 rounded-xl border border-primary/10 flex items-center justify-center gap-2"
                 >
                   {t.ANALYTICS.QUICK_INSIGHTS}
                   <ChevronRight className="size-3" />
