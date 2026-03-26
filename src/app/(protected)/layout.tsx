@@ -12,7 +12,7 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
         <SidebarProvider defaultOpen={false}>
           <AppSidebar />
           <SidebarInset className="overflow-y-auto h-svh">
-            <div className="flex flex-1 flex-col gap-4 p-4 md:p-8 lg:p-10">{children}</div>
+            <div className="flex flex-1 flex-col gap-4">{children}</div>
           </SidebarInset>
         </SidebarProvider>
       </QueryProvider>
