@@ -56,7 +56,9 @@ export function NavUser() {
                 <span className="truncate text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                   {employee?.role === EmployeeRole.MANAGER
                     ? UI_TEXT.ROLE.MANAGER
-                    : UI_TEXT.ROLE.WAITER}
+                    : employee?.role === EmployeeRole.CASHIER
+                      ? UI_TEXT.ROLE.CASHIER
+                      : UI_TEXT.ROLE.CHEF}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4 opacity-50" />

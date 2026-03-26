@@ -37,7 +37,7 @@ export const DASHBOARD = {
     REVENUE_DESC: (percent: string) => `${percent} so với tháng trước`,
     ORDERS_DESC: (percent: string) => `${percent} so với hôm qua`,
     TABLES_DESC: (percent: string) => `${percent} tỉ lệ sử dụng`,
-    STAFF_DESC: (chefs: number, waiters: number) => `${chefs} đầu bếp, ${waiters} phục vụ`,
+    STAFF_DESC: (count: number) => `${count} nhân viên đang trực`,
   },
 
   TABLE_OCCUPANCY: {

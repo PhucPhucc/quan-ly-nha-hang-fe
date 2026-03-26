@@ -54,7 +54,7 @@ export function OrderNavigation() {
 
   return (
     <nav
-      className="flex min-w-0 items-center gap-1 overflow-x-auto scrollbar-none"
+      className="flex min-w-0 items-center gap-1 overflow-x-auto no-scrollbar"
       aria-label={UI_TEXT.ORDER.MANAGEMENT.ARIA_NAV}
     >
       {NAV_ITEMS.map((item) => {

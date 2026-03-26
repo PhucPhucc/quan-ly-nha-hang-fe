@@ -48,9 +48,9 @@ const ShiftDialog = ({
       {trigger !== null && !isControlled && (
         <DialogTrigger asChild>
           {trigger || (
-            <Button className="bg-[#cc0000] hover:bg-[#aa0000] shadow-md shadow-red-100 gap-2.5 px-6 font-bold rounded-2xl uppercase tracking-wider text-[11px] h-11 w-full md:w-auto transition-all active:scale-95 border-none group">
-              <div className="flex items-center justify-center size-5 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
-                <Plus className="size-3.5 text-white" strokeWidth={3} />
+            <Button className="bg-[#cc0000] hover:bg-[#aa0000] shadow-md shadow-red-100 gap-2.5 px-6 font-semibold uppercase tracking-wider text-[11px] h-11 w-full md:w-auto transition-all active:scale-95 border-none">
+              <div className="flex items-center justify-center size-5 bg-white/20 rounded-lg">
+                <Plus className="size-3.5 text-white" strokeWidth={2.5} />
               </div>
               <span>{UI_TEXT.SHIFT.ADD_SHIFT}</span>
             </Button>

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import ShiftActionBar from "@/components/features/Shift/ShiftActionBar";
 import ShiftDialog from "@/components/features/Shift/ShiftDialog";
 import ShiftTable from "@/components/features/Shift/ShiftTable";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -99,29 +100,29 @@ const ShiftPage = () => {
   const displayInfo = `${UI_TEXT.COMMON.DISPLAY} ${startDisplay}-${endDisplay} / ${totalCount}`;
 
   return (
-    <div className="flex flex-col gap-6 py-6 ring-offset-background max-w-full overflow-x-hidden h-full overflow-y-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <p className="text-slate-400 mt-1 font-bold text-xs uppercase tracking-widest">
-            {UI_TEXT.SCHEDULE.ADMIN_TITLE}
-          </p>
-          <p className="text-slate-500 mt-1 font-medium italic">{UI_TEXT.SHIFT.PAGE_DESC}</p>
-        </div>
-        <ShiftDialog onSuccess={() => void refetch()} />
-        <ShiftDialog
-          shift={editingShift}
-          open={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
-          onSuccess={() => {
-            setIsEditDialogOpen(false);
-            void refetch();
-          }}
-        />
-      </div>
-
-      <div className="flex flex-col xl:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-        <ShiftActionBar onSearch={(v) => console.log("Search:", v)} onExport={handleExport} />
-      </div>
+    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
+      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
+        <CardContent>
+          <ShiftActionBar
+            onSearch={(v) => console.log("Search:", v)}
+            onExport={handleExport}
+            rightActions={
+              <div className="flex items-center gap-2">
+                <ShiftDialog onSuccess={() => void refetch()} />
+                <ShiftDialog
+                  shift={editingShift}
+                  open={isEditDialogOpen}
+                  onOpenChange={setIsEditDialogOpen}
+                  onSuccess={() => {
+                    setIsEditDialogOpen(false);
+                    void refetch();
+                  }}
+                />
+              </div>
+            }
+          />
+        </CardContent>
+      </Card>
 
       <div className="w-full">
         <ShiftTable
@@ -136,45 +137,47 @@ const ShiftPage = () => {
         />
       </div>
 
-      <div className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-100">
-        <p className="text-sm text-slate-500 font-medium">{displayInfo}</p>
-        <Pagination className="w-auto ml-0">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (page > 1) setPage(page - 1);
-                }}
-              />
-            </PaginationItem>
-            {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink
+      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
+        <CardContent className="flex items-center justify-between">
+          <p className="text-sm text-slate-500 font-medium">{displayInfo}</p>
+          <Pagination className="w-auto ml-0">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
                   href="#"
-                  isActive={currentPage === i + 1}
                   onClick={(e) => {
                     e.preventDefault();
-                    setPage(i + 1);
+                    if (page > 1) setPage(page - 1);
                   }}
-                >
-                  {i + 1}
-                </PaginationLink>
+                />
               </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (page < totalPages) setPage(page + 1);
-                }}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page < totalPages) setPage(page + 1);
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </CardContent>
+      </Card>
     </div>
   );
 };

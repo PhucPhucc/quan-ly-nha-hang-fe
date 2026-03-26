@@ -75,4 +75,9 @@ export const SCHEDULE = {
   NEXT_2_WEEKS: "2 tuần nữa",
   NEXT_MONTH: "Tháng sau",
   SELECT_WEEK: "Chọn tuần làm việc",
+  ASSIGNED_SHIFT: "Ca đã gán",
+  EMPTY_SHIFT: "Trống (Di chuột để gán)",
+  AUTO_SAVE: "Tự động lưu thay đổi nhanh",
+  CHOOSE_WEEK: "CHỌN TUẦN LÀM VIỆC",
+  PERIOD: "Khoảng thời gian",
 };

@@ -16,6 +16,7 @@ import React, { useMemo } from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 
+import { EmployeeNavigation } from "../features/Employee/components/EmployeeNavigation";
 import { InventoryNavigation } from "../features/inventory/components/InventoryNavigation";
 import { MenuNavigation } from "../features/menu/components/MenuNavigation";
 import { OrderNavigation } from "../features/order/components/OrderNavigation";
@@ -56,7 +57,7 @@ const HeaderBar = () => {
   }, [pathname, segment, t, ROUTE_CONFIG]);
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-md transition-all">
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-background px-4">
       <div className="flex flex-1 items-center overflow-hidden">
         <div className="flex items-center gap-2">
           <SidebarTrigger className="h-9 w-9" />
@@ -75,6 +76,11 @@ const HeaderBar = () => {
             <TableNavigation />
           ) : pathname.startsWith("/manager/settings") ? (
             <SettingsNavigation />
+          ) : pathname.startsWith("/manager/employee") ||
+            pathname.startsWith("/manager/shift") ||
+            pathname.startsWith("/manager/schedule") ||
+            pathname.startsWith("/manager/attendance") ? (
+            <EmployeeNavigation />
           ) : (
             <div
               className="flex items-center gap-1.5 font-semibold text-secondary-foreground"

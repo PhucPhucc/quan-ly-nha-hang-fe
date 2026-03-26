@@ -62,7 +62,7 @@ export default function DashboardPage() {
     if (role === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
     if (role === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
     if (role === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;
-    return UI_TEXT.ROLE.WAITER;
+    return "";
   };
 
   if (!mounted) return null;

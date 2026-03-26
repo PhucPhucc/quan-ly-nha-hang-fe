@@ -85,9 +85,6 @@ const EmployeeActionBar = () => {
               {UI_TEXT.ROLE.CASHIER}
             </SelectItem>
             <SelectItem value="3" className="rounded-xl">
-              {UI_TEXT.ROLE.WAITER}
-            </SelectItem>
-            <SelectItem value="4" className="rounded-xl">
               {UI_TEXT.ROLE.CHEF}
             </SelectItem>
           </SelectContent>

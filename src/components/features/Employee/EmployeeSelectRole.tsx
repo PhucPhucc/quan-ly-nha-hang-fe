@@ -25,9 +25,6 @@ const EmployeeSelectRole = () => {
           <SelectItem className="hover:bg-secondary-foreground/20" value="cashier">
             {UI_TEXT.ROLE.CASHIER}
           </SelectItem>
-          <SelectItem className="hover:bg-secondary-foreground/20" value="waiter">
-            {UI_TEXT.ROLE.WAITER}
-          </SelectItem>
           <SelectItem className="hover:bg-secondary-foreground/20" value="chefbar">
             {UI_TEXT.ROLE.CHEF}
           </SelectItem>

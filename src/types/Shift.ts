@@ -9,8 +9,8 @@ export interface Shift {
   startTime: string; // ISO string or "HH:mm:ss"
   endTime: string;
   status: ShiftStatus | string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CreateShiftRequest {

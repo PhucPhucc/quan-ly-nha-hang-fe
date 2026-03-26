@@ -19,7 +19,7 @@ const AttendanceStats = ({
   estimatedPenalty,
 }: AttendanceStatsProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card className="rounded-3xl shadow-sm border-none overflow-hidden">
         <CardContent className="p-6">
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">
