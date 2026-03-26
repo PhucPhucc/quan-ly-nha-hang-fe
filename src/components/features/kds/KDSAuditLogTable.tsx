@@ -4,7 +4,6 @@ import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -12,6 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 
@@ -61,12 +61,12 @@ const getRoleInitialColor = (role: string) => {
 const KDSAuditLogTableHeader = () => (
   <TableHeader className="bg-muted/50 sticky top-0 z-10 backdrop-blur-sm">
     <TableRow>
-      <TableHead className="w-[15%]">{UI_TEXT.KDS.AUDIT.TIME}</TableHead>
-      <TableHead className="w-[20%]">{UI_TEXT.KDS.AUDIT.ACTOR}</TableHead>
-      <TableHead className="w-[15%]">{UI_TEXT.KDS.AUDIT.ACTION}</TableHead>
-      <TableHead className="w-[25%]">{UI_TEXT.KDS.AUDIT.ORDER_DETAILS}</TableHead>
-      <TableHead className="w-[15%]">{UI_TEXT.KDS.AUDIT.REASON}</TableHead>
-      <TableHead className="w-[10%] text-right">{UI_TEXT.KDS.AUDIT.ACTIONS}</TableHead>
+      <TableHead className="px-3 w-[15%]">{UI_TEXT.KDS.AUDIT.TIME}</TableHead>
+      <TableHead className="px-3 w-[20%]">{UI_TEXT.KDS.AUDIT.ACTOR}</TableHead>
+      <TableHead className="px-3 w-[15%]">{UI_TEXT.KDS.AUDIT.ACTION}</TableHead>
+      <TableHead className="px-3 w-[25%]">{UI_TEXT.KDS.AUDIT.ORDER_DETAILS}</TableHead>
+      <TableHead className="px-3 w-[15%]">{UI_TEXT.KDS.AUDIT.REASON}</TableHead>
+      <TableHead className="px-3 w-[10%] text-right">{UI_TEXT.KDS.AUDIT.ACTIONS}</TableHead>
     </TableRow>
   </TableHeader>
 );
@@ -146,36 +146,33 @@ const KDSAuditLogTable = ({
   onUndo,
 }: KDSAuditLogTableProps) => {
   return (
-    <Card className="flex flex-1 flex-col overflow-hidden">
-      <CardHeader className="border-b">
-        <CardTitle>{UI_TEXT.AUDIT_LOG.TITLE}</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-y-auto flex-1 custom-scrollbar">
-          <Table>
-            <KDSAuditLogTableHeader />
-            <TableBody>
-              {loading && <KDSAuditLogStatusRow message={UI_TEXT.COMMON.LOADING} />}
-              {error && <KDSAuditLogStatusRow message={error} className="text-destructive" />}
-              {!loading && logs.length === 0 && !error && (
-                <KDSAuditLogStatusRow
-                  message={UI_TEXT.KDS.AUDIT.EMPTY}
-                  className="text-muted-foreground"
-                />
-              )}
-
-              {!loading &&
-                logs.map((log) => <KDSAuditLogRow key={log.logId} log={log} onUndo={onUndo} />)}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
+    // <Card className="flex flex-1 flex-col overflow-hidden gap-0">
+    //   <CardContent className="p-0 border-none">
+    //     <div className="overflow-y-auto flex-1 custom-scrollbar">
+    <div>
+      <TableShell>
+        <Table className="rounded-xl">
+          <KDSAuditLogTableHeader />
+          <TableBody>
+            {loading && <KDSAuditLogStatusRow message={UI_TEXT.COMMON.LOADING} />}
+            {error && <KDSAuditLogStatusRow message={error} className="text-destructive" />}
+            {!loading && logs.length === 0 && !error && (
+              <KDSAuditLogStatusRow
+                message={UI_TEXT.KDS.AUDIT.EMPTY}
+                className="text-muted-foreground"
+              />
+            )}
+            {!loading &&
+              logs.map((log) => <KDSAuditLogRow key={log.logId} log={log} onUndo={onUndo} />)}
+          </TableBody>
+        </Table>
+      </TableShell>
 
       {!loading && !error && totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
+        <div className="px-6 pt-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-slate-500 mr-2">{UI_TEXT.KDS.PAGE}</span>
-            <div className="flex items-center justify-center min-w-[3rem] px-2 py-1 rounded-md bg-white border border-slate-200 shadow-sm">
+            <div className="flex items-center justify-center min-w-12 px-2 py-1 rounded-md bg-card border border-slate-200 shadow-sm">
               <span className="text-sm font-bold text-slate-700">{currentPage}</span>
               <span className="text-slate-400 mx-1">{SLASH}</span>
               <span className="text-sm font-medium text-slate-500">{totalPages}</span>
@@ -199,7 +196,7 @@ const KDSAuditLogTable = ({
           </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 };
 

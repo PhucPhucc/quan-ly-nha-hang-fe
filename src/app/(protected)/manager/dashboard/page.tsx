@@ -109,14 +109,14 @@ export default function DashboardPage() {
           <h3 className="text-xs font-black uppercase tracking-widest text-foreground opacity-60">
             {t.OPERATIONS.TITLE}
           </h3>
-          <div className="grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-4">
+          <div className="grid gap-6 lg:grid-cols-3 min-h-108">
+            <div className="lg:col-span-1">
               <KdsBacklogWidget />
             </div>
-            <div className="lg:col-span-4">
+            <div className="lg:col-span-1">
               <InventoryAlertWidget />
             </div>
-            <div className="lg:col-span-4 h-full">
+            <div className="lg:col-span-1 h-full">
               <div className="h-full bg-card rounded-2xl shadow-sm p-6 border flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-6">
                   <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground opacity-70">

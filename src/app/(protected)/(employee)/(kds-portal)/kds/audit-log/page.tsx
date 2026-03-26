@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import KDSAuditLogTable from "@/components/features/kds/KDSAuditLogTable";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { KdsAuditLogResponse, kdsService } from "@/services/kdsService";
 
@@ -53,7 +54,7 @@ export default function KDSAuditLogPage() {
         station: station === "all" ? undefined : station,
         action: action === "all" ? undefined : action,
         pageNumber: pageNumber,
-        pageSize: 50,
+        pageSize: 9,
       });
 
       if (result.isSuccess && result.data) {
@@ -105,13 +106,13 @@ export default function KDSAuditLogPage() {
             <h2 className="text-3xl font-black text-foreground tracking-tighter uppercase">
               {UI_TEXT.KDS.NAV.AUDIT_LOG}
             </h2>
-            <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-70">
+            <p className="text-muted-foreground text-[10px] font-bold tracking-widest opacity-70">
               {UI_TEXT.KDS.NAV.DESC_AUDIT}
             </p>
           </div>
           <div className="relative w-full md:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <input
+            <Input
               type="text"
               placeholder={UI_TEXT.KDS.NAV.SEARCH_PLACEHOLDER}
               className="pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full md:w-64 transition-all shadow-sm font-bold placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-tight"
@@ -125,7 +126,7 @@ export default function KDSAuditLogPage() {
           <div className="relative group">
             <Button
               variant="outline"
-              className="flex items-center gap-2 px-4 h-[42px] bg-card hover:border-primary/50 rounded-xl transition-all shadow-sm font-bold"
+              className="flex items-center gap-2 px-4 bg-card hover:border-primary/50 rounded-lg transition-all shadow-sm font-bold"
               onClick={() => {
                 const stations = ["all", "HotKitchen", "ColdKitchen", "Bar"];
                 const currentIndex = stations.indexOf(station);
@@ -133,7 +134,7 @@ export default function KDSAuditLogPage() {
                 setStation(nextStation);
               }}
             >
-              <span className="text-muted-foreground text-[10px] font-black uppercase tracking-tight">
+              <span className="text-muted-foreground text-[10px] font-black">
                 {UI_TEXT.KDS.NAV.FILTER_STATION}{" "}
                 <span className="text-foreground">
                   {station === "all" ? UI_TEXT.KDS.NAV.STATION_ALL : station}
@@ -145,7 +146,7 @@ export default function KDSAuditLogPage() {
           <div className="relative group">
             <Button
               variant="outline"
-              className="flex items-center gap-2 px-4 h-[42px] bg-card hover:border-primary/50 rounded-xl transition-all shadow-sm font-bold"
+              className="flex items-center gap-2 px-4 bg-card hover:border-primary/50 rounded-lg transition-all shadow-sm font-bold"
               onClick={() => {
                 const actions = [
                   "all",
@@ -171,7 +172,7 @@ export default function KDSAuditLogPage() {
           <div className="relative group">
             <Button
               variant="outline"
-              className="flex items-center gap-2 px-4 h-[42px] bg-card hover:border-primary/50 rounded-xl transition-all shadow-sm font-bold"
+              className="flex items-center gap-2 px-4 bg-card hover:border-primary/50 rounded-lg transition-all shadow-sm font-bold"
             >
               <span className="text-muted-foreground text-[10px] font-black uppercase tracking-tight">
                 {UI_TEXT.KDS.NAV.FILTER_TIME}{" "}

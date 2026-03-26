@@ -260,6 +260,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: "/kds/bar",
             icon: Martini,
           },
+          {
+            title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
+            url: "/kds/audit-log",
+            icon: History,
+          },
         ],
         [EmployeeRole.WAITER]: [
           {

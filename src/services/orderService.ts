@@ -263,4 +263,9 @@ export const orderService = {
   ): Promise<ApiResponse<PaginationResult<OrderAuditLogResponse>>> => {
     return apiFetch<PaginationResult<OrderAuditLogResponse>>(`/orders/${orderId}/audit-logs`);
   },
+  // /api/v1/billing/orders/{orderId}/pre-check-bill/pdf
+  getOrderReceiptPDF: (orderId: string) =>
+    apiFetch(`/billing/orders/${orderId}/pre-check-bill/pdf`, {
+      method: "GET",
+    }),
 };

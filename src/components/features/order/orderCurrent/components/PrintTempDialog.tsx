@@ -52,7 +52,7 @@ const PrintTempDialog = () => {
         <VisuallyHidden>
           <DialogTitle />
         </VisuallyHidden>
-        <div className="min-h-[85vh] bg-background px-5 pt-6 text-foreground sm:px-8 sm:pt-8 overflow-y-scroll no-scrollbar">
+        <div className="print:block min-h-[85vh] bg-background px-5 pt-6 text-foreground sm:px-8 sm:pt-8 overflow-y-scroll no-scrollbar">
           <div className="mx-auto w-full h-full max-w-160 flex flex-col justify-between">
             <div>
               <div className="text-center leading-none">

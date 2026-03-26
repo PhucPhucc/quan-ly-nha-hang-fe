@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
+import Script from "next/dist/client/script";
 import { Geist_Mono, Inter } from "next/font/google";
 import { Toaster } from "sonner";
 
@@ -34,6 +35,10 @@ export default function RootLayout({
         className={`${inter.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <Script
+          src="https://cdn.jsdelivr.net/npm/qz-tray/qz-tray.js"
+          strategy="beforeInteractive"
+        />
         <ThemeProvider>
           <QueryProvider>
             <Toaster position="top-center" richColors />
