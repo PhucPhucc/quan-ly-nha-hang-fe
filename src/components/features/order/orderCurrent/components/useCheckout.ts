@@ -8,7 +8,7 @@ import { orderService } from "@/services/orderService";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
 import { OrderStatus, PaymentMethod } from "@/types/enums";
-import { printPdfBlob } from "@/utils/thermalPrint";
+import { printThermalReceipt } from "@/utils/thermalPrint";
 
 export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: number) {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(PaymentMethod.Cash);
@@ -105,12 +105,13 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
           if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
             // In hóa đơn tự động khi nhận được tiền chuyển khoản
             try {
-              const pdfRes = await orderService.getOrderReceiptPDF(selectedOrderId);
-              if (pdfRes.isSuccess && pdfRes.data) {
-                printPdfBlob(pdfRes.data);
+              // Lấy dữ liệu JSON thay vì PDF để in mẫu máy in nhiệt thực tế hơn
+              const billRes = await orderService.getPreCheckBill(selectedOrderId);
+              if (billRes.isSuccess && billRes.data) {
+                printThermalReceipt(billRes.data);
               }
             } catch (printError) {
-              console.error("Failed to print PDF for bank transfer:", printError);
+              console.error("Failed to print thermal receipt for bank transfer:", printError);
             }
 
             await refreshBoardState();
@@ -165,12 +166,13 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
       if (success) {
         // Fetch bill PDF and print
         try {
-          const pdfRes = await orderService.getOrderReceiptPDF(selectedOrderId);
-          if (pdfRes.isSuccess && pdfRes.data) {
-            printPdfBlob(pdfRes.data);
+          // Lấy dữ liệu JSON thay vì PDF để in mẫu máy in nhiệt thực tế hơn
+          const billRes = await orderService.getPreCheckBill(selectedOrderId);
+          if (billRes.isSuccess && billRes.data) {
+            printThermalReceipt(billRes.data);
           }
         } catch (printError) {
-          console.error("Failed to print PDF receipt:", printError);
+          console.error("Failed to print thermal receipt:", printError);
         }
 
         await refreshBoardState();
