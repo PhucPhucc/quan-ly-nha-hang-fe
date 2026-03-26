@@ -1,6 +1,5 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Save, Search, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -63,8 +62,9 @@ export function OpeningStockEntry() {
     nextImportAllowedAtLabel,
     openingStockImportCooldownHours,
     handleInputChange,
+    handleBulkUpdate,
   } = useOpeningStockIngredients();
-  const queryClient = useQueryClient();
+
   const { handleSaveAsync, saving, isOverwriteConfirmationError } = useOpeningStockSubmit();
 
   const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
@@ -162,9 +162,7 @@ export function OpeningStockEntry() {
             <div className="flex flex-wrap items-center gap-2">
               <OpeningStockSummary totalValue={totalValue} />
               <InventoryImportExcelDialog
-                onImport={() =>
-                  queryClient.invalidateQueries({ queryKey: ["opening-stock-ingredients"] })
-                }
+                onImport={(data) => handleBulkUpdate(data)}
                 disabled={isLocked}
               />
 

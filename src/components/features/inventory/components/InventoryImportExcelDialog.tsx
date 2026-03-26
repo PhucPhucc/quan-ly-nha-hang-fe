@@ -16,11 +16,12 @@ import {
 } from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
+import { ParsedInventoryBalanceDto } from "@/types/Inventory";
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 
 interface InventoryImportExcelDialogProps {
-  onImport: (data: unknown) => void;
+  onImport: (data: ParsedInventoryBalanceDto[]) => void;
   disabled?: boolean;
 }
 
@@ -57,15 +58,17 @@ export function InventoryImportExcelDialog({
 
     setIsParsing(true);
     try {
-      const res = await inventoryService.importOpeningStockExcel(file);
+      const res = await inventoryService.parseOpeningStockExcel(file);
 
       if (res.isSuccess) {
-        toast.success(UI_TEXT.COMMON.SUCCESS || "Nhập dữ liệu thành công");
+        toast.success(
+          "Đã phân tích file Excel. Vui lòng kiểm tra lại dữ liệu trên bảng trước khi lưu."
+        );
         onImport(res.data);
         setIsOpen(false);
         setFile(null);
       } else {
-        toast.error(res.message || UI_TEXT.COMMON.ERROR || "Nhập dữ liệu thất bại");
+        toast.error(res.message || UI_TEXT.COMMON.ERROR || "Không thể phân tích file");
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Lỗi hệ thống";

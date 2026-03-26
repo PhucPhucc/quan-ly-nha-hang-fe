@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
-import type { Ingredient, InventorySettings } from "@/types/Inventory";
+import type { Ingredient, InventorySettings, ParsedInventoryBalanceDto } from "@/types/Inventory";
 
 import type { OpeningStockEntryValues } from "./components/openingStockEntry.types";
 import {
@@ -119,6 +119,25 @@ export function useOpeningStockIngredients() {
     }));
   };
 
+  const handleBulkUpdate = (items: ParsedInventoryBalanceDto[]) => {
+    if (isOpeningStockLocked(settings)) {
+      return;
+    }
+
+    setEntryOverrides((prev) => {
+      const next = { ...prev };
+      items.forEach((item) => {
+        if (item.ingredientId && item.isExist) {
+          next[item.ingredientId] = {
+            quantity: item.quantity,
+            costPrice: item.costPrice,
+          };
+        }
+      });
+      return next;
+    });
+  };
+
   return {
     search,
     setSearch,
@@ -138,5 +157,6 @@ export function useOpeningStockIngredients() {
     nextImportAllowedAtLabel: formatDateTimeValue(settings?.nextOpeningStockImportAllowedAt),
     openingStockImportCooldownHours: settings?.openingStockImportCooldownHours ?? 0,
     handleInputChange,
+    handleBulkUpdate,
   };
 }
