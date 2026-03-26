@@ -159,6 +159,17 @@ export interface ImportOpeningStockResponse {
   nextOpeningStockImportAllowedAt?: string | null;
 }
 
+export interface ParsedInventoryBalanceDto {
+  ingredientId: string;
+  ingredientCode: string;
+  ingredientName?: string;
+  quantity: number;
+  costPrice: number;
+  unit?: string;
+  rowNumber: number;
+  isExist: boolean;
+}
+
 // Inventory Check
 export interface InventoryCheck {
   inventoryCheckId: string;

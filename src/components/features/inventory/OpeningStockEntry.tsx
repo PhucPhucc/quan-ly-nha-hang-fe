@@ -62,8 +62,11 @@ export function OpeningStockEntry() {
     nextImportAllowedAtLabel,
     openingStockImportCooldownHours,
     handleInputChange,
+    handleBulkUpdate,
   } = useOpeningStockIngredients();
+
   const { handleSaveAsync, saving, isOverwriteConfirmationError } = useOpeningStockSubmit();
+
   const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
 
   const submittedIngredients = useMemo(
@@ -158,7 +161,11 @@ export function OpeningStockEntry() {
 
             <div className="flex flex-wrap items-center gap-2">
               <OpeningStockSummary totalValue={totalValue} />
-              <InventoryImportExcelDialog onImport={() => {}} disabled={isLocked} />
+              <InventoryImportExcelDialog
+                onImport={(data) => handleBulkUpdate(data)}
+                disabled={isLocked}
+              />
+
               <Button
                 onClick={handlePrimarySave}
                 disabled={saving || isLocked}

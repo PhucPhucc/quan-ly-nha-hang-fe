@@ -161,6 +161,32 @@ export function useInventoryCheckForm(id?: string) {
     }
   };
 
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    if (!id || isNew) return;
+    setIsExporting(true);
+    try {
+      const res = await inventoryService.exportInventoryCheckExcel(id);
+      if (res.isSuccess && res.data) {
+        const url = window.URL.createObjectURL(res.data);
+        const link = document.createElement("a");
+        link.href = url;
+        const fileName = `Kiem_Kho_${id.substring(0, 8).toUpperCase()}.xlsx`;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+        toast.success("Xuất file Excel thành công");
+      }
+    } catch (error) {
+      toast.error("Lỗi khi xuất file");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return {
     isNew,
     check: detailData?.data,
@@ -174,6 +200,8 @@ export function useInventoryCheckForm(id?: string) {
     updateReason,
     handleSaveDraft,
     handleProcess,
+    handleExport,
     isSaving: createMutation.isPending || processMutation.isPending,
+    isExporting,
   };
 }

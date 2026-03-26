@@ -24,6 +24,7 @@ import {
   InventoryTransaction,
   InventoryTransactionType,
   InventoryUnit,
+  ParsedInventoryBalanceDto,
   RecalculateCogsResponse,
 } from "@/types/Inventory";
 
@@ -705,6 +706,23 @@ export const inventoryService = {
     return apiFetch<unknown>("/v1.0/ingredients/import-balance", {
       method: "POST",
       body: formData as unknown as object, // Cast to avoid TS error with apiFetch body type
+    });
+  },
+
+  // Phân tích file Excel để xem trước (Preview) (v1.0)
+  parseOpeningStockExcel: async (file: File): Promise<ApiResponse<ParsedInventoryBalanceDto[]>> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return apiFetch<ParsedInventoryBalanceDto[]>("/v1.0/ingredients/parse-balance", {
+      method: "POST",
+      body: formData as unknown as object,
+    });
+  },
+
+  // Xuất phiếu kiểm kho ra Excel (v1.0)
+  exportInventoryCheckExcel: async (id: string): Promise<ApiResponse<Blob>> => {
+    return apiFetch<Blob>(`/v1.0/inventory/check/${id}/export`, {
+      responseType: "blob",
     });
   },
 };
