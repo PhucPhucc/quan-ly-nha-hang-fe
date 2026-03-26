@@ -1,4 +1,5 @@
 import { ApiResponse, PaginationResult } from "@/types/Api";
+import { PreCheckBillResponse } from "@/types/Billing";
 import { EmployeeRole } from "@/types/Employee";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order, OrderDashboardOverview } from "@/types/Order";
@@ -262,8 +263,13 @@ export const orderService = {
   ): Promise<ApiResponse<PaginationResult<OrderAuditLogResponse>>> => {
     return apiFetch<PaginationResult<OrderAuditLogResponse>>(`/orders/${orderId}/audit-logs`);
   },
-  getOrderReceiptPDF: (orderId: string) =>
-    apiFetch(`/billing/orders/${orderId}/pre-check-bill/pdf`, {
+  // /api/v1/billing/orders/{orderId}/pre-check-bill/pdf
+  getOrderReceiptPDF: (orderId: string): Promise<ApiResponse<Blob>> =>
+    apiFetch<Blob>(`/billing/orders/${orderId}/pre-check-bill/pdf`, {
       method: "GET",
+      responseType: "blob",
     }),
+
+  getPreCheckBill: (orderId: string): Promise<ApiResponse<PreCheckBillResponse>> =>
+    apiFetch<PreCheckBillResponse>(`/billing/orders/${orderId}/pre-check-bill`),
 };

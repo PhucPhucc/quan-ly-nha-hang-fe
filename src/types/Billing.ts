@@ -1,41 +1,46 @@
-export interface BillingHistoryRecord {
-  orderId: string;
-  orderCode: string;
-  orderType: string;
-  status: string;
-  tableId?: string;
-  subTotal: number;
-  vatRate: number;
-  vatAmount: number;
-  totalAmount: number;
-  paymentMethod?: string;
-  amountPaid?: number;
-  paidAt?: string;
-  createdAt: string;
-}
+import { OrderType } from "./enums";
 
 export interface PreCheckBillItem {
   itemName: string;
   quantity: number;
   unitPrice: number;
-  optionsSummary?: string | null;
+  optionsSummary?: string;
   lineTotal: number;
 }
 
-export interface PreCheckBill {
+export interface PreCheckBillResponse {
   orderId: string;
   orderCode: string;
-  tableNumber?: number | null;
-  reservationId?: string | null;
+  tableNumber?: number;
+  reservationId?: string;
   employeeName: string;
-  customerName?: string | null;
-  customerPhone?: string | null;
+  customerName?: string;
+  customerPhone?: string;
   printedAt: string;
   items: PreCheckBillItem[];
   subTotal: number;
-  preTaxAmount: number;
   discount: number;
+  preTaxAmount: number;
   vatRate: number;
   vat: number;
   totalAmount: number;
+}
+
+// Alias để tương thích với các component cũ
+export type PreCheckBill = PreCheckBillResponse;
+
+export interface BillingHistoryRecord {
+  orderId: string;
+  orderCode: string;
+  orderType: OrderType;
+  tableId?: string | null;
+  paymentMethod?: string;
+  paidAt?: string;
+  createdAt: string;
+  subTotal: number;
+  vatRate: number;
+  vatAmount: number;
+  totalAmount: number;
+  amountPaid?: number;
+  status: string;
 }
