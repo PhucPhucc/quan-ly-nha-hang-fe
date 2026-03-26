@@ -32,7 +32,9 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
     updateReason,
     handleSaveDraft,
     handleProcess,
+    handleExport,
     isSaving,
+    isExporting,
   } = useInventoryCheckForm(id);
 
   if (isLoading) {
@@ -84,6 +86,8 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
           {!isNew && (
             <Button
               variant="outline"
+              disabled={isExporting || isSaving}
+              onClick={handleExport}
               className={cn(
                 "h-10 gap-2 rounded-lg px-6 text-xs font-bold uppercase tracking-widest transition-all shadow-sm",
                 isProcessed
@@ -91,7 +95,11 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
                   : "border-slate-200 text-slate-600 hover:bg-slate-50"
               )}
             >
-              <FileDown className="h-4 w-4" />
+              {isExporting ? (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              ) : (
+                <FileDown className="h-4 w-4" />
+              )}
               {UI_TEXT.INVENTORY.CHECK.CREATE.BTN_EXPORT}
             </Button>
           )}

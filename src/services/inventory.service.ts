@@ -707,4 +707,11 @@ export const inventoryService = {
       body: formData as unknown as object, // Cast to avoid TS error with apiFetch body type
     });
   },
+
+  // Xuất phiếu kiểm kho ra Excel (v1.0)
+  exportInventoryCheckExcel: async (id: string): Promise<ApiResponse<Blob>> => {
+    return apiFetch<Blob>(`/v1.0/inventory/check/${id}/export`, {
+      responseType: "blob",
+    });
+  },
 };
