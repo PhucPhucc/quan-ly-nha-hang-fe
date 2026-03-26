@@ -58,7 +58,7 @@ export const MenuComboItems: React.FC<MenuComboItemsProps> = ({
               onValueChange={(val) => updateComboItem(index, "menuItemId", val)}
             >
               <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Chọn món" />
+                <SelectValue placeholder={UI_TEXT.MENU.SELECT_ITEM_PLACEHOLDER} />
               </SelectTrigger>
               <SelectContent>
                 {menuItems.map((m) => (

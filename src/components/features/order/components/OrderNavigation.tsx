@@ -55,7 +55,7 @@ export function OrderNavigation() {
   return (
     <nav
       className="flex min-w-0 items-center gap-1 overflow-x-auto scrollbar-none"
-      aria-label="Điều hướng đơn hàng"
+      aria-label={UI_TEXT.ORDER.MANAGEMENT.ARIA_NAV}
     >
       {NAV_ITEMS.map((item) => {
         const active = isActive(item);

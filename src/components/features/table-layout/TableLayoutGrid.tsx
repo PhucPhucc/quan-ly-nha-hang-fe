@@ -76,7 +76,7 @@ export default function TableLayoutGrid({ area, onManageAreas }: Props) {
                 <Search className="size-3.5" />
               </span>
               <Input
-                placeholder="Tìm bàn..."
+                placeholder={UI_TEXT.TABLE.SEARCH_PLACEHOLDER}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-9 pl-9 rounded-xl border-slate-100 bg-slate-50/50 hover:bg-white transition-all focus-visible:ring-primary/20 text-xs w-full"

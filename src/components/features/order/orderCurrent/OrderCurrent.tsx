@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { OrderType } from "@/types/enums";
@@ -27,9 +28,9 @@ const OrderCurrent = () => {
   const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
   const tableName = activeOrder
     ? activeOrder.orderType === OrderType.Takeaway
-      ? "Mang đi"
-      : `Bàn ${activeOrder.tableId?.slice(-2) || "--"}`
-    : "Chưa chọn bàn";
+      ? UI_TEXT.ORDER.BOARD.TAKEAWAY
+      : UI_TEXT.TABLE.TABLE_LABEL(activeOrder.tableId?.slice(-2) || "--")
+    : UI_TEXT.ORDER.BOARD.NOT_SELECTED_TABLE;
 
   // Cart items for this specific order
   const cartItems = selectedOrderId ? cartData[selectedOrderId] || [] : [];

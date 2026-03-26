@@ -6,3 +6,11 @@ export interface KDSItemCardProps {
   orderCode: string;
   orderType: OrderType;
 }
+
+export interface KdsBacklogSummary {
+  totalProcessingItems: number;
+  waitingCount: number;
+  preparingCount: number;
+  delayedCount: number;
+  preparingPercentage: number;
+}

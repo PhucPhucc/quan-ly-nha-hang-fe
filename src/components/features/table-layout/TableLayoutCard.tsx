@@ -41,10 +41,10 @@ const DEFAULT_TEXT_STYLE = "text-slate-600";
 
 // Label trạng thái
 const statusLabel: Record<TableStatus, string> = {
-  [TableStatus.Available]: "Trống",
-  [TableStatus.Reserved]: "Đặt trước",
-  [TableStatus.Occupied]: "Đang dùng",
-  [TableStatus.OutOfService]: "Tạm ngưng",
+  [TableStatus.Available]: UI_TEXT.TABLE.STATUS_AVAILABLE,
+  [TableStatus.Reserved]: UI_TEXT.TABLE.STATUS_RESERVED,
+  [TableStatus.Occupied]: UI_TEXT.TABLE.STATUS_OCCUPIED,
+  [TableStatus.OutOfService]: UI_TEXT.TABLE.STATUS_OUT_OF_SERVICE,
 };
 
 // Màu ghế indicator theo status
@@ -56,7 +56,7 @@ const statusChairStyle: Record<TableStatus, string> = {
 };
 
 const DEFAULT_CHAIR_STYLE = "bg-slate-300";
-const DEFAULT_LABEL = "Không xác định";
+const DEFAULT_LABEL = UI_TEXT.COMMON.EMPTY;
 
 function TableLayoutCard({ table, isSelected, onClick }: Props) {
   const topChairs = Array.from({ length: getTopChairCount(table.capacity) });

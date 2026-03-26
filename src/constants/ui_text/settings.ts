@@ -88,11 +88,16 @@ export const SETTINGS = {
   RESERVATION_DESC: "Thiết lập quy tắc nhận đặt chỗ và quản lý bàn",
 
   BOOKING_HOURS_SECTION: "Giờ nhận đặt bàn",
-  BOOKING_HOURS_SECTION_DESC: "Thời gian trong ngày mà khách hàng có thể đặt bàn",
-  FIELD_OPEN_TIME: "Giờ mở cửa",
-  FIELD_CLOSE_TIME: "Giờ đóng cửa",
-  FIELD_BREAK_START: "Bắt đầu nghỉ giữa ca",
-  FIELD_BREAK_END: "Kết thúc nghỉ giữa ca",
+  BOOKING_HOURS_SECTION_DESC:
+    "Thiết lập khung giờ hoạt động và thời gian phục vụ khách đặt chỗ hàng ngày.",
+  FIELD_OPEN_TIME: "Giờ mở cửa (24h)",
+  FIELD_OPEN_TIME_DESC: "Thời điểm sớm nhất nhà hàng bắt đầu đón khách đặt bàn.",
+  FIELD_CLOSE_TIME: "Giờ đóng cửa (24h)",
+  FIELD_CLOSE_TIME_DESC: "Hạn cuối cùng trong ngày nhà hàng còn nhận lượt đặt bàn mới.",
+  FIELD_BREAK_START: "Bắt đầu nghỉ giữa ca (24h)",
+  FIELD_BREAK_START_DESC: "Thời điểm tạm dừng nhận khách để chuyển giao giữa các ca.",
+  FIELD_BREAK_END: "Kết thúc nghỉ giữa ca (24h)",
+  FIELD_BREAK_END_DESC: "Thời điểm nhà hàng sẵn sàng nhận khách trở lại sau giờ nghỉ.",
   FIELD_BREAK_ENABLED: "Có giờ nghỉ giữa ca",
   FIELD_BREAK_ENABLED_DESC: "Không nhận đặt bàn trong khoảng thời gian nghỉ",
 
@@ -102,22 +107,8 @@ export const SETTINGS = {
   FIELD_OVERLAP_BUFFER_DESC: "Thời gian đệm để tránh trùng lịch giữa các booking",
   FIELD_MIN_LEAD_TIME: "Đặt trước tối thiểu (phút)",
   FIELD_MIN_LEAD_TIME_DESC: "Khách cần đặt trước ít nhất bao nhiêu phút",
-  FIELD_GRACE_PERIOD: "Thời gian giữ bàn (phút)",
-  FIELD_GRACE_PERIOD_DESC: "Giữ bàn tối đa bao nhiêu phút nếu khách chưa đến",
-
-  DEPOSIT_SECTION: "Tiền đặt cọc",
-  DEPOSIT_SECTION_DESC: "Quy tắc thu cọc khi nhận đặt bàn",
-  FIELD_DEPOSIT_ENABLED: "Yêu cầu tiền cọc",
-  FIELD_DEPOSIT_ENABLED_DESC: "Thu tiền cọc khi khách đặt bàn để đảm bảo chỗ",
-  FIELD_DEPOSIT_AMOUNT: "Số tiền cọc mỗi người (đ)",
-  FIELD_DEPOSIT_AMOUNT_DESC: "Số tiền cọc tính theo từng người khách",
-
-  NOTIFICATION_SECTION: "Thông báo đặt bàn",
-  NOTIFICATION_SECTION_DESC: "Cách hệ thống thông báo khi có đặt bàn mới",
-  FIELD_NOTIFY_NEW_BOOKING: "Thông báo khi có đặt bàn mới",
-  FIELD_NOTIFY_NEW_BOOKING_DESC: "Gửi thông báo ngay khi có đặt bàn mới vào hệ thống",
-  FIELD_NOTIFY_UPCOMING: "Nhắc nhở đặt bàn sắp đến",
-  FIELD_NOTIFY_UPCOMING_DESC: "Tự động nhắc nhở 30 phút trước giờ đặt bàn",
+  FIELD_GRACE_PERIOD: "Thời gian chờ khách đến (phút)",
+  FIELD_GRACE_PERIOD_DESC: "Quá thời gian này mà khách chưa check-in thì có thể chuyển no-show",
 
   SUCCESS_RESERVATION: "Đã lưu cấu hình đặt bàn thành công",
 

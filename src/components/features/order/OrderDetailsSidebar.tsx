@@ -15,9 +15,9 @@ const OrderDetailsSidebar = () => {
 
   const tableName = order
     ? order.orderType === OrderType.Takeaway
-      ? "Mang đi"
-      : `Bàn ${order.tableId?.slice(-2) || "--"}`
-    : "Chưa chọn bàn";
+      ? UI_TEXT.ORDER.BOARD.TAKEAWAY
+      : UI_TEXT.TABLE.TABLE_LABEL(order.tableId?.slice(-2) || "--")
+    : UI_TEXT.ORDER.BOARD.NOT_SELECTED_TABLE;
   return (
     <div className="flex-1 flex flex-col h-full min-h-0 w-full overflow-x-hidden">
       <Tabs

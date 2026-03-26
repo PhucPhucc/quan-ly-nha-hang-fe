@@ -21,12 +21,18 @@ const { SETTINGS } = UI_TEXT;
 
 // ── Schema ───────────────────────────────────────────────────────────────────
 const schema = z.object({
-  lowStockThreshold: z.number().min(0, "Ngưỡng cảnh báo phải ≥ 0"),
-  expiryWarningDays: z.number().int().min(1, "Số ngày cảnh báo phải ≥ 1"),
+  lowStockThreshold: z.number().min(0, UI_TEXT.FORM.MIN_VALUE(0)),
+  expiryWarningDays: z
+    .number()
+    .int({ message: UI_TEXT.FORM.INT_ONLY })
+    .min(1, UI_TEXT.FORM.MIN_VALUE(1)),
   costMethod: z.string(),
   autoDeductOnCompleted: z.boolean(),
-  maxCostRecalcDays: z.number().min(1).max(365),
-  openingStockImportCooldownHours: z.number().min(0),
+  maxCostRecalcDays: z
+    .number()
+    .min(1, UI_TEXT.FORM.MIN_VALUE(1))
+    .max(365, UI_TEXT.FORM.MAX_VALUE(365)),
+  openingStockImportCooldownHours: z.number().min(0, UI_TEXT.FORM.MIN_VALUE(0)),
 });
 
 export type WarehouseSettingsInput = z.infer<typeof schema>;

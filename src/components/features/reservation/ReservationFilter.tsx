@@ -130,7 +130,7 @@ export const ReservationFilter = ({
               variant="outline"
               size="icon"
               className="p-2 shrink-0 rounded-full border-white bg-white text-slate-400 hover:text-primary hover:bg-white hover:border-primary/20 transition-all shadow-sm"
-              title="Làm mới bộ lọc"
+              title={UI_TEXT.BUTTON.RESET}
             >
               <RotateCw className="h-4 w-4" />
             </Button>

@@ -15,27 +15,20 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { reservationService } from "@/services/reservationService";
 
 import { BookingHoursSection } from "./sections/BookingHoursSection";
-import { BookingNotifySection } from "./sections/BookingNotifySection";
 import { BookingRulesSection } from "./sections/BookingRulesSection";
-import { DepositSection } from "./sections/DepositSection";
 
-const { SETTINGS } = UI_TEXT;
+const { SETTINGS, FORM } = UI_TEXT;
 
 // ── Schema ───────────────────────────────────────────────────────────────────
 const schema = z.object({
-  openTime: z.string().min(1, "Giờ mở cửa không được để trống"),
-  closeTime: z.string().min(1, "Giờ đóng cửa không được để trống"),
+  openTime: z.string().min(1, FORM.REQUIRED),
+  closeTime: z.string().min(1, FORM.REQUIRED),
   breakEnabled: z.boolean(),
-  breakStart: z.string().min(1, "Giờ bắt đầu nghỉ không được để trống"),
-  breakEnd: z.string().min(1, "Giờ kết thúc nghỉ không được để trống"),
+  breakStart: z.string().min(1, FORM.REQUIRED),
+  breakEnd: z.string().min(1, FORM.REQUIRED),
   overlapBufferMinutes: z.number().int().min(0),
   minLeadTimeMinutes: z.number().int().min(0),
   gracePeriodMinutes: z.number().int().min(0),
-  depositEnabled: z.boolean(),
-  depositAmountPerPerson: z.number().int().min(0),
-  notifyNewBooking: z.boolean(),
-  notifyUpcoming: z.boolean(),
-  notifyUpcomingMinutes: z.number().int().min(0).optional(),
 });
 
 export type ReservationSettingsInput = z.infer<typeof schema>;
@@ -49,11 +42,6 @@ const DEFAULT_VALUES: ReservationSettingsInput = {
   overlapBufferMinutes: DEFAULT_RESERVATION_SETTINGS.overlapBufferMinutes,
   minLeadTimeMinutes: DEFAULT_RESERVATION_SETTINGS.minLeadTimeMinutes,
   gracePeriodMinutes: 15,
-  depositEnabled: false,
-  depositAmountPerPerson: 0,
-  notifyNewBooking: true,
-  notifyUpcoming: true,
-  notifyUpcomingMinutes: 0,
 };
 
 // ── Form ─────────────────────────────────────────────────────────────────────
@@ -85,9 +73,6 @@ export function ReservationSettingsForm({
   }, [initialValues, reset]);
 
   const breakEnabled = useWatch({ control, name: "breakEnabled" });
-  const depositEnabled = useWatch({ control, name: "depositEnabled" });
-  const notifyNewBooking = useWatch({ control, name: "notifyNewBooking" });
-  const notifyUpcoming = useWatch({ control, name: "notifyUpcoming" });
 
   return (
     <div className="w-full p-4 pb-10 md:p-6 md:pb-12">
@@ -108,21 +93,6 @@ export function ReservationSettingsForm({
 
             <div className="border-t border-border" />
             <BookingRulesSection register={register} errors={errors} />
-
-            <div className="border-t border-border" />
-            <DepositSection
-              depositEnabled={Boolean(depositEnabled)}
-              register={register}
-              setValue={setValue}
-              errors={errors}
-            />
-
-            <div className="border-t border-border" />
-            <BookingNotifySection
-              notifyNewBooking={Boolean(notifyNewBooking)}
-              notifyUpcoming={Boolean(notifyUpcoming)}
-              setValue={setValue}
-            />
 
             <div className="flex justify-end pt-2">
               <Button
@@ -167,11 +137,6 @@ export function ReservationSettingsContainer() {
               response.data.overlapBufferMinutes ?? current.overlapBufferMinutes,
             minLeadTimeMinutes: response.data.minLeadTimeMinutes ?? current.minLeadTimeMinutes,
             gracePeriodMinutes: response.data.gracePeriodMinutes ?? current.gracePeriodMinutes,
-            depositEnabled: response.data.depositEnabled ?? current.depositEnabled,
-            depositAmountPerPerson:
-              response.data.depositAmountPerPerson ?? current.depositAmountPerPerson,
-            notifyNewBooking: response.data.notifyNewBooking ?? current.notifyNewBooking,
-            notifyUpcoming: response.data.notifyUpcoming ?? current.notifyUpcoming,
           }));
         }
       } catch {
@@ -206,11 +171,6 @@ export function ReservationSettingsContainer() {
           overlapBufferMinutes: response.data.overlapBufferMinutes ?? data.overlapBufferMinutes,
           minLeadTimeMinutes: response.data.minLeadTimeMinutes ?? data.minLeadTimeMinutes,
           gracePeriodMinutes: response.data.gracePeriodMinutes ?? data.gracePeriodMinutes,
-          depositEnabled: response.data.depositEnabled ?? data.depositEnabled,
-          depositAmountPerPerson:
-            response.data.depositAmountPerPerson ?? data.depositAmountPerPerson,
-          notifyNewBooking: response.data.notifyNewBooking ?? data.notifyNewBooking,
-          notifyUpcoming: response.data.notifyUpcoming ?? data.notifyUpcoming,
         }));
       }
 

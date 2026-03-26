@@ -116,7 +116,9 @@ export function useCreateBooking(
 
     const leadMinutes = (reservationDateTime.getTime() - Date.now()) / (1000 * 60);
     if (leadMinutes < reservationSettings.minLeadTimeMinutes) {
-      toast.error(`Vui lòng đặt chỗ trước ít nhất ${reservationSettings.minLeadTimeMinutes} phút.`);
+      toast.error(
+        UI_TEXT.RESERVATION.VALIDATION_MIN_LEAD_TIME_DYNAMIC(reservationSettings.minLeadTimeMinutes)
+      );
       return;
     }
 
@@ -128,7 +130,10 @@ export function useCreateBooking(
 
     if (minutesOfDay < openTimeMinutes || minutesOfDay > closeTimeMinutes) {
       toast.error(
-        `Đặt bàn phải nằm trong giờ hoạt động ${reservationSettings.openTime} - ${reservationSettings.closeTime}.`
+        UI_TEXT.RESERVATION.VALIDATION_WITHIN_OPERATING_HOURS_DYNAMIC(
+          reservationSettings.openTime,
+          reservationSettings.closeTime
+        )
       );
       return;
     }
@@ -139,7 +144,10 @@ export function useCreateBooking(
       minutesOfDay < breakEndMinutes
     ) {
       toast.error(
-        `Nhà hàng nghỉ giữa ca từ ${reservationSettings.breakStart} đến ${reservationSettings.breakEnd}. Vui lòng chọn giờ khác.`
+        UI_TEXT.RESERVATION.VALIDATION_BREAK_TIME_DYNAMIC(
+          reservationSettings.breakStart,
+          reservationSettings.breakEnd
+        )
       );
       return;
     }

@@ -80,7 +80,7 @@ export default function AreaManagementDialog({ open, onClose, areas, onUpdate }:
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input
                 className="pl-10 rounded-lg"
-                placeholder="Tìm kiếm khu vực..."
+                placeholder={UI_TEXT.TABLE.SEARCH_AREA_PLACEHOLDER}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />

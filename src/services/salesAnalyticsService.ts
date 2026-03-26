@@ -3,12 +3,13 @@ import { BestSeller, SalesAnalyticsSummary } from "@/types/salesAnalytics.types"
 import { apiFetch } from "./api";
 
 interface BackendDailyReportResponse {
-  date: string;
   totalRevenue: number;
+  revenueGrowth: number;
   totalOrders: number;
+  orderGrowth: number;
+  avgOrderValue: number;
   cancelledOrders: number;
-  dailyTarget: number | null;
-  achievementRate: number | null;
+  revenueAchievement: number;
 }
 
 export interface BackendBestSellerDto {
@@ -37,6 +38,7 @@ export interface BackendMonthlyReportResponse {
 export interface BackendRevenuePointDto {
   label: string;
   revenue: number;
+  orderCount: number;
 }
 
 export interface BackendRevenueChartResponse {
@@ -82,9 +84,12 @@ export const salesAnalyticsService = {
       return {
         stats: {
           totalRevenue: data.totalRevenue || 0,
-          revenueGrowth: data.achievementRate ? data.achievementRate - 100 : 0,
+          revenueGrowth: data.revenueGrowth || 0,
           totalOrders: data.totalOrders || 0,
-          avgOrderValue: data.totalOrders > 0 ? data.totalRevenue / data.totalOrders : 0,
+          orderGrowth: data.orderGrowth || 0,
+          avgOrderValue: data.avgOrderValue || 0,
+          cancelledOrders: data.cancelledOrders || 0,
+          revenueAchievement: data.revenueAchievement || 0,
         },
         revenueChart: revenueChartResponse,
         bestSellers: bestSellersResponse,
@@ -126,7 +131,10 @@ export const salesAnalyticsService = {
           totalRevenue: data.totalRevenue || 0,
           revenueGrowth: data.achievementRate ? data.achievementRate - 100 : 0,
           totalOrders: data.totalOrders || 0,
+          orderGrowth: 0,
           avgOrderValue: data.totalOrders > 0 ? data.totalRevenue / data.totalOrders : 0,
+          cancelledOrders: data.cancelledOrders || 0,
+          revenueAchievement: data.achievementRate || 0,
         },
         revenueChart: revenueChartResponse,
         bestSellers: bestSellersResponse,
@@ -212,6 +220,7 @@ export const salesAnalyticsService = {
       return response.data.points.map((p: BackendRevenuePointDto) => ({
         date: p.label,
         revenue: p.revenue,
+        orderCount: p.orderCount,
       }));
     } catch (error) {
       throw new Error(`Failed to fetch revenue chart: ${error}`);

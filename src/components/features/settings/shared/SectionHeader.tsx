@@ -3,7 +3,7 @@ import React from "react";
 type Props = {
   icon: React.ReactNode;
   title: string;
-  description: string;
+  description?: string;
 };
 
 export function SectionHeader({ icon, title, description }: Props) {

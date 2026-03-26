@@ -6,10 +6,16 @@ import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { DashboardStats as DashboardStatsType } from "@/types/salesAnalytics.types";
+import {
+  DashboardStats as DashboardStatsType,
+  OperationalStats,
+  RevenuePoint,
+} from "@/types/salesAnalytics.types";
 
 interface DashboardStatsProps {
   stats?: DashboardStatsType;
+  operational?: OperationalStats | null;
+  revenueChart?: RevenuePoint[];
 }
 
 const mockSparklineData = [
@@ -30,9 +36,12 @@ interface StatCardProps {
   isUp: boolean;
   icon: React.ReactNode;
   chartColor: string;
+  chartData?: { value: number }[];
 }
 
-function StatCard({ title, value, trend, isUp, icon, chartColor }: StatCardProps) {
+function StatCard({ title, value, trend, isUp, icon, chartColor, chartData }: StatCardProps) {
+  const displayData = chartData || mockSparklineData;
+
   return (
     <Card className="border border-muted/60 shadow-none rounded-xl overflow-hidden bg-white hover:border-primary/20 transition-all group">
       <CardContent className="p-0">
@@ -60,7 +69,7 @@ function StatCard({ title, value, trend, isUp, icon, chartColor }: StatCardProps
 
         <div className="h-10 w-full opacity-80 group-hover:opacity-100 transition-opacity">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={mockSparklineData}>
+            <AreaChart data={displayData}>
               <defs>
                 <linearGradient
                   id={`gradient-${title.replace(/\s+/g, "-").toLowerCase()}`}
@@ -89,20 +98,59 @@ function StatCard({ title, value, trend, isUp, icon, chartColor }: StatCardProps
   );
 }
 
-export function DashboardStats({ stats }: DashboardStatsProps) {
+export function DashboardStats({ stats, operational, revenueChart }: DashboardStatsProps) {
   const t = UI_TEXT.DASHBOARD.STATS;
 
   const formatCurrency = (value: number) => {
     if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
     if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
-    return value.toString();
+    return value.toLocaleString("vi-VN");
   };
 
-  const revenueValue = stats ? formatCurrency(stats.totalRevenue) : "12.5M";
+  const revenueValue = stats ? formatCurrency(stats.totalRevenue) : "0";
   const revenueTrend = stats
-    ? `${stats.revenueGrowth >= 0 ? "+" : ""}${stats.revenueGrowth}%`
-    : "+12.5%";
-  const ordersValue = stats ? stats.totalOrders.toString() : "48";
+    ? `${stats.revenueGrowth >= 0 ? "+" : ""}${stats.revenueGrowth.toFixed(1)}%`
+    : "0%";
+
+  const ordersValue = stats ? stats.totalOrders.toString() : "0";
+  const orderTrend = stats
+    ? `${stats.orderGrowth >= 0 ? "+" : ""}${stats.orderGrowth.toFixed(1)}%`
+    : "0%";
+
+  const tablesValue = operational
+    ? `${operational.occupiedTables}/${operational.totalTables}`
+    : "0/0";
+  const tablesTrend = operational ? `${operational.tableOccupancyRate.toFixed(1)}%` : "0%";
+
+  const staffValue = operational ? `${operational.activeStaffCount}` : "0";
+  const staffTrend = operational
+    ? `${operational.staffTrend >= 0 ? "+" : ""}${operational.staffTrend}`
+    : "0";
+
+  // Prepare real sparkline for revenue
+  const revenueSparkline = React.useMemo(() => {
+    return revenueChart && revenueChart.length > 0
+      ? revenueChart.map((p) => ({ value: p.revenue }))
+      : null;
+  }, [revenueChart]);
+
+  const ordersTrendData = React.useMemo(() => {
+    return revenueChart && revenueChart.length > 0
+      ? revenueChart.map((p) => ({ value: p.orderCount }))
+      : undefined;
+  }, [revenueChart]);
+
+  const tablesTrendData = React.useMemo(() => {
+    return operational?.tableHistory && operational.tableHistory.length > 0
+      ? operational.tableHistory.map((v) => ({ value: v }))
+      : undefined;
+  }, [operational?.tableHistory]);
+
+  const staffTrendData = React.useMemo(() => {
+    return operational?.staffHistory && operational.staffHistory.length > 0
+      ? operational.staffHistory.map((v) => ({ value: v }))
+      : undefined;
+  }, [operational?.staffHistory]);
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -113,30 +161,34 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
         isUp={stats ? stats.revenueGrowth >= 0 : true}
         icon={<Banknote className="size-5 text-primary" />}
         chartColor="var(--primary)"
+        chartData={revenueSparkline || undefined}
       />
       <StatCard
         title={t.ORDERS}
         value={ordersValue}
-        trend={t.ORDERS_TREND("+5.2%")}
-        isUp={true}
+        trend={t.ORDERS_TREND(orderTrend)}
+        isUp={stats ? stats.orderGrowth >= 0 : true}
         icon={<UtensilsCrossed className="size-5 text-sky-500" />}
         chartColor="var(--info)"
+        chartData={ordersTrendData}
       />
       <StatCard
         title={t.TABLES}
-        value="12/20"
-        trend={t.TABLES_TREND("-2.4%")}
-        isUp={false}
+        value={tablesValue}
+        trend={t.TABLES_TREND(tablesTrend)}
+        isUp={operational ? operational.tableTrend >= 0 : true}
         icon={<Users className="size-5 text-emerald-500" />}
         chartColor="var(--success)"
+        chartData={tablesTrendData}
       />
       <StatCard
         title={t.STAFF}
-        value="6"
-        trend={t.STAFF_TREND}
-        isUp={true}
+        value={staffValue}
+        trend={t.STAFF_TREND(staffTrend)}
+        isUp={operational ? operational.staffTrend >= 0 : true}
         icon={<Users className="size-5 text-amber-500" />}
         chartColor="var(--warning)"
+        chartData={staffTrendData}
       />
     </div>
   );

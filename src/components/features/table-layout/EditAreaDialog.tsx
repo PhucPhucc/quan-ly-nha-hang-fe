@@ -84,7 +84,7 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nhập tên khu vực"
+              placeholder={UI_TEXT.TABLE.AREA_NAME_PLACEHOLDER}
               className="h-12"
             />
           </div>
@@ -112,13 +112,8 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
             <select
               value={type}
               onChange={(e) => setType(e.target.value as AreaType)}
-              className="w-full h-12 px-4 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                backgroundPosition: "right 0.5rem center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "1.5em 1.5em",
-              }}
+              title={UI_TEXT.TABLE.AREA_TYPE}
+              className="w-full h-12 px-4 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none bg-[url('data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3e%3c/svg%3e')] bg-[position:right_0.5rem_center] bg-no-repeat bg-[size:1.5em_1.5em]"
             >
               <option value={AreaType.Normal}>{UI_TEXT.TABLE.TYPE_NORMAL}</option>
               <option value={AreaType.VIP}>{UI_TEXT.TABLE.TYPE_VIP}</option>

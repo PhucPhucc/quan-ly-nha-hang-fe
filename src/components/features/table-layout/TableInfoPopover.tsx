@@ -12,10 +12,10 @@ interface Props {
 }
 
 const statusLabel: Record<TableStatus, string> = {
-  [TableStatus.Available]: "Trống",
-  [TableStatus.Reserved]: "Đặt trước",
-  [TableStatus.Occupied]: "Đang dùng",
-  [TableStatus.OutOfService]: "Tạm ngưng",
+  [TableStatus.Available]: UI_TEXT.TABLE.STATUS_AVAILABLE,
+  [TableStatus.Reserved]: UI_TEXT.TABLE.STATUS_RESERVED,
+  [TableStatus.Occupied]: UI_TEXT.TABLE.STATUS_OCCUPIED,
+  [TableStatus.OutOfService]: UI_TEXT.TABLE.STATUS_OUT_OF_SERVICE,
 };
 
 const canOrder = (s: TableStatus) => s === TableStatus.Available;
@@ -40,7 +40,11 @@ export default function TableInfoPopover({ table, onClose }: Props) {
             >
               {statusLabel[table.status]}
             </span>
-            <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-slate-600"
+              title={UI_TEXT.BUTTON.CLOSE}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </div>
