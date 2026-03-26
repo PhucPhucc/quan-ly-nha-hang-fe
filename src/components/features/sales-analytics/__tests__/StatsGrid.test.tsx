@@ -12,7 +12,10 @@ describe("StatsGrid", () => {
     totalRevenue: 1000000,
     revenueGrowth: 15.5,
     totalOrders: 100,
+    orderGrowth: 5,
     avgOrderValue: 10000,
+    cancelledOrders: 2,
+    revenueAchievement: 85,
   };
 
   it("renders all statistics correctly", () => {
