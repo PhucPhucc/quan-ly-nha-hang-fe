@@ -23,7 +23,6 @@ import { DINE_IN_STATUSES, TAKEAWAY_STATUSES } from "@/types/Order";
 import { AreaStatus } from "@/types/Table-Layout";
 
 const TAKEAWAY_TAB = "takeaway";
-const DATE_PICKER_LABEL = "Chọn ngày";
 const SEARCH_PLACEHOLDER = "Tìm kiếm mã đơn, số bàn...";
 
 const OrderBoardHeader = () => {
@@ -35,9 +34,6 @@ const OrderBoardHeader = () => {
 
   const activeTab = useOrderBoardStore((s) => s.activeTab);
   const setActiveTab = useOrderBoardStore((s) => s.setActiveTab);
-
-  const dateRange = useOrderBoardStore((s) => s.dateRange);
-  const setDateRange = useOrderBoardStore((s) => s.setDateRange);
 
   const sortOrder = useOrderBoardStore((s) => s.sortOrder);
   const setSortOrder = useOrderBoardStore((s) => s.setSortOrder);

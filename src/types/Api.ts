@@ -10,8 +10,10 @@ export interface PaginationResult<T> {
   items: T[];
   totalCount: number;
   pageSize: number;
-  currentPage: number;
+  pageNumber: number;
   totalPages: number;
+  hasNext?: boolean;
+  hasPrevious?: boolean;
 }
 
 export type QueryParams = Record<string, string | number | boolean | undefined>;

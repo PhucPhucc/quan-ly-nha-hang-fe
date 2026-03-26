@@ -5,6 +5,7 @@ import { apiFetch } from "./api";
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
+  employeeId: string;
   employeeCode: string;
   fullName?: string;
   role: string;

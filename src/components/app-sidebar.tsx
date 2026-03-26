@@ -6,6 +6,7 @@ import {
   CalendarDays,
   ChartColumn,
   ClipboardList,
+  Clock,
   Flame,
   History,
   LayoutDashboard,
@@ -31,6 +32,11 @@ import { EmployeeRole } from "@/types/Employee";
 
 const routes: Record<EmployeeRole, NavMainProps[]> = {
   [EmployeeRole.MANAGER]: [
+    {
+      title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+      url: "/attendance",
+      icon: Clock,
+    },
     {
       title: UI_TEXT.SIDE_BAR.DASHBOARD,
       url: "/manager/dashboard",
@@ -67,6 +73,16 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
       title: UI_TEXT.SIDE_BAR.EMPLOYEE,
       url: "/manager/employee",
       icon: Users,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.SHIFT,
+      url: "/manager/shift",
+      icon: History,
+    },
+    {
+      title: UI_TEXT.SIDE_BAR.SCHEDULE,
+      url: "/manager/schedule",
+      icon: CalendarDays,
     },
     {
       title: UI_TEXT.SIDE_BAR.VOUCHER,
@@ -113,6 +129,11 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
   ],
   [EmployeeRole.CASHIER]: [
     {
+      title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+      url: "/attendance",
+      icon: Clock,
+    },
+    {
       title: UI_TEXT.SIDE_BAR.ORDER,
       url: "/order",
       icon: ClipboardList,
@@ -130,6 +151,11 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
   ],
   [EmployeeRole.CHEFBAR]: [
     {
+      title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+      url: "/attendance",
+      icon: Clock,
+    },
+    {
       title: UI_TEXT.SIDE_BAR.STATION_KITCHEN,
       url: "/kds/kitchen",
       icon: Flame,
@@ -141,6 +167,11 @@ const routes: Record<EmployeeRole, NavMainProps[]> = {
     },
   ],
   [EmployeeRole.WAITER]: [
+    {
+      title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+      url: "/attendance",
+      icon: Clock,
+    },
     {
       title: UI_TEXT.SIDE_BAR.ORDER,
       url: "/waiter/order",
