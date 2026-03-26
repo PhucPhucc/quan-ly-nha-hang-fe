@@ -237,7 +237,6 @@ export const orderService = {
     apiFetch<PayOsQrResponse | string>(`/billing/orders/${orderId}/payos-qr`, {
       method: "POST",
     }),
-  // /api/v1/tableoperations/{id}/change-table
   changeTable: (orderId: string, newTableId: string): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/tableoperations/${orderId}/change-table`, {
       method: "PATCH",

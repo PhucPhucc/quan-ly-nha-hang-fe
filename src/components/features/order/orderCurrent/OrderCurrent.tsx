@@ -13,9 +13,9 @@ import OrderCurrentHeader from "./components/OrderCurrentHeader";
 import OrderItemList from "./components/OrderItemList";
 import OrderSummaryFooter from "./components/OrderSummaryFooter";
 
-const OrderCurrent = () => {
+const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
   const { items: cartData, updateQuantity, removeItem } = useCartStore();
-  const { orders, selectedOrderId, activeOrderDetails, orderDetailsLoading } = useOrderBoardStore();
+  const { selectedOrderId, activeOrderDetails, orderDetailsLoading } = useOrderBoardStore();
 
   const fetchOrderDetails = useOrderBoardStore((s) => s.fetchOrderDetails);
 
@@ -25,18 +25,15 @@ const OrderCurrent = () => {
     }
   }, [selectedOrderId, fetchOrderDetails]);
 
-  const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
-  const tableName = activeOrder
-    ? activeOrder.orderType === OrderType.Takeaway
+  // const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
+  // const activeOrder = useOrderBoardStore((state) => state.activeOrderDetails);
+  const tableName = activeOrderDetails
+    ? activeOrderDetails.orderType === OrderType.Takeaway
       ? UI_TEXT.ORDER.BOARD.TAKEAWAY
-      : UI_TEXT.TABLE.TABLE_LABEL(activeOrder.tableId?.slice(-2) || "--")
+      : UI_TEXT.TABLE.TABLE_LABEL(tableCode)
     : UI_TEXT.ORDER.BOARD.NOT_SELECTED_TABLE;
 
-  // Cart items for this specific order
   const cartItems = selectedOrderId ? cartData[selectedOrderId] || [] : [];
-  console.log(cartData);
-  // Map remote items to a format ItemList can display, or just pass them as a separate prop
-  // For now, let's keep OrderItemList simple and pass everything as "items" or enhance it.
   const remoteItems = activeOrderDetails?.orderItems || [];
 
   const subtotalCart = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
@@ -95,7 +92,7 @@ const OrderCurrent = () => {
         <OrderCurrentHeader
           tableName={tableName}
           itemCount={cartItems.length + remoteItems.length}
-          status={activeOrder?.status}
+          status={activeOrderDetails?.status}
         />
         <OrderItemList
           items={cartItems}
