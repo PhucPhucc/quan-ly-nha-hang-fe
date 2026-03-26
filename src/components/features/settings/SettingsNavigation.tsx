@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, CalendarDays, Warehouse } from "lucide-react";
+import { Building2, CalendarDays, ChefHat, Warehouse } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -33,6 +33,11 @@ const NAV_ITEMS: NavItem[] = [
     label: SETTINGS.NAV_RESERVATION,
     href: "/manager/settings/reservation",
     icon: CalendarDays,
+  },
+  {
+    label: "Cấu hình KDS",
+    href: "/manager/settings/kds",
+    icon: ChefHat,
   },
 ];
 

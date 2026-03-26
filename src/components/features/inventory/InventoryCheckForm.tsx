@@ -1,12 +1,13 @@
 "use client";
 
-import { LucideArrowLeft, LucideCheckCircle2, LucideSave } from "lucide-react";
+import { FileDown, LucideArrowLeft, LucideCheckCircle2, LucideSave } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { cn } from "@/lib/utils";
 import { InventoryCheckStatus } from "@/types/Inventory";
 
 import { InventoryCheckSidebar } from "./components/InventoryCheckSidebar";
@@ -80,6 +81,21 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          {!isNew && (
+            <Button
+              variant="outline"
+              className={cn(
+                "h-10 gap-2 rounded-lg px-6 text-xs font-bold uppercase tracking-widest transition-all shadow-sm",
+                isProcessed
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-50"
+              )}
+            >
+              <FileDown className="h-4 w-4" />
+              {UI_TEXT.INVENTORY.CHECK.CREATE.BTN_EXPORT}
+            </Button>
+          )}
+
           {(isNew || !isProcessed) && (
             <Button
               variant="outline"

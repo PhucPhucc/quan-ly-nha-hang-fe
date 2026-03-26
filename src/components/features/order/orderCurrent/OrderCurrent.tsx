@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useCartStore } from "@/store/useCartStore";
@@ -16,14 +16,6 @@ import OrderSummaryFooter from "./components/OrderSummaryFooter";
 const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
   const { items: cartData, updateQuantity, removeItem } = useCartStore();
   const { selectedOrderId, activeOrderDetails, orderDetailsLoading } = useOrderBoardStore();
-
-  const fetchOrderDetails = useOrderBoardStore((s) => s.fetchOrderDetails);
-
-  useEffect(() => {
-    if (selectedOrderId) {
-      fetchOrderDetails(selectedOrderId);
-    }
-  }, [selectedOrderId, fetchOrderDetails]);
 
   // const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
   // const activeOrder = useOrderBoardStore((state) => state.activeOrderDetails);
@@ -59,7 +51,10 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
     activeOrderDetails?.voucher?.voucherCode ??
     undefined;
 
-  const tax = activeOrderDetails?.vatAmount ?? Math.round(subtotal * 0.1);
+  const tax =
+    activeOrderDetails?.vatAmount && activeOrderDetails.vatAmount > 0
+      ? activeOrderDetails.vatAmount
+      : Math.round(subtotal * 0.1);
 
   const baseDiscount =
     activeOrderDetails?.discountAmount ??
@@ -74,9 +69,7 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
       ? Math.max(0, subtotal + tax - serverTotal)
       : baseDiscount;
 
-  const total = hasCartItems
-    ? subtotal + tax - discount
-    : (serverTotal ?? subtotal + tax - discount);
+  const total = Math.max(0, subtotal + tax - discount);
 
   if (orderDetailsLoading && !activeOrderDetails) {
     return (

@@ -23,7 +23,7 @@ const currencyFormatter = new Intl.NumberFormat("vi-VN");
 
 const OrderBoard = () => {
   const { loading, activeTab, filteredTakeaways } = useOrderBoardStore();
-  const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
+  // const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
   const setActiveTab = useOrderBoardStore((s) => s.setActiveTab);
   const setActiveView = useOrderBoardStore((s) => s.setActiveView);
   const setSelectedOrderId = useOrderBoardStore((s) => s.setSelectedOrderId);
@@ -54,11 +54,10 @@ const OrderBoard = () => {
   const areas = useTableStore((s) => s.areas);
   const fetchAreas = useTableStore((s) => s.fetchAreas);
 
-  // Fetch areas + orders on mount
+  // Fetch areas on mount
   useEffect(() => {
     fetchAreas();
-    fetchOrders({ pageSize: 50, pageNumber: 1 });
-  }, [fetchAreas, fetchOrders]);
+  }, [fetchAreas]);
 
   // Default to first active area when areas load (only if no tab is set yet)
   useEffect(() => {

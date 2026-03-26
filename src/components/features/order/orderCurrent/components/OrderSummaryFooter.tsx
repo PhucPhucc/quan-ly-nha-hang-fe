@@ -151,7 +151,13 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
         </div>
       </div>
       <div className="w-full grid grid-cols-2 gap-2">
-        <PrintTempDialog />
+        <PrintTempDialog
+          subtotal={subtotal}
+          tax={tax}
+          total={total}
+          discount={discount}
+          voucherCode={voucherCode}
+        />
         <Button
           variant="outline"
           onClick={() => setIsVoucherOpen(true)}

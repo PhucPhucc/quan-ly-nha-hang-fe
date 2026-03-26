@@ -25,10 +25,32 @@ import { useOrderBoardStore } from "@/store/useOrderStore";
 
 const money = (value: number) => value.toLocaleString("vi-VN");
 
-const PrintTempDialog = () => {
+interface PrintTempDialogProps {
+  subtotal?: number;
+  tax?: number;
+  total?: number;
+  discount?: number;
+  voucherCode?: string;
+}
+
+const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
+  subtotal: propsSubtotal,
+  tax: propsTax,
+  total: propsTotal,
+  discount: propsDiscount,
+  voucherCode: propsVoucherCode,
+}) => {
   const fulleNameEmployee = useAuthStore((state) => state.employee?.fullName);
   const activeOrderDetails = useOrderBoardStore((state) => state.activeOrderDetails);
   const selectedOrderId = useOrderBoardStore((state) => state.selectedOrderId);
+
+  // Derived values with props fallback
+  const subtotalValue = propsSubtotal ?? 0;
+  const taxValue = propsTax ?? 0;
+  const totalValue = propsTotal ?? 0;
+  const discountValue = propsDiscount ?? 0;
+  const voucherCodeValue = propsVoucherCode;
+
   const orderItems =
     activeOrderDetails?.orderItems.map((item) => ({
       name: item.itemNameSnapshot,
@@ -38,7 +60,7 @@ const PrintTempDialog = () => {
     })) || [];
   const orderInfo = [
     { label: UI_TEXT.ORDER.PRINT_TEMP.TIME, value: new Date().toLocaleString("vi-VN") },
-    { label: UI_TEXT.ORDER.PRINT_TEMP.EMPLOYEE, value: fulleNameEmployee || "Manager" },
+    { label: UI_TEXT.ORDER.PRINT_TEMP.EMPLOYEE, value: fulleNameEmployee || "" },
   ];
 
   return (
@@ -115,37 +137,32 @@ const PrintTempDialog = () => {
 
               <div className="mt-4 space-y-1 text-[15px] leading-snug">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="italic text-foreground">
-                    {UI_TEXT.ORDER.PRINT_TEMP.MENU_NAME}
-                  </span>
-                  <span className="font-medium italic">
-                    {money(activeOrderDetails?.totalAmount || 0)}
-                  </span>
+                  <span className="text-foreground">{UI_TEXT.ORDER.PRINT_TEMP.BEFORE_TAX}</span>
+                  <span className="font-medium">{money(subtotalValue)}</span>
                 </div>
+                {discountValue > 0 && (
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-foreground">
+                      {UI_TEXT.ORDER.CURRENT.DISCOUNT}
+                      {voucherCodeValue ? ` (${voucherCodeValue})` : ""}
+                    </span>
+                    <span className="font-medium">-{money(discountValue)}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between gap-4">
-                  <span className="italic text-foreground">
-                    {UI_TEXT.ORDER.PRINT_TEMP.BEFORE_TAX}
-                  </span>
-                  <span className="font-medium">{money(activeOrderDetails?.totalAmount || 0)}</span>
-                </div>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="italic text-foreground">
-                    {UI_TEXT.ORDER.PRINT_TEMP.TAX_LABEL}
-                  </span>
-                  <span className="font-medium italic">
-                    {money(((activeOrderDetails?.totalAmount || 0) * 10) / 100)}
-                  </span>
+                  <span className="text-foreground">{UI_TEXT.ORDER.PRINT_TEMP.TAX_LABEL}</span>
+                  <span className="font-medium">{money(taxValue)}</span>
                 </div>
                 <div className="flex items-end justify-between gap-4 border-t mt-4 pt-1 text-[19px] font-bold">
                   <span>{UI_TEXT.ORDER.PRINT_TEMP.TOTAL_AMOUNT}</span>
-                  <span>{money((activeOrderDetails?.totalAmount || 0) * 1.1)}</span>
+                  <span>{money(totalValue)}</span>
                 </div>
               </div>
             </div>
 
-            <div className="text-center text-xs  leading-tight text-foreground">
+            <div className="text-center text-xs leading-tight text-foreground">
               <div className="w-58 my-2 border mx-auto" />
-              <p className="italic">{UI_TEXT.ORDER.PRINT_TEMP.THIS_IS_NOT_RECEIPT}</p>
+              <p>{UI_TEXT.ORDER.PRINT_TEMP.THIS_IS_NOT_RECEIPT}</p>
               <p className="mt-1">{UI_TEXT.ORDER.PRINT_TEMP.THANK_YOU}</p>
             </div>
           </div>

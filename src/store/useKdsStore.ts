@@ -48,7 +48,7 @@ const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Ord
         orderType: 0,
         status: 1,
         totalAmount: 0,
-        isPriority: "priorityScore" in item ? (item.priorityScore ?? 0) > 10 : false,
+        isPriority: Boolean(item.isPriority || item.isOrderPriority),
         createdAt: item.createdAt || new Date().toISOString(),
         orderItems: [],
       } as unknown as Order);

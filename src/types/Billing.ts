@@ -20,6 +20,7 @@ export interface PreCheckBillResponse {
   items: PreCheckBillItem[];
   subTotal: number;
   discount: number;
+  voucherCode?: string;
   preTaxAmount: number;
   vatRate: number;
   vat: number;

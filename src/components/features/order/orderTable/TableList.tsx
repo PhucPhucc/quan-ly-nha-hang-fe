@@ -54,8 +54,10 @@ const TableList = ({ areaId }: TableListProps) => {
   useEffect(() => {
     if (areaId) {
       void fetchTablesByArea(areaId);
+      // Always fetch orders when area changes so table occupancy is correct
+      void fetchOrders();
     }
-  }, [areaId, fetchTablesByArea]);
+  }, [areaId, fetchTablesByArea, fetchOrders]);
 
   const sortedTables = tables.toSorted((a, b) => a.tableNumber - b.tableNumber);
 
@@ -67,8 +69,22 @@ const TableList = ({ areaId }: TableListProps) => {
   });
 
   const handleTableClick = async (table: ApiTable, status: OrderStatus, orderId?: string) => {
-    if (status === OrderStatus.Serving && orderId) {
-      setSelectedOrderId(orderId);
+    if (status === OrderStatus.Serving) {
+      if (orderId) {
+        // Order already in store — select it directly
+        setSelectedOrderId(orderId);
+        return;
+      }
+      // Table is Occupied in DB but orders list is empty (e.g. after refresh).
+      // Fetch orders first, then pick the one matching this table.
+      await fetchOrders();
+      const freshOrders = useOrderBoardStore.getState().orders;
+      const match = freshOrders.find(
+        (o) => o.tableId === table.tableId && o.status === OrderStatus.Serving
+      );
+      if (match) {
+        setSelectedOrderId(match.orderId);
+      }
       return;
     }
 
@@ -83,19 +99,17 @@ const TableList = ({ areaId }: TableListProps) => {
           orderType: OrderType.DineIn,
         });
 
-        if (res.isSuccess) {
-          await fetchOrders();
+        if (res.isSuccess && res.data) {
+          // Extract ID from res.data — backend returns Guid string directly
+          const newOrderId = typeof res.data === "string" ? res.data : (res.data as Order).orderId;
 
-          const newOrderId =
-            res.data?.orderId ||
-            useOrderBoardStore
-              .getState()
-              .orders.find((o) => o.tableId === table.tableId && o.status === OrderStatus.Serving)
-              ?.orderId;
+          if (newOrderId) {
+            setSelectedOrderId(newOrderId);
+            setActiveView("menu");
+          }
 
-          if (newOrderId) setSelectedOrderId(newOrderId);
-
-          setActiveView("menu");
+          // Refresh orders list in background
+          void fetchOrders();
         }
       } catch (e: unknown) {
         toast.error(CREATE_ORDER_ERROR);

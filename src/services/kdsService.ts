@@ -3,6 +3,33 @@ import { KdsBacklogSummary } from "@/types/Kds";
 
 import { apiFetch } from "./api";
 
+export type KdsSortMode = "Fifo" | "Hybrid" | "Priority";
+export type KdsStationKey = "HotKitchen" | "ColdKitchen" | "Bar";
+
+export interface KdsPriorityWeights {
+  waitTimePerMinute: number;
+  orderPriorityBonus: number;
+  expectedTimeWeight: number;
+  overduePerMinute: number;
+  completionBoostWeight: number;
+  takeawayBonus: number;
+  deliveryBonus: number;
+}
+
+export interface KdsStationWipLimit {
+  station: KdsStationKey;
+  limit: number;
+  enabled: boolean;
+}
+
+export interface KdsSettingsResponse {
+  sortMode: KdsSortMode;
+  priorityWeights: KdsPriorityWeights;
+  stationWipLimits: KdsStationWipLimit[];
+}
+
+export type UpdateKdsSettingsRequest = KdsSettingsResponse;
+
 export interface KdsItemResponse {
   orderItemId: string;
   orderId: string;
@@ -15,6 +42,12 @@ export interface KdsItemResponse {
   rejectionReason?: string;
   createdAt: string;
   priorityScore: number;
+  isPriority: boolean;
+  isOrderPriority: boolean;
+  orderType: string;
+  totalOrderItems: number;
+  finishedOrderItems: number;
+  expectedTimeSeconds: number;
   itemOptions?: string;
 }
 
@@ -28,6 +61,13 @@ export interface KdsQueueResponse {
   itemNote?: string;
   status: string;
   createdAt: string;
+  priorityScore: number;
+  isPriority: boolean;
+  isOrderPriority: boolean;
+  orderType: string;
+  totalOrderItems: number;
+  finishedOrderItems: number;
+  expectedTimeSeconds: number;
   itemOptions?: string;
   queuePosition: number;
 }
@@ -59,6 +99,19 @@ export interface KdsAuditLogsParams {
 export const kdsService = {
   getBacklogSummary: async (): Promise<ApiResponse<KdsBacklogSummary>> => {
     return apiFetch<KdsBacklogSummary>("/kds/backlog-summary");
+  },
+
+  getKdsSettings: async (): Promise<ApiResponse<KdsSettingsResponse>> => {
+    return apiFetch<KdsSettingsResponse>("/kds/settings");
+  },
+
+  updateKdsSettings: async (
+    payload: UpdateKdsSettingsRequest
+  ): Promise<ApiResponse<KdsSettingsResponse>> => {
+    return apiFetch<KdsSettingsResponse>("/kds/settings", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
   },
 
   getKdsItems: async (station: string): Promise<ApiResponse<KdsItemResponse[]>> => {

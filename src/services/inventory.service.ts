@@ -690,4 +690,21 @@ export const inventoryService = {
       },
     };
   },
+
+  // Tải file mẫu nhập tồn kho (v1.0)
+  getImportExcelTemplate: async (): Promise<ApiResponse<Blob>> => {
+    return apiFetch<Blob>("/v1.0/ingredients/import-balance/template", {
+      responseType: "blob",
+    });
+  },
+
+  // Nhập dữ liệu từ Excel (v1.0)
+  importOpeningStockExcel: async (file: File): Promise<ApiResponse<unknown>> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return apiFetch<unknown>("/v1.0/ingredients/import-balance", {
+      method: "POST",
+      body: formData as unknown as object, // Cast to avoid TS error with apiFetch body type
+    });
+  },
 };

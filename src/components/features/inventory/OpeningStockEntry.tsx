@@ -17,6 +17,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
 
+import { InventoryImportExcelDialog } from "./components/InventoryImportExcelDialog";
 import {
   INVENTORY_INPUT_CLASS,
   INVENTORY_PAGE_CLASS,
@@ -157,11 +158,12 @@ export function OpeningStockEntry() {
 
             <div className="flex flex-wrap items-center gap-2">
               <OpeningStockSummary totalValue={totalValue} />
+              <InventoryImportExcelDialog onImport={() => {}} disabled={isLocked} />
               <Button
                 onClick={handlePrimarySave}
                 disabled={saving || isLocked}
                 size="sm"
-                className="h-12 bg-primary px-3 text-xs text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary-hover"
+                className="h-12 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary-hover"
               >
                 {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-3.5 w-3.5" />}
                 {OPENING_STOCK.BTN_SAVE}

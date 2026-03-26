@@ -26,8 +26,9 @@ export async function refreshToken() {
 }
 
 async function performRequest(path: string, options: RequestInit): Promise<Response> {
+  const prefix = path.startsWith("/v") ? "/api" : "/api/v1";
   try {
-    return await fetch(BASE_URL + "/api/v1" + path, options);
+    return await fetch(BASE_URL + prefix + path, options);
   } catch {
     throw new Error(NETWORK_ERROR_MESSAGE);
   }

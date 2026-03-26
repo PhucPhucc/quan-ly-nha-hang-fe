@@ -94,17 +94,19 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
           toDate: dateRange?.to?.toISOString(),
         };
 
-        // Map activeTab to OrderType
         if (activeTab === TAKEAWAY_TAB) {
+          // Takeaway tab: respect user's status filter
           params.orderType = OrderType.Takeaway;
+          if (selectedStatuses.length > 0) {
+            params.status = selectedStatuses[0] as OrderStatus;
+          }
         } else if (activeTab) {
-          // An area tab is selected — fetch dine-in orders
+          // Area/dine-in tab: ONLY fetch Serving orders for the board.
+          // Paid/Cancelled orders are irrelevant for table occupancy display.
           params.orderType = OrderType.DineIn;
-        }
-
-        // Map status
-        if (selectedStatuses.length > 0) {
-          params.status = selectedStatuses[0] as OrderStatus;
+          params.status = OrderStatus.Serving;
+          // Large page size to avoid pagination hiding occupied tables
+          params.pageSize = params.pageSize ?? 200;
         }
 
         const res = await orderService.getOrders(params);
@@ -139,7 +141,15 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
       get().fetchOrders();
     },
     setActiveView: (activeView) => set({ activeView }),
-    setSelectedOrderId: (selectedOrderId) => set({ selectedOrderId }),
+    setSelectedOrderId: (selectedOrderId) => {
+      set({ selectedOrderId });
+      if (selectedOrderId) {
+        // Auto-fetch details whenever an order is selected
+        get().fetchOrderDetails(selectedOrderId);
+      } else {
+        set({ activeOrderDetails: null });
+      }
+    },
     setSearchQuery: (searchQuery) => {
       set({ searchQuery });
       get().fetchOrders();
