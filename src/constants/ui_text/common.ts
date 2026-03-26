@@ -207,6 +207,9 @@ export const BUTTON = {
   NEXT: "Tiếp theo",
   UP: "Lên",
   DOWN: "Xuống",
+  PAGE: "Trang",
+  NEXT_PAGE: "Tiếp",
+  PREV_PAGE: "Trước",
 };
 
 export const API = {

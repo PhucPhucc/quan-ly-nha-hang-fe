@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 
-const SLASH = "/";
 const HYPHEN = "-";
 
 interface KDSAuditLogData {
@@ -146,9 +146,6 @@ const KDSAuditLogTable = ({
   onUndo,
 }: KDSAuditLogTableProps) => {
   return (
-    // <Card className="flex flex-1 flex-col overflow-hidden gap-0">
-    //   <CardContent className="p-0 border-none">
-    //     <div className="overflow-y-auto flex-1 custom-scrollbar">
     <div>
       <TableShell>
         <Table className="rounded-xl">
@@ -169,32 +166,11 @@ const KDSAuditLogTable = ({
       </TableShell>
 
       {!loading && !error && totalPages > 1 && (
-        <div className="px-6 pt-4 border-t border-border flex items-center justify-between bg-muted/20 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-slate-500 mr-2">{UI_TEXT.KDS.PAGE}</span>
-            <div className="flex items-center justify-center min-w-12 px-2 py-1 rounded-md bg-card border border-slate-200 shadow-sm">
-              <span className="text-sm font-bold text-slate-700">{currentPage}</span>
-              <span className="text-slate-400 mx-1">{SLASH}</span>
-              <span className="text-sm font-medium text-slate-500">{totalPages}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => onPageChange(currentPage - 1)}
-              disabled={currentPage <= 1}
-              className="h-8 shadow-sm transition-all hover:shadow-md"
-            >
-              {UI_TEXT.KDS.PREV}
-            </Button>
-            <Button
-              onClick={() => onPageChange(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              className="h-8 shadow-sm transition-all hover:shadow-md"
-            >
-              {UI_TEXT.KDS.NEXT}
-            </Button>
-          </div>
-        </div>
+        <PaginationTable
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
       )}
     </div>
   );

@@ -7,10 +7,12 @@ import { apiFetch } from "./api";
 export const menuService = {
   // Lấy danh sách món lẻ
   getAll: (
-    page: number = 1,
-    pageSize: number = 100
+    pageNumber: number = 1,
+    pageSize: number = 10
   ): Promise<ApiResponse<PaginationResult<MenuItem>>> => {
-    return apiFetch<PaginationResult<MenuItem>>(`/menuitems?page=${page}&pageSize=${pageSize}`);
+    return apiFetch<PaginationResult<MenuItem>>(
+      `/menuitems?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
   },
 
   // Thêm món mới
@@ -47,10 +49,12 @@ export const menuService = {
 
   // Lấy danh sách combo
   getAllSetMenu: (
-    page: number = 1,
+    pageNumber: number = 1,
     pageSize: number = 100
   ): Promise<ApiResponse<PaginationResult<SetMenu>>> => {
-    return apiFetch<PaginationResult<SetMenu>>(`/setmenus?page=${page}&pageSize=${pageSize}`);
+    return apiFetch<PaginationResult<SetMenu>>(
+      `/setmenus?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
   },
 
   // Lấy chi tiết combo theo ID

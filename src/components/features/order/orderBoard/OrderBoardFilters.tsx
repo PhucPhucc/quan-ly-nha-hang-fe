@@ -60,19 +60,19 @@ export default function OrderBoardFilters({
             value={search}
             onChange={handleSearchChange}
             placeholder={UI_TEXT.ORDER.BOARD.SEARCH_PLACEHOLDER}
-            className="pl-10    rounded-lg bg-slate-50 text-slate-700 placeholder:text-slate-400 border border-slate-100 focus-visible:ring-2 focus-visible:ring-slate-200"
+            className="pl-10 rounded-lg bg-slate-50 text-slate-700 placeholder:text-slate-400 border border-slate-100 focus-visible:ring-2 focus-visible:ring-slate-200"
           />
         </div>
       </div>
 
       <Select value={statusFilter} onValueChange={onStatusChange}>
         <SelectTrigger className=" w-full  rounded-lg bg-slate-50 border border-slate-100 text-slate-700">
-          <div className="flex items-center gap-2 text-slate-500">
+          <div className="flex items-center gap-2 text-foreground">
             <SlidersHorizontal className="h-4 w-4" />
             <SelectValue placeholder={UI_TEXT.ORDER.BOARD.STATUS_LABEL} />
           </div>
         </SelectTrigger>
-        <SelectContent className="rounded-xl">
+        <SelectContent className="rounded-lg">
           {STATUS_OPTIONS.map((opt) => (
             <SelectItem key={opt.value} value={opt.value}>
               {opt.label}
@@ -83,12 +83,12 @@ export default function OrderBoardFilters({
 
       <Select value={typeFilter} onValueChange={onTypeChange}>
         <SelectTrigger className="w-full rounded-lg bg-slate-50 border border-slate-100 text-slate-700">
-          <div className="flex items-center gap-2 text-slate-500">
+          <div className="flex items-center gap-2 text-foreground">
             <SlidersHorizontal className="h-4 w-4" />
             <SelectValue placeholder={UI_TEXT.ORDER.BOARD.TYPE_TABLE} />
           </div>
         </SelectTrigger>
-        <SelectContent className="rounded-xl">
+        <SelectContent className="rounded-lg">
           {ORDER_TYPE_OPTIONS.map((opt) => (
             <SelectItem key={opt.value} value={opt.value}>
               {opt.label}

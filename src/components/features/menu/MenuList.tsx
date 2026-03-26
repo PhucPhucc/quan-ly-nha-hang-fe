@@ -20,18 +20,29 @@ interface MenuListProps {
 }
 
 export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
-  const { menuItems, setMenus, isLoading, searchQuery, categoryId } = useMenuStore();
+  const {
+    menuItems,
+    setMenus,
+    isLoading,
+    searchQuery,
+    categoryId,
+    currentPage,
+    pageSize,
+    totalItems,
+  } = useMenuStore();
 
   const filteredItems = useMemo(() => {
     const isComboCategorySelected = categories.find((c) => c.categoryId === categoryId)?.type === 2;
 
     if (isComboCategorySelected) {
-      return setMenus.filter((item) => {
+      const combos = setMenus.filter((item) => {
         const matchSearch =
           item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchSearch;
       });
+      // setMenus are fully loaded (max 100), so we MUST paginate them on frontend
+      return combos.slice((currentPage - 1) * pageSize, currentPage * pageSize);
     }
 
     const filteredMenuItems = menuItems.filter((item) => {
@@ -50,11 +61,33 @@ export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
           (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchSearch;
       });
-      return [...filteredMenuItems, ...filteredSetMenus];
+
+      let pageItems = [] as Array<
+        (typeof filteredMenuItems)[number] | (typeof filteredSetMenus)[number]
+      >;
+
+      // If there are menuItems for this page:
+      if (filteredMenuItems.length > 0) {
+        pageItems = [...filteredMenuItems];
+      }
+
+      // Compute global requirements to seamlessly fill the gap with setMenus
+      const reqStart = (currentPage - 1) * pageSize;
+      const M = totalItems; // global total backend menuItems count
+
+      if (pageItems.length < pageSize) {
+        const needed = pageSize - pageItems.length;
+        // determine where to start in setMenus (if after complete menu items)
+        const setMenuStartIndex = Math.max(0, reqStart - M);
+        const setMenuSlice = filteredSetMenus.slice(setMenuStartIndex, setMenuStartIndex + needed);
+        pageItems = [...pageItems, ...setMenuSlice];
+      }
+
+      return pageItems;
     }
 
-    return filteredMenuItems;
-  }, [menuItems, setMenus, searchQuery, categoryId, categories]);
+    return filteredMenuItems.slice(0, pageSize);
+  }, [menuItems, setMenus, searchQuery, categoryId, categories, currentPage, pageSize, totalItems]);
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -75,7 +108,7 @@ export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
   }
 
   return (
-    <TableShell className="mt-4">
+    <TableShell className="mt-4 mb-0">
       <Table>
         <TableHeader>
           <TableRow variant="header">

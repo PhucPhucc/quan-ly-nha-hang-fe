@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import PaginationTable from "@/components/shared/PaginationTable";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { optionService } from "@/services/optionService";
 import { OptionGroup } from "@/types/Menu";
@@ -16,6 +17,9 @@ export const OptionGroupMasterList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 7;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<OptionGroup | null>(null);
@@ -41,6 +45,17 @@ export const OptionGroupMasterList: React.FC = () => {
     const matchType = typeFilter === "all" || String(g.optionType) === typeFilter;
     return matchName && matchType;
   });
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, typeFilter]);
+
+  const totalPages = Math.ceil(filteredGroups.length / pageSize) || 1;
+  const paginatedGroups = filteredGroups.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   const handleCreate = () => {
     setEditingGroup(null);
@@ -89,12 +104,20 @@ export const OptionGroupMasterList: React.FC = () => {
           onCreate={handleCreate}
         />
         <OptionGroupTable
-          groups={filteredGroups}
+          groups={paginatedGroups}
           loading={loading}
           searchQuery={searchQuery}
           onEdit={handleEdit}
           onCreate={handleCreate}
         />
+
+        {totalPages > 1 && (
+          <PaginationTable
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
       <OptionGroupFormModal
         open={modalOpen}
