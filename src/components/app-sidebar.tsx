@@ -229,6 +229,21 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             url: "/manager/audit-log",
             icon: ChartColumn,
           },
+          {
+            title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+            url: "/manager/attendance",
+            icon: ChartColumn,
+          },
+          {
+            title: UI_TEXT.SIDE_BAR.SCHEDULE,
+            url: "/manager/schedule",
+            icon: ChartColumn,
+          },
+          {
+            title: UI_TEXT.SIDE_BAR.SHIFT,
+            url: "/manager/shift",
+            icon: ChartColumn,
+          },
         ],
         [EmployeeRole.CASHIER]: [
           {
