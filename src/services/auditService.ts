@@ -33,7 +33,7 @@ export async function getAuditLogs(
         items: [],
         totalCount: 0,
         pageSize: 10,
-        currentPage: 1,
+        pageNumber: 1,
         totalPages: 0,
       },
     };

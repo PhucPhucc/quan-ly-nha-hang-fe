@@ -1,6 +1,7 @@
 import { PREFERENCE } from "@/constants/ui_text/preference";
 import { SETTINGS } from "@/constants/ui_text/settings";
 
+import { ATTENDANCE } from "../constants/ui_text/attendance";
 import { AUDIT_LOG } from "../constants/ui_text/audit";
 import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_text/auth";
 import { API, BUTTON, COMMON, FORM, NAVIGATION, ROLE, SIDE_BAR } from "../constants/ui_text/common";
@@ -13,9 +14,12 @@ import { MENU } from "../constants/ui_text/menu";
 import { ORDER } from "../constants/ui_text/order";
 import { RESERVATION } from "../constants/ui_text/reservation";
 import { SALES_ANALYTICS } from "../constants/ui_text/salesAnalytics";
+import { SCHEDULE, SHIFT } from "../constants/ui_text/shift";
 import { TABLE } from "../constants/ui_text/table";
 import { VOUCHER } from "../constants/ui_text/voucher";
+
 export const UI_TEXT = {
+  ATTENDANCE,
   COMMON,
   SIDE_BAR,
   NAVIGATION,
@@ -41,4 +45,6 @@ export const UI_TEXT = {
   PREFERENCE,
   SETTINGS,
   VOUCHER,
+  SHIFT,
+  SCHEDULE,
 };

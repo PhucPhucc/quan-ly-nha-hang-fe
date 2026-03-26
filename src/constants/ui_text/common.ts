@@ -17,6 +17,7 @@ export const COMMON = {
   SEARCH: "Tìm kiếm",
   NO_RESULTS: "Không có kết quả",
   REFINE_SEARCH: "Thử thay đổi từ khóa tìm kiếm",
+  EXPORT: "Xuất file",
   NAME_PROJECT: "FoodHub",
   NAME_RESTAURANT: "FoodHub Restaurant",
   RESET: "Đặt lại",
@@ -131,6 +132,11 @@ export const COMMON = {
   ACTIVE: "Hoạt động",
   REFRESH: "Làm mới",
   DELETE_TITLE: "Xác nhận xóa",
+  DISPLAY: "Hiển thị",
+  TWO_HOURS_AGO: "2 giờ trước",
+  FIVE_HOURS_AGO: "5 giờ trước",
+  CREATE_NEW: "Tạo mới",
+  WEEK: "Tuần",
 };
 
 export const SIDE_BAR = {
@@ -150,6 +156,9 @@ export const SIDE_BAR = {
   SETTINGS: "Cài đặt",
   LOGOUT: "Đăng xuất",
   VOUCHER: "Voucher",
+  SHIFT: "Ca làm việc",
+  SCHEDULE: "Lịch làm việc",
+  ATTENDANCE: "Điểm danh",
 };
 
 export const FORM = {

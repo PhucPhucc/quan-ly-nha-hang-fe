@@ -85,29 +85,6 @@ const HeaderBar = () => {
           )}
         </div>
       </div>
-
-      {/* Right section: Actions */}
-      {/* <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative h-10 w-10 rounded-full hover:bg-muted"
-        >
-          <Bell className="size-5 text-secondary-foreground" />
-          <Badge
-            className="absolute right-1 top-1 h-4 w-4 border-2 border-background p-0 flex items-center justify-center text-[8px]"
-            variant="destructive"
-          >
-            {NOTIF_COUNT}
-          </Badge>
-        </Button>
-
-        <Separator orientation="vertical" className="mx-2 h-6" />
-
-        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted">
-          <Settings className="size-5 text-slate-600" />
-        </Button>
-      </div> */}
     </header>
   );
 };

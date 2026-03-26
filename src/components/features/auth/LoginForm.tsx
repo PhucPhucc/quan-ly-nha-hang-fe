@@ -33,6 +33,7 @@ const LoginForm = () => {
         const normalizedRole = normalizeEmployeeRole(role);
 
         setEmployee({
+          employeeId: res.data.employeeId,
           email: email || "",
           username: employeeCode,
           role: normalizedRole || role,

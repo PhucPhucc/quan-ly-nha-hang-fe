@@ -25,7 +25,7 @@ import {
   UtensilsCrossed,
   Warehouse,
 } from "lucide-react";
-import * as React from "react";
+import { ComponentProps, useCallback } from "react";
 
 import { NavMain, NavMainProps } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -44,11 +44,11 @@ const data = {
   },
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const userRole = useAuthStore((state) => state.employee?.role);
   const { data: alertsCount } = useInventoryAlertsCount();
 
-  const getRoutes = React.useCallback(
+  const getRoutes = useCallback(
     (role: EmployeeRole): NavMainProps[] => {
       const allRoutes: Record<EmployeeRole, NavMainProps[]> = {
         [EmployeeRole.MANAGER]: [

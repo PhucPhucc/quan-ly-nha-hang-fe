@@ -269,7 +269,7 @@ function normalizePagination<T>(
     items: items as T[],
     totalCount: data.totalCount,
     pageSize: data.pageSize,
-    currentPage: data.currentPage ?? data.pageNumber ?? 1,
+    pageNumber: data.currentPage ?? data.pageNumber ?? 1,
     totalPages: data.totalPages,
   };
 }

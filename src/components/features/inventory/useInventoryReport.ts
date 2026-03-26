@@ -47,11 +47,11 @@ export function useInventoryReport() {
     pagination: data?.data
       ? {
           totalCount: data.data.totalCount,
-          currentPage: data.data.currentPage,
+          currentPage: data.data.pageNumber,
           pageSize: data.data.pageSize,
           totalPages: data.data.totalPages,
-          hasNext: data.data.currentPage < data.data.totalPages,
-          hasPrevious: data.data.currentPage > 1,
+          hasNext: data.data.pageNumber < data.data.totalPages,
+          hasPrevious: data.data.pageNumber > 1,
         }
       : null,
     isLoading,

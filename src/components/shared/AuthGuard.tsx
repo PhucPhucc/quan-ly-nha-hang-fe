@@ -33,6 +33,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
             const normalizedRole = normalizeEmployeeRole(res.data.role) || res.data.role;
 
             setEmployee({
+              employeeId: res.data.employeeId,
               email: res.data.email || "",
               username: res.data.employeeCode,
               role: normalizedRole,

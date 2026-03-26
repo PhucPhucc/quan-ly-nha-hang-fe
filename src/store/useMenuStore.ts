@@ -87,7 +87,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
           totalPages: isAllCategory
             ? Math.ceil(combinedTotal / pageSize) || 1
             : response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
-          currentPage: response.data.currentPage || currentPage,
+          currentPage: response.data.pageNumber || currentPage,
         });
       }
     } catch (error) {
@@ -128,7 +128,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
             totalItems: response.data.totalCount,
             totalPages:
               response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
-            currentPage: response.data.currentPage || pageNumber,
+            currentPage: response.data.pageNumber || pageNumber,
           });
         }
       }
