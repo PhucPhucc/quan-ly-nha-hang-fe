@@ -601,6 +601,22 @@ Retrieved 2026-03-22, License - CC BY-SA 4.0
     scrollbar-width: none; /* Firefox */
   }
 
+  /* Chrome, Edge, Safari (WebKit-based) */
+  input[type="password"]::-webkit-credentials-auto-fill-button,
+  input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+  }
+
+  /* Edge (legacy + Chromium) */
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none !important;
+  }
+
+  /* Một số trường hợp Chrome mới */
+  input[type="password"]::-webkit-password-toggle-button {
+    display: none !important;
+  }
   .glass {
     @apply backdrop-blur-xl bg-white/70 dark:bg-black/40 border border-white/20 dark:border-white/10 shadow-lg;
   }

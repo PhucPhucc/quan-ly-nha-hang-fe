@@ -1,5 +1,3 @@
-"use client";
-
 import OrderOverviewPage from "@/components/features/order/manager/OrderOverviewPage";
 
 export default function OrderBoardClient() {

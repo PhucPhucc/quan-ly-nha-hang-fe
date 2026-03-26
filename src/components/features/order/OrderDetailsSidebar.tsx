@@ -5,6 +5,7 @@ import { Armchair } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useOrderBoardStore } from "@/store/useOrderStore";
+import { useTableStore } from "@/store/useTableStore";
 import { OrderType } from "@/types/enums";
 
 import OrderCurrent from "./orderCurrent/OrderCurrent";
@@ -12,11 +13,12 @@ import OrderHistory from "./orderCurrent/OrderHistory";
 
 const OrderDetailsSidebar = () => {
   const order = useOrderBoardStore((state) => state.activeOrderDetails);
-
+  const tables = useTableStore((state) => state.tables.find((t) => t.tableId === order?.tableId));
+  console.log(tables);
   const tableName = order
     ? order.orderType === OrderType.Takeaway
       ? UI_TEXT.ORDER.BOARD.TAKEAWAY
-      : UI_TEXT.TABLE.TABLE_LABEL(order.tableId?.slice(-2) || "--")
+      : UI_TEXT.TABLE.TABLE_LABEL(tables?.tableCode ? tables.tableCode.toString() : "--")
     : UI_TEXT.ORDER.BOARD.NOT_SELECTED_TABLE;
   return (
     <div className="flex-1 flex flex-col h-full min-h-0 w-full overflow-x-hidden">
@@ -51,7 +53,7 @@ const OrderDetailsSidebar = () => {
           value="detail"
           className="flex-1 m-0 p-0 min-h-0 overflow-hidden flex flex-col"
         >
-          <OrderCurrent />
+          <OrderCurrent tableCode={tables?.tableCode.toString() || "--"} />
         </TabsContent>
         <TabsContent
           value="history"

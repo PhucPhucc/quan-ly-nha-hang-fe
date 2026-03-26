@@ -236,7 +236,6 @@ export const orderService = {
     apiFetch<PayOsQrResponse | string>(`/billing/orders/${orderId}/payos-qr`, {
       method: "POST",
     }),
-  // /api/v1/tableoperations/{id}/change-table
   changeTable: (orderId: string, newTableId: string): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/tableoperations/${orderId}/change-table`, {
       method: "PATCH",
@@ -263,7 +262,6 @@ export const orderService = {
   ): Promise<ApiResponse<PaginationResult<OrderAuditLogResponse>>> => {
     return apiFetch<PaginationResult<OrderAuditLogResponse>>(`/orders/${orderId}/audit-logs`);
   },
-  // /api/v1/billing/orders/{orderId}/pre-check-bill/pdf
   getOrderReceiptPDF: (orderId: string) =>
     apiFetch(`/billing/orders/${orderId}/pre-check-bill/pdf`, {
       method: "GET",

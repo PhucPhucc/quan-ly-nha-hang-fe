@@ -26,9 +26,6 @@ export async function login(payload: LoginPayload): Promise<ApiResponse<AuthResp
 export async function logout(): Promise<ApiResponse<void>> {
   return apiFetch<void>("/auth/logout", {
     method: "POST",
-    body: {
-      refreshToken: localStorage.getItem("refreshToken"),
-    },
   });
 }
 

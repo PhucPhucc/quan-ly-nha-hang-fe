@@ -46,7 +46,7 @@ const LoginForm = () => {
             router.push("/order");
             break;
           case EmployeeRole.CHEFBAR:
-            router.push("/kds/station");
+            router.push("/kds/kitchen");
             break;
           default:
             router.push("/unauthorized");
