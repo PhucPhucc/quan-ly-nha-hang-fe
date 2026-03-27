@@ -94,7 +94,7 @@ export function InventoryImportExcelDialog({
       } else {
         toast.error(res.message || "Không thể tải file mẫu");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Lỗi khi kết nối máy chủ để tải file");
     }
   };

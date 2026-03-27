@@ -28,7 +28,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string;
     const dateOfBirth = formData.get("dateOfBirth") as string;
-    const status = formData.get("status") as string;
+    const status = (formData.get("status") as string) === "on" ? "active" : "inactive";
     const role = formData.get("role") as string;
     const address = formData.get("address") as string;
 
@@ -42,6 +42,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
       address,
       role: role,
     };
+    console.log(employeeUpdate);
     try {
       await updateEmployee(employeeUpdate);
       toast.success(UI_TEXT.EMPLOYEE.UPDATE_SUSCESS);

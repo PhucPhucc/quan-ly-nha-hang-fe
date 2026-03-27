@@ -8,7 +8,6 @@ import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { billingService } from "@/services/billingService";
 import { BillingHistoryRecord } from "@/types/Billing";
-import { OrderType } from "@/types/enums";
 
 import BillingHistoryFilter from "./BillingHistoryFilter";
 
@@ -32,8 +31,8 @@ export default function BillingHistoryPage() {
         pageNumber,
         pageSize: 10,
         ...(search && { search }),
-        ...(typeFilter !== "ALL" && { orderType: typeFilter as OrderType }),
-        ...(paymentFilter !== "ALL" && { paymentMethod: paymentFilter }),
+        ...(typeFilter !== "ALL" && { filters: { orderType: typeFilter } }),
+        ...(paymentFilter !== "ALL" && { filters: { paymentMethod: paymentFilter } }),
       });
 
       if (response.isSuccess && response.data) {

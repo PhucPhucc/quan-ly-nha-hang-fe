@@ -1,17 +1,18 @@
 import React from "react";
 
 import PaginationTable from "@/components/shared/PaginationTable";
-import { useMenuStore } from "@/store/useMenuStore";
 
-export const MenuPagination = () => {
-  const { currentPage, totalPages, setCurrentPage } = useMenuStore();
+interface MenuPaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
 
-  const onPageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  console.log(currentPage, totalPages);
-
+export const MenuPagination: React.FC<MenuPaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
   if (totalPages <= 1) {
     return null;
   }

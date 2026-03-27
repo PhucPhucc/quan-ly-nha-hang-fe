@@ -14,6 +14,7 @@ export const MENU = {
   SAVE_SUCCESS: "Lưu dữ liệu thành công!",
   DELETE_DEFAULT_ERROR:
     "Món ăn này đã có trong hóa đơn, không thể xóa. Hãy tắt trạng thái bán thay vì xóa!",
+  MENUCOUNT: (count: number) => `${count} món`,
   OPTIONS: {
     TITLE: "Tùy chọn món ăn",
     MENU_FAILED: "Không thể tải tùy chọn cho món ăn này!",
@@ -152,9 +153,22 @@ export const MENU = {
   TAB_DETAILS: "Chi tiết món",
   TAB_RECIPE: "Định lượng nguyên liệu",
   TAB_MEDIA: "Hình ảnh & Media",
+  TAB_ITEM_S: "Món lẻ",
+  TAB_COMBO_S: "Combo",
   MODAL_ID_PREFIX: "ID:",
   MEDIA_MANAGEMENT_TITLE: "Quản lý Media",
   MEDIA_MANAGEMENT_DESC: "Tải lên hình ảnh hoặc video cho món ăn này.",
+  MEDIA: {
+    UPLOAD_NEW: "Tải tệp mới",
+    PREVIEW: "Xem trước",
+    CURRENT_IMAGE: "Ảnh hiện tại của món ăn",
+    EMPTY: "Chưa có ảnh để hiển thị",
+    HINT_PRIORITY: "Nếu đã tải file lên, hệ thống sẽ ưu tiên ảnh vừa chọn khi lưu.",
+    SELECTED_FILE: (name: string) => `Đã chọn: ${name}`,
+    UPLOAD_HINT: "Bạn có thể tải lên ảnh mới tại đây.",
+    HAS_IMAGE: "Có ảnh",
+    NO_IMAGE: "Chưa có",
+  },
   OR: "HOẶC",
   RECEIPT: {
     TITLE: "Chi tiết hóa đơn",

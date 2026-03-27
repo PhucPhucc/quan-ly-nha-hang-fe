@@ -18,9 +18,14 @@ interface MenuFilterBarProps {
   categories: Category[];
 }
 
+const MENU_FILTER_ALL = "all";
+const MENU_FILTER_ITEM = "item";
+const MENU_FILTER_COMBO = "combo";
+
 export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
   const { searchQuery, setSearchQuery, categoryId, setCategoryId, setEditingItem, setModalOpen } =
     useMenuStore();
+  const menuItemCategories = categories.filter((category) => category.type !== 2);
 
   const handleAddNew = () => {
     setEditingItem(null);
@@ -29,7 +34,7 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
 
   const handleReset = () => {
     setSearchQuery("");
-    setCategoryId("all");
+    setCategoryId(MENU_FILTER_ALL);
   };
 
   return (
@@ -47,7 +52,7 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
         </div>
       </div>
 
-      <Select value={categoryId || "all"} onValueChange={setCategoryId}>
+      <Select value={categoryId || MENU_FILTER_ALL} onValueChange={setCategoryId}>
         <SelectTrigger className="w-full sm:w-50 rounded-md bg-card border border-border text-foreground ">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4" />
@@ -55,8 +60,10 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
           </div>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">{UI_TEXT.MENU.FILTER_ALL_CATEGORY}</SelectItem>
-          {categories.map((category) => (
+          <SelectItem value={MENU_FILTER_ALL}>{UI_TEXT.MENU.FILTER_ALL_CATEGORY}</SelectItem>
+          <SelectItem value={MENU_FILTER_ITEM}>{UI_TEXT.MENU.TAB_ITEM_S}</SelectItem>
+          <SelectItem value={MENU_FILTER_COMBO}>{UI_TEXT.MENU.TAB_COMBO_S}</SelectItem>
+          {menuItemCategories.map((category) => (
             <SelectItem key={category.categoryId} value={category.categoryId}>
               {category.name}
             </SelectItem>

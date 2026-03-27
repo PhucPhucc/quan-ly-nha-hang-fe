@@ -60,7 +60,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   currentPage: 1,
   totalItems: 0,
   totalPages: 1,
-  pageSize: 7,
+  pageSize: 8,
 
   setFilter: (filter) =>
     set((state) => ({ filter: { ...state.filter, ...filter }, currentPage: 1 })),
@@ -76,17 +76,11 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     try {
       const response = await menuService.getAll(currentPage, pageSize);
       if (response.isSuccess && response.data) {
-        const isAllCategory = get().categoryId === "all";
-        const combinedTotal = isAllCategory
-          ? response.data.totalCount + get().setMenus.length
-          : response.data.totalCount;
-
         set({
           menuItems: response.data.items,
           totalItems: response.data.totalCount,
-          totalPages: isAllCategory
-            ? Math.ceil(combinedTotal / pageSize) || 1
-            : response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
+          totalPages:
+            response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
           currentPage: response.data.pageNumber || currentPage,
         });
       }
@@ -102,35 +96,9 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     try {
       const response = await menuService.getAllSetMenu(pageNumber, pageSize);
       if (response.isSuccess && response.data) {
-        const state = get();
-        // Check if current category is combo category
-        // We probably don't have categories in store, so we can't easily check isComboCategorySelected here.
-        // Wait, if we just update setMenus it's safe if we do it conditionally.
-        // Let's pass an optional boolean to updatePagination?
-        // Actually, we can just update it. Wait, no.
-
-        // A simple fix is to always update if we are not fetching BOTH.
-        // But how does useMenuStore know if it's fetching both?
-        // Let's look at MenuManagement.tsx.
-        // It fetches BOTH if categoryId === 'all'.
-
-        const isAllCategory = get().categoryId === "all";
-
-        if (isAllCategory) {
-          const combinedTotal = get().totalItems + response.data.items.length;
-          set({
-            setMenus: response.data.items,
-            totalPages: Math.ceil(combinedTotal / pageSize) || 1,
-          });
-        } else {
-          set({
-            setMenus: response.data.items,
-            totalItems: response.data.totalCount,
-            totalPages:
-              response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
-            currentPage: response.data.pageNumber || pageNumber,
-          });
-        }
+        set({
+          setMenus: response.data.items,
+        });
       }
     } catch (error) {
       console.error("Failed to fetch set menus:", error);

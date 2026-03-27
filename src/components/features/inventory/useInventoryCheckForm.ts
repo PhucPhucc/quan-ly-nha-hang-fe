@@ -180,7 +180,7 @@ export function useInventoryCheckForm(id?: string) {
         window.URL.revokeObjectURL(url);
         toast.success("Xuất file Excel thành công");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Lỗi khi xuất file");
     } finally {
       setIsExporting(false);

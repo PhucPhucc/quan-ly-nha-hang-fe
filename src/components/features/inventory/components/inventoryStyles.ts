@@ -4,7 +4,7 @@ export const INVENTORY_SURFACE_CLASS =
 export const INVENTORY_TOOLBAR_CLASS =
   "rounded-2xl border border-slate-200 bg-white/95 px-4 py-4 shadow-sm shadow-slate-100/60";
 
-export const INVENTORY_TABLE_SURFACE_CLASS = `${INVENTORY_SURFACE_CLASS} overflow-hidden`;
+export const INVENTORY_TABLE_SURFACE_CLASS = `${INVENTORY_SURFACE_CLASS} overflow-hidden py-2`;
 
 export const INVENTORY_FIELD_WRAP_CLASS = "flex min-w-0 items-center gap-2";
 

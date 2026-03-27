@@ -12,6 +12,9 @@ export interface BillingHistoryParams {
   paymentMethod?: string;
   fromDate?: string;
   toDate?: string;
+  filters?: {
+    [key: string]: string;
+  };
 }
 
 export interface SplitBillItemRequest {
@@ -57,6 +60,13 @@ export const billingService = {
     if (params.paymentMethod) queryParams.append("paymentMethod", params.paymentMethod);
     if (params.fromDate) queryParams.append("fromDate", params.fromDate);
     if (params.toDate) queryParams.append("toDate", params.toDate);
+    if (params.filters) {
+      Object.entries(params.filters).forEach(([key, value]) => {
+        if (value) {
+          queryParams.append("filters", `${key}:${value}`);
+        }
+      });
+    }
 
     return apiFetch<PaginationResult<BillingHistoryRecord>>(
       `/billing/history?${queryParams.toString()}`

@@ -33,8 +33,10 @@ export default function OrderListPage() {
         ...(search && { search }),
       };
 
-      if (statusFilter !== "ALL") params.status = statusFilter as OrderStatus;
-      if (typeFilter !== "ALL") params.orderType = typeFilter as OrderType;
+      if (statusFilter !== "ALL")
+        params.filters = { ...params.filters, status: statusFilter as OrderStatus };
+      if (typeFilter !== "ALL")
+        params.filters = { ...params.filters, orderType: typeFilter as OrderType };
 
       const response = await orderService.getOrders(params);
       if (response.isSuccess && response.data) {

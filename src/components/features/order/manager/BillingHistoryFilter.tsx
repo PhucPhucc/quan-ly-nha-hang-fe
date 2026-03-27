@@ -57,7 +57,6 @@ const BillingHistoryFilter = ({
             <SelectItem value="ALL">{UI_TEXT.COMMON.ALL}</SelectItem>
             <SelectItem value={OrderType.DineIn}>{UI_TEXT.ORDER.BILLING.DINE_IN}</SelectItem>
             <SelectItem value={OrderType.Takeaway}>{UI_TEXT.ORDER.BILLING.TAKEAWAY}</SelectItem>
-            <SelectItem value={OrderType.Delivery}>{UI_TEXT.ORDER.BILLING.DELIVERY}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -74,7 +73,6 @@ const BillingHistoryFilter = ({
             <SelectItem value="ALL">{UI_TEXT.ORDER.BILLING.ALL_METHODS}</SelectItem>
             <SelectItem value="Cash">{UI_TEXT.ORDER.BILLING.CASH}</SelectItem>
             <SelectItem value="BankTransfer">{UI_TEXT.ORDER.BILLING.TRANSFER}</SelectItem>
-            <SelectItem value="CreditCard">{UI_TEXT.ORDER.BILLING.CARD}</SelectItem>
           </SelectContent>
         </Select>
 

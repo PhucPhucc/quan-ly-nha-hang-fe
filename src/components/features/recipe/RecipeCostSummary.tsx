@@ -24,9 +24,9 @@ interface RecipeCostSummaryProps {
 export const RecipeCostSummary: React.FC<RecipeCostSummaryProps> = ({ totalCost, register }) => {
   return (
     <div className="space-y-6">
-      <Card className="border-none shadow-xl shadow-neutral-200/50 bg-white/80 backdrop-blur-sm border-t-4 border-t-primary">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-bold uppercase tracking-wider text-muted-foreground">
+      <Card className="border-none py-4 gap-0 shadow-xl shadow-neutral-200/50 bg-card backdrop-blur-sm border-t-4 border-t-primary">
+        <CardHeader className="">
+          <CardTitle className="text-lg font-bold uppercase tracking-wider text-card-foreground">
             {UI_TEXT.MENU.RECIPE.TOTAL_COST}
           </CardTitle>
         </CardHeader>

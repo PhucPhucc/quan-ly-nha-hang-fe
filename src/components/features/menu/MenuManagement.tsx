@@ -9,25 +9,35 @@ import { Category } from "@/types/Menu";
 import { MenuFilterBar } from "./MenuFilterBar";
 import { MenuFormModal } from "./MenuFormModal";
 import { MenuList } from "./MenuList";
-import MenuPagination from "./MenuPagination";
+
+const MENU_FILTER_ALL = "all";
+const MENU_FILTER_ITEM = "item";
+const MENU_FILTER_COMBO = "combo";
+const MENU_MANAGEMENT_FETCH_SIZE = 100;
 
 export const MenuManagement: React.FC = () => {
-  const { fetchMenuItems, fetchSetMenus, currentPage, categoryId, pageSize } = useMenuStore();
+  const { fetchMenuItems, fetchSetMenus, categoryId } = useMenuStore();
 
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    const isComboCategorySelected = categories.find((c) => c.categoryId === categoryId)?.type === 2;
+    const selectedCategory = categories.find((category) => category.categoryId === categoryId);
+    const isAllFilter = categoryId === MENU_FILTER_ALL;
+    const isItemFilter = categoryId === MENU_FILTER_ITEM;
+    const isComboFilter = categoryId === MENU_FILTER_COMBO;
+    const isSpecificMenuItemCategory = Boolean(selectedCategory && selectedCategory.type !== 2);
 
-    if (categoryId === "all") {
-      fetchMenuItems(currentPage, pageSize);
-      fetchSetMenus(currentPage, pageSize);
-    } else if (isComboCategorySelected) {
-      fetchSetMenus(currentPage, pageSize);
-    } else {
-      fetchMenuItems(currentPage, pageSize);
+    if (isComboFilter) {
+      fetchSetMenus(1, MENU_MANAGEMENT_FETCH_SIZE);
+      return;
     }
-  }, [fetchMenuItems, fetchSetMenus, currentPage, categoryId, pageSize, categories]);
+
+    fetchMenuItems(1, MENU_MANAGEMENT_FETCH_SIZE);
+
+    if (isAllFilter || (!isItemFilter && !isSpecificMenuItemCategory)) {
+      fetchSetMenus(1, MENU_MANAGEMENT_FETCH_SIZE);
+    }
+  }, [fetchMenuItems, fetchSetMenus, categoryId, categories]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -56,8 +66,6 @@ export const MenuManagement: React.FC = () => {
       <MenuFilterBar categories={categories} />
 
       <MenuList categories={categories} />
-
-      <MenuPagination />
 
       <MenuFormModal categories={categories} />
     </div>

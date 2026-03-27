@@ -2,11 +2,7 @@
 
 import { Eye, History } from "lucide-react";
 
-import {
-  INVENTORY_TABLE_CONTAINER_CLASS,
-  INVENTORY_TABLE_SURFACE_CLASS,
-  INVENTORY_THEAD_CLASS,
-} from "@/components/features/inventory/components/inventoryStyles";
+import { INVENTORY_TABLE_SURFACE_CLASS } from "@/components/features/inventory/components/inventoryStyles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -58,30 +54,23 @@ export function AuditLogTable({
         </div>
       ) : (
         <div className="flex-1 overflow-hidden">
-          <Table
-            containerClassName={cn(
-              INVENTORY_TABLE_CONTAINER_CLASS,
-              "max-h-[520px] overflow-auto",
-              "[&_td]:align-top [&_td]:py-4 [&_td]:text-sm",
-              "custom-scrollbar"
-            )}
-          >
-            <TableHeader className={cn(INVENTORY_THEAD_CLASS, "bg-secondary/50 sticky top-0 z-20")}>
-              <TableRow className="hover:bg-transparent border-b border-border/50">
-                <TableHead className="w-[180px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="px-3 w-45 font-black uppercase tracking-widest text-muted-foreground">
                   {UI_TEXT.AUDIT_LOG.TIME}
                 </TableHead>
-                <TableHead className="w-[140px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <TableHead className="px-3 w-35 font-black uppercase tracking-widest text-muted-foreground">
                   {UI_TEXT.AUDIT_LOG.ACTION}
                 </TableHead>
-                <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <TableHead className="px-3 font-black uppercase tracking-widest text-muted-foreground">
                   {UI_TEXT.AUDIT_LOG.ENTITY} {UI_TEXT.COMMON.SLASH}{" "}
                   {UI_TEXT.AUDIT_LOG.METADATA_LABEL}
                 </TableHead>
-                <TableHead className="w-[200px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <TableHead className="px-3 w-50 font-black uppercase tracking-widest text-muted-foreground">
                   {UI_TEXT.AUDIT_LOG.ACTOR}
                 </TableHead>
-                <TableHead className="w-[100px] text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right border-l border-border/10">
+                <TableHead className="px-3 w-25 font-black uppercase tracking-widest text-muted-foreground text-right border-l border-border/10">
                   {UI_TEXT.BUTTON.DETAIL}
                 </TableHead>
               </TableRow>

@@ -26,12 +26,12 @@ export function useVoucherTable(refreshKey: number) {
 
       const filters: string[] = [];
       if (typeFilter !== "all") {
-        filters.push(`voucherType==${typeFilter}`);
+        filters.push(`type:${typeFilter}`);
       }
       if (statusFilter !== "all") {
-        filters.push(`isActive==${statusFilter}`);
+        filters.push(`isActive:${statusFilter}`);
       }
-
+      console.log(filters);
       const res = await voucherService.getAll({
         pageNumber: currentPage,
         pageSize,

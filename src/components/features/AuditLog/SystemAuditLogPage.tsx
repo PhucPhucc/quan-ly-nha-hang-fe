@@ -1,17 +1,17 @@
 "use client";
 
-import { CalendarIcon, ChevronLeft, ChevronRight, RefreshCcw, Search } from "lucide-react";
+import { CalendarIcon, RefreshCcw, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   INVENTORY_ICON_BUTTON_CLASS,
   INVENTORY_INPUT_CLASS,
   INVENTORY_PAGE_CLASS,
-  INVENTORY_PAGINATION_BUTTON_CLASS,
   INVENTORY_SELECT_TRIGGER_CLASS,
   INVENTORY_TABLE_SURFACE_CLASS,
 } from "@/components/features/inventory/components/inventoryStyles";
 import { InventoryToolbar } from "@/components/features/inventory/components/InventoryToolbar";
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -232,39 +232,7 @@ export default function SystemAuditLogPage() {
           noSurface
         />
 
-        <div className="flex items-center justify-between border-t border-border/50 bg-card px-4 py-3 shadow-none">
-          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            {UI_TEXT.AUDIT_LOG.STATS.CURRENT_PAGE} {page}
-            {totalPages > 0 ? ` / ${totalPages}` : ""}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className={cn(
-                INVENTORY_PAGINATION_BUTTON_CLASS,
-                "h-8 px-3 text-[10px] font-bold uppercase tracking-widest rounded-lg"
-              )}
-              onClick={() => setPage((current) => Math.max(1, current - 1))}
-              disabled={loading || page <= 1}
-            >
-              <ChevronLeft className="h-3.5 w-3.5" />
-              {UI_TEXT.AUDIT_LOG.PREVIOUS}
-            </Button>
-            <Button
-              variant="outline"
-              className={cn(
-                INVENTORY_PAGINATION_BUTTON_CLASS,
-                "h-8 px-3 text-[10px] font-bold uppercase tracking-widest rounded-lg"
-              )}
-              onClick={() => setPage((current) => current + 1)}
-              disabled={loading || totalPages === 0 || page >= totalPages}
-            >
-              {UI_TEXT.AUDIT_LOG.NEXT}
-              <ChevronRight className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
+        <PaginationTable currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
 
       <AuditLogDetailSheet log={selectedLog} isOpen={isSheetOpen} onOpenChange={setIsSheetOpen} />

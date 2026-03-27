@@ -263,6 +263,11 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               },
             ],
           },
+          {
+            title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+            url: "/attendance",
+            icon: ClipboardList,
+          },
         ],
         [EmployeeRole.CHEFBAR]: [
           {
@@ -279,6 +284,11 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
             url: "/kds/audit-log",
             icon: History,
+          },
+          {
+            title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+            url: "/attendance",
+            icon: ClipboardList,
           },
         ],
         [EmployeeRole.WAITER]: [

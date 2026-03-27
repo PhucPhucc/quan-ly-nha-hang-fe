@@ -1,8 +1,8 @@
 import React from "react";
+import { Controller } from "react-hook-form";
 
-import { Field } from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -10,62 +10,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MenuFormType } from "@/hooks/useMenuForm";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Station } from "@/types/enums";
-import { MenuItem, SetMenu } from "@/types/Menu";
 
 interface MenuStationTimeFieldsProps {
-  editingItem: MenuItem | SetMenu | null;
+  form: MenuFormType;
 }
 
-export const MenuStationTimeFields: React.FC<MenuStationTimeFieldsProps> = ({ editingItem }) => {
+export const MenuStationTimeFields: React.FC<MenuStationTimeFieldsProps> = ({ form }) => {
+  const { control, formState, register } = form.formMethods;
+
   return (
     <>
       <Field className="space-y-2 col-span-2 md:col-span-1">
-        <Label htmlFor="station" className="text-right">
+        <FieldLabel htmlFor="station">
           {UI_TEXT.MENU.LABEL_STATION}
           <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-        </Label>
-        <Select
-          name="station"
-          defaultValue={
-            "station" in (editingItem || {})
-              ? String((editingItem as MenuItem).station)
-              : Station.HOT_KITCHEN.toString()
-          }
-          required
-        >
-          <SelectTrigger id="station">
-            <SelectValue placeholder={UI_TEXT.MENU.PLACEHOLDER_STATION} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={Station.HOT_KITCHEN.toString()}>
-              {UI_TEXT.MENU.STATION.HOTKITCHEN}
-            </SelectItem>
-            <SelectItem value={Station.COLD_KITCHEN.toString()}>
-              {UI_TEXT.MENU.STATION.COLDKITCHEN}
-            </SelectItem>
-            <SelectItem value={Station.BAR.toString()}>{UI_TEXT.MENU.STATION.DRINKS}</SelectItem>
-          </SelectContent>
-        </Select>
+        </FieldLabel>
+        <FieldContent>
+          <Controller
+            control={control}
+            name="station"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger
+                  id="station"
+                  data-field-path="station"
+                  aria-invalid={!!formState.errors.station}
+                >
+                  <SelectValue placeholder={UI_TEXT.MENU.PLACEHOLDER_STATION} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={Station.HOT_KITCHEN.toString()}>
+                    {UI_TEXT.MENU.STATION.HOTKITCHEN}
+                  </SelectItem>
+                  <SelectItem value={Station.COLD_KITCHEN.toString()}>
+                    {UI_TEXT.MENU.STATION.COLDKITCHEN}
+                  </SelectItem>
+                  <SelectItem value={Station.BAR.toString()}>
+                    {UI_TEXT.MENU.STATION.DRINKS}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+          <FieldError errors={[formState.errors.station]} />
+        </FieldContent>
       </Field>
 
       <Field className="space-y-2 col-span-2">
-        <Label htmlFor="expectedTime" className="text-right">
+        <FieldLabel htmlFor="expectedTime">
           {UI_TEXT.MENU.LABEL_EXPECTED_TIME}
           <span className="text-primary">{UI_TEXT.MENU.OPTIONS.REQUIRED_MARK}</span>
-        </Label>
-        <Input
-          id="expectedTime"
-          name="expectedTime"
-          type="number"
-          min="1"
-          defaultValue={
-            "expectedTime" in (editingItem || {}) ? (editingItem as MenuItem).expectedTime : ""
-          }
-          placeholder={UI_TEXT.MENU.PLACEHOLDER_EXPECTED_TIME}
-          required
-        />
+        </FieldLabel>
+        <FieldContent>
+          <Input
+            id="expectedTime"
+            type="number"
+            min="1"
+            data-field-path="expectedTime"
+            aria-invalid={!!formState.errors.expectedTime}
+            placeholder={UI_TEXT.MENU.PLACEHOLDER_EXPECTED_TIME}
+            {...register("expectedTime")}
+          />
+          <FieldError errors={[formState.errors.expectedTime]} />
+        </FieldContent>
       </Field>
     </>
   );

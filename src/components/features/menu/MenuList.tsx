@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import {
@@ -11,89 +11,124 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useMenuStore } from "@/store/useMenuStore";
-import { Category } from "@/types/Menu";
+import { Category, MenuItem, SetMenu } from "@/types/Menu";
 
 import { MenuItemCard } from "./MenuItemCard";
+import MenuPagination from "./MenuPagination";
 
 interface MenuListProps {
   categories: Category[];
 }
 
-export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
-  const {
-    menuItems,
-    setMenus,
-    isLoading,
-    searchQuery,
-    categoryId,
-    currentPage,
-    pageSize,
-    totalItems,
-  } = useMenuStore();
+const MENU_FILTER_ALL = "all";
+const MENU_FILTER_ITEM = "item";
+const MENU_FILTER_COMBO = "combo";
 
-  const filteredItems = useMemo(() => {
-    const isComboCategorySelected = categories.find((c) => c.categoryId === categoryId)?.type === 2;
+const toSearchableText = (value?: string | null) => value?.toLowerCase() ?? "";
 
-    if (isComboCategorySelected) {
-      const combos = setMenus.filter((item) => {
-        const matchSearch =
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
-        return matchSearch;
-      });
-      // setMenus are fully loaded (max 100), so we MUST paginate them on frontend
-      return combos.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-    }
+const matchesSearch = (item: MenuItem | SetMenu, searchQuery: string) => {
+  const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    const filteredMenuItems = menuItems.filter((item) => {
-      const matchSearch =
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchCategory = categoryId === "all" || item.categoryId === categoryId;
+  if (!normalizedQuery) {
+    return true;
+  }
+
+  return (
+    toSearchableText(item.name).includes(normalizedQuery) ||
+    toSearchableText(item.description).includes(normalizedQuery)
+  );
+};
+
+const MenuSection = ({
+  title,
+  items,
+  totalCount,
+}: {
+  title: string;
+  items: Array<MenuItem | SetMenu>;
+  totalCount: number;
+}) => (
+  <div className="space-y-3">
+    <div className="flex items-center justify-between">
+      <h3 className="text-base font-semibold text-table-text-strong">{title}</h3>
+      <span className="text-sm text-table-text-muted">{UI_TEXT.MENU.MENUCOUNT(totalCount)}</span>
+    </div>
+
+    <TableShell className="mt-0 mb-0">
+      <Table>
+        <TableHeader>
+          <TableRow variant="header">
+            <TableHead>{UI_TEXT.MENU.COL_ITEM_NAME}</TableHead>
+            <TableHead>{UI_TEXT.MENU.COL_CATEGORY}</TableHead>
+            <TableHead>{UI_TEXT.MENU.COL_PRICE}</TableHead>
+            <TableHead>{UI_TEXT.MENU.COL_STATUS}</TableHead>
+            <TableHead className="text-right">{UI_TEXT.MENU.COL_ACTION}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.map((item) => (
+            <MenuItemCard
+              key={"setMenuId" in item ? item.setMenuId : item.menuItemId}
+              item={item}
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </TableShell>
+  </div>
+);
+
+const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
+  const { menuItems, setMenus, isLoading, searchQuery, categoryId, pageSize } = useMenuStore();
+  const [itemPage, setItemPage] = useState(1);
+  const [comboPage, setComboPage] = useState(1);
+
+  const selectedCategory = categories.find((category) => category.categoryId === categoryId);
+  const isAllFilter = categoryId === MENU_FILTER_ALL;
+  const isItemFilter = categoryId === MENU_FILTER_ITEM;
+  const isComboFilter = categoryId === MENU_FILTER_COMBO;
+  const isSpecificMenuItemCategory = Boolean(selectedCategory && selectedCategory.type !== 2);
+
+  const filteredMenuItems = useMemo(() => {
+    return menuItems.filter((item) => {
+      const matchSearch = matchesSearch(item, searchQuery);
+      const matchCategory =
+        isAllFilter ||
+        isItemFilter ||
+        (isSpecificMenuItemCategory && item.categoryId === categoryId);
 
       return matchSearch && matchCategory;
     });
+  }, [menuItems, searchQuery, categoryId, isAllFilter, isItemFilter, isSpecificMenuItemCategory]);
 
-    if (categoryId === "all") {
-      const filteredSetMenus = setMenus.filter((item) => {
-        const matchSearch =
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
-        return matchSearch;
-      });
+  const filteredSetMenus = useMemo(
+    () => setMenus.filter((item) => matchesSearch(item, searchQuery)),
+    [setMenus, searchQuery]
+  );
 
-      let pageItems = [] as Array<
-        (typeof filteredMenuItems)[number] | (typeof filteredSetMenus)[number]
-      >;
+  const paginatedSetMenus = useMemo(() => {
+    const startIndex = (comboPage - 1) * pageSize;
+    return filteredSetMenus.slice(startIndex, startIndex + pageSize);
+  }, [filteredSetMenus, comboPage, pageSize]);
 
-      // If there are menuItems for this page:
-      if (filteredMenuItems.length > 0) {
-        pageItems = [...filteredMenuItems];
-      }
+  const paginatedMenuItems = useMemo(() => {
+    const startIndex = (itemPage - 1) * pageSize;
+    return filteredMenuItems.slice(startIndex, startIndex + pageSize);
+  }, [filteredMenuItems, itemPage, pageSize]);
 
-      // Compute global requirements to seamlessly fill the gap with setMenus
-      const reqStart = (currentPage - 1) * pageSize;
-      const M = totalItems; // global total backend menuItems count
-
-      if (pageItems.length < pageSize) {
-        const needed = pageSize - pageItems.length;
-        // determine where to start in setMenus (if after complete menu items)
-        const setMenuStartIndex = Math.max(0, reqStart - M);
-        const setMenuSlice = filteredSetMenus.slice(setMenuStartIndex, setMenuStartIndex + needed);
-        pageItems = [...pageItems, ...setMenuSlice];
-      }
-
-      return pageItems;
-    }
-
-    return filteredMenuItems.slice(0, pageSize);
-  }, [menuItems, setMenus, searchQuery, categoryId, categories, currentPage, pageSize, totalItems]);
+  const itemTotalPages = Math.max(1, Math.ceil(filteredMenuItems.length / pageSize));
+  const comboTotalPages = Math.max(1, Math.ceil(filteredSetMenus.length / pageSize));
+  const visibleItemCount = isComboFilter
+    ? filteredSetMenus.length
+    : isAllFilter
+      ? filteredMenuItems.length + filteredSetMenus.length
+      : filteredMenuItems.length;
 
   if (isLoading) {
     return <TableSkeleton />;
   }
 
-  if (filteredItems.length === 0) {
+  if (visibleItemCount === 0) {
     return (
       <TableShell className="mt-4">
         <div className="table-feedback">
@@ -107,27 +142,90 @@ export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
     );
   }
 
+  if (isComboFilter) {
+    return (
+      <div className="space-y-4">
+        <MenuSection title="Combo" items={paginatedSetMenus} totalCount={filteredSetMenus.length} />
+        <MenuPagination
+          currentPage={comboPage}
+          totalPages={comboTotalPages}
+          onPageChange={setComboPage}
+        />
+      </div>
+    );
+  }
+
+  if (isSpecificMenuItemCategory) {
+    return (
+      <div className="space-y-4">
+        <MenuSection
+          title={selectedCategory?.name || "Món lẻ"}
+          items={paginatedMenuItems}
+          totalCount={filteredMenuItems.length}
+        />
+        <MenuPagination
+          currentPage={itemPage}
+          totalPages={itemTotalPages}
+          onPageChange={setItemPage}
+        />
+      </div>
+    );
+  }
+
+  if (isItemFilter) {
+    return (
+      <div className="space-y-4">
+        <MenuSection
+          title="Món lẻ"
+          items={paginatedMenuItems}
+          totalCount={filteredMenuItems.length}
+        />
+        <MenuPagination
+          currentPage={itemPage}
+          totalPages={itemTotalPages}
+          onPageChange={setItemPage}
+        />
+      </div>
+    );
+  }
+
   return (
-    <TableShell className="mt-4 mb-0">
-      <Table>
-        <TableHeader>
-          <TableRow variant="header">
-            <TableHead>{UI_TEXT.MENU.COL_ITEM_NAME}</TableHead>
-            <TableHead>{UI_TEXT.MENU.COL_CATEGORY}</TableHead>
-            <TableHead>{UI_TEXT.MENU.COL_PRICE}</TableHead>
-            <TableHead>{UI_TEXT.MENU.COL_STATUS}</TableHead>
-            <TableHead className="text-right">{UI_TEXT.MENU.COL_ACTION}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredItems.map((item) => (
-            <MenuItemCard
-              key={"setMenuId" in item ? item.setMenuId : item.menuItemId}
-              item={item}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableShell>
+    <div className="space-y-6">
+      {filteredMenuItems.length > 0 && (
+        <div className="space-y-4">
+          <MenuSection
+            title="Món lẻ"
+            items={paginatedMenuItems}
+            totalCount={filteredMenuItems.length}
+          />
+          <MenuPagination
+            currentPage={itemPage}
+            totalPages={itemTotalPages}
+            onPageChange={setItemPage}
+          />
+        </div>
+      )}
+
+      {filteredSetMenus.length > 0 && (
+        <div className="space-y-4">
+          <MenuSection
+            title="Combo"
+            items={paginatedSetMenus}
+            totalCount={filteredSetMenus.length}
+          />
+          <MenuPagination
+            currentPage={comboPage}
+            totalPages={comboTotalPages}
+            onPageChange={setComboPage}
+          />
+        </div>
+      )}
+    </div>
   );
+};
+
+export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
+  const { searchQuery, categoryId } = useMenuStore();
+
+  return <MenuListContent key={`${categoryId}-${searchQuery}`} categories={categories} />;
 };

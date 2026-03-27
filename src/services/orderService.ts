@@ -74,6 +74,7 @@ export interface PaginationParams {
   orderType?: OrderType;
   fromDate?: string;
   toDate?: string;
+  filters?: Record<string, string>;
 }
 
 export interface SplitOrderItemRequest {
@@ -180,7 +181,14 @@ export const orderService = {
     if (params.orderType) queryParams.append("orderType", params.orderType.toString());
     if (params.fromDate) queryParams.append("fromDate", params.fromDate);
     if (params.toDate) queryParams.append("toDate", params.toDate);
-
+    if (params.filters) {
+      Object.entries(params.filters).forEach(([key, value]) => {
+        if (value) {
+          queryParams.append("filters", `${key}:${value}`);
+        }
+      });
+    }
+    console.log(queryParams);
     return apiFetch<PaginationResult<Order>>(`/orders?${queryParams.toString()}`);
   },
 
