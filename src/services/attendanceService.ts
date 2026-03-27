@@ -14,6 +14,9 @@ export const attendanceService = {
     search?: string;
     orderBy?: string;
     filters?: string[];
+    date?: string;
+    startDate?: string;
+    endDate?: string;
   }): Promise<ApiResponse<PaginationResult<AttendanceReportItem>>> => {
     const queryParams = new URLSearchParams();
     if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
@@ -23,6 +26,9 @@ export const attendanceService = {
     if (params?.filters) {
       params.filters.forEach((f) => queryParams.append("Filters", f));
     }
+    if (params?.date) queryParams.append("date", params.date);
+    if (params?.startDate) queryParams.append("startDate", params.startDate);
+    if (params?.endDate) queryParams.append("endDate", params.endDate);
 
     const queryString = queryParams.toString();
     const url = `/attendances/report${queryString ? `?${queryString}` : ""}`;
@@ -35,6 +41,9 @@ export const attendanceService = {
     search?: string;
     orderBy?: string;
     filters?: string[];
+    date?: string;
+    startDate?: string;
+    endDate?: string;
   }): Promise<Blob> => {
     const queryParams = new URLSearchParams();
     if (params?.pageNumber) queryParams.append("PageNumber", params.pageNumber.toString());
@@ -44,27 +53,22 @@ export const attendanceService = {
     if (params?.filters) {
       params.filters.forEach((f) => queryParams.append("Filters", f));
     }
+    if (params?.date) queryParams.append("date", params.date);
+    if (params?.startDate) queryParams.append("startDate", params.startDate);
+    if (params?.endDate) queryParams.append("endDate", params.endDate);
 
     const queryString = queryParams.toString();
     const url = `/attendances/report/export${queryString ? `?${queryString}` : ""}`;
 
-    // Custom fetch for blob
-    const token = localStorage.getItem("accessToken");
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"}${url}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await apiFetch<Blob>(url, {
+      responseType: "blob",
+    });
 
-    if (!response.ok) {
+    if (!response.isSuccess || !response.data) {
       throw new Error("Failed to export attendance report");
     }
 
-    return response.blob();
+    return response.data;
   },
 
   checkIn: async (): Promise<ApiResponse<AttendanceCheckInResponse>> => {

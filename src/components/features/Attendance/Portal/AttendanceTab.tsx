@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, LogIn, LogOut, MapPin, Wifi } from "lucide-react";
+import { AlertCircle, LogIn, LogOut } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -118,30 +118,6 @@ export function AttendanceTab({
           {UI_TEXT.ATTENDANCE.PORTAL_CHECK_IN}
         </Button>
       )}
-
-      <p className="text-center text-[10px] text-slate-400 mt-6 tracking-wide font-medium">
-        {UI_TEXT.ATTENDANCE.PORTAL_CAMERA_NOTE}
-      </p>
-
-      {/* Footer Info */}
-      <div className="flex items-center justify-between mt-10 pt-6 border-t border-slate-100">
-        <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
-            {UI_TEXT.ATTENDANCE.PORTAL_LOCATION}
-          </p>
-          <p className="text-xs font-bold text-slate-700 flex items-center gap-1">
-            <MapPin className="size-3 text-red-500" /> {UI_TEXT.ATTENDANCE.PORTAL_MOCK_LOCATION}
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
-            {UI_TEXT.ATTENDANCE.PORTAL_NETWORK}
-          </p>
-          <p className="text-xs font-bold text-emerald-600 flex items-center justify-end gap-1">
-            <Wifi className="size-3" /> {UI_TEXT.ATTENDANCE.PORTAL_NETWORK_STABLE}
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
