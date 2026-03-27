@@ -280,4 +280,9 @@ export const orderService = {
 
   getPreCheckBill: (orderId: string): Promise<ApiResponse<PreCheckBillResponse>> =>
     apiFetch<PreCheckBillResponse>(`/billing/orders/${orderId}/pre-check-bill`),
+
+  syncPayosStatus: (orderId: string): Promise<ApiResponse<boolean>> =>
+    apiFetch<boolean>(`/billing/orders/${orderId}/sync-payos-status`, {
+      method: "POST",
+    }),
 };

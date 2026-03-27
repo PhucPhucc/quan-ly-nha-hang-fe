@@ -19,7 +19,7 @@ export default function LogoutPage() {
       } finally {
         logoutStore();
         // Force a hard navigation to login to ensure all states/cache are cleared
-        router.push("/login");
+        window.location.href = "/login";
       }
     };
 

@@ -28,7 +28,6 @@ export interface FormData {
   reservationDate: string;
   reservationTime: string;
   guestCount: number;
-  partyType: string;
   areaId: string;
 }
 
@@ -47,7 +46,6 @@ export function useCreateBooking(
     reservationDate: "",
     reservationTime: "",
     guestCount: 2,
-    partyType: "normal",
     areaId: "all",
   });
   const [areas, setAreas] = useState<Area[]>([]);
@@ -160,7 +158,7 @@ export function useCreateBooking(
         reservationDate: formData.reservationDate,
         reservationTime: normalizedTime,
         guestCount: Number(formData.guestCount),
-        partyType: formData.partyType,
+        partyType: "normal",
         areaId: formData.areaId === "all" ? undefined : formData.areaId,
       });
 
@@ -172,7 +170,6 @@ export function useCreateBooking(
           reservationDate: "",
           reservationTime: "",
           guestCount: 2,
-          partyType: "normal",
           areaId: "all",
         });
         if (onSuccess) onSuccess();

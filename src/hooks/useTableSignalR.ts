@@ -5,7 +5,7 @@ import { useTableStore } from "@/store/useTableStore";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
-export const useTableSignalR = () => {
+export const useTableSignalR = (onStatusChanged?: (tableId: string, status: string) => void) => {
   const connectionRef = useRef<signalR.HubConnection | null>(null);
   const updateTableStatusRealtime = useTableStore((s) => s.updateTableStatusRealtime);
 
@@ -27,6 +27,9 @@ export const useTableSignalR = () => {
         connection.on("TableStatusChanged", (data: { tableId: string; status: string }) => {
           console.log("SignalR: Table status changed", data);
           updateTableStatusRealtime(data.tableId, data.status);
+          if (onStatusChanged) {
+            onStatusChanged(data.tableId, data.status);
+          }
         });
       } catch (err) {
         console.error("SignalR: Error connecting to Table Status Hub", err);
@@ -48,5 +51,5 @@ export const useTableSignalR = () => {
       };
       stopConnection();
     };
-  }, [updateTableStatusRealtime]);
+  }, [updateTableStatusRealtime, onStatusChanged]);
 };

@@ -109,6 +109,11 @@ export const SETTINGS = {
   FIELD_MIN_LEAD_TIME_DESC: "Khách cần đặt trước ít nhất bao nhiêu phút",
   FIELD_GRACE_PERIOD: "Thời gian chờ khách đến (phút)",
   FIELD_GRACE_PERIOD_DESC: "Quá thời gian này mà khách chưa check-in thì có thể chuyển no-show",
+  FIELD_UPCOMING_BUFFER: "Thời gian chuẩn bị giữ bàn (phút)",
+  FIELD_UPCOMING_BUFFER_DESC:
+    "Hệ thống tự động đổi trạng thái bàn sang 'Giữ bàn' trước bao nhiêu phút",
+
+  ERR_UPCOMING_BUFFER_LIMIT: "Thời gian giữ bàn không được lớn hơn thời gian đặt trước tối thiểu",
 
   SUCCESS_RESERVATION: "Đã lưu cấu hình đặt bàn thành công",
 

@@ -119,7 +119,6 @@ export const ReservationTable = ({
                 <TableHead>{UI_TEXT.RESERVATION.COL_DATETIME}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_AREA}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_PEOPLE}</TableHead>
-                <TableHead>{UI_TEXT.RESERVATION.COL_PARTY_TYPE}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_STATUS}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_ACTIONS}</TableHead>
               </TableRow>
@@ -158,9 +157,6 @@ export const ReservationTable = ({
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-orange-50 text-orange-600 border border-orange-100">
                         {row.people}
                       </span>
-                    </TableCell>
-                    <TableCell className="text-slate-600 text-[13px] font-semibold">
-                      {row.partyType}
                     </TableCell>
                     <TableCell className="w-35">
                       <StatusBadge status={row.status} />
@@ -210,7 +206,7 @@ export const ReservationTable = ({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-10 text-slate-500">
+                  <TableCell colSpan={7} className="text-center py-10 text-slate-500">
                     {UI_TEXT.RESERVATION.EMPTY_DATA}
                   </TableCell>
                 </TableRow>

@@ -37,6 +37,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     handleCheckout,
     calculateChange,
     handleQuickAmount,
+    handleSyncPayment,
   } = useCheckout(isOpen, onClose, totalAmount);
 
   return (
@@ -142,7 +143,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
             {UI_TEXT.COMMON.CANCEL_EN}
           </Button>
 
-          {selectedMethod !== PaymentMethod.BankTransfer && (
+          {selectedMethod !== PaymentMethod.BankTransfer ? (
             <Button
               onClick={handleCheckout}
               disabled={isProcessing}
@@ -155,6 +156,21 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                 </>
               ) : (
                 UI_TEXT.ORDER.CURRENT.CONFIRM_PAYMENT
+              )}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSyncPayment}
+              disabled={isProcessing}
+              className="min-w-40 font-bold text-primary-foreground"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {UI_TEXT.ORDER.CURRENT.SYNCING}
+                </>
+              ) : (
+                UI_TEXT.ORDER.CURRENT.SYNC_PAYMENT
               )}
             </Button>
           )}

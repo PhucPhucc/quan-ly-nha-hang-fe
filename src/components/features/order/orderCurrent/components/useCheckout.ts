@@ -108,7 +108,12 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
               // Lấy dữ liệu JSON thay vì PDF để in mẫu máy in nhiệt thực tế hơn
               const billRes = await orderService.getPreCheckBill(selectedOrderId);
               if (billRes.isSuccess && billRes.data) {
-                printThermalReceipt(billRes.data);
+                printThermalReceipt({
+                  ...billRes.data,
+                  paymentMethod: UI_TEXT.ORDER.PRINT_TEMP.METHOD_TRANSFER_QR,
+                  amountReceived: billRes.data.totalAmount,
+                  changeAmount: 0,
+                });
               }
             } catch (printError) {
               console.error("Failed to print thermal receipt for bank transfer:", printError);
@@ -169,7 +174,15 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
           // Lấy dữ liệu JSON thay vì PDF để in mẫu máy in nhiệt thực tế hơn
           const billRes = await orderService.getPreCheckBill(selectedOrderId);
           if (billRes.isSuccess && billRes.data) {
-            printThermalReceipt(billRes.data);
+            printThermalReceipt({
+              ...billRes.data,
+              paymentMethod:
+                selectedMethod === PaymentMethod.Cash
+                  ? UI_TEXT.ORDER.PRINT_TEMP.METHOD_CASH
+                  : UI_TEXT.ORDER.PRINT_TEMP.METHOD_CARD,
+              amountReceived: amountReceived ?? billRes.data.totalAmount,
+              changeAmount: Math.max(0, (amountReceived ?? 0) - billRes.data.totalAmount),
+            });
           }
         } catch (printError) {
           console.error("Failed to print thermal receipt:", printError);
@@ -190,6 +203,31 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
       setIsProcessing(false);
     }
   };
+
+  const handleSyncPayment = useCallback(async () => {
+    if (!selectedOrderId) return;
+    setIsProcessing(true);
+    try {
+      const response = await orderService.syncPayosStatus(selectedOrderId);
+      if (response.isSuccess) {
+        if (response.data === true) {
+          toast.success(UI_TEXT.ORDER.CURRENT.PAYMENT_RECEIVED);
+          // Polling will handle the rest (print, close, etc.)
+          // But for better UX, we can trigger re-fetch right now
+          await orderService.getOrderById(selectedOrderId);
+        } else {
+          toast.info("Chưa nhận được thanh toán. Vui lòng thử lại sau vài giây.");
+        }
+      } else {
+        toast.error("Không thể đồng bộ trạng thái thanh toán.");
+      }
+    } catch (error) {
+      toast.error("Lỗi khi kết nối với PayOS.");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [selectedOrderId]);
 
   const calculateChange = () => {
     if (!customerGiven || selectedMethod !== PaymentMethod.Cash) return 0;
@@ -213,5 +251,6 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     handleCheckout,
     calculateChange,
     handleQuickAmount,
+    handleSyncPayment,
   };
 }

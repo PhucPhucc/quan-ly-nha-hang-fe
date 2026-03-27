@@ -3,7 +3,7 @@ import { KdsBacklogSummary } from "@/types/Kds";
 
 import { apiFetch } from "./api";
 
-export type KdsSortMode = "Fifo" | "Hybrid" | "Priority";
+export type KdsSortMode = "Fifo" | "Hybrid";
 export type KdsStationKey = "HotKitchen" | "ColdKitchen" | "Bar";
 
 export interface KdsPriorityWeights {

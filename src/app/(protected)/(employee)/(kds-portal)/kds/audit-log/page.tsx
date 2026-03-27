@@ -128,7 +128,7 @@ export default function KDSAuditLogPage() {
               variant="outline"
               className="flex items-center gap-2 px-4 bg-card hover:border-primary/50 rounded-lg transition-all shadow-sm font-bold"
               onClick={() => {
-                const stations = ["all", "HotKitchen", "ColdKitchen", "Bar"];
+                const stations = ["all", "Kitchen", "Bar"];
                 const currentIndex = stations.indexOf(station);
                 const nextStation = stations[(currentIndex + 1) % stations.length];
                 setStation(nextStation);
@@ -137,7 +137,13 @@ export default function KDSAuditLogPage() {
               <span className="text-muted-foreground text-[10px] font-black">
                 {UI_TEXT.KDS.NAV.FILTER_STATION}{" "}
                 <span className="text-foreground">
-                  {station === "all" ? UI_TEXT.KDS.NAV.STATION_ALL : station}
+                  {station === "all"
+                    ? UI_TEXT.KDS.NAV.STATION_ALL
+                    : station === "Kitchen"
+                      ? UI_TEXT.KDS.STATIONS.KITCHEN
+                      : station === "Bar"
+                        ? UI_TEXT.KDS.STATIONS.BAR
+                        : station}
                 </span>
               </span>
               <ChevronDown className="w-4 h-4 text-muted-foreground" />

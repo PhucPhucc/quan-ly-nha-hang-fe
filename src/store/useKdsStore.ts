@@ -3,11 +3,16 @@ import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
 import { UI_TEXT } from "@/lib/UI_Text";
-import { KdsItemResponse, KdsQueueResponse, kdsService } from "@/services/kdsService";
+import {
+  KdsItemResponse,
+  KdsQueueResponse,
+  kdsService,
+  KdsSettingsResponse,
+} from "@/services/kdsService";
 import { KDSStation, OrderItemStatus } from "@/types/enums";
 import { Order, OrderItem } from "@/types/Order";
 
-const normalizeOrderItemStatus = (status: unknown): OrderItemStatus => {
+export const normalizeOrderItemStatus = (status: unknown): OrderItemStatus => {
   const normalized = String(status ?? "")
     .trim()
     .toLowerCase();
@@ -81,8 +86,11 @@ interface KdsState {
   activeOrders: Order[];
   queueOrders: Order[];
   station: KDSStation;
+  settings: KdsSettingsResponse | null;
   setStation: (station: KDSStation) => void;
   fetchKdsData: (targetStation?: KDSStation) => Promise<void>;
+  upsertItem: (item: KdsItemResponse | KdsQueueResponse) => void;
+  removeListItem: (orderItemId: string) => void;
   startCooking: (orderItemId: string) => Promise<void>;
   completeItemCooking: (orderItemId: string) => Promise<void>;
   rejectItem: (orderItemId: string, reason: string) => Promise<void>;
@@ -95,25 +103,30 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
     activeOrders: [],
     queueOrders: [],
     station: KDSStation.Kitchen,
+    settings: null,
 
     setStation: (station) => set({ station }),
 
     fetchKdsData: async (targetStation?: KDSStation) => {
       const currentStation = targetStation || get().station;
       try {
-        const [itemsRes, queueRes] = await Promise.all([
+        const [itemsRes, queueRes, settingsRes] = await Promise.all([
           kdsService.getKdsItems(currentStation),
           kdsService.getKdsQueue(currentStation),
+          kdsService.getKdsSettings(),
         ]);
 
         const newActiveItems =
           itemsRes.isSuccess && itemsRes.data ? itemsRes.data : get().activeItems;
         const newQueueItems =
           queueRes.isSuccess && queueRes.data ? queueRes.data : get().queueItems;
+        const newSettings =
+          settingsRes.isSuccess && settingsRes.data ? settingsRes.data : get().settings;
 
         set({
           activeItems: newActiveItems,
           queueItems: newQueueItems,
+          settings: newSettings,
           activeOrders: formatItemsToOrders(newActiveItems),
           queueOrders: formatItemsToOrders(newQueueItems),
         });
@@ -121,6 +134,70 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         console.error("Failed to fetch KDS data:", error);
         toast.error(UI_TEXT.KDS.FETCH_ERROR);
       }
+    },
+    upsertItem: (item) => {
+      const isPreparing = normalizeOrderItemStatus(item.status) === OrderItemStatus.Preparing;
+      const isCooking = normalizeOrderItemStatus(item.status) === OrderItemStatus.Cooking;
+
+      if (isCooking) {
+        // Update Active Items
+        const currentActive = get().activeItems;
+        const exists = currentActive.some((i) => i.orderItemId === item.orderItemId);
+        let newActive;
+        if (exists) {
+          newActive = currentActive.map((i) =>
+            i.orderItemId === item.orderItemId ? (item as KdsItemResponse) : i
+          );
+        } else {
+          newActive = [...currentActive, item as KdsItemResponse];
+        }
+
+        // Remove from Queue if it was there
+        const newQueue = get().queueItems.filter((i) => i.orderItemId !== item.orderItemId);
+
+        set({
+          activeItems: newActive,
+          queueItems: newQueue,
+          activeOrders: formatItemsToOrders(newActive),
+          queueOrders: formatItemsToOrders(newQueue),
+        });
+      } else if (isPreparing) {
+        // Update Queue Items
+        const currentQueue = get().queueItems;
+        const exists = currentQueue.some((i) => i.orderItemId === item.orderItemId);
+        let newQueue;
+        if (exists) {
+          newQueue = currentQueue.map((i) =>
+            i.orderItemId === item.orderItemId ? (item as KdsQueueResponse) : i
+          );
+        } else {
+          newQueue = [...currentQueue, item as KdsQueueResponse];
+        }
+
+        // Remove from Active if it was there (e.g. Returned to Queue)
+        const newActive = get().activeItems.filter((i) => i.orderItemId !== item.orderItemId);
+
+        set({
+          activeItems: newActive,
+          queueItems: newQueue,
+          activeOrders: formatItemsToOrders(newActive),
+          queueOrders: formatItemsToOrders(newQueue),
+        });
+      } else {
+        // Completed/Rejected/Cancelled - Remove from both
+        get().removeListItem(item.orderItemId);
+      }
+    },
+
+    removeListItem: (orderItemId) => {
+      const newActive = get().activeItems.filter((i) => i.orderItemId !== orderItemId);
+      const newQueue = get().queueItems.filter((i) => i.orderItemId !== orderItemId);
+      set({
+        activeItems: newActive,
+        queueItems: newQueue,
+        activeOrders: formatItemsToOrders(newActive),
+        queueOrders: formatItemsToOrders(newQueue),
+      });
     },
 
     startCooking: async (orderItemId) => {

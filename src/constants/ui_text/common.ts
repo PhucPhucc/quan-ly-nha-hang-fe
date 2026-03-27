@@ -152,7 +152,7 @@ export const SIDE_BAR = {
   RESERVATION: "Đặt bàn",
   STATION: "Trạm",
   STATION_KITCHEN: "Quầy Bếp",
-  STATION_BAR: "Quầy Bar",
+  STATION_BAR: "Quầy Nước",
   SETTINGS: "Cài đặt",
   LOGOUT: "Đăng xuất",
   VOUCHER: "Voucher",

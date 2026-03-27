@@ -1,12 +1,13 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Layout, RefreshCw, Users, Utensils } from "lucide-react";
 import React, { useMemo } from "react";
 
 import { InventoryStatCard } from "@/components/features/inventory/components/InventoryStatCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
+import { useTableSignalR } from "@/hooks/useTableSignalR";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { getSystemAuditLogs } from "@/services/auditService";
@@ -18,6 +19,13 @@ import { AuditLogSection } from "./components/AuditLogSection";
 import { StatusSummaryCard } from "./components/StatusSummaryCard";
 
 export function TableOverviewDashboard() {
+  const queryClient = useQueryClient();
+
+  // Listen to realtime table changes and refetch all-tables query when a change happens
+  useTableSignalR(() => {
+    queryClient.invalidateQueries({ queryKey: ["all-tables"] });
+  });
+
   const {
     data: areasData,
     isLoading: areasLoading,
