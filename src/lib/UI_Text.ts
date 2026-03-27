@@ -7,6 +7,7 @@ import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_te
 import { API, BUTTON, COMMON, FORM, NAVIGATION, ROLE, SIDE_BAR } from "../constants/ui_text/common";
 import { DASHBOARD } from "../constants/ui_text/dashboard";
 import { EMPLOYEE } from "../constants/ui_text/employee";
+import { HR_DASHBOARD } from "../constants/ui_text/hr_dashboard";
 import { INVENTORY } from "../constants/ui_text/inventory";
 import { KDS } from "../constants/ui_text/kds";
 import { LANDING } from "../constants/ui_text/landing";
@@ -47,4 +48,5 @@ export const UI_TEXT = {
   VOUCHER,
   SHIFT,
   SCHEDULE,
+  HR_DASHBOARD,
 };

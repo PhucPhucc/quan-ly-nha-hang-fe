@@ -36,8 +36,8 @@ export function PromotionOverviewCard({
 
   return (
     <Card className="border-none shadow-md overflow-hidden bg-white dark:bg-slate-900">
-      <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
-        <CardTitle className="flex items-center justify-between gap-2 text-base font-bold text-slate-800 dark:text-slate-100 uppercase tracking-tight">
+      <CardHeader className="border-b border-slate-100 dark:border-slate-800">
+        <CardTitle className="flex items-center justify-between gap-2 text-base font-bold text-slate-800 dark:text-slate-100 uppercase tracking-tight pt-5">
           <div className="flex items-center gap-2">
             <Ticket className="h-4 w-4 text-primary" />
             <span>{UI_TEXT.VOUCHER.TITLE}</span>
@@ -50,7 +50,7 @@ export function PromotionOverviewCard({
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-4 pb-4 space-y-4">
+      <CardContent className="pb-4 space-y-4">
         {loading ? (
           <div className="space-y-3">
             <div className="h-10 animate-pulse rounded-lg bg-slate-50 dark:bg-slate-800/50" />
@@ -128,7 +128,7 @@ export function BillingHistoryPreview({
   const recentRecords = records.slice(0, 5);
 
   return (
-    <Card className="h-[clamp(320px,45vh,400px)] min-h-0 overflow-hidden border-none shadow-md">
+    <Card className="h-[clamp(320px,45vh,400px)] min-h-0 overflow-hidden border-none shadow-md py-5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg font-bold">
           <CreditCard className="h-4 w-4 text-primary" />

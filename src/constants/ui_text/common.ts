@@ -145,10 +145,10 @@ export const SIDE_BAR = {
   MENU: "Quản lí thực đơn",
   TABLE_MANAGEMENT: "Quản lí bàn",
   TABLE: "Sơ đồ bàn",
-  ORDER: "Đơn hàng",
+  ORDER: "Quản lý đơn hàng",
   EMPLOYEE: "Nhân viên",
   AUDIT_LOG: "Lịch sử",
-  INVENTORY: "Kho hàng",
+  INVENTORY: "Quản lý kho",
   RESERVATION: "Đặt bàn",
   STATION: "Trạm",
   STATION_KITCHEN: "Quầy Bếp",
@@ -159,6 +159,7 @@ export const SIDE_BAR = {
   SHIFT: "Ca làm việc",
   SCHEDULE: "Lịch làm việc",
   ATTENDANCE: "Điểm danh",
+  HR_MANAGEMENT: "Quản lý nhân sự",
 };
 
 export const FORM = {
@@ -195,7 +196,6 @@ export const ROLE = {
   NEW_ROLE: "Vai trò mới",
   MANAGER: "Quản lý",
   CASHIER: "Thu ngân",
-  WAITER: "Phục vụ",
   CHEF: "Đầu bếp",
 };
 

@@ -44,7 +44,7 @@ export default function OrderOverviewPage() {
               {error}
             </div>
           ) : null}
-          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="px-4 grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
             <InventoryStatCard
               icon={ClipboardList}
               label={UI_TEXT.ORDER.OVERVIEW.STATS.ACTIVE}
@@ -77,7 +77,7 @@ export default function OrderOverviewPage() {
         <AuditLogPreview rows={auditRows} loading={loading} />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 px-4">
         <DistributionCard
           icon={LayoutGrid}
           title={UI_TEXT.ORDER.OVERVIEW.DISTRIBUTION.ORDER_TYPE}
@@ -98,12 +98,14 @@ export default function OrderOverviewPage() {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-6 px-4">
         <RecentOrders seedOrders={overview?.topActiveOrders ?? []} />
         <BillingHistoryPreview records={billingHistory} loading={loading} error={billingError} />
       </div>
 
-      <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
+      <div className="px-4">
+        <PromotionOverviewCard promotions={promotions} loading={loading} error={promoError} />
+      </div>
     </div>
   );
 }

@@ -7,9 +7,9 @@ import { DateRange } from "react-day-picker";
 import { toast } from "sonner";
 
 import AttendanceFilter from "@/components/features/Attendance/AttendanceFilter";
-import AttendanceStats from "@/components/features/Attendance/AttendanceStats";
 import AttendanceTable from "@/components/features/Attendance/AttendanceTable";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -120,99 +120,77 @@ const AttendancePage = () => {
       ? `${UI_TEXT.COMMON.DISPLAY} ${startDisplay} - ${endDisplay} / ${totalCount}`
       : UI_TEXT.ATTENDANCE.TABLE_EMPTY;
 
-  // Mocking Stats logic to show the screenshot numbers
-  const mockStats = {
-    totalStaff: 42,
-    totalStaffChange: "+2 tháng này",
-    onTimePercent: 94,
-    latePercent: 6,
-    estimatedPenalty: 2450000,
-  };
-
   return (
-    <div className="flex flex-col gap-6 py-6 ring-offset-background max-w-full overflow-x-hidden h-full overflow-y-auto w-full">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <p className="text-slate-400 mt-1 font-bold text-xs uppercase tracking-widest">
-            {UI_TEXT.SIDE_BAR.DASHBOARD}
-          </p>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-            {UI_TEXT.ATTENDANCE.REPORT_TITLE}
-          </h1>
-        </div>
-
-        <Button
-          onClick={handleExport}
-          className="bg-white border hover:bg-slate-50 text-slate-700 h-11 px-6 rounded-xl font-bold gap-2 text-sm shadow-sm transition-all active:scale-[0.98]"
-        >
-          <Download className="size-4" />
-          {UI_TEXT.ATTENDANCE.EXPORT_EXCEL}
-        </Button>
-      </div>
-
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-        <AttendanceFilter
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-          employeeSearch={employeeSearch}
-          onEmployeeSearchChange={setEmployeeSearch}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
-          onFilter={handleFilter}
-        />
-      </div>
+    <div className="flex flex-col gap-6 px-4 py-4 h-full overflow-y-auto no-scrollbar pb-10 animate-in fade-in duration-500">
+      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
+        <CardContent className="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
+          <div className="flex-1 w-full">
+            <AttendanceFilter
+              dateRange={dateRange}
+              onDateRangeChange={setDateRange}
+              employeeSearch={employeeSearch}
+              onEmployeeSearchChange={setEmployeeSearch}
+              statusFilter={statusFilter}
+              onStatusFilterChange={setStatusFilter}
+              onFilter={handleFilter}
+            />
+          </div>
+          <Button
+            onClick={handleExport}
+            variant="outline"
+            className="h-11 px-6 rounded-2xl font-bold gap-2 text-sm border-slate-100 text-slate-700 hover:bg-slate-50 hover:border-slate-200 transition-all active:scale-[0.98] w-full xl:w-auto mt-2 xl:mt-0"
+          >
+            <Download className="size-4" />
+            {UI_TEXT.ATTENDANCE.EXPORT_EXCEL}
+          </Button>
+        </CardContent>
+      </Card>
 
       <div className="w-full">
         <AttendanceTable attendances={attendances} isLoading={isLoading} />
       </div>
 
-      <div className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-100">
-        <p className="text-sm text-slate-500 font-medium">{displayInfo}</p>
-        <Pagination className="w-auto ml-0">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (page > 1) setPage(page - 1);
-                }}
-              />
-            </PaginationItem>
-            {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink
+      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
+        <CardContent className="flex items-center justify-between">
+          <p className="text-sm text-slate-500 font-medium">{displayInfo}</p>
+          <Pagination className="w-auto ml-0">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
                   href="#"
-                  isActive={currentPage === i + 1}
                   onClick={(e) => {
                     e.preventDefault();
-                    setPage(i + 1);
+                    if (page > 1) setPage(page - 1);
                   }}
-                >
-                  {i + 1}
-                </PaginationLink>
+                />
               </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (page < totalPages) setPage(page + 1);
-                }}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
-
-      <AttendanceStats
-        totalStaff={mockStats.totalStaff}
-        totalStaffChange={mockStats.totalStaffChange}
-        onTimePercent={mockStats.onTimePercent}
-        latePercent={mockStats.latePercent}
-        estimatedPenalty={mockStats.estimatedPenalty}
-      />
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page < totalPages) setPage(page + 1);
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </CardContent>
+      </Card>
     </div>
   );
 };

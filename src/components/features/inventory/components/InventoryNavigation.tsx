@@ -100,7 +100,7 @@ export function InventoryNavigation() {
 
   return (
     <nav
-      className="flex items-center gap-1 overflow-x-auto scrollbar-none"
+      className="flex items-center gap-1 overflow-x-auto no-scrollbar"
       aria-label={UI_TEXT.SIDE_BAR.INVENTORY}
     >
       {NAV_ITEMS.map((item) => {

@@ -48,14 +48,13 @@ const EmployeeTable = () => {
     const r = String(role).toLowerCase();
     if (r === "1" || r === "manager") return UI_TEXT.ROLE.MANAGER;
     if (r === "2" || r === "cashier") return UI_TEXT.ROLE.CASHIER;
-    if (r === "3" || r === "waiter") return UI_TEXT.ROLE.WAITER;
-    if (r === "4" || r === "chef" || r === "chefbar") return UI_TEXT.ROLE.CHEF;
+    if (r === "3" || r === "chef" || r === "chefbar") return UI_TEXT.ROLE.CHEF;
     return role || UI_TEXT.COMMON.NULL;
   };
 
   const isRoleActive = (role: string | number) => {
     const r = String(role).toLowerCase();
-    return r === "1" || r === "manager" || r === "4" || r === "chef" || r === "chefbar";
+    return r === "1" || r === "manager" || r === "3" || r === "chef" || r === "chefbar";
   };
 
   const getStatusLabel = (status: string | number) => {

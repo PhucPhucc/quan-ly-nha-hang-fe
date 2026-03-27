@@ -94,7 +94,7 @@ export function StatsCards() {
     {
       title: t.STAFF,
       value: data.staffCount.toString(),
-      description: t.STAFF_DESC(0, data.staffCount),
+      description: t.STAFF_DESC(data.staffCount),
       icon: Users,
       color: "text-primary",
       bg: "bg-primary/10",

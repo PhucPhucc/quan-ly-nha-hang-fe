@@ -44,8 +44,6 @@ const EmployeeFilter = () => {
         <SelectItem value="1">{UI_TEXT.ROLE.MANAGER}</SelectItem>
 
         <SelectItem value="2">{UI_TEXT.ROLE.CASHIER}</SelectItem>
-
-        <SelectItem value="3">{UI_TEXT.ROLE.WAITER}</SelectItem>
         <SelectItem value="4">{UI_TEXT.ROLE.CHEF}</SelectItem>
       </SelectContent>
     </Select>

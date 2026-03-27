@@ -83,7 +83,6 @@
 
   --color-role-manager: var(--role-manager);
   --color-role-chef: var(--role-chef);
-  --color-role-waiter: var(--role-waiter);
   --color-role-cashier: var(--role-cashier);
 
   /* ===============================
@@ -335,7 +334,6 @@
 
   --role-manager: oklch(0.5 0.2 10);
   --role-chef: oklch(0.65 0.2 50);
-  --role-waiter: oklch(0.6 0.2 320);
   --role-cashier: oklch(0.55 0.2 220);
 
   /* ===============================

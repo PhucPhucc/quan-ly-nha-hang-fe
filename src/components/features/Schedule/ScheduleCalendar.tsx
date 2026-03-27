@@ -1,4 +1,4 @@
-import { addDays, format, startOfWeek } from "date-fns";
+import { addDays, format, isSameWeek, startOfWeek } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, Users } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -104,7 +104,6 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
     return assignments.find((a) => a.employeeId === employeeId && a.assignedDate === date);
   };
 
-  /** Get shift name + times, preferring nested shift, falling back to shiftsMap */
   const getShiftInfo = (assignment: ShiftAssignment) => {
     const shift = assignment.shift ?? shiftsMap[assignment.shiftId];
     if (!shift) return { name: "Ca đã gán", startTime: "", endTime: "" };
@@ -129,6 +128,10 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
     setIsDialogOpen(true);
   };
 
+  const isNextWeek = isSameWeek(currentDate, addDays(new Date(), 7), { weekStartsOn: 1 });
+  const isNextTwoWeeks = isSameWeek(currentDate, addDays(new Date(), 14), { weekStartsOn: 1 });
+  const isNextMonth = isSameWeek(currentDate, addDays(new Date(), 30), { weekStartsOn: 1 });
+
   if (loading) {
     return (
       <div className="h-64 flex items-center justify-center">
@@ -139,111 +142,161 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2 mb-4 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
-        <Button variant="ghost" size="sm" onClick={prevWeek} className="rounded-xl h-9">
-          <ChevronLeft className="size-4 mr-1" /> {UI_TEXT.COMMON.PREVIOUS}
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={nextWeek}
-          className="rounded-xl h-9 active:bg-red-50 text-red-600 font-bold"
-        >
-          {UI_TEXT.SCHEDULE.NEXT_WEEK}
-        </Button>
-        <Button variant="ghost" size="sm" onClick={nextTwoWeeks} className="rounded-xl h-9">
-          {UI_TEXT.SCHEDULE.NEXT_2_WEEKS}
-        </Button>
-        <Button variant="ghost" size="sm" onClick={nextMonth} className="rounded-xl h-9">
-          {UI_TEXT.SCHEDULE.NEXT_MONTH}
-        </Button>
-        <div className="flex-1" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div className="flex items-center gap-1 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60 w-fit">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={prevWeek}
+            className="rounded-xl h-9 px-3 hover:bg-white hover:shadow-sm transition-all text-slate-500 font-medium"
+          >
+            <ChevronLeft className="size-4 mr-1" />
+            {UI_TEXT.COMMON.PREVIOUS}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={nextWeek}
+            className={`rounded-xl h-9 px-4 transition-all font-bold ${
+              isNextWeek ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:bg-white/50"
+            }`}
+          >
+            {UI_TEXT.SCHEDULE.NEXT_WEEK}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={nextTwoWeeks}
+            className={`rounded-xl h-9 px-4 transition-all font-bold ${
+              isNextTwoWeeks
+                ? "bg-white shadow-sm text-primary"
+                : "text-slate-500 hover:bg-white/50"
+            }`}
+          >
+            {UI_TEXT.SCHEDULE.NEXT_2_WEEKS}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={nextMonth}
+            className={`rounded-xl h-9 px-4 transition-all font-bold ${
+              isNextMonth ? "bg-white shadow-sm text-primary" : "text-slate-500 hover:bg-white/50"
+            }`}
+          >
+            {UI_TEXT.SCHEDULE.NEXT_MONTH}
+          </Button>
+        </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              size="sm"
-              className="px-4 py-1.5 h-9 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors flex items-center gap-2 group"
+              className="h-12 px-6 rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-3 group shadow-sm"
             >
-              <CalendarIcon className="size-4 text-slate-400 group-hover:text-primary transition-colors" />
-              <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">
-                {format(startDate, "dd/MM")}
-                {UI_TEXT.COMMON.SPACE}
-                {UI_TEXT.COMMON.HYPHEN}
-                {UI_TEXT.COMMON.SPACE}
-                {format(addDays(startDate, 6), "dd/MM/yyyy")}
-              </span>
-              <ChevronLeft className="size-3 text-slate-400 -rotate-90 group-hover:text-primary transition-colors" />
+              <div className="bg-primary/10 p-2 rounded-lg group-hover:bg-primary/15 transition-colors">
+                <CalendarIcon className="size-4 text-primary" />
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">
+                  {UI_TEXT.SCHEDULE.PERIOD}
+                </span>
+                <span className="text-sm font-bold text-slate-700">
+                  {format(startDate, "dd/MM")} - {format(addDays(startDate, 6), "dd/MM/yyyy")}
+                </span>
+              </div>
+              <ChevronRight className="size-4 text-slate-300 rotate-90 ml-2" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-[280px] rounded-2xl p-2 shadow-2xl border-none ring-1 ring-black/5"
+            className="w-[300px] rounded-3xl p-3 shadow-2xl border-none ring-1 ring-black/5 animate-in slide-in-from-top-2 duration-300"
           >
-            <div className="px-3 py-2 border-b border-slate-50 mb-1">
+            <div className="px-3 py-3 border-b border-slate-50 mb-2">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                {UI_TEXT.SCHEDULE.SELECT_WEEK || "CHỌN TUẦN LÀM VIỆC"}
+                {UI_TEXT.SCHEDULE.CHOOSE_WEEK}
               </p>
             </div>
-            {Array.from({ length: 12 }, (_, i) => {
-              const weekDate = addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), (i - 2) * 7);
-              const weekStart = format(weekDate, "dd/MM");
-              const weekEnd = format(addDays(weekDate, 6), "dd/MM");
-              const isSelected = format(weekDate, "yyyy-MM-dd") === format(startDate, "yyyy-MM-dd");
+            <div className="max-h-[350px] overflow-y-auto no-scrollbar space-y-1">
+              {Array.from({ length: 12 }, (_, i) => {
+                const weekDate = addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), (i - 2) * 7);
+                const weekStartStr = format(weekDate, "dd/MM");
+                const weekEndStr = format(addDays(weekDate, 6), "dd/MM");
+                const isSelected =
+                  format(weekDate, "yyyy-MM-dd") === format(startDate, "yyyy-MM-dd");
 
-              return (
-                <DropdownMenuItem
-                  key={i}
-                  onClick={() => onDateChange(weekDate)}
-                  className={`rounded-xl px-3 py-2.5 mb-0.5 cursor-pointer flex items-center justify-between group/item ${
-                    isSelected
-                      ? "bg-primary/5 text-primary font-bold"
-                      : "text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`size-2 rounded-full transition-all ${isSelected ? "bg-primary scale-125" : "bg-slate-200 group-hover/item:bg-slate-300"}`}
-                    />
-                    <span className="text-sm">
-                      {format(weekDate, "yyyy") === format(new Date(), "yyyy")
-                        ? `${UI_TEXT.COMMON.WEEK || "Tuần"} ${weekStart} - ${weekEnd}`
-                        : `${UI_TEXT.COMMON.WEEK || "Tuần"} ${weekStart} - ${weekEnd} (${format(weekDate, "yyyy")})`}
-                    </span>
-                  </div>
-                  {isSelected && <div className="size-1.5 rounded-full bg-primary animate-pulse" />}
-                </DropdownMenuItem>
-              );
-            })}
+                return (
+                  <DropdownMenuItem
+                    key={i}
+                    onClick={() => onDateChange(weekDate)}
+                    className={`rounded-2xl px-4 py-3 cursor-pointer flex items-center justify-between group/item transition-all ${
+                      isSelected ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`size-2 rounded-full transition-all duration-300 ${
+                          isSelected
+                            ? "bg-primary shadow-[0_0_8px_rgba(204,0,0,0.4)] scale-125"
+                            : "bg-slate-200 group-hover/item:bg-slate-300"
+                        }`}
+                      />
+                      <span className={`text-sm ${isSelected ? "font-bold" : "font-medium"}`}>
+                        {format(weekDate, "yyyy") === format(new Date(), "yyyy")
+                          ? `Tuần ${weekStartStr} - ${weekEndStr}`
+                          : `Tuần ${weekStartStr} - ${weekEndStr} (${format(weekDate, "yyyy")})`}
+                      </span>
+                    </div>
+                    {isSelected && (
+                      <div className="size-1.5 rounded-full bg-primary animate-pulse" />
+                    )}
+                  </DropdownMenuItem>
+                );
+              })}
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="grid grid-cols-[200px_repeat(7,1fr)] border-b border-slate-100 bg-[var(--table-header-bg)] text-[var(--table-heading)]">
-          <div className="p-4 flex items-center gap-2 border-r border-slate-100">
-            <Users className="size-4 opacity-70" />
-            <span className="text-xs font-bold uppercase tracking-widest">
+      <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
+        <div className="grid grid-cols-[220px_repeat(7,1fr)] border-b border-slate-100 bg-slate-50/50">
+          <div className="p-5 flex items-center gap-3 border-r border-slate-100">
+            <div className="bg-white p-2 rounded-xl shadow-sm border border-slate-100">
+              <Users className="size-4 text-slate-400" />
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
               {UI_TEXT.SCHEDULE.EMPLOYEE_NAME}
             </span>
           </div>
           {days.map((day, i) => (
             <div
               key={i}
-              className={`p-4 text-center border-r border-slate-100 last:border-r-0 ${day.isToday ? "bg-primary/5" : ""}`}
+              className={`p-4 text-center border-r border-slate-100 last:border-r-0 transition-colors ${
+                day.isToday ? "bg-primary/5" : ""
+              }`}
             >
               <p
-                className={`text-[10px] font-bold ${day.isToday ? "text-primary" : "opacity-60"} uppercase tracking-widest`}
+                className={`text-[10px] font-bold ${
+                  day.isToday ? "text-primary" : "text-slate-400"
+                } uppercase tracking-widest`}
               >
                 {day.label}
               </p>
               <p
-                className={`text-xl font-black mt-1 ${day.isToday ? "text-primary" : "text-slate-900"}`}
+                className={`text-2xl font-black mt-1 ${
+                  day.isToday ? "text-primary" : "text-slate-900"
+                }`}
               >
                 {day.date}
               </p>
               {day.isToday && (
-                <p className="text-[10px] font-bold text-primary mt-1">{UI_TEXT.SCHEDULE.TODAY}</p>
+                <div className="mt-1 flex justify-center">
+                  <span className="bg-primary text-white text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tighter shadow-sm shadow-red-100">
+                    {UI_TEXT.SCHEDULE.TODAY}
+                  </span>
+                </div>
               )}
             </div>
           ))}
@@ -253,18 +306,23 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
           {employees.map((emp) => (
             <div
               key={emp.employeeId}
-              className="grid grid-cols-[200px_repeat(7,1fr)] min-h-[100px] hover:bg-slate-50/30 transition-colors group"
+              className="grid grid-cols-[220px_repeat(7,1fr)] min-h-[110px] hover:bg-slate-50/30 transition-colors group"
             >
-              <div className="p-4 border-r border-slate-100 flex items-center gap-3">
-                <div className="size-10 rounded-2xl bg-slate-100 overflow-hidden ring-2 ring-white shadow-sm">
+              <div className="p-5 border-r border-slate-100 flex items-center gap-4">
+                <div className="size-12 rounded-2xl bg-slate-100 overflow-hidden ring-4 ring-white shadow-sm shrink-0">
                   <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(emp.fullName)}&background=random`}
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      emp.fullName
+                    )}&background=random&size=128`}
                     alt={emp.fullName}
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-sm font-bold text-slate-900 truncate">{emp.fullName}</h4>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter truncate">
+                  <h4 className="text-sm font-bold text-slate-900 truncate tracking-tight">
+                    {emp.fullName}
+                  </h4>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight truncate mt-0.5">
                     {emp.role}
                   </p>
                 </div>
@@ -275,7 +333,7 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
                 return (
                   <div
                     key={i}
-                    className="p-2 border-r border-slate-100 last:border-r-0 flex items-center justify-center relative"
+                    className="p-3 border-r border-slate-100 last:border-r-0 flex items-center justify-center relative"
                   >
                     {assignment ? (
                       (() => {
@@ -283,19 +341,18 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
                         return (
                           <div
                             onClick={() => handleEditAssignment(emp, day.fullDate, assignment)}
-                            className="w-full p-2.5 rounded-xl border bg-[var(--primary)]/10 text-[var(--primary)] border-[var(--primary)]/20 shadow-sm transition-all hover:scale-[1.02] hover:bg-[var(--primary)]/20 cursor-pointer group/card relative overflow-hidden"
+                            className="w-full p-3 rounded-2xl border bg-primary/5 text-primary border-primary/10 shadow-sm transition-all hover:scale-[1.03] hover:bg-primary/10 hover:shadow-md cursor-pointer group/card relative overflow-hidden"
                           >
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                            <p className="text-[10px] font-black uppercase truncate relative z-10">
+                            <div className="absolute top-0 right-0 p-1 opacity-0 group-hover/card:opacity-40 transition-opacity">
+                              <Plus className="size-2 rotate-45" />
+                            </div>
+                            <p className="text-[10px] font-black uppercase truncate relative z-10 tracking-tight">
                               {shiftInfo.name}
                             </p>
                             {shiftInfo.startTime && (
-                              <p className="text-[9px] font-bold opacity-80 mt-0.5 whitespace-nowrap relative z-10">
-                                {shiftInfo.startTime.slice(0, 5)}
-                                {UI_TEXT.COMMON.SPACE}
-                                {UI_TEXT.COMMON.HYPHEN}
-                                {UI_TEXT.COMMON.SPACE}
-                                {shiftInfo.endTime.slice(0, 5)}
+                              <p className="text-[9px] font-bold opacity-70 mt-1 whitespace-nowrap relative z-10 flex items-center gap-1">
+                                <span className="size-1 rounded-full bg-primary/50" />
+                                {shiftInfo.startTime.slice(0, 5)} - {shiftInfo.endTime.slice(0, 5)}
                               </p>
                             )}
                           </div>
@@ -304,9 +361,9 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
                     ) : (
                       <button
                         onClick={() => handleAddAssignment(emp, day.fullDate)}
-                        className="size-10 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-300 hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-[var(--primary)]/5 transition-all opacity-0 group-hover:opacity-100 font-bold active:scale-90"
+                        className="size-12 rounded-2xl border-2 border-dashed border-slate-100 flex items-center justify-center text-slate-200 hover:border-primary/30 hover:text-primary hover:bg-primary/5 transition-all opacity-0 group-hover:opacity-100 font-bold active:scale-95"
                       >
-                        <Plus className="size-5" strokeWidth={3} />
+                        <Plus className="size-6" strokeWidth={3} />
                       </button>
                     )}
                   </div>
@@ -316,46 +373,24 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
           ))}
         </div>
 
-        {/* Legend Footer */}
-        <div className="p-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+        <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <div className="size-3 rounded-md bg-blue-100 border border-blue-200" />
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                {UI_TEXT.SCHEDULE.MORNING_SHIFT}
+              <div className="size-3 rounded-full bg-primary/20 border border-primary/30" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                {UI_TEXT.SCHEDULE.ASSIGNED_SHIFT}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="size-3 rounded-md bg-purple-100 border border-purple-200" />
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                {UI_TEXT.SCHEDULE.AFTERNOON_SHIFT}
+              <div className="size-3 rounded-2xl border-2 border-dashed border-slate-200" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                {UI_TEXT.SCHEDULE.EMPTY_SHIFT}
               </span>
             </div>
           </div>
-
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-slate-400 font-medium italic">
-              {UI_TEXT.SCHEDULE.PAGE_TEXT}
-            </span>
-            <div className="flex gap-1">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-lg border-slate-200"
-                onClick={prevWeek}
-              >
-                <ChevronLeft className="size-4 text-slate-400" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-lg border-slate-200"
-                onClick={nextWeek}
-              >
-                <ChevronRight className="size-4 text-slate-400" />
-              </Button>
-            </div>
-          </div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {UI_TEXT.SCHEDULE.AUTO_SAVE}
+          </p>
         </div>
       </div>
 

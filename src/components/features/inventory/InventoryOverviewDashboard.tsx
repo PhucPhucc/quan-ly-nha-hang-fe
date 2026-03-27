@@ -2,8 +2,6 @@
 
 import {
   AlertTriangle,
-  ArrowRight,
-  CircleAlert,
   DollarSign,
   Info,
   Package,
@@ -12,7 +10,6 @@ import {
   TrendingDown,
   Warehouse,
 } from "lucide-react";
-import Link from "next/link";
 import React from "react";
 
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -24,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { AlertBadgePill, PriorityGroupCard, SectionHeader } from "./components/DashboardComponents";
 import { InventoryAlertSummary } from "./components/InventoryAlertSummary";
 import { InventoryStatCard } from "./components/InventoryStatCard";
+import { OpeningStockReminder } from "./components/OpeningStockReminder";
 import { useInventoryOverview } from "./useInventoryOverview";
 
 function formatCurrency(value: number): string {
@@ -37,28 +35,6 @@ function formatCurrency(value: number): string {
     return `${(value / 1_000).toFixed(0)}K ₫`;
   }
   return `${value.toLocaleString("vi-VN")} ₫`;
-}
-
-const COMPLETED_OPENING_STOCK_STATUS = 2;
-const OPENING_STOCK_REMINDER = {
-  title: "Bạn chưa nhập số dư đầu kỳ",
-  description:
-    "Vui lòng nhập số dư đầu kỳ trước khi tiếp tục quản lý kho để dữ liệu tồn kho được chính xác.",
-  action: "Đi đến nhập số dư",
-} as const;
-
-function shouldShowOpeningStockReminder(
-  settings?: { openingStockStatus?: number | string; lockedAt?: string | null } | null
-) {
-  if (!settings) {
-    return true;
-  }
-
-  return (
-    !settings.lockedAt &&
-    settings.openingStockStatus !== COMPLETED_OPENING_STOCK_STATUS &&
-    settings.openingStockStatus !== "Completed"
-  );
 }
 
 export function InventoryOverviewDashboard() {
@@ -89,25 +65,7 @@ export function InventoryOverviewDashboard() {
         actions={
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-1 items-center gap-6">
-              {shouldShowOpeningStockReminder(settings) ? (
-                <div className="hidden h-10 items-center gap-3 rounded-lg border border-amber-300 bg-amber-50 px-3 text-amber-950 shadow-sm md:flex lg:px-4">
-                  <div className="flex items-center gap-2">
-                    <CircleAlert className="h-4 w-4 shrink-0 text-amber-600" />
-                    <p className="text-[13px] font-semibold">{OPENING_STOCK_REMINDER.title}</p>
-                  </div>
-                  <div className="h-4 w-px bg-amber-300/50" />
-                  <Button
-                    asChild
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 p-2 text-xs font-bold hover:bg-primary/80 hover:text-primary-foreground"
-                  >
-                    <Link href="/manager/inventory/opening-stock">
-                      {OPENING_STOCK_REMINDER.action} <ArrowRight className="ml-1 h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
-                </div>
-              ) : null}
+              <OpeningStockReminder settings={settings} />
             </div>
 
             <Button

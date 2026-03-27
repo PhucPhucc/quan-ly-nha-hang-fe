@@ -16,6 +16,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Shift, ShiftStatus } from "@/types/Shift";
@@ -30,25 +31,15 @@ interface ShiftTableProps {
 
 const ShiftTable = ({ shifts, onEdit, onDelete, onToggleStatus, isLoading }: ShiftTableProps) => {
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden w-full">
-      <Table className="min-w-[800px]">
-        <TableHeader className="bg-slate-50/50 border-b border-slate-100">
-          <TableRow className="border-none hover:bg-transparent">
-            <TableHead className="font-semibold text-slate-500 uppercase tracking-wider text-xs py-3 pl-6">
-              {UI_TEXT.SHIFT.SHIFT_NAME}
-            </TableHead>
-            <TableHead className="font-semibold text-slate-500 uppercase tracking-wider text-xs py-3">
-              {UI_TEXT.SHIFT.START_TIME}
-            </TableHead>
-            <TableHead className="font-semibold text-slate-500 uppercase tracking-wider text-xs py-3">
-              {UI_TEXT.SHIFT.END_TIME}
-            </TableHead>
-            <TableHead className="font-semibold text-slate-500 uppercase tracking-wider text-xs py-3">
-              {UI_TEXT.SHIFT.STATUS}
-            </TableHead>
-            <TableHead className="font-semibold text-slate-500 uppercase tracking-wider text-xs py-3 pr-6 text-right">
-              {UI_TEXT.COMMON.ACTION}
-            </TableHead>
+    <TableShell className="rounded-3xl border-slate-100">
+      <Table>
+        <TableHeader>
+          <TableRow variant="header">
+            <TableHead className="py-4 pl-6">{UI_TEXT.SHIFT.SHIFT_NAME}</TableHead>
+            <TableHead className="py-4">{UI_TEXT.SHIFT.START_TIME}</TableHead>
+            <TableHead className="py-4">{UI_TEXT.SHIFT.END_TIME}</TableHead>
+            <TableHead className="py-4">{UI_TEXT.SHIFT.STATUS}</TableHead>
+            <TableHead className="py-4 pr-6 text-right">{UI_TEXT.COMMON.ACTION}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -66,34 +57,30 @@ const ShiftTable = ({ shifts, onEdit, onDelete, onToggleStatus, isLoading }: Shi
           ) : (
             <>
               {shifts.map((shift) => (
-                <TableRow
-                  key={shift.shiftId}
-                  className="hover:bg-slate-50/80 transition-all duration-300 border-b border-slate-50 last:border-0 group/row bg-white"
-                >
-                  <TableCell className="font-medium text-slate-800 text-sm py-3 pl-6">
+                <TableRow key={shift.shiftId} className="group/row">
+                  <TableCell className="font-semibold text-table-text-strong py-4 pl-6">
                     {shift.name}
                   </TableCell>
-                  <TableCell className="text-slate-600 font-bold text-sm">
+                  <TableCell className="py-4">
                     <div className="flex items-center gap-2">
                       <Clock className="size-4 text-slate-400 group-hover/row:text-primary transition-colors" />
-                      {shift.startTime}
+                      <span className="font-medium">{shift.startTime}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-slate-600 font-bold text-sm">
+                  <TableCell className="py-4">
                     <div className="flex items-center gap-2">
                       <Clock className="size-4 text-slate-400 group-hover/row:text-primary transition-colors" />
-                      {shift.endTime}
+                      <span className="font-medium">{shift.endTime}</span>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <div className="flex items-center gap-4">
                       <Switch
                         checked={shift.status === ShiftStatus.ACTIVE}
                         onCheckedChange={(checked) => onToggleStatus(shift.shiftId, checked)}
-                        className="data-[state=checked]:bg-primary"
                       />
                       <span
-                        className={`table-pill !py-1.5 !px-3 !text-[9px] ${
+                        className={`table-pill font-bold py-1 px-3 ${
                           shift.status === ShiftStatus.ACTIVE
                             ? "table-pill-success"
                             : "table-pill-neutral"
@@ -110,52 +97,54 @@ const ShiftTable = ({ shifts, onEdit, onDelete, onToggleStatus, isLoading }: Shi
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right py-3 pr-6">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-10 w-10 rounded-xl hover:bg-slate-100 transition-colors"
+                  <TableCell className="text-right py-4 pr-6">
+                    <div className="flex justify-end opacity-100 transition-opacity md:opacity-0 md:group-hover/row:opacity-100">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 hover:bg-slate-100"
+                          >
+                            <MoreHorizontal className="size-4 text-slate-400" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-48 p-2 border-none shadow-2xl"
                         >
-                          <MoreHorizontal className="size-5 text-slate-400" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="w-48 p-2 rounded-2xl border-none shadow-2xl ring-1 ring-black/5"
-                      >
-                        <DropdownMenuItem
-                          onClick={() => onEdit(shift)}
-                          className="flex items-center gap-3 p-3 cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary transition-colors group"
-                        >
-                          <Edit2 className="size-4 text-slate-400 group-focus:text-primary" />
-                          <span className="font-bold text-sm">{UI_TEXT.COMMON.EDIT}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            onToggleStatus(shift.shiftId, shift.status !== ShiftStatus.ACTIVE)
-                          }
-                          className="flex items-center gap-3 p-3 cursor-pointer rounded-xl focus:bg-rose-50 focus:text-rose-600 transition-colors group"
-                        >
-                          <Power className="size-4 text-slate-400 group-focus:text-rose-500" />
-                          <span className="font-bold text-sm text-destructive">
-                            {shift.status === ShiftStatus.ACTIVE
-                              ? UI_TEXT.SHIFT.INACTIVE
-                              : UI_TEXT.SHIFT.ACTIVE}
-                          </span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => onDelete(shift.shiftId)}
-                          className="flex items-center gap-3 p-3 cursor-pointer rounded-xl focus:bg-rose-50 focus:text-rose-600 transition-colors group"
-                        >
-                          <Trash2 className="size-4 text-rose-500" />
-                          <span className="font-bold text-sm text-destructive">
-                            {UI_TEXT.COMMON.DELETE || "Xóa"}
-                          </span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                          <DropdownMenuItem
+                            onClick={() => onEdit(shift)}
+                            className="flex items-center gap-3 p-3 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                          >
+                            <Edit2 className="size-4" />
+                            <span className="font-bold text-sm">{UI_TEXT.COMMON.EDIT}</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              onToggleStatus(shift.shiftId, shift.status !== ShiftStatus.ACTIVE)
+                            }
+                            className="flex items-center gap-3 p-3 cursor-pointer focus:bg-rose-50 focus:text-rose-600 transition-colors"
+                          >
+                            <Power className="size-4" />
+                            <span className="font-bold text-sm text-destructive">
+                              {shift.status === ShiftStatus.ACTIVE
+                                ? UI_TEXT.SHIFT.INACTIVE
+                                : UI_TEXT.SHIFT.ACTIVE}
+                            </span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onDelete(shift.shiftId)}
+                            className="flex items-center gap-3 p-3 cursor-pointer focus:bg-rose-50 focus:text-rose-600 transition-colors"
+                          >
+                            <Trash2 className="size-4 text-rose-500" />
+                            <span className="font-bold text-sm text-destructive">
+                              {UI_TEXT.COMMON.DELETE || "Xóa"}
+                            </span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -174,7 +163,7 @@ const ShiftTable = ({ shifts, onEdit, onDelete, onToggleStatus, isLoading }: Shi
           )}
         </TableBody>
       </Table>
-    </div>
+    </TableShell>
   );
 };
 

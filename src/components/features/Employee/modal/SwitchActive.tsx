@@ -1,5 +1,4 @@
 import { Label } from "@radix-ui/react-label";
-import React from "react";
 
 import { Switch } from "@/components/ui/switch";
 import { UI_TEXT } from "@/lib/UI_Text";

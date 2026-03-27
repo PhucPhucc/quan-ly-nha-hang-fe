@@ -158,7 +158,7 @@ const ShiftForm = ({ initialData, onSuccess }: ShiftFormProps) => {
           <Button
             type="button"
             variant="outline"
-            className="h-11 px-8 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 border-slate-200"
+            className="h-11 px-8 text-slate-600 hover:bg-slate-50 border-slate-200"
           >
             {UI_TEXT.COMMON.CANCEL}
           </Button>
@@ -167,7 +167,7 @@ const ShiftForm = ({ initialData, onSuccess }: ShiftFormProps) => {
         <Button
           type="submit"
           disabled={loading}
-          className="bg-[#cc0000] hover:bg-[#aa0000] h-11 px-8 rounded-xl font-semibold shadow-md shadow-red-100 transition-all active:scale-95"
+          className="bg-[#cc0000] hover:bg-[#aa0000] h-11 px-8 shadow-md shadow-red-100 transition-all active:scale-95 text-white"
         >
           {initialData ? UI_TEXT.COMMON.SAVE : UI_TEXT.COMMON.CREATE_NEW}
           {loading && <Spinner className="ml-2" />}
