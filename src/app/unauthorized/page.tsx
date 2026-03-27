@@ -5,19 +5,16 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { useAuthStore } from "@/store/useAuthStore";
 
 const UnauthorizedPage = () => {
   const router = useRouter();
-  const { logout } = useAuthStore();
 
   const handleGoBack = () => {
     router.back();
   };
 
   const handleLoginOther = () => {
-    logout();
-    router.push("/login"); // Assuming /login is the path
+    router.push("/logout");
   };
 
   return (

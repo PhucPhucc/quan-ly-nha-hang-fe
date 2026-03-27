@@ -45,7 +45,9 @@ export function Navbar() {
                 {t.DASHBOARD}
               </Link>
               <button
-                onClick={() => useAuthStore.getState().logout()}
+                onClick={() => {
+                  window.location.href = "/logout";
+                }}
                 className="text-sm font-semibold text-foreground transition-colors hover:text-primary"
               >
                 {UI_TEXT.AUTH.LOGOUT}
