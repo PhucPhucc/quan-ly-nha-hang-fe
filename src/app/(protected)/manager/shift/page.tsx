@@ -59,11 +59,11 @@ const ShiftPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa ca làm việc này?")) return;
+    if (!confirm(UI_TEXT.COMMON.DELETE_CONFIRM)) return;
     try {
       const response = await shiftService.deleteShift(id);
       if (response.isSuccess) {
-        toast.success("Xóa ca làm việc thành công");
+        toast.success(UI_TEXT.SHIFT.DELETE_SUCCESS);
         void refetch();
       }
     } catch (error) {

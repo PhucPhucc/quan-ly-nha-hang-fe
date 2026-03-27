@@ -123,8 +123,8 @@ const AttendancePage = () => {
   return (
     <div className="flex flex-col gap-6 px-4 py-4 h-full overflow-y-auto no-scrollbar pb-10 animate-in fade-in duration-500">
       <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
-        <CardContent className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex-1">
+        <CardContent className="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
+          <div className="flex-1 w-full">
             <AttendanceFilter
               dateRange={dateRange}
               onDateRangeChange={setDateRange}
@@ -138,7 +138,7 @@ const AttendancePage = () => {
           <Button
             onClick={handleExport}
             variant="outline"
-            className="h-11 px-6 rounded-2xl font-bold gap-2 text-sm border-slate-100 text-slate-700 hover:bg-slate-50 transition-all active:scale-[0.98]"
+            className="h-11 px-6 rounded-2xl font-bold gap-2 text-sm border-slate-100 text-slate-700 hover:bg-slate-50 hover:border-slate-200 transition-all active:scale-[0.98] w-full xl:w-auto mt-2 xl:mt-0"
           >
             <Download className="size-4" />
             {UI_TEXT.ATTENDANCE.EXPORT_EXCEL}

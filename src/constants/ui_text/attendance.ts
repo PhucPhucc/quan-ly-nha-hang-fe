@@ -1,6 +1,7 @@
 export const ATTENDANCE = {
   // Page Titles
   REPORT_TITLE: "Báo cáo điểm danh",
+  REPORT_DESCRIPTION: "Theo dõi và quản lý thời gian làm việc của nhân viên trong hệ thống.",
   EXPORT_EXCEL: "Xuất Excel",
   EXPORT_SUCCESS: "Xuất file báo cáo thành công",
   EXPORT_FAILURE: "Xuất file thất bại",
