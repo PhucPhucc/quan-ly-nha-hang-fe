@@ -77,7 +77,7 @@ export function NavMain({ items }: { items: NavMainProps[] }) {
                       <ChevronRight
                         className={clsx(
                           "transition-colors",
-                          isUrlActive(item.url)
+                          hasActivePrefix(item.url)
                             ? "text-primary-foreground group-hover:text-primary-foreground hover:text-foreground"
                             : "text-foreground hover:text-foreground"
                         )}
@@ -89,10 +89,7 @@ export function NavMain({ items }: { items: NavMainProps[] }) {
                     <SidebarMenuSub>
                       {item.items.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton
-                            asChild
-                            isActive={isUrlActive(subItem.url) || hasActivePrefix(subItem.url)}
-                          >
+                          <SidebarMenuSubButton asChild isActive={isUrlActive(subItem.url)}>
                             <Link href={subItem.url}>
                               {subItem.icon && (
                                 <subItem.icon className="size-4 text-muted-foreground" />
