@@ -23,6 +23,18 @@ import { attendanceService } from "@/services/attendanceService";
 
 const DEFAULT_PAGE_SIZE = 10;
 
+const formatDate = (date: Date) => {
+  const d = new Date(date);
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  const year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+};
+
 const AttendancePage = () => {
   const [page, setPage] = useState(1);
 
@@ -46,18 +58,23 @@ const AttendancePage = () => {
       if (appliedFilters.statusFilter !== "all") {
         filters.push(`status==${appliedFilters.statusFilter}`);
       }
-      if (appliedFilters.dateRange?.from) {
-        filters.push(`date>=${appliedFilters.dateRange.from.toISOString()}`);
-      }
-      if (appliedFilters.dateRange?.to) {
-        filters.push(`date<=${appliedFilters.dateRange.to.toISOString()}`);
-      }
+
+      const startDate = appliedFilters.dateRange?.from
+        ? formatDate(appliedFilters.dateRange.from)
+        : undefined;
+      const endDate = appliedFilters.dateRange?.to
+        ? formatDate(appliedFilters.dateRange.to)
+        : undefined;
+      const date = startDate && !endDate ? startDate : undefined;
 
       const response = await attendanceService.getReport({
         pageNumber: page,
         pageSize: DEFAULT_PAGE_SIZE,
         search: appliedFilters.employeeSearch || undefined,
         filters: filters.length > 0 ? filters : undefined,
+        date,
+        startDate: !date ? startDate : undefined,
+        endDate: !date ? endDate : undefined,
       });
       if (!response.isSuccess) {
         throw new Error(response.message || "Failed to fetch attendances");
@@ -86,16 +103,21 @@ const AttendancePage = () => {
       if (appliedFilters.statusFilter !== "all") {
         filters.push(`status==${appliedFilters.statusFilter}`);
       }
-      if (appliedFilters.dateRange?.from) {
-        filters.push(`date>=${appliedFilters.dateRange.from.toISOString()}`);
-      }
-      if (appliedFilters.dateRange?.to) {
-        filters.push(`date<=${appliedFilters.dateRange.to.toISOString()}`);
-      }
+
+      const startDate = appliedFilters.dateRange?.from
+        ? formatDate(appliedFilters.dateRange.from)
+        : undefined;
+      const endDate = appliedFilters.dateRange?.to
+        ? formatDate(appliedFilters.dateRange.to)
+        : undefined;
+      const date = startDate && !endDate ? startDate : undefined;
 
       const blob = await attendanceService.exportReport({
         search: appliedFilters.employeeSearch || undefined,
         filters: filters.length > 0 ? filters : undefined,
+        date,
+        startDate: !date ? startDate : undefined,
+        endDate: !date ? endDate : undefined,
       });
 
       const url = window.URL.createObjectURL(blob);

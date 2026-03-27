@@ -177,7 +177,7 @@ function AlertPanel({
             ))}
           </div>
         ) : count === 0 ? (
-          <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+          <div className="flex h-full items-center justify-center text-xs text-muted-foreground py-4">
             {emptyText}
           </div>
         ) : (
