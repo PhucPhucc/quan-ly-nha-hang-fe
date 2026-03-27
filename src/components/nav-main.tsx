@@ -63,7 +63,7 @@ export function NavMain({ items }: { items: NavMainProps[] }) {
                     tooltip={item.title}
                     isActive={isParentActive(item)}
                     className={clsx({
-                      "bg-sidebar-accent text-sidebar-accent-foreground": isParentActive(item),
+                      "bg-sidebar-accent text-sidebar-accent-foreground ": isParentActive(item),
                     })}
                     asChild
                   >
@@ -73,8 +73,15 @@ export function NavMain({ items }: { items: NavMainProps[] }) {
                     </Link>
                   </SidebarMenuButton>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuAction className="data-[state=open]/collapsible:rotate-90">
-                      <ChevronRight />
+                    <SidebarMenuAction className="group data-[state=open]:rotate-90 text-primary-foreground transition duration-300">
+                      <ChevronRight
+                        className={clsx(
+                          "transition-colors",
+                          isUrlActive(item.url)
+                            ? "text-primary-foreground group-hover:text-primary-foreground hover:text-foreground"
+                            : "text-foreground hover:text-foreground"
+                        )}
+                      />
                       <span className="sr-only">{UI_TEXT.COMMON.TOGGLE}</span>
                     </SidebarMenuAction>
                   </CollapsibleTrigger>
