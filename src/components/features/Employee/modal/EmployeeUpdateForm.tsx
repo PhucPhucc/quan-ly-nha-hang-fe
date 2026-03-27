@@ -91,12 +91,18 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
 
         <Field>
           <Label>{UI_TEXT.COMMON.CREATE_AT}</Label>
-          <Input disabled defaultValue={employee?.createdAt || ""} />
+          <Input
+            disabled
+            defaultValue={employee?.createdAt ? new Date(employee.createdAt).toLocaleString() : ""}
+          />
         </Field>
 
         <Field>
           <Label>{UI_TEXT.COMMON.UPDATE_AT}</Label>
-          <Input disabled defaultValue={employee?.updatedAt || ""} />
+          <Input
+            disabled
+            defaultValue={employee?.updatedAt ? new Date(employee.updatedAt).toLocaleString() : ""}
+          />
         </Field>
 
         <SwitchActive status={employee?.status} />

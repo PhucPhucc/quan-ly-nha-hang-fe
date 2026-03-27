@@ -271,6 +271,11 @@ const CASHIER_ROUTES: NavMainProps[] = [
       },
     ],
   },
+  {
+    title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+    url: "/attendance",
+    icon: CheckCircle2,
+  },
 ];
 
 const CHEFBAR_ROUTES: NavMainProps[] = [
@@ -288,6 +293,11 @@ const CHEFBAR_ROUTES: NavMainProps[] = [
     title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
     url: "/kds/audit-log",
     icon: History,
+  },
+  {
+    title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+    url: "/attendance",
+    icon: CheckCircle2,
   },
 ];
 
