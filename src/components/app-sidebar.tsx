@@ -91,7 +91,7 @@ const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
       },
       {
         title: UI_TEXT.SIDE_BAR.RESERVATION,
-        url: "/manager/reservation",
+        url: "/manager/table/reservation",
         icon: CalendarDays,
       },
     ],
@@ -113,7 +113,7 @@ const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
       },
       {
         title: UI_TEXT.VOUCHER.TITLE,
-        url: "/manager/voucher",
+        url: "/manager/order/voucher",
         icon: Tag,
       },
       {
@@ -145,17 +145,17 @@ const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
       },
       {
         title: UI_TEXT.SIDE_BAR.SHIFT,
-        url: "/manager/shift",
+        url: "/manager/employee/shift",
         icon: Clock,
       },
       {
         title: UI_TEXT.SIDE_BAR.SCHEDULE,
-        url: "/manager/schedule",
+        url: "/manager/employee/schedule",
         icon: CalendarDays,
       },
       {
         title: UI_TEXT.SIDE_BAR.ATTENDANCE,
-        url: "/manager/attendance",
+        url: "/manager/employee/attendance",
         icon: CheckCircle2,
       },
     ],

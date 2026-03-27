@@ -30,17 +30,17 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     label: UI_TEXT.SIDE_BAR.SHIFT,
-    href: "/manager/shift",
+    href: "/manager/employee/shift",
     icon: Clock,
   },
   {
     label: UI_TEXT.SIDE_BAR.SCHEDULE,
-    href: "/manager/schedule",
+    href: "/manager/employee/schedule",
     icon: CalendarDays,
   },
   {
     label: UI_TEXT.SIDE_BAR.ATTENDANCE,
-    href: "/manager/attendance",
+    href: "/manager/employee/attendance",
     icon: CheckCircle2,
   },
 ];

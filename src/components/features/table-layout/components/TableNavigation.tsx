@@ -29,7 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     label: UI_TEXT.SIDE_BAR.RESERVATION,
-    href: "/manager/reservation",
+    href: "/manager/table/reservation",
     icon: CalendarDays,
   },
 ];

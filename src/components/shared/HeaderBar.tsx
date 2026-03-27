@@ -65,21 +65,17 @@ const HeaderBar = () => {
         </div>
 
         <div className="ml-2 hidden flex-1 items-center overflow-hidden md:flex">
-          {pathname.startsWith("/manager/order") || pathname.startsWith("/manager/voucher") ? (
+          {pathname.startsWith("/manager/order") ? (
             <OrderNavigation />
           ) : pathname.startsWith("/manager/menu") ? (
             <MenuNavigation />
           ) : pathname.startsWith("/manager/inventory") ? (
             <InventoryNavigation />
-          ) : pathname.startsWith("/manager/table") ||
-            pathname.startsWith("/manager/reservation") ? (
+          ) : pathname.startsWith("/manager/table") ? (
             <TableNavigation />
           ) : pathname.startsWith("/manager/settings") ? (
             <SettingsNavigation />
-          ) : pathname.startsWith("/manager/employee") ||
-            pathname.startsWith("/manager/shift") ||
-            pathname.startsWith("/manager/schedule") ||
-            pathname.startsWith("/manager/attendance") ? (
+          ) : pathname.startsWith("/manager/employee") ? (
             <EmployeeNavigation />
           ) : (
             <div

@@ -29,7 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     label: UI_TEXT.VOUCHER.TITLE,
-    href: "/manager/voucher",
+    href: "/manager/order/voucher",
     icon: Tag,
   },
   {
