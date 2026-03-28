@@ -18,14 +18,14 @@ type Props = {
 
 export function BranchInfoSection({ register, errors }: Props) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeader
         icon={<Building2 className="h-4 w-4" />}
         title={SETTINGS.BRANCH_SECTION}
         description={SETTINGS.BRANCH_SECTION_DESC}
       />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field>
+        <Field className="sm:col-span-2">
           <FieldLabel>{SETTINGS.FIELD_RESTAURANT_NAME}</FieldLabel>
           <FieldContent>
             <Input
@@ -44,14 +44,6 @@ export function BranchInfoSection({ register, errors }: Props) {
               {...register("branchName")}
             />
             <FieldError errors={[errors.branchName]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel>{SETTINGS.FIELD_BRANCH_ID}</FieldLabel>
-          <FieldContent>
-            <Input placeholder={SETTINGS.FIELD_BRANCH_ID_PLACEHOLDER} {...register("branchId")} />
-            <FieldError errors={[errors.branchId]} />
           </FieldContent>
         </Field>
 

@@ -3,11 +3,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
+import { PreCheckBillResponse } from "@/types/Billing";
 import { OrderStatus, PaymentMethod } from "@/types/enums";
+import { Order } from "@/types/Order";
 import { printThermalReceipt } from "@/utils/thermalPrint";
 
 export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: number) {
@@ -23,6 +26,8 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     description?: string;
   } | null>(null);
 
+  const { data: branding } = useBrandingSettings();
+
   const { selectedOrderId, checkoutOrder, clearOrderDetails, fetchOrders } = useOrderBoardStore(
     (state: OrderBoardState) => ({
       selectedOrderId: state.selectedOrderId,
@@ -37,12 +42,54 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     fetchTablesByArea: state.fetchTablesByArea,
   }));
 
+  const buildReceiptFromOrder = useCallback(
+    (order: Order, invoiceAmount?: number): PreCheckBillResponse => ({
+      orderId: order.orderId,
+      orderCode: order.orderCode,
+      tableNumber: order.tableId ? Number.parseInt(order.tableId, 10) || undefined : undefined,
+      employeeName: UI_TEXT.COMMON.NOT_APPLICABLE,
+      printedAt: new Date().toISOString(),
+      items: order.orderItems.map((item) => ({
+        itemName: item.itemNameSnapshot,
+        quantity: item.quantity,
+        unitPrice: item.unitPriceSnapshot,
+        optionsSummary: item.itemOptions,
+        lineTotal: item.unitPriceSnapshot * item.quantity,
+      })),
+      subTotal: order.subTotal ?? order.totalAmount,
+      discount: order.discountAmount ?? order.discount ?? 0,
+      voucherCode: order.voucherCode ?? order.appliedVoucherCode,
+      preTaxAmount: order.subTotal ?? order.totalAmount,
+      vatRate: order.vatRate ?? 0,
+      vat: order.vatAmount ?? 0,
+      totalAmount: invoiceAmount ?? order.totalAmount,
+      paymentMethod: order.paymentMethod,
+      amountReceived: invoiceAmount ?? order.amountPaid ?? order.totalAmount,
+      changeAmount:
+        typeof invoiceAmount === "number"
+          ? Math.max(0, invoiceAmount - (order.totalAmount || 0))
+          : Math.max(0, (order.amountPaid ?? order.totalAmount) - (order.totalAmount || 0)),
+    }),
+    []
+  );
+
   const refreshBoardState = useCallback(async () => {
     await Promise.all([
       fetchOrders(),
       selectedAreaId ? fetchTablesByArea(selectedAreaId) : Promise.resolve(),
     ]);
   }, [fetchOrders, selectedAreaId, fetchTablesByArea]);
+
+  const printInvoiceAfterPayment = useCallback(
+    async (invoiceAmount?: number) => {
+      const order = useOrderBoardStore.getState().activeOrderDetails;
+      if (!order) return;
+
+      const receipt = buildReceiptFromOrder(order, invoiceAmount);
+      printThermalReceipt(receipt, branding);
+    },
+    [buildReceiptFromOrder, branding]
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -105,16 +152,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
           if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
             // In hóa đơn tự động khi nhận được tiền chuyển khoản
             try {
-              // Lấy dữ liệu JSON thay vì PDF để in mẫu máy in nhiệt thực tế hơn
-              const billRes = await orderService.getPreCheckBill(selectedOrderId);
-              if (billRes.isSuccess && billRes.data) {
-                printThermalReceipt({
-                  ...billRes.data,
-                  paymentMethod: UI_TEXT.ORDER.PRINT_TEMP.METHOD_TRANSFER_QR,
-                  amountReceived: billRes.data.totalAmount,
-                  changeAmount: 0,
-                });
-              }
+              await printInvoiceAfterPayment(totalAmount);
             } catch (printError) {
               console.error("Failed to print thermal receipt for bank transfer:", printError);
             }
@@ -141,6 +179,8 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     onClose,
     clearOrderDetails,
     refreshBoardState,
+    printInvoiceAfterPayment,
+    totalAmount,
   ]);
 
   const handleCheckout = async () => {
@@ -169,21 +209,9 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
       const success = await checkoutOrder(selectedOrderId, selectedMethod, amountReceived);
 
       if (success) {
-        // Fetch bill PDF and print
         try {
-          // Lấy dữ liệu JSON thay vì PDF để in mẫu máy in nhiệt thực tế hơn
-          const billRes = await orderService.getPreCheckBill(selectedOrderId);
-          if (billRes.isSuccess && billRes.data) {
-            printThermalReceipt({
-              ...billRes.data,
-              paymentMethod:
-                selectedMethod === PaymentMethod.Cash
-                  ? UI_TEXT.ORDER.PRINT_TEMP.METHOD_CASH
-                  : UI_TEXT.ORDER.PRINT_TEMP.METHOD_CARD,
-              amountReceived: amountReceived ?? billRes.data.totalAmount,
-              changeAmount: Math.max(0, (amountReceived ?? 0) - billRes.data.totalAmount),
-            });
-          }
+          const invoiceAmount = amountReceived ?? totalAmount;
+          await printInvoiceAfterPayment(invoiceAmount);
         } catch (printError) {
           console.error("Failed to print thermal receipt:", printError);
         }

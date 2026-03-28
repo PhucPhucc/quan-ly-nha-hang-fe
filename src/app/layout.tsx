@@ -5,6 +5,8 @@ import Script from "next/dist/client/script";
 import { Geist_Mono, Inter } from "next/font/google";
 import { Toaster } from "sonner";
 
+import { BrandingDocumentSync } from "@/components/features/branding/BrandingDocumentSync";
+import { fetchBrandingSettingsServer } from "@/lib/branding-metadata";
 import QueryProvider from "@/providers/QueryProvider";
 import { ThemeProvider } from "@/store/ThemeContext";
 
@@ -18,19 +20,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+const defaultMetadata: Metadata = {
   title: "FoodHub | Premium Restaurant Management",
   description:
     "The all-in-one solution for modern restaurant operations, inventory, and staff management.",
 };
 
-export default function RootLayout({
+export async function generateMetadata(): Promise<Metadata> {
+  const branding = await fetchBrandingSettingsServer();
+
+  return {
+    title: branding?.appTitle || defaultMetadata.title,
+    description: defaultMetadata.description,
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const branding = await fetchBrandingSettingsServer();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={branding?.language || "en"} suppressHydrationWarning>
       <body
         className={`${inter.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
@@ -41,6 +54,7 @@ export default function RootLayout({
         />
         <ThemeProvider>
           <QueryProvider>
+            <BrandingDocumentSync />
             <Toaster position="top-center" richColors />
             {children}
           </QueryProvider>

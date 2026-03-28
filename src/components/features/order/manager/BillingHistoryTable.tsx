@@ -13,6 +13,7 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { BillingHistoryRecord } from "@/types/Billing";
 import { OrderType } from "@/types/enums";
@@ -27,17 +28,6 @@ interface BillingHistoryTableProps {
   onRetry: () => void;
   onRowSelect?: (record: BillingHistoryRecord) => void;
 }
-
-const money = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
-
-const formatDate = (value?: string | null) => {
-  if (!value) return UI_TEXT.COMMON.NOT_APPLICABLE;
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? UI_TEXT.COMMON.NOT_APPLICABLE : d.toLocaleString("vi-VN");
-};
 
 const statusClass = (status: string) => {
   if (status === "Paid") return "table-pill-info";
@@ -70,6 +60,7 @@ export default function BillingHistoryTable({
   onRetry,
   onRowSelect,
 }: BillingHistoryTableProps) {
+  const { formatDateTime, formatCurrency } = useBrandingFormatter();
   if (loading) {
     return (
       <div className="rounded-2xl border bg-card p-8 text-center text-muted-foreground">
@@ -139,9 +130,9 @@ export default function BillingHistoryTable({
                       {record.paymentMethod || UI_TEXT.COMMON.NULL}
                     </Badge>
                   </TableCell>
-                  <TableCell>{formatDate(record.paidAt)}</TableCell>
+                  <TableCell>{formatDateTime(record.paidAt)}</TableCell>
                   <TableCell className="font-semibold text-primary">
-                    {money.format(record.totalAmount)}
+                    {formatCurrency(record.totalAmount)}
                   </TableCell>
                   <TableCell>
                     <Badge

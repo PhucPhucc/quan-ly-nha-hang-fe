@@ -11,6 +11,7 @@ export const COMMON = {
   NULL: "Null",
   EMPTY: "Trống",
   UPDATE: "Đã cập nhật",
+  UPLOAD: "Tải lên",
   ALL: "Tất cả",
   NOT_APPLICABLE: "N/A",
   FILTER: "Bộ lọc",

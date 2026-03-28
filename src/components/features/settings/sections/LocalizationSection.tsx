@@ -17,6 +17,17 @@ import { SectionHeader } from "../shared/SectionHeader";
 
 const { SETTINGS } = UI_TEXT;
 
+const timezoneOptions = [
+  { value: "Asia/Ho_Chi_Minh", label: "Asia/Ho_Chi_Minh" },
+  { value: "GMT+7", label: SETTINGS.TIMEZONE_GMT7 },
+];
+
+const dateOptions = [
+  { value: "dd/MM/yyyy", label: SETTINGS.DATE_FORMAT_DMY },
+  { value: "MM/dd/yyyy", label: SETTINGS.DATE_FORMAT_MDY },
+  { value: "yyyy-MM-dd", label: SETTINGS.DATE_FORMAT_YMD },
+];
+
 type Props = {
   initialValues: GeneralSettingsInput;
   setValue: UseFormSetValue<GeneralSettingsInput>;
@@ -30,14 +41,11 @@ export function LocalizationSection({ initialValues, setValue }: Props) {
         title={SETTINGS.LOCALIZE_SECTION}
         description={SETTINGS.LOCALIZE_SECTION_DESC}
       />
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field>
           <FieldLabel>{SETTINGS.FIELD_CURRENCY}</FieldLabel>
           <FieldContent>
-            <Select
-              defaultValue={initialValues.currency}
-              onValueChange={(v) => setValue("currency", v)}
-            >
+            <Select value={initialValues.currency} onValueChange={(v) => setValue("currency", v)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -49,19 +57,36 @@ export function LocalizationSection({ initialValues, setValue }: Props) {
         </Field>
 
         <Field>
+          <FieldLabel>{SETTINGS.FIELD_LANGUAGE}</FieldLabel>
+          <FieldContent>
+            <Select value={initialValues.language} onValueChange={(v) => setValue("language", v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="vi">{SETTINGS.LANGUAGE_VI}</SelectItem>
+                <SelectItem value="en">{SETTINGS.LANGUAGE_EN}</SelectItem>
+              </SelectContent>
+            </Select>
+          </FieldContent>
+        </Field>
+
+        <Field>
           <FieldLabel>{SETTINGS.FIELD_DATE_FORMAT}</FieldLabel>
           <FieldContent>
             <Select
-              defaultValue={initialValues.dateFormat}
+              value={initialValues.dateFormat}
               onValueChange={(v) => setValue("dateFormat", v)}
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={SETTINGS.DATE_FORMAT_DMY}>{SETTINGS.DATE_FORMAT_DMY}</SelectItem>
-                <SelectItem value={SETTINGS.DATE_FORMAT_MDY}>{SETTINGS.DATE_FORMAT_MDY}</SelectItem>
-                <SelectItem value={SETTINGS.DATE_FORMAT_YMD}>{SETTINGS.DATE_FORMAT_YMD}</SelectItem>
+                {dateOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </FieldContent>
@@ -70,15 +95,16 @@ export function LocalizationSection({ initialValues, setValue }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_TIMEZONE}</FieldLabel>
           <FieldContent>
-            <Select
-              defaultValue={initialValues.timezone}
-              onValueChange={(v) => setValue("timezone", v)}
-            >
+            <Select value={initialValues.timezone} onValueChange={(v) => setValue("timezone", v)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="GMT+7">{SETTINGS.TIMEZONE_GMT7}</SelectItem>
+                {timezoneOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </FieldContent>
