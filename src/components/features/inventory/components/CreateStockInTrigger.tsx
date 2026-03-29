@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, FileInput, FileOutput, History } from "lucide-react";
+import { ChevronDown, FileInput, FileOutput } from "lucide-react";
 import React, { useState } from "react";
 
 import { CreateStockInDrawer } from "@/components/features/inventory/CreateStockInDrawer";
@@ -26,12 +26,9 @@ export function CreateStockInTrigger({ onSuccess }: Props) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="h-9 w-auto gap-2 bg-primary px-3.5 text-sm font-medium text-primary-foreground shadow-sm shadow-primary/20 transition-colors hover:bg-primary-hover active:scale-[0.98]">
-            <div className="flex size-5 items-center justify-center rounded-lg bg-white/20">
-              <History className="size-3.5 text-white" strokeWidth={2.5} />
-            </div>
+          <Button>
             <span className="whitespace-nowrap">{UI_TEXT.INVENTORY.CREATE_VOUCHER_BTN}</span>
-            <ChevronDown className="size-3 opacity-50" />
+            <ChevronDown className="size-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 rounded-lg p-2">

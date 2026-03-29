@@ -7,7 +7,7 @@ export const SETTINGS = {
   NAV_GENERAL: "Cấu hình chung",
   NAV_WAREHOUSE: "Cấu hình kho",
   NAV_RESERVATION: "Cấu hình đặt bàn",
-
+  NAV_SETTING: "Cấu hình KDS",
   // ────────────────────────────────────────────────────────────────
   // GENERAL SETTINGS
   // ────────────────────────────────────────────────────────────────

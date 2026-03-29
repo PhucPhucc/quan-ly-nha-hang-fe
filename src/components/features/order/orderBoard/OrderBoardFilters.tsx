@@ -52,21 +52,21 @@ export default function OrderBoardFilters({
   };
 
   return (
-    <div className="w-full rounded-lg border bg-card shadow-sm shadow-slate-100/60 px-4 py-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto] lg:items-center">
+    <div className="w-full rounded-xl border bg-background shadow-sm p-3 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto] lg:items-center">
       <div className="flex-1 min-w-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-card-foreground" />
           <Input
             value={search}
             onChange={handleSearchChange}
             placeholder={UI_TEXT.ORDER.BOARD.SEARCH_PLACEHOLDER}
-            className="pl-10 rounded-lg bg-slate-50 text-slate-700 placeholder:text-slate-400 border border-slate-100 focus-visible:ring-2 focus-visible:ring-slate-200"
+            className="pl-10 rounded-lg bg-card text-card-foreground border"
           />
         </div>
       </div>
 
       <Select value={statusFilter} onValueChange={onStatusChange}>
-        <SelectTrigger className=" w-full  rounded-lg bg-slate-50 border border-slate-100 text-slate-700">
+        <SelectTrigger className=" w-full rounded-lg bg-card border text-card-foreground">
           <div className="flex items-center gap-2 text-foreground">
             <SlidersHorizontal className="h-4 w-4" />
             <SelectValue placeholder={UI_TEXT.ORDER.BOARD.STATUS_LABEL} />
@@ -82,7 +82,7 @@ export default function OrderBoardFilters({
       </Select>
 
       <Select value={typeFilter} onValueChange={onTypeChange}>
-        <SelectTrigger className="w-full rounded-lg bg-slate-50 border border-slate-100 text-slate-700">
+        <SelectTrigger className="w-full rounded-lg bg-card border text-card-foreground">
           <div className="flex items-center gap-2 text-foreground">
             <SlidersHorizontal className="h-4 w-4" />
             <SelectValue placeholder={UI_TEXT.ORDER.BOARD.TYPE_TABLE} />
@@ -97,12 +97,12 @@ export default function OrderBoardFilters({
         </SelectContent>
       </Select>
 
-      <div className="flex items-center justify-end">
+      <div>
         <Button
           onClick={onReset}
           variant="ghost"
           size="icon"
-          className="  w-11  rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+          className="rounded-full text-card-foreground hover:bg-card-foreground/10"
           title={UI_TEXT.COMMON.RESET}
         >
           <RefreshCw className="h-4 w-4" />

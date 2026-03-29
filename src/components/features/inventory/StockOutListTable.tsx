@@ -9,8 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -20,19 +18,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { StockOutReceipt } from "@/types/StockOut";
 
-import {
-  INVENTORY_AVATAR_CLASS,
-  INVENTORY_EMPTY_CELL_CLASS,
-  INVENTORY_TABLE_CONTAINER_CLASS,
-  INVENTORY_TH_CLASS,
-  INVENTORY_THEAD_CLASS,
-  INVENTORY_THEAD_ROW_CLASS,
-  INVENTORY_TROW_CLASS,
-} from "./components/inventoryStyles";
+import { INVENTORY_AVATAR_CLASS, INVENTORY_EMPTY_CELL_CLASS } from "./components/inventoryStyles";
 
 interface StockOutTableProps {
   data: StockOutReceipt[];
@@ -47,29 +38,17 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
   const missingRows = Math.max(0, pageSize - data.length);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
-        <TableHeader className={INVENTORY_THEAD_CLASS}>
-          <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
-            <TableHead className={`${INVENTORY_TH_CLASS} pl-6`}>
-              {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
-            </TableHead>
-            <TableHead className={INVENTORY_TH_CLASS}>{UI_TEXT.INVENTORY.TABLE.COL_DATE}</TableHead>
-            <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-              {STOCK_OUT_ITEMS_COUNT}
-            </TableHead>
-            <TableHead className={`${INVENTORY_TH_CLASS} text-right`}>
-              {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
-            </TableHead>
-            <TableHead className={INVENTORY_TH_CLASS}>
-              {UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}
-            </TableHead>
-            <TableHead className={INVENTORY_TH_CLASS}>
-              {UI_TEXT.INVENTORY.FORM.DESCRIPTION}
-            </TableHead>
-            <TableHead className={`${INVENTORY_TH_CLASS} text-right pr-6`}>
-              {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
-            </TableHead>
+    <TableShell>
+      <Table>
+        <TableHeader>
+          <TableRow variant="header">
+            <TableHead>{UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}</TableHead>
+            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_DATE}</TableHead>
+            <TableHead>{STOCK_OUT_ITEMS_COUNT}</TableHead>
+            <TableHead>{UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}</TableHead>
+            <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_RECEIVER}</TableHead>
+            <TableHead>{UI_TEXT.INVENTORY.FORM.DESCRIPTION}</TableHead>
+            <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -82,18 +61,16 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
           ) : (
             <>
               {data.map((item) => (
-                <TableRow key={item.id} className={INVENTORY_TROW_CLASS}>
-                  <TableCell className="pl-6 font-mono text-[11px] font-bold text-muted-foreground/60 uppercase">
-                    {item.receiptCode}
-                  </TableCell>
-                  <TableCell className="font-bold text-foreground/80 tracking-tight text-xs uppercase">
+                <TableRow key={item.id}>
+                  <TableCell>{item.receiptCode}</TableCell>
+                  <TableCell>
                     {new Date(item.stockOutDate).toLocaleDateString("vi-VN", {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",
                     })}
                   </TableCell>
-                  <TableCell className="text-center font-black">
+                  <TableCell className="font-black">
                     <Badge
                       variant="secondary"
                       className="px-2 py-0.5 rounded-lg text-[10px] uppercase font-black tracking-widest bg-muted/50 text-muted-foreground/80 border-none shadow-none tabular-nums"
@@ -101,7 +78,7 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                       {item.totalItems}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right font-black tabular-nums text-primary/80">
+                  <TableCell>
                     {item.totalAmount.toLocaleString("vi-VN")}
                     <span className="ml-1 text-[10px] font-bold opacity-50">
                       {UI_TEXT.COMMON.CURRENCY}
@@ -119,13 +96,13 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                   </TableCell>
                   <TableCell>
                     {item.note && (
-                      <div className="flex items-center gap-1.5 text-muted-foreground/50 italic text-[11px] font-medium">
+                      <div className="flex items-center gap-1.5 text-card-foreground/70 italic text-[11px] font-medium">
                         <MessageSquare className="size-3" />
-                        <span className="truncate max-w-[120px]">{item.note}</span>
+                        <span className="truncate max-w-30">{item.note}</span>
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="text-right pr-6">
+                  <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -138,24 +115,14 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
                         align="end"
-                        className="rounded-2xl p-1.5 shadow-xl border-border/40 min-w-[160px]"
+                        className="rounded-lg p-1.5 shadow-xl border-border/40 min-w-[160px]"
                       >
-                        <DropdownMenuLabel className="px-2 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
-                          {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
-                        </DropdownMenuLabel>
-                        <DropdownMenuItem
-                          className="rounded-lg px-2 py-2 text-xs font-bold gap-3 focus:bg-primary/5 focus:text-primary transition-colors cursor-pointer"
-                          onClick={() => onViewDetail(item.id)}
-                        >
-                          <Eye className="size-4 opacity-50" /> {UI_TEXT.BUTTON.DETAIL}
+                        <DropdownMenuItem onClick={() => onViewDetail(item.id)}>
+                          <Eye className="size-4" /> {UI_TEXT.BUTTON.DETAIL}
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator className="my-1 opacity-50" />
                         {onDelete && (
-                          <DropdownMenuItem
-                            className="rounded-lg px-2 py-2 text-xs font-bold gap-3 text-destructive focus:bg-destructive/5 focus:text-destructive transition-colors cursor-pointer"
-                            onClick={() => onDelete(item.id)}
-                          >
-                            <Trash2 className="size-4 opacity-50" /> {UI_TEXT.BUTTON.DELETE}
+                          <DropdownMenuItem onClick={() => onDelete(item.id)}>
+                            <Trash2 className="size-4" /> {UI_TEXT.BUTTON.DELETE}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>
@@ -163,19 +130,10 @@ export const StockOutListTable = ({ data, onViewDetail, onDelete }: StockOutTabl
                   </TableCell>
                 </TableRow>
               ))}
-              {missingRows > 0 &&
-                Array.from({ length: missingRows }).map((_, idx) => (
-                  <TableRow
-                    key={`placeholder-${idx}`}
-                    className="h-[52px] border-none hover:bg-transparent"
-                  >
-                    <TableCell colSpan={7} className="p-0" />
-                  </TableRow>
-                ))}
             </>
           )}
         </TableBody>
       </Table>
-    </div>
+    </TableShell>
   );
 };

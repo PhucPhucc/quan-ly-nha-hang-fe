@@ -105,14 +105,13 @@ export function InventoryImportExcelDialog({
         <Button
           variant="outline"
           disabled={disabled}
-          size="sm"
-          className="h-12 rounded-xl border-border bg-card px-4 text-xs font-bold text-muted-foreground shadow-sm hover:bg-secondary hover:text-primary"
+          className="rounded-lg border-border bg-card px-4 text-xs font-bold text-muted-foreground shadow-sm hover:bg-secondary hover:text-success"
         >
-          <FileSpreadsheet className="mr-2 h-3.5 w-3.5 text-success" />
+          <FileSpreadsheet className="size-4 text-success" />
           {OPENING_STOCK.IMPORT_EXCEL}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileSpreadsheet className="h-5 w-5 text-success" />

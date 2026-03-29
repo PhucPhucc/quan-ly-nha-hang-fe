@@ -7,18 +7,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { TabsContent } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryStockAlertItem } from "@/types/Inventory";
-
-import {
-  INVENTORY_TABLE_CONTAINER_CLASS,
-  INVENTORY_TH_CLASS,
-  INVENTORY_THEAD_CLASS,
-  INVENTORY_THEAD_ROW_CLASS,
-  INVENTORY_TROW_CLASS,
-} from "./inventoryStyles";
 
 interface LowStockTabContentProps {
   items: InventoryStockAlertItem[];
@@ -27,25 +20,19 @@ interface LowStockTabContentProps {
 export function LowStockTabContent({ items }: LowStockTabContentProps) {
   return (
     <TabsContent value="low-stock" className="m-0 border-none outline-none">
-      <div className={INVENTORY_TABLE_CONTAINER_CLASS}>
+      <TableShell>
         <Table>
-          <TableHeader className={INVENTORY_THEAD_CLASS}>
-            <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
-              <TableHead className={`${INVENTORY_TH_CLASS} pl-8`}>
-                {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
-              </TableHead>
-              <TableHead className={INVENTORY_TH_CLASS}>
-                {UI_TEXT.INVENTORY.TABLE.COL_ITEM}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
+          <TableHeader>
+            <TableRow variant="header">
+              <TableHead>{UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_ITEM}</TableHead>
+              <TableHead className={`text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_CURRENT_STOCK}
               </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
+              <TableHead className={`text-center`}>
                 {UI_TEXT.INVENTORY.TABLE.COL_THRESHOLD}
               </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} pr-8 text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
-              </TableHead>
+              <TableHead className={`text-center`}>{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -60,22 +47,20 @@ export function LowStockTabContent({ items }: LowStockTabContentProps) {
               </TableRow>
             ) : (
               items.map((item, index) => (
-                <TableRow key={item.ingredientId || index} className={INVENTORY_TROW_CLASS}>
-                  <TableCell className="pl-8 font-mono text-[10px] text-muted-foreground/50 font-bold uppercase tracking-tight">
+                <TableRow key={item.ingredientId || index} className="text-card-foreground">
+                  <TableCell className="font-mono text-xs font-bold uppercase tracking-tight">
                     {item.ingredientCode || UI_TEXT.COMMON.DASH}
                   </TableCell>
-                  <TableCell className="font-bold text-foreground/80">
-                    {item.ingredientName}
-                  </TableCell>
-                  <TableCell className="text-center font-black text-danger tabular-nums">
+                  <TableCell className="">{item.ingredientName}</TableCell>
+                  <TableCell className="text-center font-semibold text-danger tabular-nums">
                     {item.currentStock} {item.unit}
                   </TableCell>
-                  <TableCell className="text-center font-bold text-muted-foreground/40 tabular-nums">
+                  <TableCell className="text-center font-semibold tabular-nums">
                     {item.threshold} {item.unit}
                   </TableCell>
-                  <TableCell className="pr-8 text-center">
+                  <TableCell className="text-center">
                     <span
-                      className={`table-pill text-[10px] ${
+                      className={`table-pill ${
                         item.currentStock === 0 ? "table-pill-danger" : "table-pill-warning"
                       }`}
                     >
@@ -89,7 +74,7 @@ export function LowStockTabContent({ items }: LowStockTabContentProps) {
             )}
           </TableBody>
         </Table>
-      </div>
+      </TableShell>
     </TabsContent>
   );
 }

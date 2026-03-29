@@ -1,4 +1,5 @@
 import { UtensilsCrossed } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -27,10 +28,13 @@ const layout = ({
         />
         <div className="relative z-10 flex items-center justify-center h-screen">
           <div className="max-w-sm min-w-xs lg:w-sm">
-            <div className="flex items-center justify-center gap-2 text-primary text-shadow-xl mb-2">
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-2 text-primary text-shadow-xl mb-2"
+            >
               <UtensilsCrossed />
               <span className="font-serif font-bold text-4xl">{UI_TEXT.COMMON.NAME_PROJECT}</span>
-            </div>
+            </Link>
             {children}
           </div>
         </div>

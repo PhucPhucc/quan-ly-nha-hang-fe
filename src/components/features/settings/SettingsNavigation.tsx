@@ -35,7 +35,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: CalendarDays,
   },
   {
-    label: "Cấu hình KDS",
+    label: SETTINGS.NAV_SETTING,
     href: "/manager/settings/kds",
     icon: ChefHat,
   },

@@ -30,14 +30,14 @@ export const OptionGroupFilters: React.FC<OptionGroupFiltersProps> = ({
   onTypeChange,
   onCreate,
 }) => (
-  <Card className="p-4 border-border shadow-soft bg-card/50">
+  <Card className="p-3 border-border shadow-soft bg-background">
     <div className="flex gap-4 items-center">
       {/* Search */}
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder={UI_TEXT.MENU.OPTIONS.SEARCH_PLACEHOLDER}
-          className="pl-9 h-10"
+          className="pl-9 bg-card"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />
@@ -45,7 +45,7 @@ export const OptionGroupFilters: React.FC<OptionGroupFiltersProps> = ({
 
       {/* Type filter */}
       <Select value={typeFilter} onValueChange={onTypeChange}>
-        <SelectTrigger className="w-40 h-10">
+        <SelectTrigger className="w-40 bg-card">
           <SelectValue placeholder={UI_TEXT.MENU.OPTIONS.TYPE} />
         </SelectTrigger>
         <SelectContent>

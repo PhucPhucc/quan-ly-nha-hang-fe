@@ -85,8 +85,8 @@ export function AddIngredientPanel({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto py-4 pr-2 -mr-2">
-          <div className="bg-primary/10 p-3 rounded-md border border-primary/20 mb-6 flex items-start gap-3">
+        <div className="flex-1 overflow-y-auto py-4 px-2 no-scrollbar">
+          <div className="bg-primary/10 p-3 rounded-lg border border-primary/20 mb-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <p className="text-sm text-primary leading-relaxed">{UI_TEXT.INVENTORY.PRO_TIP}</p>
           </div>

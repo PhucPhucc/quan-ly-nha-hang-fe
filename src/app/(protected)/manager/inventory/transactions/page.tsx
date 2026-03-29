@@ -6,7 +6,6 @@ import { useState } from "react";
 
 import { InventoryPagination } from "@/components/features/inventory/components/InventoryPagination";
 import {
-  INVENTORY_ICON_BUTTON_CLASS,
   INVENTORY_INPUT_CLASS,
   INVENTORY_SELECT_TRIGGER_CLASS,
   INVENTORY_TABLE_SURFACE_CLASS,
@@ -29,6 +28,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
@@ -92,7 +92,7 @@ export default function InventoryTransactionsPage() {
             <Button
               variant="ghost"
               type="button"
-              className={INVENTORY_ICON_BUTTON_CLASS}
+              className="p-2 rounded-full hover:bg-card-foreground/10"
               onClick={() => {
                 setSearch("");
                 setTypeFilter("all");
@@ -107,7 +107,7 @@ export default function InventoryTransactionsPage() {
         }
       >
         <div className="relative min-w-0 flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder={UI_TEXT.INVENTORY.TOOLBAR.SEARCH_PLACEHOLDER}
             className={`${INVENTORY_INPUT_CLASS} pl-9`}
@@ -126,9 +126,7 @@ export default function InventoryTransactionsPage() {
             setPage(1);
           }}
         >
-          <SelectTrigger
-            className={`${INVENTORY_SELECT_TRIGGER_CLASS} min-h-[40px] w-full sm:w-44`}
-          >
+          <SelectTrigger className={`${INVENTORY_SELECT_TRIGGER_CLASS} w-full sm:w-44`}>
             <SelectValue placeholder={UI_TEXT.COMMON.ALL} />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
@@ -152,9 +150,7 @@ export default function InventoryTransactionsPage() {
             setPage(1);
           }}
         >
-          <SelectTrigger
-            className={`${INVENTORY_SELECT_TRIGGER_CLASS} min-h-[40px] w-full sm:w-44`}
-          >
+          <SelectTrigger className={`${INVENTORY_SELECT_TRIGGER_CLASS} w-full sm:w-44`}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
@@ -166,98 +162,72 @@ export default function InventoryTransactionsPage() {
 
       <div className={`${INVENTORY_TABLE_SURFACE_CLASS} mt-1`}>
         {isLoading ? (
-          <div className="max-h-[460px] space-y-2 overflow-auto p-4">
+          <div className="max-h-115 space-y-2 overflow-auto p-4">
             {Array.from({ length: 10 }).map((_, i) => (
               <Skeleton key={i} className="h-10 w-full rounded-xl" />
             ))}
           </div>
         ) : (
-          <Table containerClassName="max-h-[460px] overflow-auto">
-            <TableHeader className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50 shadow-sm">
-              <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
-                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.TABLE.COL_SKU}
-                </TableHead>
-                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.TABLE.COL_NAME}
-                </TableHead>
-                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.TABLE.COL_TYPE}
-                </TableHead>
-                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.TABLE.COL_QTY}
-                </TableHead>
-                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
-                </TableHead>
-                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.TABLE.COL_BALANCE}
-                </TableHead>
-                <TableHead className="w-[120px] bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.TABLE.COL_REFERENCE}
-                </TableHead>
-                <TableHead className="bg-slate-50 py-3 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  {UI_TEXT.INVENTORY.TABLE.COL_DATE}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="h-28 text-center text-slate-500">
-                    {UI_TEXT.INVENTORY.TABLE.EMPTY_ALERT}
-                  </TableCell>
+          <TableShell>
+            <Table>
+              <TableHeader>
+                <TableRow variant="header">
+                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_SKU}</TableHead>
+                  <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_NAME}</TableHead>
+                  <TableHead className="text-center">{UI_TEXT.INVENTORY.TABLE.COL_TYPE}</TableHead>
+                  <TableHead className="text-center">{UI_TEXT.INVENTORY.TABLE.COL_QTY}</TableHead>
+                  <TableHead className="text-center">
+                    {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
+                  </TableHead>
+                  <TableHead className="text-center w-32 ">
+                    {UI_TEXT.INVENTORY.TABLE.COL_BALANCE}
+                  </TableHead>
+                  <TableHead className="w-42 text-center">
+                    {UI_TEXT.INVENTORY.TABLE.COL_REFERENCE}
+                  </TableHead>
+                  <TableHead className="text-right">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</TableHead>
                 </TableRow>
-              ) : (
-                <>
-                  {transactions.map((item: InventoryTransaction) => (
-                    <TableRow
-                      key={item.inventoryTransactionId}
-                      className="h-[52px] hover:bg-slate-50/80"
-                    >
-                      <TableCell className="font-mono text-sm text-slate-600">
-                        {item.ingredientCode}
-                      </TableCell>
-                      <TableCell className="border-l border-slate-50/50 font-medium text-slate-900">
-                        {item.ingredientName}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <span className="inline-flex items-center rounded-full border border-slate-200/50 bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium text-slate-600">
-                          {formatType(item.transactionType)}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right font-semibold text-slate-900">
-                        {item.quantity}
-                      </TableCell>
-                      <TableCell className="text-right text-slate-600">
-                        {item.unitCost ?? UI_TEXT.COMMON.DASH}
-                      </TableCell>
-                      <TableCell className="text-right font-semibold text-primary/90">
-                        {item.balanceAfter}
-                      </TableCell>
-                      <TableCell className="w-[120px] text-center text-xs text-slate-500">
-                        <div
-                          className="mx-auto max-w-[110px] truncate"
-                          title={item.reference || ""}
-                        >
-                          {item.reference || UI_TEXT.COMMON.DASH}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center text-[10px] text-slate-500">
-                        {new Date(item.occurredAt).toLocaleString("vi-VN")}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {missingRows > 0 &&
-                    Array.from({ length: missingRows }).map((_, index) => (
-                      <TableRow key={`placeholder-${index}`} className="h-[52px]">
-                        <TableCell colSpan={8} className="p-0" />
+              </TableHeader>
+              <TableBody>
+                {transactions.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="h-28 text-center text-slate-500">
+                      {UI_TEXT.INVENTORY.TABLE.EMPTY_ALERT}
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  <>
+                    {transactions.map((item: InventoryTransaction) => (
+                      <TableRow key={item.inventoryTransactionId} className="text-card-foreground">
+                        <TableCell className="font-mono text-xs ">{item.ingredientCode}</TableCell>
+                        <TableCell>{item.ingredientName}</TableCell>
+                        <TableCell className="text-center">
+                          <span className="inline-flex items-center rounded-lg border border-border/80 bg-card-foreground/10 px-2.5 py-0.5 text-[10px] font-medium">
+                            {formatType(item.transactionType)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center font-semibold">{item.quantity}</TableCell>
+                        <TableCell className="text-center ">
+                          {item.unitCost ?? UI_TEXT.COMMON.DASH}
+                        </TableCell>
+                        <TableCell className="text-center font-semibold text-primary/90">
+                          {item.balanceAfter}
+                        </TableCell>
+                        <TableCell className="text-center text-xs">
+                          <div className="mx-auto truncate" title={item.reference || ""}>
+                            {item.reference || UI_TEXT.COMMON.DASH}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right text-xs">
+                          {new Date(item.occurredAt).toLocaleString("vi-VN")}
+                        </TableCell>
                       </TableRow>
                     ))}
-                </>
-              )}
-            </TableBody>
-          </Table>
+                  </>
+                )}
+              </TableBody>
+            </Table>
+          </TableShell>
         )}
 
         <div className="shrink-0 border-t border-slate-200 bg-white">

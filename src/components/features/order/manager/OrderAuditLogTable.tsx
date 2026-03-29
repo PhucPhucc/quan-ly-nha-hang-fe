@@ -2,12 +2,7 @@
 
 import { Eye, History, ShieldAlert, UserRound } from "lucide-react";
 
-import {
-  INVENTORY_TH_CLASS,
-  INVENTORY_THEAD_CLASS,
-  INVENTORY_THEAD_ROW_CLASS,
-  INVENTORY_TROW_CLASS,
-} from "@/components/features/inventory/components/inventoryStyles";
+import { INVENTORY_TROW_CLASS } from "@/components/features/inventory/components/inventoryStyles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -55,35 +50,15 @@ export function OrderAuditLogTable({
   }
 
   return (
-    <TableShell
-      className={cn(
-        "flex-1 min-h-0 flex flex-col border-none shadow-none bg-transparent",
-        !noSurface && "mt-4"
-      )}
-    >
-      <Table
-        containerClassName={cn(
-          "flex-1 overflow-auto max-h-[600px] border border-border/50 custom-scrollbar",
-          !noSurface ? "rounded-2xl bg-card shadow-sm" : "border-none"
-        )}
-      >
-        <TableHeader className={INVENTORY_THEAD_CLASS}>
-          <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
-            <TableHead className={cn(INVENTORY_TH_CLASS, "px-4 w-[180px]")}>
-              {UI_TEXT.AUDIT_LOG.TIME}
-            </TableHead>
-            <TableHead className={cn(INVENTORY_TH_CLASS, "w-[120px]")}>
-              {UI_TEXT.ORDER.BOARD.ORDER_CODE}
-            </TableHead>
-            <TableHead className={cn(INVENTORY_TH_CLASS, "flex-1")}>
-              {UI_TEXT.AUDIT_LOG.ACTION}
-            </TableHead>
-            <TableHead className={cn(INVENTORY_TH_CLASS, "w-[200px]")}>
-              {UI_TEXT.AUDIT_LOG.ACTOR}
-            </TableHead>
-            <TableHead className={cn(INVENTORY_TH_CLASS, "w-[100px] text-right pr-4")}>
-              {UI_TEXT.BUTTON.DETAIL}
-            </TableHead>
+    <TableShell className={cn(!noSurface && "mt-4")}>
+      <Table containerClassName={cn(!noSurface ? "rounded-2xl bg-card shadow-sm" : "border-none")}>
+        <TableHeader className="bg-muted">
+          <TableRow>
+            <TableHead>{UI_TEXT.AUDIT_LOG.TIME}</TableHead>
+            <TableHead>{UI_TEXT.ORDER.BOARD.ORDER_CODE}</TableHead>
+            <TableHead>{UI_TEXT.AUDIT_LOG.ACTION}</TableHead>
+            <TableHead>{UI_TEXT.AUDIT_LOG.ACTOR}</TableHead>
+            <TableHead>{UI_TEXT.BUTTON.DETAIL}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="divide-y divide-border/30">

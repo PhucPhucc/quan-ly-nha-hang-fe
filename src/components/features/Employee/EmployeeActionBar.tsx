@@ -56,37 +56,29 @@ const EmployeeActionBar = () => {
     <div className="flex flex-col md:flex-row items-center gap-4 w-full">
       {/* Search Input */}
       <div className="relative flex-1 w-full">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-card-foreground group-focus-within:text-primary transition-colors" />
         <Input
           placeholder={UI_TEXT.EMPLOYEE.SEARCH_BAR_PLACEHOLDER}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-11 h-11 bg-slate-50/80 border-slate-100 rounded-2xl focus-visible:ring-primary/20 focus-visible:bg-white transition-all font-medium text-sm"
+          className="pl-11 bg-card border rounded-lg focus-visible:ring-primary/20 transition-all font-medium text-sm"
         />
       </div>
 
       {/* Role Filter */}
       <div className="flex items-center gap-2 shrink-0 w-full md:w-auto">
         <Select value={role} onValueChange={handleRoleChange}>
-          <SelectTrigger className="h-11 w-full md:w-[180px] bg-slate-50/80 border-slate-100 rounded-2xl focus:ring-primary/20 font-medium text-slate-600">
+          <SelectTrigger className=" w-full md:w-32 bg-card border rounded-lg focus:ring-primary/20 font-medium text-card-foreground">
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-slate-400" />
+              <Filter className="h-4 w-4" />
               <SelectValue placeholder={UI_TEXT.COMMON.FILTER} />
             </div>
           </SelectTrigger>
-          <SelectContent className="rounded-2xl border-slate-100 shadow-xl p-1">
-            <SelectItem value="all" className="rounded-xl">
-              {UI_TEXT.COMMON.ALL}
-            </SelectItem>
-            <SelectItem value="1" className="rounded-xl">
-              {UI_TEXT.ROLE.MANAGER}
-            </SelectItem>
-            <SelectItem value="2" className="rounded-xl">
-              {UI_TEXT.ROLE.CASHIER}
-            </SelectItem>
-            <SelectItem value="3" className="rounded-xl">
-              {UI_TEXT.ROLE.CHEF}
-            </SelectItem>
+          <SelectContent className="rounded-lg">
+            <SelectItem value="all">{UI_TEXT.COMMON.ALL}</SelectItem>
+            <SelectItem value="1">{UI_TEXT.ROLE.MANAGER}</SelectItem>
+            <SelectItem value="2">{UI_TEXT.ROLE.CASHIER}</SelectItem>
+            <SelectItem value="3">{UI_TEXT.ROLE.CHEF}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -95,7 +87,7 @@ const EmployeeActionBar = () => {
           size="icon"
           onClick={handleReset}
           disabled={!search && role === "all"}
-          className="h-11 w-11 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl transition-all disabled:opacity-30"
+          className=" w-11 text-foreground hover:text-primary hover:bg-primary/5 rounded-full transition-all disabled:opacity-30"
           title={UI_TEXT.COMMON.REFRESH}
         >
           <RotateCcw className="h-4 w-4" />

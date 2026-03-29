@@ -4,7 +4,6 @@ import { CalendarIcon, RefreshCcw, Search } from "lucide-react";
 import React from "react";
 
 import {
-  INVENTORY_ICON_BUTTON_CLASS,
   INVENTORY_INPUT_CLASS,
   INVENTORY_SELECT_TRIGGER_CLASS,
 } from "@/components/features/inventory/components/inventoryStyles";
@@ -42,10 +41,11 @@ export function AuditLogToolbar({
     <InventoryToolbar
       actions={
         <Button
-          variant="outline"
+          variant="ghost"
           type="button"
-          className={INVENTORY_ICON_BUTTON_CLASS}
+          size="icon"
           onClick={resetFilters}
+          className="rounded-full hover:bg-card-foreground/10"
           title={UI_TEXT.AUDIT_LOG.FILTER.RESET}
         >
           <RefreshCcw className="h-4 w-4" />
@@ -58,9 +58,7 @@ export function AuditLogToolbar({
           applyFilters({ ...draftFilters, entityNameFilter: value });
         }}
       >
-        <SelectTrigger
-          className={cn(INVENTORY_SELECT_TRIGGER_CLASS, "min-h-[40px] w-full sm:w-44")}
-        >
+        <SelectTrigger className={cn(INVENTORY_SELECT_TRIGGER_CLASS, " w-full sm:w-44")}>
           <SelectValue placeholder={UI_TEXT.AUDIT_LOG.ENTITIES.ALL} />
         </SelectTrigger>
         <SelectContent>
@@ -78,9 +76,7 @@ export function AuditLogToolbar({
           applyFilters({ ...draftFilters, actionFilter: value });
         }}
       >
-        <SelectTrigger
-          className={cn(INVENTORY_SELECT_TRIGGER_CLASS, "min-h-[40px] w-full sm:w-44")}
-        >
+        <SelectTrigger className={cn(INVENTORY_SELECT_TRIGGER_CLASS, " w-full sm:w-44")}>
           <SelectValue placeholder={UI_TEXT.AUDIT_LOG.ACTIONS_LIST.ALL} />
         </SelectTrigger>
         <SelectContent>
@@ -104,7 +100,7 @@ export function AuditLogToolbar({
         />
       </div>
 
-      <div className="relative min-w-[180px]">
+      <div className="relative min-w-45">
         <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           type="date"
@@ -116,7 +112,7 @@ export function AuditLogToolbar({
         />
       </div>
 
-      <div className="relative min-w-[180px]">
+      <div className="relative min-w-45">
         <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           type="date"

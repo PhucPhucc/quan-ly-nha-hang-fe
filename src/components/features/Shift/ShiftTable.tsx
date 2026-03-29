@@ -1,4 +1,4 @@
-import { Clock, Edit2, MoreHorizontal, Power, Trash2 } from "lucide-react";
+import { Clock, Edit2, List, Power, Trash2 } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -31,15 +31,15 @@ interface ShiftTableProps {
 
 const ShiftTable = ({ shifts, onEdit, onDelete, onToggleStatus, isLoading }: ShiftTableProps) => {
   return (
-    <TableShell className="rounded-3xl border-slate-100">
+    <TableShell>
       <Table>
         <TableHeader>
           <TableRow variant="header">
-            <TableHead className="py-4 pl-6">{UI_TEXT.SHIFT.SHIFT_NAME}</TableHead>
-            <TableHead className="py-4">{UI_TEXT.SHIFT.START_TIME}</TableHead>
-            <TableHead className="py-4">{UI_TEXT.SHIFT.END_TIME}</TableHead>
-            <TableHead className="py-4">{UI_TEXT.SHIFT.STATUS}</TableHead>
-            <TableHead className="py-4 pr-6 text-right">{UI_TEXT.COMMON.ACTION}</TableHead>
+            <TableHead className="px-3">{UI_TEXT.SHIFT.SHIFT_NAME}</TableHead>
+            <TableHead className="px-3">{UI_TEXT.SHIFT.START_TIME}</TableHead>
+            <TableHead className="px-3">{UI_TEXT.SHIFT.END_TIME}</TableHead>
+            <TableHead className="px-3">{UI_TEXT.SHIFT.STATUS}</TableHead>
+            <TableHead className="px-3 text-right">{UI_TEXT.COMMON.ACTION}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,22 +58,20 @@ const ShiftTable = ({ shifts, onEdit, onDelete, onToggleStatus, isLoading }: Shi
             <>
               {shifts.map((shift) => (
                 <TableRow key={shift.shiftId} className="group/row">
-                  <TableCell className="font-semibold text-table-text-strong py-4 pl-6">
-                    {shift.name}
-                  </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell>{shift.name}</TableCell>
+                  <TableCell>
                     <div className="flex items-center gap-2">
                       <Clock className="size-4 text-slate-400 group-hover/row:text-primary transition-colors" />
                       <span className="font-medium">{shift.startTime}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell>
                     <div className="flex items-center gap-2">
                       <Clock className="size-4 text-slate-400 group-hover/row:text-primary transition-colors" />
                       <span className="font-medium">{shift.endTime}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell>
                     <div className="flex items-center gap-4">
                       <Switch
                         checked={shift.status === ShiftStatus.ACTIVE}
@@ -97,50 +95,44 @@ const ShiftTable = ({ shifts, onEdit, onDelete, onToggleStatus, isLoading }: Shi
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right py-4 pr-6">
+                  <TableCell className="text-right">
                     <div className="flex justify-end opacity-100 transition-opacity md:opacity-0 md:group-hover/row:opacity-100">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9 hover:bg-slate-100"
+                            className="p-2 hover:bg-muted-foreground/20"
                           >
-                            <MoreHorizontal className="size-4 text-slate-400" />
+                            <List className="size-4 text-muted-foreground" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                           align="end"
-                          className="w-48 p-2 border-none shadow-2xl"
+                          className="w-32 shadow-2xl text-foreground"
                         >
                           <DropdownMenuItem
                             onClick={() => onEdit(shift)}
-                            className="flex items-center gap-3 p-3 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                            // className="flex items-center gap-3 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
                           >
                             <Edit2 className="size-4" />
-                            <span className="font-bold text-sm">{UI_TEXT.COMMON.EDIT}</span>
+                            <span className="text-sm">{UI_TEXT.COMMON.EDIT}</span>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
                               onToggleStatus(shift.shiftId, shift.status !== ShiftStatus.ACTIVE)
                             }
-                            className="flex items-center gap-3 p-3 cursor-pointer focus:bg-rose-50 focus:text-rose-600 transition-colors"
                           >
                             <Power className="size-4" />
-                            <span className="font-bold text-sm text-destructive">
+                            <span className="text-sm">
                               {shift.status === ShiftStatus.ACTIVE
                                 ? UI_TEXT.SHIFT.INACTIVE
                                 : UI_TEXT.SHIFT.ACTIVE}
                             </span>
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => onDelete(shift.shiftId)}
-                            className="flex items-center gap-3 p-3 cursor-pointer focus:bg-rose-50 focus:text-rose-600 transition-colors"
-                          >
-                            <Trash2 className="size-4 text-rose-500" />
-                            <span className="font-bold text-sm text-destructive">
-                              {UI_TEXT.COMMON.DELETE || "Xóa"}
-                            </span>
+                          <DropdownMenuItem onClick={() => onDelete(shift.shiftId)}>
+                            <Trash2 className="size-4 " />
+                            <span className="text-sm">{UI_TEXT.COMMON.DELETE || "Xóa"}</span>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

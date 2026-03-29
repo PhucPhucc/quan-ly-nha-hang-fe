@@ -13,6 +13,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -24,8 +25,6 @@ import {
   INVENTORY_DETAIL_CARD_CLASS,
   INVENTORY_DETAIL_CARD_HEADER_CLASS,
   INVENTORY_NOTE_BLOCK_CLASS,
-  INVENTORY_TH_CLASS,
-  INVENTORY_THEAD_ROW_CLASS,
   INVENTORY_TROW_CLASS,
 } from "./components/inventoryStyles";
 
@@ -45,7 +44,11 @@ export const StockInDetailView = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" className="gap-2 rounded-lg hover:bg-muted" onClick={onBack}>
+        <Button
+          variant="ghost"
+          className="gap-2 rounded-md bg-foreground/10 hover:bg-foreground/20 border-border"
+          onClick={onBack}
+        >
           <ArrowLeft className="size-4" />
           {UI_TEXT.COMMON.BACK}
         </Button>
@@ -71,60 +74,58 @@ export const StockInDetailView = ({
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Card className={INVENTORY_DETAIL_CARD_CLASS}>
-            <CardHeader className={INVENTORY_DETAIL_CARD_HEADER_CLASS}>
-              <CardTitle className="text-base font-bold text-foreground/80">
+          <Card className="bg-background border-none shadow-none gap-0">
+            <CardHeader className="bg-background px-0 py-1">
+              <CardTitle className="text-xl font-bold text-foreground/80">
                 {UI_TEXT.INVENTORY.STOCK_IN_VOUCHER}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
-                    <TableHead className={`${INVENTORY_TH_CLASS} w-[120px] text-center`}>
-                      {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
-                    </TableHead>
-                    <TableHead className={INVENTORY_TH_CLASS}>
-                      {UI_TEXT.INVENTORY.TABLE.COL_ITEM}
-                    </TableHead>
-                    <TableHead className={`${INVENTORY_TH_CLASS} w-[120px] text-center`}>
-                      {UI_TEXT.INVENTORY.OPENING_STOCK.COL_INITIAL}
-                    </TableHead>
-                    <TableHead className={`${INVENTORY_TH_CLASS} w-[150px] text-right`}>
-                      {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
-                    </TableHead>
-                    <TableHead className={`${INVENTORY_TH_CLASS} w-[150px] text-right pr-6`}>
-                      {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {receipt.items.map((item) => (
-                    <TableRow key={item.id} className={INVENTORY_TROW_CLASS}>
-                      <TableCell className="text-center">
-                        <Badge variant="outline" className="font-mono text-[10px] bg-muted/30">
-                          {item.ingredientCode || UI_TEXT.COMMON.DASH}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-bold text-foreground/80">{item.ingredientName}</div>
-                      </TableCell>
-                      <TableCell className="text-center font-medium">
-                        {formatInventoryQuantity(item.quantity)}{" "}
-                        <span className="text-[10px] text-muted-foreground uppercase font-bold">
-                          {item.baseUnit}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground tabular-nums">
-                        {formatCurrency(item.unitPrice || 0)}
-                      </TableCell>
-                      <TableCell className="text-right font-black text-primary tabular-nums pr-6">
-                        {formatCurrency(item.totalAmount)}
-                      </TableCell>
+              <TableShell>
+                <Table>
+                  <TableHeader>
+                    <TableRow variant="header">
+                      <TableHead>{UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}</TableHead>
+                      <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_ITEM}</TableHead>
+                      <TableHead className="text-right">
+                        {UI_TEXT.INVENTORY.OPENING_STOCK.COL_INITIAL}
+                      </TableHead>
+                      <TableHead className="text-right">
+                        {UI_TEXT.INVENTORY.OPENING_STOCK.COL_COST}
+                      </TableHead>
+                      <TableHead className="text-right">
+                        {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {receipt.items.map((item) => (
+                      <TableRow key={item.id} className={INVENTORY_TROW_CLASS}>
+                        <TableCell>
+                          <Badge variant="outline" className="font-mono text-[10px] bg-muted/30">
+                            {item.ingredientCode || UI_TEXT.COMMON.DASH}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-bold text-foreground/80">{item.ingredientName}</div>
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatInventoryQuantity(item.quantity)}{" "}
+                          <span className="text-[10px] text-muted-foreground uppercase font-bold">
+                            {item.baseUnit}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground tabular-nums">
+                          {formatCurrency(item.unitPrice || 0)}
+                        </TableCell>
+                        <TableCell className="text-right font-black text-primary tabular-nums pr-6">
+                          {formatCurrency(item.totalAmount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableShell>
             </CardContent>
           </Card>
         </div>
@@ -142,7 +143,7 @@ export const StockInDetailView = ({
                   <span className="text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
                     {UI_TEXT.INVENTORY.OPENING_STOCK.COL_CODE}
                   </span>
-                  <span className="font-mono font-black text-foreground/90 bg-muted px-2 py-1 rounded-lg text-xs">
+                  <span className="font-mono font-bold text-foreground/90 bg-muted px-2 py-1 rounded-lg text-xs">
                     {receipt.receiptCode}
                   </span>
                 </div>

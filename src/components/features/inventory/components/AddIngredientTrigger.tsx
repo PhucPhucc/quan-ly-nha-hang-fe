@@ -13,7 +13,7 @@ export function AddIngredientTrigger() {
       trigger={
         <Button
           variant="outline"
-          className="h-10 w-full gap-2 border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 md:w-auto"
+          className="w-full gap-2 border bg-card px-4 text-sm font-medium text-card-foreground shadow-sm transition-colors md:w-auto"
         >
           <div className="flex size-5 items-center justify-center rounded-lg bg-primary/10">
             <PackagePlus className="size-3.5 text-primary" strokeWidth={2.5} />

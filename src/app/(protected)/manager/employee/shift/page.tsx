@@ -7,15 +7,8 @@ import { toast } from "sonner";
 import ShiftActionBar from "@/components/features/Shift/ShiftActionBar";
 import ShiftDialog from "@/components/features/Shift/ShiftDialog";
 import ShiftTable from "@/components/features/Shift/ShiftTable";
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { shiftService } from "@/services/shiftService";
 import { Shift, ShiftStatus } from "@/types/Shift";
@@ -100,9 +93,9 @@ const ShiftPage = () => {
   const displayInfo = `${UI_TEXT.COMMON.DISPLAY} ${startDisplay}-${endDisplay} / ${totalCount}`;
 
   return (
-    <div className="px-4 space-y-6 py-2 animate-in fade-in duration-500">
-      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
-        <CardContent>
+    <div className="px-4 space-y-6 py-4 animate-in fade-in duration-500">
+      <Card className="p-0 rounded-lg overflow-hidden border-none ">
+        <CardContent className="p-0">
           <ShiftActionBar
             onSearch={(v) => console.log("Search:", v)}
             onExport={handleExport}
@@ -137,7 +130,7 @@ const ShiftPage = () => {
         />
       </div>
 
-      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
+      {/* <Card className="border shadow-sm rounded-2xl overflow-hidden bg-background">
         <CardContent className="flex items-center justify-between">
           <p className="text-sm text-slate-500 font-medium">{displayInfo}</p>
           <Pagination className="w-auto ml-0">
@@ -177,7 +170,11 @@ const ShiftPage = () => {
             </PaginationContent>
           </Pagination>
         </CardContent>
-      </Card>
+      </Card> */}
+
+      {totalPages > 1 && (
+        <PaginationTable currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+      )}
     </div>
   );
 };
