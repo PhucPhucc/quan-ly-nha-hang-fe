@@ -14,6 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
@@ -53,10 +54,10 @@ export function AuditLogTable({
           ))}
         </div>
       ) : (
-        <div className="flex-1 overflow-hidden">
+        <TableShell>
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow variant="header">
                 <TableHead className="px-3 w-45 font-black uppercase tracking-widest text-muted-foreground">
                   {UI_TEXT.AUDIT_LOG.TIME}
                 </TableHead>
@@ -150,7 +151,7 @@ export function AuditLogTable({
               )}
             </TableBody>
           </Table>
-        </div>
+        </TableShell>
       )}
     </div>
   );

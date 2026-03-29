@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,21 +20,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Ingredient } from "@/types/Inventory";
 
 import { AddIngredientPanel } from "./AddIngredientPanel";
 import { InventoryEmptyState } from "./components/InventoryEmptyState";
-import { InventoryPagination } from "./components/InventoryPagination";
 import { InventoryRow } from "./components/InventoryRow";
-import {
-  INVENTORY_TABLE_CONTAINER_CLASS,
-  INVENTORY_TABLE_SURFACE_CLASS,
-  INVENTORY_TH_CLASS,
-  INVENTORY_THEAD_CLASS,
-  INVENTORY_THEAD_ROW_CLASS,
-} from "./components/inventoryStyles";
 import { InventoryTableHeader } from "./components/InventoryTableHeader";
 import { useInventoryTable } from "./useInventoryTable";
 
@@ -112,7 +106,6 @@ export function IngredientTable() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col space-y-6 pt-2">
-      {" "}
       <div className="shrink-0">
         <InventoryTableHeader
           searchQuery={searchQuery}
@@ -125,34 +118,18 @@ export function IngredientTable() {
           }}
         />
       </div>
-      <div className={`${INVENTORY_TABLE_SURFACE_CLASS} mt-2`}>
-        <Table containerClassName={INVENTORY_TABLE_CONTAINER_CLASS}>
-          <TableHeader className={INVENTORY_THEAD_CLASS}>
-            <TableRow className={INVENTORY_THEAD_ROW_CLASS}>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_SKU}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_NAME}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_GROUP}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_STOCK}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_PRICE}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_STATUS}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}
-              </TableHead>
-              <TableHead className={`${INVENTORY_TH_CLASS} text-center`}>
-                {UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}
-              </TableHead>
+      <TableShell className="mb-0">
+        <Table>
+          <TableHeader>
+            <TableRow variant="header">
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_SKU}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_NAME}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_GROUP}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_STOCK}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_PRICE}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_STATUS}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_ACTIVE}</TableHead>
+              <TableHead>{UI_TEXT.INVENTORY.TABLE.COL_ACTIONS}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -172,27 +149,19 @@ export function IngredientTable() {
                     onDelete={handleDeleteClick}
                   />
                 ))}
-                {pageSize > ingredients.length &&
-                  Array.from({ length: pageSize - ingredients.length }).map((_, i) => (
-                    <TableRow key={`empty-${i}`} className="h-[52px]">
-                      <TableCell colSpan={8} />
-                    </TableRow>
-                  ))}
               </>
             )}
           </TableBody>
         </Table>
+      </TableShell>
 
-        <div className="shrink-0 border-t border-border/40 bg-muted/5">
-          <InventoryPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            totalItems={ingredients.length * totalPages} // Approximate as we don't have absolute total yet in this hook, but good enough for now
-            pageSize={pageSize}
-          />
-        </div>
-      </div>
+      {currentPage > 1 && (
+        <PaginationTable
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
       <AddIngredientPanel
         ingredient={editingItem || undefined}
         open={isEditOpen}
@@ -225,7 +194,7 @@ export function IngredientTable() {
               </div>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               className="rounded-lg"

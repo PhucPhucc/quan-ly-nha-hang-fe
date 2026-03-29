@@ -25,7 +25,7 @@ export function DatePicker({ value, onChange, placeholder, className }: DatePick
           <Button
             variant="outline"
             className={cn(
-              "w-[200px] justify-start rounded-xl border-border bg-background text-left font-normal hover:bg-muted/50",
+              "w-50 justify-start rounded-lg border-border bg-card text-left font-normal hover:bg-muted/50",
               !value && "text-muted-foreground"
             )}
           >

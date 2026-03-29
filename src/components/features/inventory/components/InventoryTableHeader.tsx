@@ -61,7 +61,7 @@ export function InventoryTableHeader({
         }
       >
         <div className="relative min-w-0 flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder={UI_TEXT.INVENTORY.TOOLBAR.SEARCH_PLACEHOLDER}
             className={`${INVENTORY_INPUT_CLASS} pl-9`}
@@ -72,9 +72,7 @@ export function InventoryTableHeader({
 
         <div className="flex items-center gap-2">
           <Select value={statusFilter} onValueChange={(v) => onStatusChange(v as StatusFilter)}>
-            <SelectTrigger
-              className={`${INVENTORY_SELECT_TRIGGER_CLASS} min-h-[40px] w-full sm:w-[180px]`}
-            >
+            <SelectTrigger className={`${INVENTORY_SELECT_TRIGGER_CLASS} w-full sm:w-45`}>
               <div className="flex items-center gap-2 text-slate-500">
                 <SlidersHorizontal className="h-4 w-4" />
                 <SelectValue placeholder={UI_TEXT.INVENTORY.TOOLBAR.FILTER_STATUS} />

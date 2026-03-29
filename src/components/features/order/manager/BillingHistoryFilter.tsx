@@ -30,7 +30,7 @@ const BillingHistoryFilter = ({
   onPaymentFilter: (payment: string) => void;
 }) => {
   return (
-    <Card className="overflow-hidden border">
+    <Card className="overflow-hidden border bg-background">
       <CardContent className="grid gap-3 lg:grid-cols-[1fr_auto_auto_auto] lg:items-center p-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -40,7 +40,7 @@ const BillingHistoryFilter = ({
               onSearch(e.target.value);
             }}
             placeholder={UI_TEXT.ORDER.BILLING.SEARCH_PLACEHOLDER}
-            className="pl-10 bg-card text-foreground placeholder:text-muted-foreground border border-border focus-visible:ring-2 focus-visible:ring-ring/30"
+            className="pl-10 bg-card text-card-foreground placeholder:text-muted-foreground border border-border focus-visible:ring-2 focus-visible:ring-ring/30"
           />
         </div>
 

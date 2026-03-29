@@ -155,16 +155,16 @@ export default function StockInPage() {
                 }}
                 className="shrink-0"
               >
-                <TabsList className="inline-flex h-11 bg-muted/50 p-1 border">
+                <TabsList className="inline-flex bg-card p-1 border">
                   <TabsTrigger
                     value="in"
-                    className="h-full rounded-lg px-4 text-xs font-black uppercase tracking-widest transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    className="h-full rounded-lg px-4 text-xs font-black tracking-widest transition-all data-[state=active]:bg-card-foreground/10 data-[state=active]:text-card-foreground data-[state=active]:shadow-sm"
                   >
                     {UI_TEXT.INVENTORY.VOUCHER.TYPE_IN}
                   </TabsTrigger>
                   <TabsTrigger
                     value="out"
-                    className="h-full rounded-lg px-4 text-xs font-black uppercase tracking-widest transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                    className="h-full rounded-lg px-4 text-xs font-black tracking-widest transition-all data-[state=active]:bg-card-foreground/10 data-[state=active]:text-card-foreground data-[state=active]:shadow-sm"
                   >
                     {UI_TEXT.INVENTORY.VOUCHER.TYPE_OUT}
                   </TabsTrigger>
@@ -179,7 +179,7 @@ export default function StockInPage() {
             <Input
               id="receipt-search"
               placeholder={SEARCH_RECEIPT_PLACEHOLDER}
-              className={`${INVENTORY_INPUT_CLASS} h-11 pl-10 bg-muted/20 border-border/50 focus:bg-background transition-colors`}
+              className={`${INVENTORY_INPUT_CLASS}  pl-10 bg-card focus:bg-background transition-colors`}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -233,6 +233,7 @@ export default function StockInPage() {
                 setCurrentPage(1);
               }}
               title={RESET_FILTER_LABEL}
+              className="p-2 bg-background hover:bg-card-foreground/10 text-card-foreground rounded-full"
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
@@ -240,7 +241,7 @@ export default function StockInPage() {
         </InventoryToolbar>
 
         <div className="mt-6">
-          <div className="rounded-[2rem] border bg-card shadow-sm overflow-hidden min-h-[500px] flex flex-col">
+          <div className="rounded-xl bg-card shadow-sm overflow-hidden flex flex-col">
             <div className="flex-1 overflow-auto">
               {loading ? (
                 <div className="flex h-full items-center justify-center p-20">

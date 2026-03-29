@@ -1,29 +1,29 @@
 export const INVENTORY_SURFACE_CLASS =
-  "rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100/60";
+  "rounded-xl border border-border bg-card shadow-sm shadow-slate-100/60";
 
 export const INVENTORY_TOOLBAR_CLASS =
-  "rounded-2xl border border-slate-200 bg-white/95 px-4 py-4 shadow-sm shadow-slate-100/60";
+  "rounded-xl border bg-background p-3 shadow-sm shadow-slate-100/60";
 
-export const INVENTORY_TABLE_SURFACE_CLASS = `${INVENTORY_SURFACE_CLASS} overflow-hidden py-2`;
+export const INVENTORY_TABLE_SURFACE_CLASS = `${INVENTORY_SURFACE_CLASS} overflow-hidden`;
 
 export const INVENTORY_FIELD_WRAP_CLASS = "flex min-w-0 items-center gap-2";
 
 export const INVENTORY_FIELD_LABEL_CLASS = "shrink-0 text-xs font-medium text-slate-500";
 
 export const INVENTORY_INPUT_CLASS =
-  "h-10 rounded-lg border-slate-200 bg-slate-50 text-sm shadow-none transition-colors placeholder:text-slate-400 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-primary/15";
+  "rounded-lg border bg-card text-sm shadow-none transition-colors placeholder:text-card-foreground focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-primary/15";
 
 export const INVENTORY_SELECT_TRIGGER_CLASS =
-  "h-10 rounded-lg border-slate-200 bg-slate-50 text-sm shadow-none transition-colors focus:ring-2 focus:ring-primary/15";
+  "rounded-lg border bg-card text-sm shadow-none transition-colors focus:ring-2 focus:ring-primary/15";
 
 export const INVENTORY_ICON_BUTTON_CLASS =
-  "h-10 w-10 shrink-0 rounded-lg border-slate-200 p-0 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700";
+  "shrink-0 rounded-full p-0 text-forground transition-colors hover:bg-card-foreground/10";
 
 export const INVENTORY_PAGINATION_BUTTON_CLASS =
-  "h-9 rounded-lg border-slate-200 bg-white px-4 text-slate-600 shadow-sm transition-colors hover:bg-slate-50";
+  " rounded-lg border bg-white px-4 text-slate-600 shadow-sm transition-colors hover:bg-slate-50";
 
 export const INVENTORY_DATE_BUTTON_CLASS =
-  "h-10 justify-start rounded-lg border-slate-200 bg-slate-50 text-left font-normal text-slate-900 shadow-none transition-colors hover:bg-slate-100/70";
+  "justify-start rounded-lg border bg-slate-50 text-left font-normal text-slate-900 shadow-none transition-colors hover:bg-slate-100/70";
 
 export const INVENTORY_PAGE_CLASS =
   "flex flex-1 min-h-0 flex-col gap-4 bg-slate-50/30 p-4 pt-6 overflow-y-auto";
@@ -47,11 +47,11 @@ export const INVENTORY_TROW_CLASS = "h-[52px] border-border/60 hover:bg-muted/10
 
 // Detail card surface
 export const INVENTORY_DETAIL_CARD_CLASS =
-  "rounded-3xl border-border/60 shadow-sm overflow-hidden py-0 gap-0";
+  "rounded-xl border-border shadow-sm overflow-hidden py-0 gap-0";
 
 // Detail card header
 export const INVENTORY_DETAIL_CARD_HEADER_CLASS =
-  "bg-muted/30 border-b border-border/60 px-6 py-4 pb-4! [.border-b]:pb-4!";
+  "bg-muted/90 border-b border-border/60 px-6 py-4 pb-4! [.border-b]:pb-4!";
 
 // Creator avatar
 export const INVENTORY_AVATAR_CLASS =

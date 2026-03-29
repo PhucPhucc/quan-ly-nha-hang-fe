@@ -9,9 +9,9 @@ import {
   INVENTORY_INPUT_CLASS,
   INVENTORY_PAGE_CLASS,
   INVENTORY_SELECT_TRIGGER_CLASS,
-  INVENTORY_TABLE_SURFACE_CLASS,
 } from "@/components/features/inventory/components/inventoryStyles";
 import { InventoryToolbar } from "@/components/features/inventory/components/InventoryToolbar";
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,7 +25,6 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { OrderAuditLogResponse, OrderAuditLogsParams, orderService } from "@/services/orderService";
 
-import { InventoryPagination } from "../../inventory/components/InventoryPagination";
 import { OrderAuditLogDetailSheet } from "./OrderAuditLogDetailSheet";
 import { OrderAuditLogTable } from "./OrderAuditLogTable";
 
@@ -118,13 +117,13 @@ export default function OrderAuditLogPage() {
                 setPage(1);
               }}
             >
-              <SelectTrigger className={cn(INVENTORY_SELECT_TRIGGER_CLASS, "w-full sm:w-[200px]")}>
-                <div className="flex items-center gap-2 text-slate-500">
+              <SelectTrigger className={cn(INVENTORY_SELECT_TRIGGER_CLASS, "w-full sm:w-50")}>
+                <div className="flex items-center gap-2 text-muted-foreground">
                   <SlidersHorizontal className="h-4 w-4" />
                   <SelectValue placeholder={UI_TEXT.AUDIT_LOG.FILTER.ACTION_LABEL} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="rounded-xl shadow-xl border-slate-200">
+              <SelectContent className="rounded-xl">
                 <SelectItem value="all">{UI_TEXT.AUDIT_LOG.ALL_ACTION}</SelectItem>
                 <SelectItem value="CREATE_ORDER">
                   {UI_TEXT.AUDIT_LOG.ACTIONS.CREATE_ORDER}
@@ -174,6 +173,7 @@ export default function OrderAuditLogPage() {
             <Button
               variant="ghost"
               type="button"
+              size="icon"
               className={INVENTORY_ICON_BUTTON_CLASS}
               onClick={handleRefresh}
               title={UI_TEXT.COMMON.RESET}
@@ -184,7 +184,7 @@ export default function OrderAuditLogPage() {
         }
       >
         <div className="relative flex-1 group min-w-0">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-card-foreground group-focus-within:text-primary transition-colors" />
           <Input
             className={cn(INVENTORY_INPUT_CLASS, "pl-9")}
             value={searchFilter}
@@ -195,7 +195,7 @@ export default function OrderAuditLogPage() {
         </div>
       </InventoryToolbar>
 
-      <div className={cn(INVENTORY_TABLE_SURFACE_CLASS, "mt-4")}>
+      <div>
         <OrderAuditLogTable
           logs={logs}
           loading={loading}
@@ -206,13 +206,14 @@ export default function OrderAuditLogPage() {
         />
 
         <div className="shrink-0 border-t border-border/50 bg-card">
-          <InventoryPagination
+          {/* <InventoryPagination
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
             totalItems={totalItems}
             pageSize={PAGE_SIZE}
-          />
+          /> */}
+          <PaginationTable currentPage={page} totalPages={totalPages} onPageChange={setPage} />
         </div>
       </div>
 

@@ -8,16 +8,9 @@ import { toast } from "sonner";
 
 import AttendanceFilter from "@/components/features/Attendance/AttendanceFilter";
 import AttendanceTable from "@/components/features/Attendance/AttendanceTable";
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { attendanceService } from "@/services/attendanceService";
 
@@ -144,8 +137,8 @@ const AttendancePage = () => {
 
   return (
     <div className="flex flex-col gap-6 px-4 py-4 h-full overflow-y-auto no-scrollbar pb-10 animate-in fade-in duration-500">
-      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
-        <CardContent className="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
+      <Card className="shadow-sm bg-background rounded-2xl overflow-hidden border">
+        <CardContent className="p-2.5 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
           <div className="flex-1 w-full">
             <AttendanceFilter
               dateRange={dateRange}
@@ -160,7 +153,7 @@ const AttendancePage = () => {
           <Button
             onClick={handleExport}
             variant="outline"
-            className="h-11 px-6 rounded-2xl font-bold gap-2 text-sm border-slate-100 text-slate-700 hover:bg-slate-50 hover:border-slate-200 transition-all active:scale-[0.98] w-full xl:w-auto mt-2 xl:mt-0"
+            className="px-6 rounded-lg bg-card text-card-foreground hover:text-primary hover:border-primary/20 transition-all shadow-sm gap-2 text-sm font-bold w-full xl:w-auto mt-2 xl:mt-0"
           >
             <Download className="size-4" />
             {UI_TEXT.ATTENDANCE.EXPORT_EXCEL}
@@ -172,47 +165,9 @@ const AttendancePage = () => {
         <AttendanceTable attendances={attendances} isLoading={isLoading} />
       </div>
 
-      <Card className="border-none shadow-sm rounded-3xl overflow-hidden py-4">
-        <CardContent className="flex items-center justify-between">
-          <p className="text-sm text-slate-500 font-medium">{displayInfo}</p>
-          <Pagination className="w-auto ml-0">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (page > 1) setPage(page - 1);
-                  }}
-                />
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    href="#"
-                    isActive={currentPage === i + 1}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setPage(i + 1);
-                    }}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (page < totalPages) setPage(page + 1);
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </CardContent>
-      </Card>
+      {totalPages > 1 && (
+        <PaginationTable currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import PaginationTable from "@/components/shared/PaginationTable";
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,11 +17,7 @@ import {
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Voucher } from "@/types/voucher";
 
-import {
-  VoucherFilterBar,
-  VoucherPagination,
-  VoucherRow,
-} from "./components/VoucherTableComponents";
+import { VoucherFilterBar, VoucherRow } from "./components/VoucherTableComponents";
 import { useVoucherTable } from "./useVoucherTable";
 
 interface VoucherTableProps {
@@ -84,12 +81,12 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, r
         <Table>
           <TableHeader>
             <TableRow variant="header">
-              <TableHead className="px-3">{V.TABLE_CODE}</TableHead>
-              <TableHead className="px-3">{V.TABLE_TYPE}</TableHead>
-              <TableHead className="px-3">{V.TABLE_VALUE}</TableHead>
-              <TableHead className="px-3">{V.TABLE_USAGE}</TableHead>
-              <TableHead className="px-3">{V.TABLE_VALIDITY}</TableHead>
-              <TableHead className="px-3">{V.TABLE_STATUS}</TableHead>
+              <TableHead>{V.TABLE_CODE}</TableHead>
+              <TableHead>{V.TABLE_TYPE}</TableHead>
+              <TableHead>{V.TABLE_VALUE}</TableHead>
+              <TableHead>{V.TABLE_USAGE}</TableHead>
+              <TableHead>{V.TABLE_VALIDITY}</TableHead>
+              <TableHead>{V.TABLE_STATUS}</TableHead>
               <TableHead className="text-right">{V.TABLE_ACTIONS}</TableHead>
             </TableRow>
           </TableHeader>
@@ -133,11 +130,9 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ onView, onEdit, onCreate, r
         </Table>
       </TableShell>
 
-      <VoucherPagination
+      <PaginationTable
         currentPage={currentPage}
         totalPages={totalPages}
-        totalCount={totalCount}
-        pageSize={pageSize}
         onPageChange={setCurrentPage}
       />
     </div>

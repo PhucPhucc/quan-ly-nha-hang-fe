@@ -7,7 +7,6 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
 
-import { INVENTORY_TROW_CLASS } from "./inventoryStyles";
 import { StatusBadge } from "./StatusBadge";
 
 type Props = {
@@ -18,8 +17,8 @@ type Props = {
 
 export function InventoryRow({ item, onEdit, onDelete }: Props) {
   return (
-    <TableRow className={INVENTORY_TROW_CLASS}>
-      <TableCell className="text-center">
+    <TableRow>
+      <TableCell>
         <Badge
           variant="outline"
           className="min-w-20 justify-center rounded-md px-2 py-1 font-mono text-xs"
@@ -27,38 +26,32 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
           {item.code}
         </Badge>
       </TableCell>
-      <TableCell className="text-center font-semibold text-slate-800 text-sm">
-        {item.name}
+      <TableCell className="font-semibold text-card-foreground text-sm">{item.name}</TableCell>
+      <TableCell className="text-sm">
+        <span>{item.inventoryGroupName || UI_TEXT.INVENTORY.TABLE.GROUP_NONE}</span>
       </TableCell>
-      <TableCell className="text-center text-sm">
-        <span className="rounded-full border border-border bg-muted/40 px-2.5 py-1 font-medium text-foreground">
-          {item.inventoryGroupName || UI_TEXT.INVENTORY.TABLE.GROUP_NONE}
-        </span>
-      </TableCell>
-      <TableCell className="text-center">
-        <span className="font-semibold text-slate-800 text-sm">
+      <TableCell>
+        <span className="font-semibold text-card-foreground text-sm">
           {item.currentStock} {item.unit}
         </span>
       </TableCell>
-      <TableCell className="text-center text-sm">
-        <span className="mr-0.5 text-slate-400">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
-        <span className="font-semibold text-slate-800" aria-label="Average cost (read only)">
+      <TableCell className="text-sm">
+        <span className="mr-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
+        <span className="font-semibold text-card-foreground" aria-label="Average cost (read only)">
           {(item.costPrice ?? 0).toFixed(2)}
         </span>
       </TableCell>
-      <TableCell className="w-[140px] text-center">
-        <div className="flex justify-center">
+      <TableCell className="w-35">
+        <div>
           <StatusBadge status={item.status as AlertThresholdStatus} />
         </div>
       </TableCell>
-      <TableCell className="w-[120px] text-center">
-        <div className="flex items-center gap-2 justify-center">
+      <TableCell className="w-30">
+        <div className="flex items-center gap-2">
           <div
             className={cn(
               "h-2 w-2 rounded-full",
-              item.isActive
-                ? "bg-success shadow-[0_0_8px_rgba(34,197,94,0.4)]"
-                : "bg-muted-foreground/30"
+              item.isActive ? "bg-success " : "bg-muted-foreground/30"
             )}
             title={
               item.isActive
@@ -78,7 +71,7 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
           </span>
         </div>
       </TableCell>
-      <TableCell className="w-[140px] text-center">
+      <TableCell className="w-35 text-center">
         <div className="flex justify-center gap-1">
           <Button
             variant="ghost"

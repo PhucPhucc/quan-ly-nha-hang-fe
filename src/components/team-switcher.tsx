@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import * as React from "react";
 
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
@@ -15,23 +16,27 @@ export function TeamSwitcher({
     logoUrl?: string;
   };
 }) {
+  const Logo = team.logo;
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <SidebarMenuButton
             size="lg"
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            className="data-[state=open]:bg-sidebar-accent data-[state=closed]:gap-0 data-[state=open]:text-sidebar-accent-foreground"
           >
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg">
+            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
               {team.logoUrl ? (
-                <img
+                <Image
                   src={team.logoUrl}
                   alt={team.name}
                   className="h-full w-full object-contain p-1"
+                  width="32"
+                  height="32"
                 />
               ) : (
-                <team.logo className="size-4" />
+                <Logo className="size-4" />
               )}
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">

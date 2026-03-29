@@ -2,10 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  INVENTORY_PAGE_CLASS,
-  INVENTORY_TABLE_SURFACE_CLASS,
-} from "@/components/features/inventory/components/inventoryStyles";
+import { INVENTORY_PAGE_CLASS } from "@/components/features/inventory/components/inventoryStyles";
 import PaginationTable from "@/components/shared/PaginationTable";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { getSystemAuditLogs, SystemAuditLog, SystemAuditLogParams } from "@/services/auditService";
@@ -120,7 +117,7 @@ export default function SystemAuditLogPage() {
         actionOptions={ACTION_OPTIONS}
       />
 
-      <div className={INVENTORY_TABLE_SURFACE_CLASS}>
+      <div>
         <AuditLogTable
           logs={logs}
           loading={loading}
@@ -128,7 +125,6 @@ export default function SystemAuditLogPage() {
           onOpenDetails={openDetails}
           noSurface
         />
-
         <PaginationTable currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
 

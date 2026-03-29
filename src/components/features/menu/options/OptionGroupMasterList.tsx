@@ -46,7 +46,6 @@ export const OptionGroupMasterList: React.FC = () => {
     return matchName && matchType;
   });
 
-  // Reset page to 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, typeFilter]);

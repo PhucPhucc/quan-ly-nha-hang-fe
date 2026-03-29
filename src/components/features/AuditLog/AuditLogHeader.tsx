@@ -23,28 +23,28 @@ export function AuditLogHeader({ totalCount, currentPage, pageSize }: AuditLogHe
             {UI_TEXT.AUDIT_LOG.TITLE_BADGE}
           </div>
           <div>
-            <h1 className="text-xl font-bold leading-7 text-slate-900">
+            <h1 className="text-xl font-bold leading-7 text-card-foreground">
               {UI_TEXT.AUDIT_LOG.TITLE}
             </h1>
-            <p className="mt-1 text-sm text-slate-500">{UI_TEXT.AUDIT_LOG.DESCRIPTION}</p>
+            <p className="mt-1 text-sm text-card-foreground/70">{UI_TEXT.AUDIT_LOG.DESCRIPTION}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center lg:min-w-[320px]">
+        <div className="grid grid-cols-3 gap-3 rounded-xl border bg-muted px-4 py-3 text-center lg:min-w-[320px]">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-card-foreground/70">
               {UI_TEXT.AUDIT_LOG.STATS.TOTAL}
             </div>
             <div className="mt-1 text-2xl font-bold text-slate-900">{totalCount}</div>
           </div>
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-card-foreground/70">
               {UI_TEXT.AUDIT_LOG.STATS.CURRENT_PAGE}
             </div>
             <div className="mt-1 text-2xl font-bold text-slate-900">{currentPage}</div>
           </div>
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-card-foreground/70">
               {UI_TEXT.AUDIT_LOG.STATS.PAGE_SIZE}
             </div>
             <div className="mt-1 text-2xl font-bold text-slate-900">{pageSize}</div>

@@ -1,6 +1,12 @@
 "use client";
 
-import { FileDown, LucideArrowLeft, LucideCheckCircle2, LucideSave } from "lucide-react";
+import {
+  AlertTriangle,
+  FileDown,
+  LucideArrowLeft,
+  LucideCheckCircle2,
+  LucideSave,
+} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -22,6 +28,8 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
   const {
     isNew,
     check,
+    isError,
+    error,
     isLoading,
     checkDate,
     setCheckDate,
@@ -37,6 +45,45 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
     isExporting,
   } = useInventoryCheckForm(id);
 
+  if (isError) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center p-6 md:p-8">
+        <div className="w-full max-w-xl rounded-3xl border border-rose-200 bg-linear-to-br from-white via-rose-50 to-orange-50 p-8 shadow-[0_24px_80px_-40px_rgba(244,63,94,0.35)]">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-100 text-primary/70 shadow-inner">
+              <AlertTriangle className="h-8 w-8" />
+            </div>
+
+            <p className="text-xs font-bold text-danger">{UI_TEXT.INVENTORY.CHECK.FETCH.ERROR}</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900">
+              {UI_TEXT.INVENTORY.CHECK.FETCH.NOT_FOUND}
+              {id ? ` #${id.substring(0, 8).toUpperCase()}` : ""}
+            </h2>
+            <p className="mt-3 max-w-md text-sm leading-6 text-slate-600">
+              {UI_TEXT.INVENTORY.CHECK.FETCH.NOT_FOUND_DESC}
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Button
+                asChild
+                className="h-11 gap-2 rounded-xl bg-slate-900 px-6 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-slate-900/15 transition-all hover:bg-slate-800"
+              >
+                <Link href="/manager/inventory/check">
+                  <LucideArrowLeft className="h-4 w-4" />
+                  {UI_TEXT.COMMON.BACK}
+                </Link>
+              </Button>
+            </div>
+
+            {error instanceof Error && (
+              <p className="mt-6 text-xs text-slate-400">{error.message}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <CheckFormSkeleton />;
   }
@@ -48,14 +95,9 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
       {/* Header Area */}
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            asChild
-            className="h-10 w-10 rounded-lg bg-white border border-slate-200 shadow-sm hover:bg-slate-50 transition-all"
-          >
+          <Button variant="secondary" size="icon" asChild>
             <Link href="/manager/inventory/check">
-              <LucideArrowLeft className="h-5 w-5 text-slate-500" />
+              <LucideArrowLeft className="h-5 w-5 text-secondary-foreground" />
             </Link>
           </Button>
           <div className="flex flex-col">
@@ -89,7 +131,7 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
               disabled={isExporting || isSaving}
               onClick={handleExport}
               className={cn(
-                "h-10 gap-2 rounded-lg px-6 text-xs font-bold uppercase tracking-widest transition-all shadow-sm",
+                "10 gap-2 rounded-lg px-6 text-xs font-bold uppercase tracking-widest transition-all shadow-sm",
                 isProcessed
                   ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50"
@@ -109,7 +151,7 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
               variant="outline"
               disabled={isSaving}
               onClick={handleSaveDraft}
-              className="h-10 gap-2 rounded-lg border-slate-200 px-6 text-xs font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 shadow-sm"
+              className="gap-2 rounded-lg border-slate-200 px-6 text-xs font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-50 shadow-sm"
             >
               <LucideSave className="h-4 w-4" />
               {UI_TEXT.INVENTORY.CHECK.CREATE.SAVE_DRAFT}
@@ -119,7 +161,7 @@ export function InventoryCheckForm({ id }: InventoryCheckFormProps) {
             <Button
               disabled={isSaving}
               onClick={handleProcess}
-              className="h-10 gap-2 rounded-lg bg-primary px-8 text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="gap-2 rounded-lg bg-primary px-8 text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <LucideCheckCircle2 className="h-4 w-4" />
               {UI_TEXT.INVENTORY.CHECK.CREATE.PROCESS}

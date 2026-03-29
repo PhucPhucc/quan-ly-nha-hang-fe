@@ -34,53 +34,52 @@ const AttendanceFilter = ({
   onFilter,
 }: AttendanceFilterProps) => {
   return (
-    <div className="flex flex-col xl:flex-row items-end gap-2 w-full">
-      <div className="space-y-1.5 flex-1 w-full xl:w-auto">
-        <DateRangePicker value={dateRange} onChange={onDateRangeChange} className="w-full" />
-      </div>
-
-      <div className="space-y-1.5 flex-1 min-w-[200px] w-full xl:w-auto">
-        <div className="relative group">
-          <Input
-            placeholder={UI_TEXT.ATTENDANCE.FILTER_ALL_EMPLOYEES}
-            value={employeeSearch}
-            onChange={(e) => onEmployeeSearchChange(e.target.value)}
-            className="h-11 pl-10 rounded-2xl bg-slate-50/80 border-slate-100 focus-visible:ring-primary/20 focus-visible:bg-white transition-all font-medium text-sm"
+    <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-background rounded-xl w-full">
+      <div className="flex flex-1 flex-wrap items-center justify-start gap-3 w-full">
+        <div className=" ">
+          <DateRangePicker
+            value={dateRange}
+            onChange={onDateRangeChange}
+            className="w-full rounded-lg"
           />
-          <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-primary transition-colors" />
         </div>
-      </div>
 
-      <div className="space-y-1.5 w-full xl:w-48">
-        <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="h-11 rounded-2xl bg-slate-50/80 border-slate-100 focus:ring-primary/20 font-medium text-slate-600">
-            <SelectValue placeholder={UI_TEXT.ATTENDANCE.FILTER_ALL} />
-          </SelectTrigger>
-          <SelectContent className="rounded-2xl border-slate-100 shadow-xl p-1">
-            <SelectItem value="all" className="rounded-xl">
-              {UI_TEXT.ATTENDANCE.FILTER_ALL}
-            </SelectItem>
-            <SelectItem value="ontime" className="rounded-xl">
-              {UI_TEXT.ATTENDANCE.STATUS_ON_TIME}
-            </SelectItem>
-            <SelectItem value="late" className="rounded-xl">
-              {UI_TEXT.ATTENDANCE.STATUS_LATE}
-            </SelectItem>
-            <SelectItem value="earlyleave" className="rounded-xl">
-              {UI_TEXT.ATTENDANCE.STATUS_EARLY_LEAVE}
-            </SelectItem>
-            <SelectItem value="absent" className="rounded-xl">
-              {UI_TEXT.ATTENDANCE.STATUS_ABSENT}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-1 flex-wrap items-center gap-2">
+          <div className="flex-1">
+            <div className="relative group">
+              <Input
+                placeholder={UI_TEXT.ATTENDANCE.FILTER_ALL_EMPLOYEES}
+                value={employeeSearch}
+                onChange={(e) => onEmployeeSearchChange(e.target.value)}
+                className="pl-10 bg-card border text-[13px] rounded-lg focus-visible:ring-primary/20 shadow-sm transition-all "
+              />
+              <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground group-focus-within:text-primary transition-colors" />
+            </div>
+          </div>
+
+          <div className="w-24">
+            <Select value={statusFilter} onValueChange={onStatusFilterChange}>
+              <SelectTrigger className="bg-card border flex items-center text-sm rounded-lg text-card-foreground shadow-sm transition-all focus:ring-primary/20 ">
+                <SelectValue placeholder={UI_TEXT.ATTENDANCE.FILTER_ALL} />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg border shadow-xl">
+                <SelectItem value="all">{UI_TEXT.ATTENDANCE.FILTER_ALL}</SelectItem>
+                <SelectItem value="ontime">{UI_TEXT.ATTENDANCE.STATUS_ON_TIME}</SelectItem>
+                <SelectItem value="late">{UI_TEXT.ATTENDANCE.STATUS_LATE}</SelectItem>
+                <SelectItem value="earlyleave">{UI_TEXT.ATTENDANCE.STATUS_EARLY_LEAVE}</SelectItem>
+                <SelectItem value="absent">{UI_TEXT.ATTENDANCE.STATUS_ABSENT}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
 
       <Button
         onClick={onFilter}
-        className="bg-[#cc0000] hover:bg-[#aa0000] text-white h-11 px-8 rounded-2xl font-bold shadow-lg shadow-red-100 gap-2 w-full xl:w-auto transition-all active:scale-[0.98]"
+        className="rounded-lg"
+        // className="shrink-0 rounded-lg bg-primary hover:bg-primary/90 text-white px-8 shadow-lg shadow-primary/20 transition-all active:scale-95  w-full lg:w-auto"
       >
-        <Filter className="size-4" />
+        <Filter className="size-4 mr-2" />
         {UI_TEXT.ATTENDANCE.FILTER_BUTTON}
       </Button>
     </div>

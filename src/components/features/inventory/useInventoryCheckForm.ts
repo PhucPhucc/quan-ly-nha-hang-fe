@@ -24,10 +24,16 @@ export function useInventoryCheckForm(id?: string) {
   const [items, setItems] = useState<Partial<InventoryCheckItem>[]>([]);
 
   // 1. Fetch data if editing
-  const { data: detailData, isLoading: isLoadingDetail } = useQuery({
+  const {
+    data: detailData,
+    isLoading: isLoadingDetail,
+    isError: isErrorDetail,
+    error: errorDetail,
+  } = useQuery({
     queryKey: ["inventory-check", id],
     queryFn: () => (id && !isNew ? inventoryService.getInventoryCheckDetail(id) : null),
     enabled: !!id && !isNew,
+    retry: false,
   });
 
   // 2. Fetch create-form snapshot if new
@@ -35,6 +41,7 @@ export function useInventoryCheckForm(id?: string) {
     queryKey: ["inventory-check-create-form"],
     queryFn: () => inventoryService.getInventoryCheckCreateForm(),
     enabled: isNew,
+    retry: false,
   });
 
   const isInitialized = useRef(false);
@@ -190,6 +197,8 @@ export function useInventoryCheckForm(id?: string) {
   return {
     isNew,
     check: detailData?.data,
+    isError: isErrorDetail,
+    error: errorDetail,
     isLoading: isLoadingDetail || isLoadingCreateForm,
     checkDate,
     setCheckDate,

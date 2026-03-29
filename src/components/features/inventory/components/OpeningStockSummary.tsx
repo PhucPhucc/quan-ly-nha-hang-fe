@@ -13,16 +13,17 @@ export function OpeningStockSummary({ totalValue, className, mobile = false }: P
   return (
     <div
       className={cn(
-        "inline-flex h-12 items-center justify-between rounded-xl border border-border bg-card px-4 shadow-sm",
-        mobile ? "w-full sm:w-auto" : "min-w-[160px]",
+        "inline-flex items-center justify-between ",
+        mobile ? "w-full sm:w-auto" : "min-w-40",
         className
       )}
     >
-      <div className="flex flex-col">
-        <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="flex items-center gap-2 py-1 text-xs">
+        <p className="tracking-wide text-muted-foreground">
           {OPENING_STOCK.TOTAL_VALUE}
+          {UI_TEXT.COMMON.COLON}
         </p>
-        <p className="text-sm font-semibold text-foreground">{formatCurrency(totalValue)}</p>
+        <p className="font-semibold text-foreground">{formatCurrency(totalValue)}</p>
       </div>
     </div>
   );

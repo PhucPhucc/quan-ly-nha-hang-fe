@@ -42,8 +42,8 @@ export function DateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[260px] justify-start text-left font-normal bg-background border-border hover:bg-muted/50 transition-all rounded-xl h-10",
-              !value && "text-muted-foreground"
+              "w-65 justify-start text-left font-normal bg-card border-border hover:bg-muted/50 transition-all rounded-lg",
+              !value && "text-card-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
@@ -71,7 +71,7 @@ export function DateRangePicker({
             captionLayout={numberOfMonths === 1 ? "dropdown" : "label"}
             fromYear={fromYear}
             toYear={toYear}
-            className="rounded-xl border shadow-xl bg-background"
+            className="rounded-xl shadow-2xl bg-background"
           />
         </PopoverContent>
       </Popover>

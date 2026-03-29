@@ -21,7 +21,6 @@ import { InventoryImportExcelDialog } from "./components/InventoryImportExcelDia
 import {
   INVENTORY_INPUT_CLASS,
   INVENTORY_PAGE_CLASS,
-  INVENTORY_TABLE_SURFACE_CLASS,
   INVENTORY_TOOLBAR_CLASS,
 } from "./components/inventoryStyles";
 import { OpeningStockSummary } from "./components/OpeningStockSummary";
@@ -149,7 +148,7 @@ export function OpeningStockEntry() {
         <div className={INVENTORY_TOOLBAR_CLASS}>
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative w-full max-w-lg">
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
               <Input
                 placeholder={OPENING_STOCK.SEARCH_PLACEHOLDER}
                 className={INVENTORY_INPUT_CLASS + " pl-9"}
@@ -160,18 +159,12 @@ export function OpeningStockEntry() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <OpeningStockSummary totalValue={totalValue} />
               <InventoryImportExcelDialog
                 onImport={(data) => handleBulkUpdate(data)}
                 disabled={isLocked}
               />
 
-              <Button
-                onClick={handlePrimarySave}
-                disabled={saving || isLocked}
-                size="sm"
-                className="h-12 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary-hover"
-              >
+              <Button onClick={handlePrimarySave} disabled={saving || isLocked}>
                 {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-3.5 w-3.5" />}
                 {OPENING_STOCK.BTN_SAVE}
               </Button>
@@ -222,7 +215,9 @@ export function OpeningStockEntry() {
           ) : null}
         </div>
 
-        <div className={INVENTORY_TABLE_SURFACE_CLASS}>
+        <div>
+          <OpeningStockSummary totalValue={totalValue} />
+
           <OpeningStockTable
             ingredients={filteredIngredients}
             entryItems={entryItems}

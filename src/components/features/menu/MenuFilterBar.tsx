@@ -38,7 +38,7 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({ categories }) => {
   };
 
   return (
-    <div className=" w-full rounded-xl border border-border bg-card shadow-sm shadow-slate-100/60 px-4 py-3 grid gap-2 lg:grid-cols-[1fr_auto_auto] justify-between lg:items-center">
+    <div className=" w-full bg-background rounded-xl border border-border shadow-sm shadow-slate-100/60 p-3 grid gap-2 lg:grid-cols-[1fr_auto_auto] justify-between lg:items-center">
       <div className="flex-1 min-w-0">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" />

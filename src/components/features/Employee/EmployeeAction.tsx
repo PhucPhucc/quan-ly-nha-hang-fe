@@ -50,21 +50,12 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             <List className="size-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className="w-56 rounded-2xl p-1.5 shadow-2xl border-slate-100"
-          align="end"
-          sideOffset={8}
-        >
-          <DropdownMenuItem
-            onClick={() => handleEdit("edit")}
-            className="rounded-xl p-2.5 gap-3 cursor-pointer focus:bg-slate-50"
-          >
-            <div className="bg-blue-50 p-2 rounded-lg">
-              <UserPen className="size-4 text-blue-600" />
-            </div>
+        <DropdownMenuContent className="w-56 shadow-2xl text-foreground" align="end" sideOffset={8}>
+          <DropdownMenuItem onClick={() => handleEdit("edit")}>
+            <UserPen className="size-4 " />
             <div className="flex flex-col">
               <span>{UI_TEXT.EMPLOYEE.UPDATE_PROFILE}</span>
-              <span className="text-xs text-muted-foreground">{UI_TEXT.EMPLOYEE.UPDATE_INFO}</span>
+              <span className="text-xs">{UI_TEXT.EMPLOYEE.UPDATE_INFO}</span>
             </div>
           </DropdownMenuItem>
 
@@ -73,49 +64,29 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
               e.currentTarget.blur();
               handleEdit("changeRole");
             }}
-            className="rounded-xl p-2.5 gap-3 cursor-pointer focus:bg-slate-50"
           >
-            <div className="bg-amber-50 p-2 rounded-lg">
-              <Skull className="size-4 text-amber-600" />
-            </div>
+            <Skull className="size-4 " />
             <div className="flex flex-col">
               <span>{UI_TEXT.EMPLOYEE.CHANGE_ROLE}</span>
-              <span className="text-xs text-muted-foreground">
-                {UI_TEXT.EMPLOYEE.CHANGE_ROLE_DESC}
-              </span>
+              <span className="text-xs">{UI_TEXT.EMPLOYEE.CHANGE_ROLE_DESC}</span>
             </div>
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            onClick={() => handleEdit("changePassword")}
-            className="rounded-xl p-2.5 gap-3 cursor-pointer focus:bg-slate-50"
-          >
-            <div className="bg-emerald-50 p-2 rounded-lg">
-              <LockKeyhole className="size-4 text-emerald-600" />
-            </div>
+          <DropdownMenuItem onClick={() => handleEdit("changePassword")}>
+            <LockKeyhole className="size-4 " />
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD}</span>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                {UI_TEXT.EMPLOYEE.ACCOUNT_SECURITY}
-              </span>
+              <span className="text-sm">{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD}</span>
+              <span className="text-xs">{UI_TEXT.EMPLOYEE.ACCOUNT_SECURITY}</span>
             </div>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator className="my-1.5 mx-2" />
 
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() => handleEdit("delete")}
-            className="rounded-xl p-2.5 gap-3 cursor-pointer focus:bg-rose-50"
-          >
-            <div className="bg-rose-50 p-2 rounded-lg">
-              <Trash2 className="size-4 text-rose-600" />
-            </div>
+          <DropdownMenuItem onClick={() => handleEdit("delete")}>
+            <Trash2 className="size-4" />
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">{UI_TEXT.EMPLOYEE.DELETE}</span>
-              <span className="text-[10px] text-rose-400 uppercase tracking-tight">
-                {UI_TEXT.EMPLOYEE.REMOVE_FROM_SYSTEM}
-              </span>
+              <span className=" text-sm">{UI_TEXT.EMPLOYEE.DELETE}</span>
+              <span className="text-xs ">{UI_TEXT.EMPLOYEE.REMOVE_FROM_SYSTEM}</span>
             </div>
           </DropdownMenuItem>
         </DropdownMenuContent>

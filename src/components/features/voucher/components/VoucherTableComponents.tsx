@@ -47,13 +47,13 @@ export const VoucherFilterBar = ({
   const V = UI_TEXT.VOUCHER;
 
   return (
-    <div className="w-full rounded-xl border border-border bg-card shadow-sm px-4 py-3 flex flex-wrap items-center gap-3">
+    <div className="w-full rounded-xl border border-border bg-background shadow-sm p-3 flex flex-wrap items-center gap-3">
       <div className="relative flex-1 min-w-50">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           type="text"
           placeholder={V.SEARCH_PLACEHOLDER}
-          className="pl-10 rounded-xl bg-card text-foreground placeholder:text-muted-foreground border border-border focus-visible:ring-2 focus-visible:ring-ring/30"
+          className="pl-10 rounded-lg bg-card text-card-foreground placeholder:text-muted-foreground border border-border focus-visible:ring-2 focus-visible:ring-ring/30"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => {
@@ -65,7 +65,7 @@ export const VoucherFilterBar = ({
       </div>
 
       <Select value={typeFilter} onValueChange={setTypeFilter}>
-        <SelectTrigger className="w-40 rounded-xl bg-card border border-border text-foreground font-medium">
+        <SelectTrigger className="w-40 rounded-lg bg-card border border-border text-card-foreground">
           <SelectValue placeholder={V.FILTER_TYPE} />
         </SelectTrigger>
         <SelectContent className="rounded-xl">
@@ -79,10 +79,10 @@ export const VoucherFilterBar = ({
       </Select>
 
       <Select value={statusFilter} onValueChange={setStatusFilter}>
-        <SelectTrigger className="w-40 rounded-xl bg-card border border-border text-foreground font-medium">
+        <SelectTrigger className="w-40 rounded-lg bg-card border border-border text-card-foreground">
           <SelectValue placeholder={V.FILTER_STATUS} />
         </SelectTrigger>
-        <SelectContent className="rounded-xl">
+        <SelectContent className="rounded-lg">
           <SelectItem value="all">{V.FILTER_ALL_STATUS}</SelectItem>
           <SelectItem value="true">{V.FILTER_ACTIVE}</SelectItem>
           <SelectItem value="false">{V.FILTER_INACTIVE}</SelectItem>
@@ -100,12 +100,9 @@ export const VoucherFilterBar = ({
         </span>
       </div>
 
-      <Button
-        onClick={onCreate}
-        className="rounded-xl bg-primary hover:bg-primary-hover shadow-sm gap-2 font-semibold px-4"
-      >
+      <Button onClick={onCreate}>
         <Plus className="size-4" />
-        <span className="text-xs uppercase tracking-tight">{V.CREATE}</span>
+        <span>{V.CREATE}</span>
       </Button>
     </div>
   );
@@ -180,7 +177,7 @@ export const VoucherRow = ({
         <span className="table-cell-strong text-sm">{renderValue(voucher)}</span>
       </TableCell>
       <TableCell>
-        <div className="flex items-center gap-2 min-w-[120px]">
+        <div className="flex items-center gap-2 min-w-30">
           <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-300 ${

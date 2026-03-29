@@ -1,12 +1,4 @@
-import {
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  Edit,
-  Minus,
-  MoreVertical,
-  Trash2,
-} from "lucide-react";
+import { CheckCircle2, Edit, List, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -67,6 +59,7 @@ const StatusBadge = ({ status }: { status: string }) => {
   }
 };
 
+import PaginationTable from "@/components/shared/PaginationTable";
 import { ReservationDto } from "@/services/reservationService";
 
 interface ReservationTableProps {
@@ -104,9 +97,6 @@ export const ReservationTable = ({
     setIsCancelOpen(true);
   };
 
-  const startOffset = (currentPage - 1) * 8 + 1;
-  const endOffset = Math.min(currentPage * 8, totalItems);
-
   return (
     <div className="relative w-full overflow-hidden flex-1 flex flex-col">
       <div className="flex-1 overflow-auto">
@@ -120,7 +110,9 @@ export const ReservationTable = ({
                 <TableHead>{UI_TEXT.RESERVATION.COL_AREA}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_PEOPLE}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_STATUS}</TableHead>
-                <TableHead>{UI_TEXT.RESERVATION.COL_ACTIONS}</TableHead>
+                <TableHead className="text-center w-32">
+                  {UI_TEXT.RESERVATION.COL_ACTIONS}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -129,28 +121,28 @@ export const ReservationTable = ({
                   <TableRow
                     key={row.id}
                     className={cn(
-                      "group transition-all duration-200 border-b border-slate-50",
-                      "hover:bg-[#fcf9f2]/50"
+                      "group transition-all duration-200 border-b border",
+                      "hover:bg-muted/50"
                     )}
                   >
-                    <TableCell className="pl-6 font-semibold text-slate-600 text-[13px] w-30">
-                      {row.code}
-                    </TableCell>
+                    <TableCell className="text-card-foreground text-sm w-30">{row.code}</TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-bold text-slate-800 text-sm leading-tight">
+                        <span className="text-card-foreground text-sm leading-tight">
                           {row.customerName}
                         </span>
-                        <span className="text-[11px] text-slate-500 font-medium">{row.phone}</span>
+                        <span className="text-[11px] text-card-foreground">{row.phone}</span>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-slate-700 text-[13px]">{row.date}</span>
-                        <span className="text-[11px] text-slate-500 font-medium">{row.time}</span>
+                        <span className="font-semibold text-muted-foreground text-sm">
+                          {row.date}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground/70">{row.time}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-slate-600 text-[13px] font-semibold">
+                    <TableCell className="text-muted-foreground text-sm font-semibold">
                       {row.area}
                     </TableCell>
                     <TableCell>
@@ -168,7 +160,7 @@ export const ReservationTable = ({
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 bg-emerald-50/50 rounded-lg"
+                              className="h-8 w-8 text-success hover:bg-success/10 bg-success/15 rounded-full"
                               onClick={() => handleStartServing(row)}
                             >
                               <CheckCircle2 className="h-4 w-4" />
@@ -176,24 +168,17 @@ export const ReservationTable = ({
 
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 text-slate-400 hover:text-slate-600 rounded-lg"
-                                >
-                                  <MoreVertical className="h-5 w-5" />
+                                <Button variant="ghost" size="icon">
+                                  <List className="h-5 w-5" />
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-48">
+                              <DropdownMenuContent align="end" className="w-32">
                                 <DropdownMenuItem onClick={() => handleEdit(row)}>
-                                  <Edit className="h-4 w-4 mr-2" />
+                                  <Edit className="h-4 w-4" />
                                   {UI_TEXT.RESERVATION.ACTION_EDIT}
                                 </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => handleCancel(row)}
-                                  className="text-red-600 focus:text-red-600"
-                                >
-                                  <Trash2 className="h-4 w-4 mr-2" />
+                                <DropdownMenuItem onClick={() => handleCancel(row)}>
+                                  <Trash2 className="h-4 w-4" />
                                   {UI_TEXT.RESERVATION.ACTION_CANCEL}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
@@ -206,7 +191,7 @@ export const ReservationTable = ({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-10 text-slate-500">
+                  <TableCell colSpan={8} className="text-center py-10 text-foreground">
                     {UI_TEXT.RESERVATION.EMPTY_DATA}
                   </TableCell>
                 </TableRow>
@@ -216,58 +201,11 @@ export const ReservationTable = ({
         </TableShell>
       </div>
 
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="text-sm font-medium text-slate-500">
-          {UI_TEXT.RESERVATION.PAGINATION_SHOWING}{" "}
-          <span className="font-bold text-slate-800">
-            {totalItems > 0 ? startOffset : 0}
-            <Minus className="inline mx-1" />
-            {endOffset}
-          </span>{" "}
-          {UI_TEXT.RESERVATION.PAGINATION_OF}{" "}
-          <span className="font-bold text-slate-800">{totalItems}</span>{" "}
-          {UI_TEXT.RESERVATION.PAGINATION_UNIT}
-        </div>
-        <div className="flex gap-1.5">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 p-0 border-slate-200 rounded-lg text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-            disabled={currentPage <= 1}
-            onClick={() => onPageChange(currentPage - 1)}
-          >
-            {/* <span className="sr-only">{"Previous page"}</span> */}
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <Button
-              key={page}
-              variant={currentPage === page ? "default" : "ghost"}
-              className={cn(
-                "h-8 w-8 p-0 rounded-lg font-medium",
-                currentPage === page
-                  ? "bg-primary hover:bg-primary/90 shadow-sm font-bold"
-                  : "text-slate-600 hover:bg-slate-100"
-              )}
-              onClick={() => onPageChange(page)}
-            >
-              {page}
-            </Button>
-          ))}
-
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 p-0 border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-            disabled={currentPage >= totalPages}
-            onClick={() => onPageChange(currentPage + 1)}
-          >
-            {/* <span className="sr-only">{"Next page"}</span> */}
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+      <PaginationTable
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
 
       <StartServingDialog
         open={isStartOpen}
