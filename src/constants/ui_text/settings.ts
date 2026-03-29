@@ -52,6 +52,28 @@ export const SETTINGS = {
   FIELD_NOTIFY_SMS_DESC: "Nhận tin nhắn SMS cho các sự kiện quan trọng",
 
   SUCCESS_GENERAL: "Đã lưu cấu hình chung thành công",
+  GENERAL_FOOTER_NOTE:
+    "Cập nhật các thiết lập chung của hệ thống sẽ ảnh hưởng đến hiển thị trên toàn bộ chi nhánh.",
+
+  // Branding & Display
+  BRANDING_SECTION: "Nhận diện & Giao diện",
+  BRANDING_SECTION_DESC: "Tùy chỉnh logo, tiêu đề và giao diện hiển thị trên các ứng dụng",
+  FIELD_APP_TITLE: "Tiêu đề ứng dụng",
+  FIELD_KDS_TITLE: "Tiêu đề KDS",
+  FIELD_LOGO: "Logo thương hiệu",
+  FIELD_LOGO_DESC: "Kích thước khuyến nghị: 512x512px. Hỗ trợ PNG, JPG, WebP.",
+  FIELD_LOGO_URL_PLACEHOLDER: "Hoặc nhập URL trực tiếp...",
+  LOGO_UPLOAD_SUCCESS: "Đã tải logo lên thành công",
+  LOGO_UPLOAD_ERROR: "Tải logo thất bại",
+
+  // Printing
+  PRINT_SECTION: "Cấu hình In ấn",
+  PRINT_SECTION_DESC: "Thiết lập thông tin hiển thị trên hóa đơn và phiếu chế biến",
+  FIELD_BILL_TITLE: "Tiêu đề hóa đơn",
+  FIELD_BILL_FOOTER: "Chân trang hóa đơn",
+  FIELD_LANGUAGE: "Ngôn ngữ hệ thống",
+  LANGUAGE_VI: "Tiếng Việt",
+  LANGUAGE_EN: "English",
 
   // ────────────────────────────────────────────────────────────────
   // WAREHOUSE SETTINGS
@@ -109,6 +131,11 @@ export const SETTINGS = {
   FIELD_MIN_LEAD_TIME_DESC: "Khách cần đặt trước ít nhất bao nhiêu phút",
   FIELD_GRACE_PERIOD: "Thời gian chờ khách đến (phút)",
   FIELD_GRACE_PERIOD_DESC: "Quá thời gian này mà khách chưa check-in thì có thể chuyển no-show",
+  FIELD_UPCOMING_BUFFER: "Thời gian chuẩn bị giữ bàn (phút)",
+  FIELD_UPCOMING_BUFFER_DESC:
+    "Hệ thống tự động đổi trạng thái bàn sang 'Giữ bàn' trước bao nhiêu phút",
+
+  ERR_UPCOMING_BUFFER_LIMIT: "Thời gian giữ bàn không được lớn hơn thời gian đặt trước tối thiểu",
 
   SUCCESS_RESERVATION: "Đã lưu cấu hình đặt bàn thành công",
 

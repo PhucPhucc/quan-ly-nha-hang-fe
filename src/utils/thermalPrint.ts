@@ -1,7 +1,19 @@
+import { formatCurrencyWithBranding, formatDateTimeWithBranding } from "@/lib/branding-formatting";
+import { UI_TEXT } from "@/lib/UI_Text";
+import type { BrandingSettingsDto } from "@/services/brandingService";
 import { PreCheckBillResponse } from "@/types/Billing";
 
-export const generateThermalHtml = (data: PreCheckBillResponse) => {
-  const dateStr = new Date(data.printedAt).toLocaleString("vi-VN");
+export const generateThermalHtml = (
+  data: PreCheckBillResponse,
+  branding?: Partial<BrandingSettingsDto>
+) => {
+  const dateStr = formatDateTimeWithBranding(data.printedAt, branding);
+  const restaurantName = branding?.restaurantName ?? UI_TEXT.COMMON.NAME_RESTAURANT;
+  const billTitle = branding?.billTitle ?? UI_TEXT.ORDER.PRINT_TEMP.TITLE;
+  const footer = branding?.billFooter ?? UI_TEXT.ORDER.PRINT_TEMP.FOOTER_THANK_YOU;
+  const address = branding?.address ?? UI_TEXT.ORDER.PRINT_TEMP.SHOP_ADDRESS;
+  const phone = branding?.phone ?? UI_TEXT.ORDER.PRINT_TEMP.SHOP_PHONE;
+  const logoUrl = branding?.logoUrl;
 
   return `
     <!DOCTYPE html>
@@ -51,6 +63,7 @@ export const generateThermalHtml = (data: PreCheckBillResponse) => {
         .bold { font-weight: bold; }
         .header { margin-bottom: 30px; border-bottom: 5px double #000; padding-bottom: 20px; }
         .shop-name { font-size: 24px; font-weight: 900; letter-spacing: 2px; }
+        .logo { max-height: 72px; max-width: 180px; object-fit: contain; margin: 0 auto 12px auto; display: block; }
         .divider { border-top: 2px dashed #000; margin: 25px 0; }
         .item-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
         .item-table th { border-bottom: 3px solid #000; text-align: left; padding: 10px 0; }
@@ -64,26 +77,27 @@ export const generateThermalHtml = (data: PreCheckBillResponse) => {
     <body>
       <div class="receipt-content">
         <div class="header text-center">
-          <div class="bold shop-name">FOODHUB RESTAURANT</div>
-          <div style="font-size: 12px;">123 Đường Ẩm Thực, Quận 1, HCM</div>
-          <div style="font-size: 12px;">ĐT: 0123.456.789</div>
+          ${logoUrl ? `<img class="logo" src="${logoUrl}" alt="${restaurantName}" />` : ""}
+          <div class="bold shop-name">${restaurantName}</div>
+          <div style="font-size: 12px;">${address}</div>
+          <div style="font-size: 12px;">${UI_TEXT.ORDER.PRINT_TEMP.SHOP_PHONE_PREFIX} ${phone}</div>
           <div class="divider"></div>
-          <div class="bold" style="font-size: 16px; margin-top: 10px;">PHIẾU TẠM TÍNH</div>
-          <div style="font-size: 13px;">Số: ${data.orderCode}</div>
+          <div class="bold" style="font-size: 16px; margin-top: 10px;">${billTitle}</div>
+          <div style="font-size: 13px;">${UI_TEXT.ORDER.PRINT_TEMP.RECEIPT_ID_PREFIX} ${data.orderCode}</div>
         </div>
         
         <div style="font-size: 12px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <div>Ngày in: ${dateStr}</div>
-          <div class="text-right">Bàn: <span class="bold">${data.tableNumber ? `Bàn ${data.tableNumber}` : "Mang về"}</span></div>
-          <div>Thu ngân: ${data.employeeName}</div>
+          <div>${UI_TEXT.ORDER.PRINT_TEMP.PRINT_DATE} ${dateStr}</div>
+          <div class="text-right">${UI_TEXT.ORDER.PRINT_TEMP.TABLE_PREFIX} <span class="bold">${data.tableNumber ? `${data.tableNumber}` : UI_TEXT.ORDER.PRINT_TEMP.TAKEAWAY_LABEL}</span></div>
+          <div>${UI_TEXT.ORDER.PRINT_TEMP.CASHIER_LABEL} ${data.employeeName}</div>
         </div>
         
         <table class="item-table">
           <thead>
             <tr>
-              <th style="width: 55%">Tên món</th>
-              <th style="width: 15%; text-align: center;">SL</th>
-              <th style="width: 30%; text-align: right;">Thành tiền</th>
+              <th style="width: 55%">${UI_TEXT.ORDER.PRINT_TEMP.ITEM_NAME_HEADER}</th>
+              <th style="width: 15%; text-align: center;">${UI_TEXT.ORDER.PRINT_TEMP.QUANTITY_HEADER}</th>
+              <th style="width: 30%; text-align: right;">${UI_TEXT.ORDER.PRINT_TEMP.AMOUNT_HEADER}</th>
             </tr>
           </thead>
           <tbody>
@@ -96,7 +110,7 @@ export const generateThermalHtml = (data: PreCheckBillResponse) => {
                   ${item.optionsSummary ? `<div style="font-size: 11px; color: #444;">+ ${item.optionsSummary}</div>` : ""}
                 </td>
                 <td class="text-center">${item.quantity}</td>
-                <td class="text-right">${item.lineTotal.toLocaleString()}</td>
+                <td class="text-right">${formatCurrencyWithBranding(item.lineTotal, branding)}</td>
               </tr>
             `
               )
@@ -106,34 +120,53 @@ export const generateThermalHtml = (data: PreCheckBillResponse) => {
         
         <div class="total-section">
           <div class="total-row">
-            <div>Tiền hàng:</div>
-            <div>${data.subTotal.toLocaleString()}đ</div>
+            <div>${UI_TEXT.ORDER.PRINT_TEMP.SUBTOTAL_LABEL}</div>
+            <div>${formatCurrencyWithBranding(data.subTotal, branding)}</div>
           </div>
           ${
             data.discount > 0
               ? `
           <div class="total-row" style="color: #d00;">
-            <div>Giảm giá ${data.voucherCode ? `(${data.voucherCode})` : ""}:</div>
-            <div>-${data.discount.toLocaleString()}đ</div>
+            <div>${UI_TEXT.ORDER.PRINT_TEMP.DISCOUNT_LABEL} ${data.voucherCode ? `(${data.voucherCode})` : ""}:</div>
+            <div>${formatCurrencyWithBranding(-data.discount, branding)}</div>
           </div>
           `
               : ""
           }
           <div class="total-row">
-            <div>Thuế (${data.vatRate}%):</div>
-            <div>${data.vat.toLocaleString()}đ</div>
+            <div>${UI_TEXT.ORDER.PRINT_TEMP.TAX_LABEL_PREFIX} (${data.vatRate}%):</div>
+            <div>${formatCurrencyWithBranding(data.vat, branding)}</div>
           </div>
           <div class="divider" style="border-top-style: solid; border-top-width: 3px;"></div>
           <div class="total-row bold" style="font-size: 20px; margin-top: 10px;">
-            <div>TỔNG CỘNG:</div>
-            <div>${data.totalAmount.toLocaleString()}đ</div>
+            <div>${UI_TEXT.ORDER.PRINT_TEMP.TOTAL_LABEL}</div>
+            <div>${formatCurrencyWithBranding(data.totalAmount, branding)}</div>
           </div>
+          ${
+            data.paymentMethod
+              ? `
+          <div class="divider" style="margin: 15px 0 10px 0;"></div>
+          <div class="total-row" style="font-size: 13px;">
+            <div>${UI_TEXT.ORDER.PRINT_TEMP.PAYMENT_METHOD_LABEL}</div>
+            <div class="bold">${data.paymentMethod}</div>
+          </div>
+          <div class="total-row" style="font-size: 13px;">
+            <div>${UI_TEXT.ORDER.PRINT_TEMP.CUSTOMER_GAVE_LABEL}</div>
+            <div class="bold">${formatCurrencyWithBranding(data.amountReceived ?? data.totalAmount, branding)}</div>
+          </div>
+          <div class="total-row" style="font-size: 13px;">
+            <div>${UI_TEXT.ORDER.PRINT_TEMP.CHANGE_LABEL}</div>
+            <div class="bold">${formatCurrencyWithBranding(data.changeAmount ?? 0, branding)}</div>
+          </div>
+          `
+              : ""
+          }
         </div>
         
         <div class="footer text-center">
-          <div class="bold" style="font-size: 14px;">CẢM ƠN QUÝ KHÁCH - HẸN GẶP LẠI</div>
+          <div class="bold" style="font-size: 14px;">${footer}</div>
           <div style="color: #555; font-size: 11px; margin-top: 10px;">
-            Vui lòng kiểm tra kỹ hóa đơn trước khi rời quầy
+            ${UI_TEXT.ORDER.PRINT_TEMP.FOOTER_CHECK_BEFORE_LEAVE}
           </div>
         </div>
       </div>
@@ -142,8 +175,11 @@ export const generateThermalHtml = (data: PreCheckBillResponse) => {
   `;
 };
 
-export const printThermalReceipt = (data: PreCheckBillResponse) => {
-  const html = generateThermalHtml(data);
+export const printThermalReceipt = (
+  data: PreCheckBillResponse,
+  branding?: Partial<BrandingSettingsDto>
+) => {
+  const html = generateThermalHtml(data, branding);
   const iframe = document.createElement("iframe");
   iframe.style.display = "none";
   document.body.appendChild(iframe);

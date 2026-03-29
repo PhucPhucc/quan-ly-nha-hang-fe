@@ -1,14 +1,16 @@
-import { Minus, Plus, Ticket, Trash2 } from "lucide-react";
 import React from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
-import { CartItem, CartItemOptionGroup } from "@/types/Cart";
-import { OrderItemStatus } from "@/types/enums";
+import { CartItem } from "@/types/Cart";
 import { OrderItem } from "@/types/Order";
+
+import { CartOrderItemCard } from "./order-item-list/CartOrderItemCard";
+import {
+  buildComboDisplayMap,
+  createOrderItemIndexMap,
+} from "./order-item-list/order-item-list.utils";
+import { RemoteOrderItemsSection } from "./order-item-list/RemoteOrderItemsSection";
 
 interface OrderItemListProps {
   items: CartItem[];
@@ -23,33 +25,17 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
   onUpdateQuantity,
   onRemoveItem,
 }) => {
-  const getStatusBadge = (status: OrderItemStatus) => {
-    switch (status) {
-      case OrderItemStatus.Preparing:
-        return (
-          <Badge className="bg-orange-500 hover:bg-orange-600 text-[10px] py-0">
-            {UI_TEXT.ORDER.CURRENT.STATUS_PREP}
-          </Badge>
-        );
-      case OrderItemStatus.Cooking:
-        return (
-          <Badge className="bg-blue-500 hover:bg-blue-600 text-[10px] py-0">
-            {UI_TEXT.ORDER.CURRENT.STATUS_COOKING}
-          </Badge>
-        );
-      case OrderItemStatus.Completed:
-        return (
-          <Badge className="bg-slate-500 hover:bg-slate-600 text-[10px] py-0">
-            {UI_TEXT.ORDER.CURRENT.STATUS_DONE}
-          </Badge>
-        );
-      default:
-        return null;
-    }
-  };
+  const comboDisplayMap = React.useMemo(() => buildComboDisplayMap(remoteItems), [remoteItems]);
+  const itemIndexMap = React.useMemo(() => createOrderItemIndexMap(remoteItems), [remoteItems]);
 
-  const nomalizedPrice = (price: number, quantity: number) => {
-    return `${price.toLocaleString()}${UI_TEXT.COMMON.CURRENCY} x ${quantity} = ${(price * quantity).toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`;
+  const [expandedComboIds, setExpandedComboIds] = React.useState<Record<string, boolean>>({});
+  const [hoveredComboId, setHoveredComboId] = React.useState<string | null>(null);
+
+  const toggleComboChildren = (orderItemId: string) => {
+    setExpandedComboIds((previousState) => ({
+      ...previousState,
+      [orderItemId]: !previousState[orderItemId],
+    }));
   };
 
   return (
@@ -61,203 +47,24 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
           </div>
         ) : (
           <>
-            {/* New Items (Cart) */}
             {items.map((item) => (
-              <div
+              <CartOrderItemCard
                 key={item.cartItemKey}
-                className="group relative flex flex-col gap-2 p-3 rounded-xl border border-primary/20 bg-primary/5 transition-all"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-sm leading-tight">{item.menuItem.name}</h4>
-                    <p className="text-xs text-primary font-bold mt-1">
-                      {nomalizedPrice(item.unitPrice, item.quantity)}
-                    </p>
-                    {/* Options */}
-                    {item.selectedOptions.flatMap((g: CartItemOptionGroup) => g.selectedValues)
-                      .length > 0 && (
-                      <div className="mt-1 space-y-0.5">
-                        {item.selectedOptions
-                          .flatMap((g: CartItemOptionGroup) =>
-                            g.selectedValues.map((v) => ({ ...v, groupName: g.groupName }))
-                          )
-                          .map((val) => (
-                            <p
-                              key={val.optionItemId}
-                              className="text-[10px] text-muted-foreground flex items-center justify-between"
-                            >
-                              <span>
-                                {UI_TEXT.COMMON.BULLET}
-                                {val.groupName ? `${val.groupName}: ` : ""}
-                                {val.label}
-                              </span>
-                              {val.extraPrice > 0 && (
-                                <span>
-                                  {UI_TEXT.COMMON.PLUS}
-                                  {val.extraPrice.toLocaleString()}
-                                  {UI_TEXT.COMMON.CURRENCY}
-                                </span>
-                              )}
-                            </p>
-                          ))}
-                      </div>
-                    )}
-                    {/* Note */}
-                    {item.note && (
-                      <p className="text-[10px] text-orange-600 italic mt-1">
-                        {UI_TEXT.ORDER.NOTE(item.note)}
-                      </p>
-                    )}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onRemoveItem(item.cartItemKey)}
-                    className="p-1.5 text-primary hover:text-danger hover:bg-danger/10 rounded-lg transition-all"
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between mt-1">
-                  <Badge
-                    variant="ghost"
-                    className="text-[10px] font-bold px-2 py-0.5 border-none bg-order-new/15 text-order-new animate-fade-in-right"
-                  >
-                    {UI_TEXT.ORDER.CURRENT.NEW}
-                  </Badge>
-
-                  <div className="flex items-center bg-background rounded-lg border border-border shadow-sm">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 rounded-none rounded-l-lg hover:bg-secondary"
-                      onClick={() => onUpdateQuantity(item.cartItemKey, -1)}
-                    >
-                      <Minus className="size-3" />
-                    </Button>
-                    <span className="w-8 text-center text-xs font-bold">{item.quantity}</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 rounded-none rounded-r-lg hover:bg-secondary"
-                      onClick={() => onUpdateQuantity(item.cartItemKey, 1)}
-                    >
-                      <Plus className="size-3" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                item={item}
+                onUpdateQuantity={onUpdateQuantity}
+                onRemoveItem={onRemoveItem}
+              />
             ))}
 
-            {/* Remote Items (Ordered) */}
-            {remoteItems.map((item) => {
-              const itemIsFree = item.isFreeItem || item.unitPriceSnapshot === 0;
-
-              return (
-                <div
-                  key={item.orderItemId}
-                  className={cn(
-                    "group relative flex flex-col gap-2 p-3 rounded-xl border transition-all",
-                    itemIsFree
-                      ? "bg-emerald-500/10 border-emerald-500/20"
-                      : "border-border/50 bg-secondary/20"
-                  )}
-                >
-                  <div className="flex justify-between flex-1 text-muted-foreground">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h4
-                          className={cn(
-                            "font-semibold text-sm leading-tight",
-                            itemIsFree ? "text-emerald-700" : "text-foreground"
-                          )}
-                        >
-                          {item.itemNameSnapshot}
-                        </h4>
-                        {itemIsFree && (
-                          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-[10px] py-0 gap-1">
-                            <Ticket className="w-3 h-3" />
-                            {UI_TEXT.VOUCHER.GIFT_BADGE}
-                          </Badge>
-                        )}
-                      </div>
-                      {item.optionGroups && item.optionGroups.length > 0 ? (
-                        <div className="mt-1 space-y-0.5">
-                          {item.optionGroups
-                            .flatMap((g) =>
-                              g.optionValues.map((v) => ({
-                                ...v,
-                                groupNameSnapshot: g.groupNameSnapshot,
-                              }))
-                            )
-                            .map((val) => (
-                              <p
-                                key={val.orderItemOptionValueId}
-                                className="text-[10px] text-muted-foreground flex items-center justify-between"
-                              >
-                                <span>
-                                  {val.groupNameSnapshot ? `${val.groupNameSnapshot}: ` : ""}
-                                  {val.labelSnapshot}
-                                </span>
-                                {val.extraPriceSnapshot > 0 && (
-                                  <span className="ml-2">
-                                    {UI_TEXT.COMMON.PLUS}
-                                    {val.extraPriceSnapshot.toLocaleString()}
-                                    {UI_TEXT.COMMON.CURRENCY}
-                                  </span>
-                                )}
-                              </p>
-                            ))}
-                        </div>
-                      ) : (
-                        item.itemOptions && (
-                          <p className="text-[10px] text-muted-foreground mt-1">
-                            {item.itemOptions.split(";").join(", ")}
-                          </p>
-                        )
-                      )}
-                      {item.itemNote && (
-                        <p className="text-[10px] italic mt-1">
-                          {UI_TEXT.ORDER.NOTE(item.itemNote)}
-                        </p>
-                      )}
-                    </div>
-                    <div
-                      className={cn(
-                        "text-sm font-medium text-right",
-                        itemIsFree ? "text-emerald-600" : ""
-                      )}
-                    >
-                      <p>
-                        {(itemIsFree
-                          ? 0
-                          : item.unitPriceSnapshot +
-                            (item.optionGroups
-                              ?.flatMap((g) => g.optionValues)
-                              .reduce(
-                                (sum, v) =>
-                                  sum + Number(v.extraPriceSnapshot || 0) * (v.quantity || 1),
-                                0
-                              ) || 0)
-                        ).toLocaleString()}
-                        {UI_TEXT.COMMON.CURRENCY}
-                      </p>
-                      <p>{UI_TEXT.ORDER.QUANTITY(item.quantity)}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-1">
-                    <div className="animate-fade-in-right">{getStatusBadge(item.status)}</div>
-                    <span className="text-[10px] text-muted-foreground font-mono">
-                      {new Date(item.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+            <RemoteOrderItemsSection
+              remoteItems={remoteItems}
+              comboDisplayMap={comboDisplayMap}
+              itemIndexMap={itemIndexMap}
+              expandedComboIds={expandedComboIds}
+              hoveredComboId={hoveredComboId}
+              setHoveredComboId={setHoveredComboId}
+              toggleComboChildren={toggleComboChildren}
+            />
           </>
         )}
       </div>

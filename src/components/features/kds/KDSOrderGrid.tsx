@@ -6,12 +6,29 @@ import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { KdsStationKey } from "@/services/kdsService";
 import { useKdsStore } from "@/store/useKdsStore";
+import { KDSStation } from "@/types/enums";
 
 import { KDSItemCard } from "./KDSItemCard";
 
 export function KDSOrderGrid() {
-  const orders = useKdsStore((s) => s.activeOrders);
+  const { activeOrders, station, settings } = useKdsStore();
+  const orders = activeOrders;
+
+  // Resolve WIP limit for current station
+  const stationKeyMap: Record<string, KdsStationKey> = {
+    [KDSStation.HotKitchen]: "HotKitchen",
+    [KDSStation.ColdKitchen]: "ColdKitchen",
+    [KDSStation.Bar]: "Bar",
+    [KDSStation.Kitchen]: "HotKitchen", // Fallback
+  };
+
+  const currentStationKey = stationKeyMap[station] || "HotKitchen";
+  const stationSetting = settings?.stationWipLimits.find(
+    (s) => s.station?.toString().toLowerCase() === currentStationKey.toLowerCase()
+  );
+  const wipLimit = stationSetting?.enabled ? stationSetting.limit : 4; // Default to 4 if not set or disabled
 
   const allOrderItems = orders.flatMap((order) =>
     (order.orderItems || []).map((item) => ({
@@ -20,7 +37,7 @@ export function KDSOrderGrid() {
     }))
   );
 
-  const itemsToDisplay = allOrderItems.slice(0, 4);
+  const itemsToDisplay = allOrderItems.slice(0, wipLimit);
 
   if (allOrderItems.length === 0) {
     return (
@@ -58,8 +75,8 @@ export function KDSOrderGrid() {
             );
           })}
 
-          {itemsToDisplay.length < 4 &&
-            Array.from({ length: 4 - itemsToDisplay.length }).map((_, idx) => (
+          {itemsToDisplay.length < wipLimit &&
+            Array.from({ length: wipLimit - itemsToDisplay.length }).map((_, idx) => (
               <Card
                 key={`empty-col-${idx}`}
                 className="bg-muted border-dashed border-border-subtle min-h-24 rounded-lg p-0"

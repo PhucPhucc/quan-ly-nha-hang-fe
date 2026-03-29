@@ -72,6 +72,19 @@ export function BookingRulesSection({ register, errors }: Props) {
             <FieldError errors={[errors.gracePeriodMinutes]} />
           </FieldContent>
         </Field>
+
+        <Field>
+          <FieldLabel>{SETTINGS.FIELD_UPCOMING_BUFFER}</FieldLabel>
+          <FieldContent>
+            <Input
+              type="number"
+              min={0}
+              {...register("upcomingBufferMinutes", { valueAsNumber: true })}
+            />
+            <FieldDescription>{SETTINGS.FIELD_UPCOMING_BUFFER_DESC}</FieldDescription>
+            <FieldError errors={[errors.upcomingBufferMinutes]} />
+          </FieldContent>
+        </Field>
       </div>
     </div>
   );

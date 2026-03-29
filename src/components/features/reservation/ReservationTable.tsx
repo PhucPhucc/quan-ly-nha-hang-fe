@@ -97,9 +97,6 @@ export const ReservationTable = ({
     setIsCancelOpen(true);
   };
 
-  const startOffset = (currentPage - 1) * 8 + 1;
-  const endOffset = Math.min(currentPage * 8, totalItems);
-
   return (
     <div className="relative w-full overflow-hidden flex-1 flex flex-col">
       <div className="flex-1 overflow-auto">
@@ -112,9 +109,10 @@ export const ReservationTable = ({
                 <TableHead>{UI_TEXT.RESERVATION.COL_DATETIME}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_AREA}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_PEOPLE}</TableHead>
-                <TableHead>{UI_TEXT.RESERVATION.COL_PARTY_TYPE}</TableHead>
                 <TableHead>{UI_TEXT.RESERVATION.COL_STATUS}</TableHead>
-                <TableHead className="text-right">{UI_TEXT.RESERVATION.COL_ACTIONS}</TableHead>
+                <TableHead className="text-center w-32">
+                  {UI_TEXT.RESERVATION.COL_ACTIONS}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -127,13 +125,13 @@ export const ReservationTable = ({
                       "hover:bg-muted/50"
                     )}
                   >
-                    <TableCell className="text-muted-foreground text-sm w-30">{row.code}</TableCell>
+                    <TableCell className="text-card-foreground text-sm w-30">{row.code}</TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="text-muted-foreground text-sm leading-tight">
+                        <span className="text-card-foreground text-sm leading-tight">
                           {row.customerName}
                         </span>
-                        <span className="text-[11px] text-muted-foreground">{row.phone}</span>
+                        <span className="text-[11px] text-card-foreground">{row.phone}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -151,9 +149,6 @@ export const ReservationTable = ({
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-orange-50 text-orange-600 border border-orange-100">
                         {row.people}
                       </span>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm font-semibold">
-                      {row.partyType}
                     </TableCell>
                     <TableCell className="w-35">
                       <StatusBadge status={row.status} />

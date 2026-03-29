@@ -48,7 +48,6 @@ export const EditBookingDialog = ({
     reservationDate: "",
     reservationTime: "",
     guestCount: 2,
-    partyType: "normal",
     areaId: "all",
   });
   const [areas, setAreas] = useState<Area[]>([]);
@@ -75,8 +74,7 @@ export const EditBookingDialog = ({
         reservationDate: bookingData.date || "",
         reservationTime: bookingData.time || "",
         guestCount: bookingData.people || 2,
-        partyType: bookingData.partyType?.toLowerCase() || "normal",
-        areaId: bookingData.area || "all",
+        areaId: bookingData.areaId || "all",
       });
     }
   }, [bookingData, open]);
@@ -100,7 +98,7 @@ export const EditBookingDialog = ({
             ? formData.reservationTime + ":00"
             : formData.reservationTime,
         guestCount: Number(formData.guestCount),
-        partyType: formData.partyType,
+        partyType: "normal",
         areaId: formData.areaId === "all" ? undefined : formData.areaId,
       });
 
@@ -225,47 +223,26 @@ export const EditBookingDialog = ({
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-partyType">{UI_TEXT.RESERVATION.FIELD_PARTY_TYPE}</Label>
+                <Label htmlFor="edit-area">{UI_TEXT.RESERVATION.FIELD_AREA}</Label>
                 <Select
-                  value={formData.partyType}
-                  onValueChange={(val) => handleChange("partyType", val)}
+                  value={formData.areaId}
+                  onValueChange={(val) => handleChange("areaId", val)}
                 >
-                  <SelectTrigger id="edit-partyType">
-                    <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_PARTY_TYPE} />
+                  <SelectTrigger id="edit-area">
+                    <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_AREA} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="normal">{UI_TEXT.RESERVATION.PARTY_TYPE_NORMAL}</SelectItem>
-                    <SelectItem value="birthday">
-                      {UI_TEXT.RESERVATION.PARTY_TYPE_BIRTHDAY}
-                    </SelectItem>
-                    <SelectItem value="anniversary">
-                      {UI_TEXT.RESERVATION.PARTY_TYPE_ANNIVERSARY}
-                    </SelectItem>
-                    <SelectItem value="corporate">
-                      {UI_TEXT.RESERVATION.PARTY_TYPE_CORPORATE}
-                    </SelectItem>
+                    {!requiresVipArea && (
+                      <SelectItem value="all">{UI_TEXT.RESERVATION.AREA_ANY}</SelectItem>
+                    )}
+                    {filteredAreas.map((a) => (
+                      <SelectItem key={a.areaId} value={a.areaId}>
+                        {a.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="edit-area">{UI_TEXT.RESERVATION.FIELD_AREA}</Label>
-              <Select value={formData.areaId} onValueChange={(val) => handleChange("areaId", val)}>
-                <SelectTrigger id="edit-area">
-                  <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_AREA} />
-                </SelectTrigger>
-                <SelectContent>
-                  {!requiresVipArea && (
-                    <SelectItem value="all">{UI_TEXT.RESERVATION.AREA_ANY}</SelectItem>
-                  )}
-                  {filteredAreas.map((a) => (
-                    <SelectItem key={a.areaId} value={a.areaId}>
-                      {a.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
           <DialogFooter>

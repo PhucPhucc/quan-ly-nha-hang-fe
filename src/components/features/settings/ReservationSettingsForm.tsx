@@ -20,16 +20,22 @@ import { BookingRulesSection } from "./sections/BookingRulesSection";
 const { SETTINGS, FORM } = UI_TEXT;
 
 // ── Schema ───────────────────────────────────────────────────────────────────
-const schema = z.object({
-  openTime: z.string().min(1, FORM.REQUIRED),
-  closeTime: z.string().min(1, FORM.REQUIRED),
-  breakEnabled: z.boolean(),
-  breakStart: z.string().min(1, FORM.REQUIRED),
-  breakEnd: z.string().min(1, FORM.REQUIRED),
-  overlapBufferMinutes: z.number().int().min(0),
-  minLeadTimeMinutes: z.number().int().min(0),
-  gracePeriodMinutes: z.number().int().min(0),
-});
+const schema = z
+  .object({
+    openTime: z.string().min(1, FORM.REQUIRED),
+    closeTime: z.string().min(1, FORM.REQUIRED),
+    breakEnabled: z.boolean(),
+    breakStart: z.string().min(1, FORM.REQUIRED),
+    breakEnd: z.string().min(1, FORM.REQUIRED),
+    overlapBufferMinutes: z.number().int().min(0),
+    minLeadTimeMinutes: z.number().int().min(0),
+    gracePeriodMinutes: z.number().int().min(0),
+    upcomingBufferMinutes: z.number().int().min(0),
+  })
+  .refine((data) => data.upcomingBufferMinutes <= data.minLeadTimeMinutes, {
+    message: SETTINGS.ERR_UPCOMING_BUFFER_LIMIT,
+    path: ["upcomingBufferMinutes"],
+  });
 
 export type ReservationSettingsInput = z.infer<typeof schema>;
 
@@ -42,6 +48,7 @@ const DEFAULT_VALUES: ReservationSettingsInput = {
   overlapBufferMinutes: DEFAULT_RESERVATION_SETTINGS.overlapBufferMinutes,
   minLeadTimeMinutes: DEFAULT_RESERVATION_SETTINGS.minLeadTimeMinutes,
   gracePeriodMinutes: 15,
+  upcomingBufferMinutes: 30,
 };
 
 // ── Form ─────────────────────────────────────────────────────────────────────
@@ -137,6 +144,8 @@ export function ReservationSettingsContainer() {
               response.data.overlapBufferMinutes ?? current.overlapBufferMinutes,
             minLeadTimeMinutes: response.data.minLeadTimeMinutes ?? current.minLeadTimeMinutes,
             gracePeriodMinutes: response.data.gracePeriodMinutes ?? current.gracePeriodMinutes,
+            upcomingBufferMinutes:
+              response.data.upcomingBufferMinutes ?? current.upcomingBufferMinutes,
           }));
         }
       } catch {
@@ -171,6 +180,7 @@ export function ReservationSettingsContainer() {
           overlapBufferMinutes: response.data.overlapBufferMinutes ?? data.overlapBufferMinutes,
           minLeadTimeMinutes: response.data.minLeadTimeMinutes ?? data.minLeadTimeMinutes,
           gracePeriodMinutes: response.data.gracePeriodMinutes ?? data.gracePeriodMinutes,
+          upcomingBufferMinutes: response.data.upcomingBufferMinutes ?? data.upcomingBufferMinutes,
         }));
       }
 

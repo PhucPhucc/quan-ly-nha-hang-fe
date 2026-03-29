@@ -34,6 +34,7 @@ import { NavMain, NavMainProps } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar";
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { useInventoryAlertsCount } from "@/hooks/useInventoryAlertsCount";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -310,6 +311,7 @@ const CHEFBAR_ROUTES: NavMainProps[] = [
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const userRole = useAuthStore((state) => state.employee?.role);
   const { data: alertsCount } = useInventoryAlertsCount();
+  const { data: branding } = useBrandingSettings();
 
   const routes = useMemo(() => {
     if (!userRole) return [];
@@ -330,7 +332,13 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher team={data.team} />
+        <TeamSwitcher
+          team={{
+            ...data.team,
+            name: branding?.restaurantName ?? data.team.name,
+            logoUrl: branding?.logoUrl,
+          }}
+        />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={routes} />

@@ -11,6 +11,7 @@ export interface ReservationDto {
   phone: string;
   date: string;
   time: string;
+  areaId?: string;
   area: string;
   people: number;
   partyType: string;
@@ -53,6 +54,7 @@ export interface PublicReservationSettingsDto {
   overlapBufferMinutes: number;
   minLeadTimeMinutes: number;
   gracePeriodMinutes?: number;
+  upcomingBufferMinutes?: number;
   depositEnabled?: boolean;
   depositAmountPerPerson?: number;
   notifyNewBooking?: boolean;
@@ -68,6 +70,7 @@ export interface ReservationSettingsDto {
   overlapBufferMinutes: number;
   minLeadTimeMinutes: number;
   gracePeriodMinutes?: number;
+  upcomingBufferMinutes?: number;
   depositEnabled?: boolean;
   depositAmountPerPerson?: number;
   notifyNewBooking?: boolean;

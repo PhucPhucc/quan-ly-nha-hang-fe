@@ -10,6 +10,7 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { AttendanceReportItem } from "@/types/Attendance";
 
@@ -19,21 +20,14 @@ interface AttendanceTableProps {
 }
 
 const AttendanceTable = ({ attendances, isLoading }: AttendanceTableProps) => {
+  const { formatDate } = useBrandingFormatter();
+
   const formatTime = (isoString: string | null) => {
     if (!isoString) return "--:--";
     try {
       return format(parseISO(isoString), "HH:mm");
     } catch {
       return "--:--";
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "";
-    try {
-      return format(parseISO(dateString), "dd/MM/yyyy");
-    } catch {
-      return dateString;
     }
   };
 

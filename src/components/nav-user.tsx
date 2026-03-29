@@ -27,12 +27,11 @@ import { EmployeeRole } from "@/types/Employee";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { employee, logout } = useAuthStore();
+  const { employee } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = () => {
-    logout();
-    router.replace("/login");
+    router.push("/logout");
   };
 
   const name = employee?.fullName || UI_TEXT.PROFILE.ADMIN_USER;

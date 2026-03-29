@@ -27,8 +27,8 @@ interface BankTransferViewProps {
 export const BankTransferView = ({ payOSUrl, bankInfo, totalAmount }: BankTransferViewProps) => {
   return (
     <div className="flex flex-col items-center justify-center space-y-3 py-2 animate-in fade-in slide-in-from-top-2">
-      <div className="p-3 bg-white rounded-xl shadow-sm border border-muted">
-        <QRCodeSVG value={payOSUrl} size={100} level="M" />
+      <div className="p-4 bg-white rounded-2xl shadow-lg border-4 border-primary/10">
+        <QRCodeSVG value={payOSUrl} size={200} level="H" includeMargin={true} />
       </div>
 
       {bankInfo && (

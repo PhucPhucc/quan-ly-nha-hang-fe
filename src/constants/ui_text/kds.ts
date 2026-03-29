@@ -87,8 +87,8 @@ export const KDS = {
   },
   VERSION: "V2.4.0",
   STATIONS: {
-    KITCHEN: "TRẠM BẾP (KITCHEN)",
-    BAR: "TRẠM BAR (BAR)",
+    KITCHEN: "Quầy Bếp",
+    BAR: "Quầy Nước",
     BARISTA: "BARISTA",
     CHEFBAR: "CHEFBAR",
     STATUS_HIGH: "HOẠT ĐỘNG CAO",

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { billingService } from "@/services/billingService";
@@ -70,9 +71,10 @@ export function useOrderOverview() {
     [overview]
   );
 
+  const { formatDate } = useBrandingFormatter();
   const auditRows = useMemo(
-    () => buildAuditPreviewRows(overview?.topActiveOrders ?? []),
-    [overview]
+    () => buildAuditPreviewRows(overview?.topActiveOrders ?? [], formatDate),
+    [overview, formatDate]
   );
 
   const orderTypeRows = useMemo(
@@ -142,7 +144,10 @@ export function useOrderOverview() {
   };
 }
 
-function buildAuditPreviewRows(orders: OrderDashboardTopOrderItem[]) {
+function buildAuditPreviewRows(
+  orders: OrderDashboardTopOrderItem[],
+  formatDate: (value?: string | number | Date | null) => string
+) {
   return orders
     .map((order) => ({
       orderCode: order.orderCode,
@@ -157,12 +162,4 @@ function buildAuditPreviewRows(orders: OrderDashboardTopOrderItem[]) {
     .filter((row) => row.time !== "N/A")
     .sort((a, b) => b.sortValue - a.sortValue)
     .slice(0, 5);
-}
-
-function formatDate(value?: string | null) {
-  if (!value) return UI_TEXT.COMMON.NOT_APPLICABLE;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? UI_TEXT.COMMON.NOT_APPLICABLE
-    : date.toLocaleString("vi-VN");
 }

@@ -2,7 +2,8 @@ import * as signalR from "@microsoft/signalr";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
-import { useKdsStore } from "@/store/useKdsStore";
+import { normalizeOrderItemStatus, useKdsStore } from "@/store/useKdsStore";
+import { OrderItemStatus } from "@/types/enums";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -37,12 +38,20 @@ export const useKdsSignalR = () => {
         // Set up event listeners
         connection.on("NewOrderItemReceived", (data) => {
           console.log("SignalR: New order item received", data);
-          fetchKdsData();
-          toast.info("Có món mới vừa được thêm vào hàng đợi!");
+          // fetchKdsData(); // Now using KdsItemUpdated for full data
+        });
+
+        connection.on("KdsItemUpdated", (data) => {
+          console.log("SignalR: KDS Item Updated", data);
+          useKdsStore.getState().upsertItem(data);
+          if (normalizeOrderItemStatus(data.status) === OrderItemStatus.Preparing) {
+            toast.info(`Món mới: ${data.itemNameSnapshot} x${data.quantity}`);
+          }
         });
 
         connection.on("OrderItemStatusChanged", (data) => {
           console.log("SignalR: Order item status changed", data);
+          // Optional: we can still fetch or handle incrementally if we send full data there too
           fetchKdsData();
         });
 

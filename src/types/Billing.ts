@@ -25,6 +25,9 @@ export interface PreCheckBillResponse {
   vatRate: number;
   vat: number;
   totalAmount: number;
+  paymentMethod?: string;
+  amountReceived?: number;
+  changeAmount?: number;
 }
 
 // Alias để tương thích với các component cũ

@@ -112,7 +112,7 @@ export const CreateBookingDialog = ({
                   <SelectContent
                     position="popper"
                     sideOffset={4}
-                    className="max-h-[300px] w-[var(--radix-select-trigger-width)]"
+                    className="max-h-[300px] w-(--radix-select-trigger-width)"
                   >
                     {timeSlots.map((slot) => (
                       <SelectItem key={slot} value={slot}>
@@ -140,47 +140,26 @@ export const CreateBookingDialog = ({
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="partyType">{UI_TEXT.RESERVATION.FIELD_PARTY_TYPE}</Label>
+                <Label htmlFor="area">{UI_TEXT.RESERVATION.FIELD_AREA}</Label>
                 <Select
-                  value={formData.partyType}
-                  onValueChange={(val) => handleChange("partyType", val)}
+                  value={formData.areaId}
+                  onValueChange={(val) => handleChange("areaId", val)}
                 >
-                  <SelectTrigger id="partyType">
-                    <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_PARTY_TYPE} />
+                  <SelectTrigger id="area">
+                    <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_AREA} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="normal">{UI_TEXT.RESERVATION.PARTY_TYPE_NORMAL}</SelectItem>
-                    <SelectItem value="birthday">
-                      {UI_TEXT.RESERVATION.PARTY_TYPE_BIRTHDAY}
-                    </SelectItem>
-                    <SelectItem value="anniversary">
-                      {UI_TEXT.RESERVATION.PARTY_TYPE_ANNIVERSARY}
-                    </SelectItem>
-                    <SelectItem value="corporate">
-                      {UI_TEXT.RESERVATION.PARTY_TYPE_CORPORATE}
-                    </SelectItem>
+                    {!requiresVipArea && (
+                      <SelectItem value="all">{UI_TEXT.RESERVATION.AREA_ANY}</SelectItem>
+                    )}
+                    {areas.map((a) => (
+                      <SelectItem key={a.areaId} value={a.areaId}>
+                        {a.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="area">{UI_TEXT.RESERVATION.FIELD_AREA}</Label>
-              <Select value={formData.areaId} onValueChange={(val) => handleChange("areaId", val)}>
-                <SelectTrigger id="area">
-                  <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_AREA} />
-                </SelectTrigger>
-                <SelectContent>
-                  {!requiresVipArea && (
-                    <SelectItem value="all">{UI_TEXT.RESERVATION.AREA_ANY}</SelectItem>
-                  )}
-                  {areas.map((a) => (
-                    <SelectItem key={a.areaId} value={a.areaId}>
-                      {a.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
           <DialogFooter>

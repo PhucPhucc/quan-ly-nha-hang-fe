@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, Clock3, CreditCard, RefreshCw, Search, UtensilsCrossed } from "lucide-react";
+import { BarChart3, CreditCard, RefreshCw, Search, UtensilsCrossed } from "lucide-react";
 import { type ComponentType } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -67,11 +67,6 @@ export function OrderMetricCards({
         icon={CreditCard}
         label={UI_TEXT.ORDER.MANAGEMENT.STATS.REVENUE}
         value={money.format(stats.revenue)}
-      />
-      <MetricCard
-        icon={Clock3}
-        label={UI_TEXT.ORDER.MANAGEMENT.STATS.VIP}
-        value={String(stats.vip)}
       />
     </CardContent>
   );
