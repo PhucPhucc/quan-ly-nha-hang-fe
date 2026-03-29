@@ -3,12 +3,13 @@
 import { Plus } from "lucide-react";
 import React from "react";
 
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { formatInventoryQuantity } from "@/lib/inventory-number";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 import { INVENTORY_INPUT_CLASS } from "./components/inventoryStyles";
@@ -26,6 +27,7 @@ export const CreateStockOutDrawer = ({
   open,
   onOpenChange,
 }: CreateStockOutDrawerProps) => {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
   const {
     ingredients,
     items,
@@ -58,11 +60,11 @@ export const CreateStockOutDrawer = ({
               <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {UI_TEXT.INVENTORY.STOCK_OUT.DATE}
               </Label>
-              <Input
-                type="date"
-                className={INVENTORY_INPUT_CLASS}
+              <DatePicker
+                className="w-full"
+                placeholder={formatDate(new Date())}
                 value={stockOutDate}
-                onChange={(e) => setStockOutDate(e.target.value)}
+                onChange={setStockOutDate}
               />
             </div>
             <div className="space-y-2">
@@ -143,7 +145,7 @@ export const CreateStockOutDrawer = ({
             </span>
             <div className="text-right">
               <span className="text-2xl font-black tracking-tighter text-destructive">
-                {formatInventoryQuantity(calculateTotal(), 2)}
+                {formatCurrency(calculateTotal())}
               </span>
               <span className="ml-1 text-sm font-bold uppercase text-destructive">
                 {UI_TEXT.COMMON.CURRENCY}

@@ -1,6 +1,7 @@
-import { CalendarIcon, Plus, RotateCw, Search } from "lucide-react";
+import { Plus, RotateCw, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -77,16 +78,15 @@ export const ReservationFilter = ({
 
           {/* Filters Group */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="w-44">
-              <div className="relative">
-                <CalendarIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                <Input
-                  type="date"
-                  value={date}
-                  onChange={(e) => onDateChange(e.target.value)}
-                  className="pl-10 bg-white border text-[13px] rounded-full text-slate-600 focus-visible:ring-primary/20 shadow-sm hover:border-slate-200 transition-all cursor-pointer"
-                />
-              </div>
+            <div>
+              <DatePicker
+                value={date ? new Date(date) : undefined}
+                onChange={(newDate) =>
+                  onDateChange(newDate ? newDate.toISOString().split("T")[0] : "")
+                }
+                placeholder={UI_TEXT.RESERVATION.FIELD_DATE}
+                className="w-48"
+              />
             </div>
 
             <div>

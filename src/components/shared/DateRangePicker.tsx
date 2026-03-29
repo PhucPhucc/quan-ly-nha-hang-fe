@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import * as React from "react";
 import { DateRange } from "react-day-picker";
@@ -8,6 +7,7 @@ import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +29,7 @@ export function DateRangePicker({
   numberOfMonths = 2,
   yearRange,
 }: DateRangePickerProps) {
+  const { formatDate } = useBrandingFormatter();
   const today = new Date();
   const fromYear = yearRange?.from ?? today.getFullYear() - 5;
   const toYear = yearRange?.to ?? today.getFullYear() + 5;
@@ -49,11 +50,10 @@ export function DateRangePicker({
             {value?.from ? (
               value.to ? (
                 <>
-                  {format(value.from, "dd/MM/yyyy")} {UI_TEXT.COMMON.HYPHEN}{" "}
-                  {format(value.to, "dd/MM/yyyy")}
+                  {formatDate(value.from)} {UI_TEXT.COMMON.HYPHEN} {formatDate(value.to)}
                 </>
               ) : (
-                format(value.from, "dd/MM/yyyy")
+                formatDate(value.from)
               )
             ) : (
               <span>{UI_TEXT.COMMON.SELECT_DATE_RANGE}</span>

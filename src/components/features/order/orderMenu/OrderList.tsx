@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { MenuItem } from "@/types/Menu";
 
 const OrderList = ({
@@ -50,10 +51,7 @@ const OrderList = ({
             <h3 className="font-bold text-sm text-slate-800 line-clamp-2 leading-tight mb-1">
               {item.name}
             </h3>
-            <p className="font-black text-primary text-base">
-              {item.price?.toLocaleString()}
-              {UI_TEXT.COMMON.CURRENCY}
-            </p>
+            <p className="font-black text-primary text-base">{formatCurrency(item.price || 0)}</p>
           </div>
         </li>
       ))}

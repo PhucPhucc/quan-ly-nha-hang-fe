@@ -1,8 +1,6 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { Calendar, Search } from "lucide-react";
 import React, { useState } from "react";
 
@@ -17,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
 import { InventoryLotStatus } from "@/types/Inventory";
@@ -27,6 +26,7 @@ export function InventoryLotsTable() {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [_page] = useState(1);
+  const { formatDate } = useBrandingFormatter();
 
   const { data: lotsData, isLoading } = useQuery({
     queryKey: ["inventory-lots", _page, searchTerm],
@@ -146,7 +146,7 @@ export function InventoryLotsTable() {
                         {item.expiryDate ? (
                           <div className="flex items-center gap-1.5 text-sm font-medium">
                             <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                            {format(new Date(item.expiryDate), "dd/MM/yyyy", { locale: vi })}
+                            {formatDate(item.expiryDate)}
                           </div>
                         ) : (
                           "---"

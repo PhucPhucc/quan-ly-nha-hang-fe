@@ -4,6 +4,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { CartItem, CartItemOptionGroup } from "@/types/Cart";
 
 interface CartOrderItemCardProps {
@@ -13,7 +14,7 @@ interface CartOrderItemCardProps {
 }
 
 const formatPriceLine = (price: number, quantity: number): string => {
-  return `${price.toLocaleString()}${UI_TEXT.COMMON.CURRENCY} x ${quantity} = ${(price * quantity).toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`;
+  return `${formatCurrency(price)} x ${quantity} = ${formatCurrency(price * quantity)}`;
 };
 
 export const CartOrderItemCard: React.FC<CartOrderItemCardProps> = ({
@@ -50,8 +51,7 @@ export const CartOrderItemCard: React.FC<CartOrderItemCardProps> = ({
                     {value.extraPrice > 0 && (
                       <span>
                         {UI_TEXT.COMMON.PLUS}
-                        {value.extraPrice.toLocaleString()}
-                        {UI_TEXT.COMMON.CURRENCY}
+                        {formatCurrency(value.extraPrice)}
                       </span>
                     )}
                   </p>

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
+import { formatCurrency as formatStandardCurrency } from "@/lib/utils";
 
 import { AlertBadgePill, PriorityGroupCard, SectionHeader } from "./components/DashboardComponents";
 import { InventoryAlertSummary } from "./components/InventoryAlertSummary";
@@ -24,7 +25,7 @@ import { InventoryStatCard } from "./components/InventoryStatCard";
 import { OpeningStockReminder } from "./components/OpeningStockReminder";
 import { useInventoryOverview } from "./useInventoryOverview";
 
-function formatCurrency(value: number): string {
+function formatDashboardCurrency(value: number): string {
   if (value >= 1_000_000_000) {
     return `${(value / 1_000_000_000).toFixed(1)}B ₫`;
   }
@@ -34,7 +35,7 @@ function formatCurrency(value: number): string {
   if (value >= 1_000) {
     return `${(value / 1_000).toFixed(0)}K ₫`;
   }
-  return `${value.toLocaleString("vi-VN")} ₫`;
+  return formatStandardCurrency(value);
 }
 
 export function InventoryOverviewDashboard() {
@@ -94,7 +95,7 @@ export function InventoryOverviewDashboard() {
         <InventoryStatCard
           icon={DollarSign}
           label={UI_TEXT.INVENTORY.INVENTORY_VALUE}
-          value={overview ? formatCurrency(overview.totalStockValue) : "—"}
+          value={overview ? formatDashboardCurrency(overview.totalStockValue) : "—"}
           subLabel={UI_TEXT.COMMON.ALL}
           isLoading={statsLoading}
           variant="info"

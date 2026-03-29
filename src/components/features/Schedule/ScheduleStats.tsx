@@ -19,7 +19,7 @@ const formatCost = (cost: number): string => {
   if (cost >= 1_000) {
     return `${(cost / 1_000).toFixed(0)}K`;
   }
-  return cost.toLocaleString("vi-VN");
+  return cost.toLocaleString();
 };
 
 const ScheduleStats = ({

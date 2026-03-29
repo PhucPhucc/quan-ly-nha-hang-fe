@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { PaymentMethod } from "@/types/enums";
 
 import { BankTransferView } from "./CheckoutComponents";
@@ -56,10 +57,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
             <span className="font-semibold text-secondary-foreground">
               {UI_TEXT.ORDER.CURRENT.TOTAL_AMOUNT}
             </span>
-            <span className="text-2xl font-black text-primary">
-              {totalAmount.toLocaleString()}
-              {UI_TEXT.COMMON.CURRENCY}
-            </span>
+            <span className="text-2xl font-black text-primary">{formatCurrency(totalAmount)}</span>
           </div>
 
           <div className="space-y-2">
@@ -111,8 +109,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                     className="text-xs font-bold"
                     onClick={() => handleQuickAmount(amount)}
                   >
-                    {amount.toLocaleString()}
-                    {UI_TEXT.COMMON.CURRENCY}
+                    {formatCurrency(amount)}
                   </Button>
                 ))}
               </div>
@@ -122,8 +119,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                   {UI_TEXT.ORDER.CURRENT.CHANGE}
                 </span>
                 <span className="font-black text-lg text-primary/90">
-                  {calculateChange().toLocaleString()}
-                  {UI_TEXT.COMMON.CURRENCY}
+                  {formatCurrency(calculateChange())}
                 </span>
               </div>
             </div>

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { attendanceService } from "@/services/attendanceService";
 import { shiftAssignmentService } from "@/services/shiftAssignmentService";
@@ -18,6 +19,7 @@ import { ScheduleTab } from "./Portal/ScheduleTab";
 import { SuccessDialog } from "./Portal/SuccessDialog";
 
 export const EmployeeAttendance = () => {
+  const { formatDate, formatTime } = useBrandingFormatter();
   const employeeId = useAuthStore((state) => state.employee?.employeeId);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -34,20 +36,9 @@ export const EmployeeAttendance = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const timeString = currentTime.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-
+  const timeString = formatTime(currentTime);
   const [time, period] = timeString.split(" ");
-
-  const dateString = currentTime.toLocaleDateString("vi-VN", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+  const dateString = formatDate(currentTime);
 
   // Calculate week range
   const weekStart = startOfWeek(currentWeekDate, { weekStartsOn: 1 });
@@ -111,10 +102,7 @@ export const EmployeeAttendance = () => {
         setIsCheckedIn(true);
         setActionType("checkin");
         setActionInfo({
-          time: new Date(resp.data?.checkInTime || new Date()).toLocaleTimeString("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
+          time: formatTime(resp.data?.checkInTime || new Date()),
         });
         setShowSuccessModal(true);
       }
@@ -130,10 +118,7 @@ export const EmployeeAttendance = () => {
         setIsCheckedIn(false);
         setActionType("checkout");
         setActionInfo({
-          time: new Date(resp.data?.checkOutTime || new Date()).toLocaleTimeString("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
+          time: formatTime(resp.data?.checkOutTime || new Date()),
           duration: "09 giờ 05 phút", // Mock duration
         });
         setShowSuccessModal(true);

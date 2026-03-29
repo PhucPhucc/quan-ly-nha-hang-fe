@@ -101,13 +101,13 @@ function StatCard({ title, value, trend, isUp, icon, chartColor, chartData }: St
 export function DashboardStats({ stats, operational, revenueChart }: DashboardStatsProps) {
   const t = UI_TEXT.DASHBOARD.STATS;
 
-  const formatCurrency = (value: number) => {
+  const compactRevenue = (value: number) => {
     if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
     if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
-    return value.toLocaleString("vi-VN");
+    return value.toLocaleString();
   };
 
-  const revenueValue = stats ? formatCurrency(stats.totalRevenue) : "0";
+  const revenueValue = stats ? compactRevenue(stats.totalRevenue) : "0";
   const revenueTrend = stats
     ? `${stats.revenueGrowth >= 0 ? "+" : ""}${stats.revenueGrowth.toFixed(1)}%`
     : "0%";

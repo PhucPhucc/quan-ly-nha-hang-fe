@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
@@ -33,7 +34,7 @@ function formatDateTimeValue(value?: string | null) {
     return null;
   }
 
-  return new Date(value).toLocaleString();
+  return formatDateTimeWithBranding(value, undefined, true);
 }
 
 export function useOpeningStockIngredients() {

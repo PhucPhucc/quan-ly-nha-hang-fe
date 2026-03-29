@@ -14,9 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { formatCurrency } from "@/lib/utils";
 import { StockInReceipt } from "@/types/StockIn";
 
 import {
@@ -42,6 +42,7 @@ export const StockInDetailView = ({
   onPrint,
   onDelete,
 }: StockInDetailViewProps) => {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -151,11 +152,7 @@ export const StockInDetailView = ({
                     {UI_TEXT.INVENTORY.TABLE.COL_DATE}
                   </span>
                   <span className="text-foreground/80 font-bold">
-                    {new Date(receipt.receivedDate).toLocaleDateString("vi-VN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
+                    {formatDate(receipt.receivedDate)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">

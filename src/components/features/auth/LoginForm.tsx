@@ -29,13 +29,14 @@ const LoginForm = () => {
       });
 
       if (res.data) {
-        const { employeeCode, role, email } = res.data;
+        const { employeeCode, role, email, fullName, username } = res.data;
         const normalizedRole = normalizeEmployeeRole(role);
 
         setEmployee({
           employeeId: res.data.employeeId,
           email: email || "",
-          username: employeeCode,
+          username: username || employeeCode,
+          fullName: fullName || "",
           role: normalizedRole || role,
         });
 

@@ -1,4 +1,3 @@
-import { format, parseISO } from "date-fns";
 import React from "react";
 
 import {
@@ -19,15 +18,11 @@ interface AttendanceTableProps {
 }
 
 const AttendanceTable = ({ attendances, isLoading }: AttendanceTableProps) => {
-  const { formatDate } = useBrandingFormatter();
+  const { formatDate, formatTime } = useBrandingFormatter();
 
-  const formatTime = (isoString: string | null) => {
+  const renderTime = (isoString: string | null) => {
     if (!isoString) return "--:--";
-    try {
-      return format(parseISO(isoString), "HH:mm");
-    } catch {
-      return "--:--";
-    }
+    return formatTime(isoString);
   };
 
   const getStatusBadge = (item: AttendanceReportItem) => {
@@ -116,10 +111,10 @@ const AttendanceTable = ({ attendances, isLoading }: AttendanceTableProps) => {
                     {att.shiftName}
                   </TableCell>
                   <TableCell className="text-slate-600 font-medium text-sm py-4">
-                    {formatTime(att.checkInTime)}
+                    {renderTime(att.checkInTime)}
                   </TableCell>
                   <TableCell className="text-slate-600 font-medium text-sm py-4">
-                    {formatTime(att.checkOutTime)}
+                    {renderTime(att.checkOutTime)}
                   </TableCell>
                   <TableCell className="text-right py-4 pr-6">{getStatusBadge(att)}</TableCell>
                 </TableRow>

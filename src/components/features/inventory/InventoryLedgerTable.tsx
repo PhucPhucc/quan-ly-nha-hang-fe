@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
@@ -206,13 +207,7 @@ export function InventoryLedgerTable() {
                 ledger.map((item: InventoryLedgerItem, index) => (
                   <TableRow key={`${item.referenceNo}-${index}`} className={INVENTORY_TROW_CLASS}>
                     <TableCell className="pl-8 font-mono text-[11px] font-bold text-muted-foreground/60 tabular-nums">
-                      {new Date(item.occurredAt).toLocaleString("vi-VN", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {formatDateTimeWithBranding(item.occurredAt, undefined, true)}
                     </TableCell>
                     {!ingredientId && (
                       <TableCell>

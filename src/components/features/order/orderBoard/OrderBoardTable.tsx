@@ -14,7 +14,9 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 
@@ -148,13 +150,10 @@ export default function OrderBoardTable({
                       </div>
                     </TableCell>
                     <TableCell className="text-sm">
-                      {new Date(order.createdAt).toLocaleString("vi-VN")}
+                      {formatDateTimeWithBranding(order.createdAt, undefined, true)}
                     </TableCell>
                     <TableCell className="text-sm font-semibold text-primary">
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(order.totalAmount)}
+                      {formatCurrency(order.totalAmount)}
                     </TableCell>
                     <TableCell>
                       <Badge

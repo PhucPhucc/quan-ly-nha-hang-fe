@@ -19,11 +19,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
+import { PreCheckBillResponse } from "@/types/Billing";
+import { printThermalReceipt } from "@/utils/thermalPrint";
 
-const money = (value: number) => value.toLocaleString("vi-VN");
+import { buildComboDisplayMap } from "./order-item-list/order-item-list.combo";
+
+const money = (value: number) => formatCurrency(value);
 
 interface PrintTempDialogProps {
   subtotal?: number;
@@ -40,6 +47,7 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
   discount: propsDiscount,
   voucherCode: propsVoucherCode,
 }) => {
+  const { data: branding } = useBrandingSettings();
   const fulleNameEmployee = useAuthStore((state) => state.employee?.fullName);
   const activeOrderDetails = useOrderBoardStore((state) => state.activeOrderDetails);
   const selectedOrderId = useOrderBoardStore((state) => state.selectedOrderId);
@@ -51,15 +59,49 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
   const discountValue = propsDiscount ?? 0;
   const voucherCodeValue = propsVoucherCode;
 
-  const orderItems =
-    activeOrderDetails?.orderItems.map((item) => ({
-      name: item.itemNameSnapshot,
-      quantity: item.quantity,
-      unitPrice: item.unitPriceSnapshot,
-      amount: item.quantity * item.unitPriceSnapshot,
-    })) || [];
+  const rawItems = activeOrderDetails?.orderItems || [];
+  const comboMap = buildComboDisplayMap(rawItems);
+
+  const orderItems: Array<{
+    id: string;
+    name: string;
+    quantity: number;
+    unitPrice: string;
+    amount: string;
+    isChild: boolean;
+  }> = [];
+
+  rawItems.forEach((item) => {
+    // Only add top-level items directly
+    if (!comboMap.parentIdByChildId.has(item.orderItemId)) {
+      orderItems.push({
+        id: item.orderItemId,
+        name: item.itemNameSnapshot,
+        quantity: item.quantity,
+        unitPrice: money(item.unitPriceSnapshot),
+        amount: money(item.quantity * item.unitPriceSnapshot),
+        isChild: false,
+      });
+
+      // Add children immediately after parent
+      const children = comboMap.childrenByParentId.get(item.orderItemId) || [];
+      children.forEach((child) => {
+        orderItems.push({
+          id: child.orderItemId,
+          name: child.itemNameSnapshot,
+          quantity: child.quantity,
+          unitPrice: "",
+          amount: "",
+          isChild: true,
+        });
+      });
+    }
+  });
   const orderInfo = [
-    { label: UI_TEXT.ORDER.PRINT_TEMP.TIME, value: new Date().toLocaleString("vi-VN") },
+    {
+      label: UI_TEXT.ORDER.PRINT_TEMP.TIME,
+      value: formatDateTimeWithBranding(new Date().toISOString(), branding, true),
+    },
     { label: UI_TEXT.ORDER.PRINT_TEMP.EMPLOYEE, value: fulleNameEmployee || "" },
   ];
 
@@ -78,10 +120,22 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
           <div className="mx-auto w-full h-full max-w-160 flex flex-col justify-between">
             <div>
               <div className="text-center leading-none">
+                {branding?.logoUrl && (
+                  <div className="mb-4 flex justify-center">
+                    <img
+                      src={branding.logoUrl}
+                      alt="Logo"
+                      className="max-h-16 w-auto object-contain"
+                    />
+                  </div>
+                )}
                 <h1 className="text-3xl font-semibold uppercase tracking-tight">
-                  {UI_TEXT.ORDER.PRINT_TEMP.TITLE}
+                  {UI_TEXT.ORDER.PRINT_TEMP.TITLE || "PHIẾU TẠM TÍNH"}
                 </h1>
-                <p className="mt-1 text-lg"> {UI_TEXT.COMMON.NAME_RESTAURANT}</p>
+                <p className="mt-1 text-lg">
+                  {" "}
+                  {branding?.restaurantName || UI_TEXT.COMMON.NAME_RESTAURANT}
+                </p>
                 <p className="mt-1">
                   {UI_TEXT.ORDER.PRINT_TEMP.ORDER_CODE(activeOrderDetails?.orderCode || "")}
                 </p>
@@ -117,18 +171,22 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
                 </TableHeader>
                 <TableBody>
                   {orderItems.map((item) => (
-                    <TableRow key={item.name} className="border-border hover:bg-transparent">
-                      <TableCell className="px-0 py-2 text-[15px] text-foreground">
-                        {item.name}
+                    <TableRow key={item.id} className="border-border hover:bg-transparent">
+                      <TableCell
+                        className={`px-0 py-2 text-[15px] text-foreground ${
+                          item.isChild ? "pl-4 text-[14px] font-light italic" : ""
+                        }`}
+                      >
+                        {item.isChild ? `- ${item.name}` : item.name}
                       </TableCell>
                       <TableCell className="px-0 py-2 text-center text-[15px] text-foreground">
                         {item.quantity}
                       </TableCell>
                       <TableCell className="px-0 py-2 text-center text-[15px] text-foreground">
-                        {money(item.unitPrice)}
+                        {item.unitPrice}
                       </TableCell>
                       <TableCell className="px-0 py-2 text-right text-[15px] text-foreground">
-                        {money(item.amount)}
+                        {item.amount}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -163,7 +221,7 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
             <div className="text-center text-xs leading-tight text-foreground">
               <div className="w-58 my-2 border mx-auto" />
               <p>{UI_TEXT.ORDER.PRINT_TEMP.THIS_IS_NOT_RECEIPT}</p>
-              <p className="mt-1">{UI_TEXT.ORDER.PRINT_TEMP.THANK_YOU}</p>
+              <p className="mt-1">{branding?.billFooter || UI_TEXT.ORDER.PRINT_TEMP.THANK_YOU}</p>
             </div>
           </div>
         </div>
@@ -173,7 +231,39 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
               {UI_TEXT.COMMON.CLOSE}
             </Button>
           </DialogClose>
-          <Button className="flex-1 focus:ring-0" onClick={() => window.print()}>
+          <Button
+            className="flex-1 focus:ring-0"
+            onClick={() => {
+              const receipt: PreCheckBillResponse = {
+                orderId: selectedOrderId || "",
+                orderCode: activeOrderDetails?.orderCode || "",
+                tableNumber: activeOrderDetails?.tableId
+                  ? Number.parseInt(activeOrderDetails.tableId, 10) || undefined
+                  : undefined,
+                employeeName: fulleNameEmployee || UI_TEXT.COMMON.NOT_APPLICABLE,
+                printedAt: new Date().toISOString(),
+                items: (activeOrderDetails?.orderItems || []).map((item) => ({
+                  itemName: item.itemNameSnapshot,
+                  quantity: item.quantity,
+                  unitPrice: item.unitPriceSnapshot,
+                  optionsSummary: item.itemOptions,
+                  lineTotal: item.unitPriceSnapshot * item.quantity,
+                })),
+                subTotal: subtotalValue,
+                discount: discountValue,
+                voucherCode: voucherCodeValue,
+                preTaxAmount: subtotalValue - discountValue,
+                vatRate: 10,
+                vat: taxValue,
+                totalAmount: totalValue,
+              };
+              // Override title for pre-bill
+              printThermalReceipt(receipt, {
+                ...branding,
+                billTitle: UI_TEXT.ORDER.PRINT_TEMP.TITLE || "PHIẾU TẠM TÍNH",
+              });
+            }}
+          >
             {UI_TEXT.ORDER.CURRENT.PRINT_TEMP_ACTION || "In tạm tính"}
           </Button>
         </DialogFooter>

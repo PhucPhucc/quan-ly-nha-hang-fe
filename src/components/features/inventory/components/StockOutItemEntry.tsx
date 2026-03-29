@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Ingredient } from "@/types/Inventory";
@@ -38,6 +39,7 @@ export function StockOutItemEntry({
   updateItem,
   removeItem,
 }: StockOutItemEntryProps) {
+  const { formatCurrency } = useBrandingFormatter();
   const selectedIng = ingredients.find((i) => i.ingredientId === item.ingredientId);
 
   return (
@@ -147,8 +149,7 @@ export function StockOutItemEntry({
           {UI_TEXT.INVENTORY.STOCK_OUT.TOTAL_PRICE_LABEL}
         </span>
         <span className="text-sm font-bold text-destructive">
-          {formatInventoryQuantity(item.quantity * (item.unitPrice ?? 0), 2)}
-          <span className="ml-1 text-[10px]">{UI_TEXT.COMMON.CURRENCY}</span>
+          {formatCurrency(item.quantity * (item.unitPrice ?? 0))}
         </span>
       </div>
     </div>

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { getEmployees } from "@/services/employeeService";
 import { shiftAssignmentService } from "@/services/shiftAssignmentService";
@@ -27,6 +28,7 @@ interface ScheduleCalendarProps {
 }
 
 const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) => {
+  const { formatDate, formatDayMonth } = useBrandingFormatter();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
   const [shiftsMap, setShiftsMap] = useState<Record<string, Shift>>({});
@@ -204,7 +206,7 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
                   {UI_TEXT.SCHEDULE.PERIOD}
                 </span>
                 <span className="text-sm font-bold text-slate-700">
-                  {format(startDate, "dd/MM")} - {format(addDays(startDate, 6), "dd/MM/yyyy")}
+                  {formatDayMonth(startDate)} - {formatDate(addDays(startDate, 6))}
                 </span>
               </div>
               <ChevronRight className="size-4 text-slate-300 rotate-90 ml-2" />
@@ -222,8 +224,8 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
             <div className="max-h-[350px] overflow-y-auto no-scrollbar space-y-1">
               {Array.from({ length: 12 }, (_, i) => {
                 const weekDate = addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), (i - 2) * 7);
-                const weekStartStr = format(weekDate, "dd/MM");
-                const weekEndStr = format(addDays(weekDate, 6), "dd/MM");
+                const weekStartStr = formatDayMonth(weekDate);
+                const weekEndStr = formatDayMonth(addDays(weekDate, 6));
                 const isSelected =
                   format(weekDate, "yyyy-MM-dd") === format(startDate, "yyyy-MM-dd");
 

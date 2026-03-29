@@ -3,6 +3,8 @@
 import { QRCodeSVG } from "qrcode.react";
 import React from "react";
 
+import { formatCurrency } from "@/lib/utils";
+
 const BANK_LABELS = {
   bank: "Ngân hàng:",
   accountName: "Chủ tài khoản:",
@@ -47,7 +49,7 @@ export const BankTransferView = ({ payOSUrl, bankInfo, totalAmount }: BankTransf
           <div className="flex justify-between items-center border-b border-muted/50 py-1">
             <span className="text-muted-foreground">{BANK_LABELS.amount}</span>
             <span className="font-black text-right text-red-600 text-xs">
-              {(bankInfo.amount ?? totalAmount).toLocaleString()} {BANK_LABELS.currency}
+              {formatCurrency(bankInfo.amount ?? totalAmount)}
             </span>
           </div>
           <div className="flex justify-between items-center pt-0.5">

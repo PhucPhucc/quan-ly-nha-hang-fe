@@ -15,7 +15,6 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { brandingService } from "@/services/brandingService";
 
 import { BranchInfoSection } from "./sections/BranchInfoSection";
-import { BrandingSection } from "./sections/BrandingSection";
 import { LocalizationSection } from "./sections/LocalizationSection";
 import { NotifySection } from "./sections/NotifySection";
 import { PrintSection } from "./sections/PrintSection";
@@ -25,7 +24,7 @@ const { SETTINGS, FORM } = UI_TEXT;
 // ── Schema ───────────────────────────────────────────────────────────────────
 const schema = z.object({
   restaurantName: z.string().min(1, FORM.REQUIRED),
-  branchName: z.string().min(1, FORM.REQUIRED),
+  branchName: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),
   currency: z.string().min(1),
@@ -34,8 +33,8 @@ const schema = z.object({
   language: z.string().min(1),
   billTitle: z.string().min(1, FORM.REQUIRED),
   billFooter: z.string().min(1, FORM.REQUIRED),
-  kdsTitle: z.string().min(1, FORM.REQUIRED),
-  appTitle: z.string().min(1, FORM.REQUIRED),
+  kdsTitle: z.string().optional(),
+  appTitle: z.string().optional(),
   logoUrl: z.string().optional(),
   notifyEmail: z.boolean(),
   notifyPush: z.boolean(),
@@ -109,16 +108,14 @@ export function GeneralSettingsForm({
 
         <CardContent className="px-6 py-8 sm:px-10">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-            {/* 1. Branch Information */}
+            {/* 1. Store Information */}
             <section>
-              <BranchInfoSection register={register} errors={errors} />
-            </section>
-
-            <div className="h-px bg-border/60" />
-
-            {/* 2. Branding & Display */}
-            <section>
-              <BrandingSection register={register} logoUrl={logoUrl} setValue={setValue} />
+              <BranchInfoSection
+                register={register}
+                errors={errors}
+                logoUrl={logoUrl}
+                setValue={setValue}
+              />
             </section>
 
             <div className="h-px bg-border/60" />
@@ -225,7 +222,7 @@ export function GeneralSettingsContainer() {
     try {
       const response = await brandingService.updateBrandingSettings({
         restaurantName: data.restaurantName,
-        branchName: data.branchName,
+        branchName: data.branchName ?? initialValues.branchName ?? "",
         address: data.address ?? "",
         phone: data.phone ?? "",
         currency: data.currency,
@@ -234,8 +231,8 @@ export function GeneralSettingsContainer() {
         language: data.language,
         billTitle: data.billTitle,
         billFooter: data.billFooter,
-        kdsTitle: data.kdsTitle,
-        appTitle: data.appTitle,
+        kdsTitle: data.kdsTitle ?? initialValues.kdsTitle ?? "",
+        appTitle: data.appTitle ?? initialValues.appTitle ?? "",
         logoUrl: data.logoUrl ?? "",
       });
 

@@ -7,6 +7,7 @@ import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/shared/DateRangePicker";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryCheckDetail } from "@/types/Inventory";
 
@@ -42,9 +43,7 @@ export function InventoryCheckSidebar({
         </div>
         {isProcessed ? (
           <div className="p-4 bg-slate-50 rounded-lg text-sm font-semibold text-slate-600 border border-slate-100 text-center">
-            {new Date(checkDate).toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI, {
-              dateStyle: "long",
-            })}
+            {formatDateTimeWithBranding(checkDate.toISOString(), undefined, true)}
           </div>
         ) : (
           <div className="[&_button]:h-10 [&_button]:rounded-lg [&_button]:bg-slate-50 [&_button]:border-slate-200 [&_button]:font-bold [&_button]:text-[11px] [&_button]:uppercase [&_button]:tracking-widest shadow-none">
@@ -86,7 +85,7 @@ export function InventoryCheckSidebar({
           <div className="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest">
             <span className="text-slate-400">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</span>
             <span className="text-slate-600 font-bold">
-              {new Date(check?.createdAt || "").toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+              {formatDateTimeWithBranding(check?.createdAt ?? null, undefined, true)}
             </span>
           </div>
         </div>

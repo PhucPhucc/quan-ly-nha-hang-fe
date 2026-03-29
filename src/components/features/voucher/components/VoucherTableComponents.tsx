@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Voucher, VOUCHER_TYPE_OPTIONS, VoucherType } from "@/types/voucher";
 
@@ -139,20 +140,6 @@ const getTypePill = (type: VoucherType) => {
   return { label: opt.label, pillClass: "table-pill-warning" };
 };
 
-const formatValue = (voucher: Voucher) => {
-  const C = UI_TEXT.COMMON;
-  if (voucher.type === VoucherType.Percent) return `${voucher.value}${C.PERCENT}`;
-  if (voucher.type === VoucherType.Fixed)
-    return `${voucher.value.toLocaleString(C.LOCALE_VI)}${C.CURRENCY}`;
-  return C.MINUS;
-};
-
-const formatDate = (dateStr: string) => {
-  const C = UI_TEXT.COMMON;
-  const d = new Date(dateStr);
-  return d.toLocaleDateString(C.LOCALE_VI);
-};
-
 export const VoucherRow = ({
   voucher,
   onView,
@@ -160,6 +147,14 @@ export const VoucherRow = ({
   onDelete,
   onToggleStatus,
 }: VoucherRowProps) => {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
+
+  const renderValue = (voucher: Voucher) => {
+    const C = UI_TEXT.COMMON;
+    if (voucher.type === VoucherType.Percent) return `${voucher.value}${C.PERCENT}`;
+    if (voucher.type === VoucherType.Fixed) return formatCurrency(voucher.value);
+    return C.MINUS;
+  };
   const active = isVoucherActive(voucher);
   const statusLabel = getStatusLabel(voucher);
   const typePill = getTypePill(voucher.type);
@@ -182,7 +177,7 @@ export const VoucherRow = ({
         <span className={`table-pill border-0 ${typePill.pillClass}`}>{typePill.label}</span>
       </TableCell>
       <TableCell>
-        <span className="table-cell-strong text-sm">{formatValue(voucher)}</span>
+        <span className="table-cell-strong text-sm">{renderValue(voucher)}</span>
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2 min-w-[120px]">

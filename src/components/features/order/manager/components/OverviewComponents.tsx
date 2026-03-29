@@ -345,10 +345,9 @@ function getPaymentMethodClass(method?: string) {
   return "table-pill-neutral";
 }
 
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
+
 function formatDate(value?: string | null) {
   if (!value) return UI_TEXT.COMMON.NOT_APPLICABLE;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? UI_TEXT.COMMON.NOT_APPLICABLE
-    : date.toLocaleString("vi-VN");
+  return formatDateTimeWithBranding(value, undefined, true);
 }

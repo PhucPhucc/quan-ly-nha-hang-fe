@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { StockInReceipt } from "@/types/StockIn";
 
@@ -45,6 +46,7 @@ interface StockInTableProps {
 }
 
 export const StockInListTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTableProps) => {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
   const pageSize = 10;
   const missingRows = Math.max(0, pageSize - data.length);
 
@@ -88,12 +90,8 @@ export const StockInListTable = ({ data, onViewDetail, onEdit, onDelete }: Stock
                   <TableCell className="pl-6 font-mono text-[11px] font-bold text-muted-foreground/60 uppercase">
                     {item.receiptCode}
                   </TableCell>
-                  <TableCell className="font-bold text-foreground/80 tracking-tight text-xs uppercase">
-                    {new Date(item.receivedDate).toLocaleDateString("vi-VN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
+                  <TableCell className="font-bold text-foreground/80 tracking-tight text-xs uppercase text-nowrap">
+                    {formatDate(item.receivedDate)}
                   </TableCell>
                   <TableCell className="text-center font-black">
                     <Badge
@@ -104,10 +102,7 @@ export const StockInListTable = ({ data, onViewDetail, onEdit, onDelete }: Stock
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right font-black tabular-nums text-primary/80">
-                    {item.totalAmount.toLocaleString("vi-VN")}
-                    <span className="ml-1 text-[10px] font-bold opacity-50">
-                      {UI_TEXT.COMMON.CURRENCY}
-                    </span>
+                    {formatCurrency(item.totalAmount)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">

@@ -29,7 +29,7 @@ export function useCreateStockOut(
   const [items, setItems] = useState<ReceiptItemEntry[]>([]);
   const [reason, setReason] = useState<string>(UI_TEXT.INVENTORY.STOCK_OUT.REASON_PRESETS[0]);
   const [note, setNote] = useState("");
-  const [stockOutDate, setStockOutDate] = useState(new Date().toISOString().split("T")[0]);
+  const [stockOutDate, setStockOutDate] = useState<Date | undefined>(new Date());
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export function useCreateStockOut(
     fetchIngredients();
     setReason(UI_TEXT.INVENTORY.STOCK_OUT.REASON_PRESETS[0]);
     setNote("");
-    setStockOutDate(new Date().toISOString().split("T")[0]);
+    setStockOutDate(new Date());
     setItems([{ ingredientId: "", quantity: 1, unitPrice: null }]);
   }, [open]);
 
@@ -118,7 +118,8 @@ export function useCreateStockOut(
     setSubmitting(true);
     try {
       const request: CreateStockOutRequest = {
-        stockOutDate,
+        stockOutDate:
+          stockOutDate?.toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
         reason: reason as StockOutReason,
         items: validItems,
       };

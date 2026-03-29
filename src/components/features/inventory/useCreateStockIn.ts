@@ -19,7 +19,7 @@ export interface ReceiptItemEntry {
   unitPrice: number;
   baseUnit: string;
   batchCode?: string | null;
-  expirationDate?: string | null;
+  expirationDate?: Date | null;
 }
 
 export function useCreateStockIn(
@@ -31,7 +31,7 @@ export function useCreateStockIn(
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [items, setItems] = useState<ReceiptItemEntry[]>([]);
   const [note, setNote] = useState("");
-  const [receivedDate, setReceivedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [receivedDate, setReceivedDate] = useState<Date | undefined>(new Date());
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export function useCreateStockIn(
       };
       fetchIngredients();
       setNote("");
-      setReceivedDate(new Date().toISOString().split("T")[0]);
+      setReceivedDate(new Date());
       setItems([{ ingredientId: "", quantity: 1, unitPrice: 0, baseUnit: "", batchCode: "" }]);
     }
   }, [open]);
@@ -105,11 +105,15 @@ export function useCreateStockIn(
     setSubmitting(true);
     try {
       const request: CreateStockInRequest = {
-        receivedDate,
+        receivedDate:
+          receivedDate?.toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
         note,
         items: validItems.map((i) => ({
           ...i,
           batchCode: i.batchCode || undefined,
+          expirationDate: i.expirationDate
+            ? i.expirationDate.toISOString().split("T")[0]
+            : undefined,
         })),
       };
       const response = await stockInService.createReceipt(request);

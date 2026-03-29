@@ -14,9 +14,9 @@ export const SETTINGS = {
   GENERAL_TITLE: "Cấu hình chung",
   GENERAL_DESC: "Thông tin cơ bản về nhà hàng và hệ thống",
 
-  // Branch info
-  BRANCH_SECTION: "Thông tin chi nhánh",
-  BRANCH_SECTION_DESC: "Thông tin nhận dạng của chi nhánh trong hệ thống",
+  // Store info
+  BRANCH_SECTION: "Thông tin cửa hàng",
+  BRANCH_SECTION_DESC: "Thông tin nhận dạng của cửa hàng trong hệ thống",
   FIELD_BRANCH_NAME: "Tên chi nhánh",
   FIELD_BRANCH_NAME_PLACEHOLDER: "VD: FoodHub - Quận 1",
   FIELD_BRANCH_ID: "Mã chi nhánh",

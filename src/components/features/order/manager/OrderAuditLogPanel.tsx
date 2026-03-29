@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import { History, Loader2, Search, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -16,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { OrderAuditLogResponse, orderService } from "@/services/orderService";
@@ -73,14 +73,6 @@ const ACTION_OPTIONS = [
   { value: "ApplyPromotion", label: "Áp dụng khuyến mãi" },
 ] as const;
 
-function formatTime(value?: string | null) {
-  if (!value) return UI_TEXT.COMMON.NOT_APPLICABLE;
-  const d = new Date(value);
-  return Number.isNaN(d.getTime())
-    ? UI_TEXT.COMMON.NOT_APPLICABLE
-    : format(d, "dd/MM/yyyy HH:mm:ss");
-}
-
 function safeJson(value?: string | null) {
   if (!value) return null;
   try {
@@ -110,7 +102,13 @@ export default function OrderAuditLogPanel({
   description = UI_TEXT.ORDER.DETAIL.AUDIT_BE_DESC,
   className,
 }: OrderAuditLogPanelProps) {
+  const { formatDateTime } = useBrandingFormatter();
   const [logs, setLogs] = useState<OrderAuditLogResponse[]>([]);
+
+  function formatTime(value?: string | null) {
+    if (!value) return UI_TEXT.COMMON.NOT_APPLICABLE;
+    return formatDateTime(value);
+  }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pageNumber, setPageNumber] = useState(1);

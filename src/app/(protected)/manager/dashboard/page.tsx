@@ -8,7 +8,6 @@ import React, { useEffect, useState } from "react";
 import { DashboardStats } from "@/components/features/Dashboard/analysis/DashboardStats";
 import { InventoryAlertWidget } from "@/components/features/Dashboard/analysis/InventoryAlertWidget";
 import { KdsBacklogWidget } from "@/components/features/Dashboard/analysis/KdsBacklogWidget";
-import { RealTimeAlertStrip } from "@/components/features/Dashboard/analysis/RealTimeAlertStrip";
 import { Badge } from "@/components/ui/badge";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { dashboardService } from "@/services/dashboardService";
@@ -69,8 +68,6 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background animate-in fade-in duration-500">
-      <RealTimeAlertStrip />
-
       <div className="flex-1 p-6 md:p-8 max-w-400 mx-auto w-full space-y-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col">

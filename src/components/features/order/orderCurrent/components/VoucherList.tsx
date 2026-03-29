@@ -5,6 +5,8 @@ import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
+import { formatCurrency as globalFormatCurrency } from "@/lib/utils";
 import { Voucher, VoucherType } from "@/types/voucher";
 
 const TEXT = {
@@ -25,20 +27,16 @@ interface VoucherListProps {
 
 const formatVoucherValue = (v: Voucher) => {
   if (v.type === VoucherType.Percent) return `-${v.value}%`;
-  if (v.type === VoucherType.Fixed) return `-${v.value.toLocaleString()}đ`;
+  if (v.type === VoucherType.Fixed) return `-${globalFormatCurrency(v.value)}`;
   return "Tặng món";
 };
 
-const formatCurrency = (value?: number) =>
-  typeof value === "number" ? `${value.toLocaleString()}đ` : undefined;
-
-const formatDateShort = (value?: string) => {
-  if (!value) return undefined;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? undefined : date.toLocaleDateString("vi-VN");
-};
-
 export const VoucherList = ({ isLoading, vouchers, onSelect, disabled }: VoucherListProps) => {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
+
+  const getMinOrder = (value?: number) =>
+    typeof value === "number" ? formatCurrency(value) : undefined;
+
   return (
     <div className="space-y-3">
       <h4 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
@@ -58,9 +56,9 @@ export const VoucherList = ({ isLoading, vouchers, onSelect, disabled }: Voucher
             </div>
           ) : vouchers.length > 0 ? (
             vouchers.map((p) => {
-              const minOrder = formatCurrency(p.minOrderValue);
-              const maxDiscount = formatCurrency(p.maxDiscount);
-              const dateRange = `${formatDateShort(p.startDate) ?? ""} - ${formatDateShort(p.endDate) ?? ""}`;
+              const minOrder = getMinOrder(p.minOrderValue);
+              const maxDiscount = getMinOrder(p.maxDiscount);
+              const dateRange = `${formatDate(p.startDate) ?? ""} - ${formatDate(p.endDate) ?? ""}`;
               const usage =
                 typeof p.usageLimit === "number"
                   ? `Còn ${Math.max((p.usageLimit ?? 0) - (p.usedCount ?? 0), 0)}/${p.usageLimit} lượt`

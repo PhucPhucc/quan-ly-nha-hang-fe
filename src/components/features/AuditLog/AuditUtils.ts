@@ -1,6 +1,7 @@
 import { type VariantProps } from "class-variance-authority";
 
 import { badgeVariants } from "@/components/ui/badge";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { SystemAuditLog } from "@/services/auditService";
 
@@ -45,15 +46,11 @@ export function parseJson(value?: string | null): ParsedState {
 }
 
 export function formatDateTime(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString("vi-VN");
+  return formatDateTimeWithBranding(value, undefined, true);
 }
 
 export function formatDateOnly(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString("vi-VN");
+  return formatDateTimeWithBranding(value, undefined, false);
 }
 
 function getStringField(state: ParsedState, keys: string[]) {
