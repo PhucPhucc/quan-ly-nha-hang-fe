@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { UI_TEXT } from "@/lib/UI_Text";
-import { uploadImage } from "@/services/imageService";
+import { cloudinaryService } from "@/services/cloudinaryService";
 import { menuService } from "@/services/menuService";
 import { optionService } from "@/services/optionService";
 import { useMenuStore } from "@/store/useMenuStore";
@@ -405,15 +405,10 @@ export const useMenuForm = (categories: Category[]) => {
       setIsUploading(true);
 
       try {
-        const uploadResponse = await uploadImage(selectedImage);
+        const uploadResponse = await cloudinaryService.uploadImage(selectedImage, "menu-items");
 
-        if (
-          uploadResponse.isSuccess &&
-          uploadResponse.data &&
-          typeof uploadResponse.data === "object" &&
-          "imageUrl" in uploadResponse.data
-        ) {
-          imageValue = (uploadResponse.data as { imageUrl: string }).imageUrl;
+        if (uploadResponse.isSuccess && uploadResponse.data?.imageUrl) {
+          imageValue = uploadResponse.data.imageUrl;
         }
       } catch (error) {
         console.error("Image upload failed", error);

@@ -86,9 +86,16 @@ export function BranchInfoSection({ register, errors, logoUrl, setValue }: Props
             <FieldLabel htmlFor="logo-upload" className="mb-1 block">
               {SETTINGS.FIELD_LOGO}
             </FieldLabel>
-            <FieldDescription className="text-xs leading-relaxed max-w-[200px]">
-              {SETTINGS.FIELD_LOGO_DESC}
-            </FieldDescription>
+            <div className="flex flex-col gap-2">
+              <Input
+                placeholder="https://example.com/logo.png"
+                {...register("logoUrl")}
+                className="text-xs"
+              />
+              <FieldDescription className="text-xs leading-relaxed max-w-[200px]">
+                {SETTINGS.FIELD_LOGO_DESC}
+              </FieldDescription>
+            </div>
           </div>
         </div>
 

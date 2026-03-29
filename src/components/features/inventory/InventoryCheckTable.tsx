@@ -24,6 +24,7 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryCheck, InventoryCheckStatus } from "@/types/Inventory";
 
@@ -50,6 +51,8 @@ export function InventoryCheckTable() {
     setFromDate,
     setToDate,
   } = useInventoryCheckTable();
+
+  const { formatDate } = useBrandingFormatter();
 
   if (isLoading) {
     return <CheckTableSkeleton />;
@@ -127,9 +130,7 @@ export function InventoryCheckTable() {
                       <TableCell className="fonfont-medium">
                         {check.inventoryCheckId.substring(0, 8).toUpperCase()}
                       </TableCell>
-                      <TableCell>
-                        {new Date(check.checkDate).toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI)}
-                      </TableCell>
+                      <TableCell>{formatDate(check.checkDate)}</TableCell>
                       <TableCell>{check.createdBy || UI_TEXT.COMMON.DASH}</TableCell>
                       <TableCell>
                         <Badge

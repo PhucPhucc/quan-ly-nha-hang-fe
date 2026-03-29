@@ -197,6 +197,8 @@ export const INVENTORY = {
     COL_SORT: "Sắp xếp",
     SORT_NEWEST: "Mới nhất",
     SORT_OLDEST: "Cũ nhất",
+    SORT_ASC: "Tăng dần",
+    SORT_DESC: "Giảm dần",
     TRANS_HISTORY: "Lịch sử kho",
     THRESHOLD_PREFIX: "Ngưỡng:",
     ERROR_PREFIX: "Lỗi:",

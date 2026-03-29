@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
@@ -41,14 +42,15 @@ interface InventoryCogsResultsTableProps {
 }
 
 export function InventoryCogsResultsTable({ results, dateRange }: InventoryCogsResultsTableProps) {
+  const { formatDate } = useBrandingFormatter();
   if (!results || results.length === 0) return null;
 
   return (
     <div className="p-6 bg-card border shadow-sm rounded-[12px]">
       <div className="flex items-center gap-3 mb-4">
         <h3 className="font-semibold text-base text-card-foreground">
-          {UI_TEXT.INVENTORY.COGS.RESULTS_TITLE} {dateRange?.from?.toLocaleDateString()}{" "}
-          {UI_TEXT.INVENTORY.TABLE.EM_DASH} {dateRange?.to?.toLocaleDateString()}
+          {UI_TEXT.INVENTORY.COGS.RESULTS_TITLE} {formatDate(dateRange?.from)}{" "}
+          {UI_TEXT.INVENTORY.TABLE.EM_DASH} {formatDate(dateRange?.to)}
         </h3>
         <span className="table-pill table-pill-success text-[10px]!">
           {UI_TEXT.INVENTORY.COGS.BADGE_CALCULATED}

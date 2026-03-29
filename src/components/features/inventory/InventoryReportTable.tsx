@@ -23,9 +23,9 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { formatCurrency } from "@/lib/utils";
 import { inventoryService } from "@/services/inventory.service";
 import { InventoryReportItem } from "@/types/Inventory";
 
@@ -44,6 +44,8 @@ export function InventoryReportTable() {
     setIngredientId,
     isLoading,
   } = useInventoryReport();
+
+  const { formatCurrency } = useBrandingFormatter();
 
   const { data: ingredientsData } = useQuery({
     queryKey: ["inventory-report-ingredients"],
@@ -119,8 +121,7 @@ export function InventoryReportTable() {
             {UI_TEXT.COMMON.COLON}
           </span>
           <span className=" font-semibold text-primary tabular-nums">
-            {totalInventoryValue.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}{" "}
-            <span className="ml-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
+            {formatCurrency(totalInventoryValue)}
           </span>
         </div>
         <TableShell>
@@ -183,10 +184,10 @@ export function InventoryReportTable() {
                       {formatInventoryQuantity(item.closingStock)}
                     </TableCell>
                     <TableCell className="text-right font-medium text-card-foreground tabular-nums">
-                      {item.averageUnitCost.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+                      {formatCurrency(item.averageUnitCost)}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-primary ">
-                      {item.closingStockValue.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+                      {formatCurrency(item.closingStockValue)}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

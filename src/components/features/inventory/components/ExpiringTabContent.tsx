@@ -10,6 +10,7 @@ import {
   TableShell,
 } from "@/components/ui/table";
 import { TabsContent } from "@/components/ui/tabs";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryExpiryAlertItem } from "@/types/Inventory";
 
@@ -20,6 +21,7 @@ interface ExpiringTabContentProps {
 }
 
 export function ExpiringTabContent({ items }: ExpiringTabContentProps) {
+  const { formatDate } = useBrandingFormatter();
   return (
     <TabsContent value="expiring" className="m-0 border-none outline-none">
       <TableShell>
@@ -94,7 +96,7 @@ export function ExpiringTabContent({ items }: ExpiringTabContentProps) {
                     </TableCell>
                     <TableCell className="text-center font-semibold tabular-nums italic text-xs">
                       {item.expiryDate
-                        ? expDate.toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI)
+                        ? formatDate(item.expiryDate)
                         : UI_TEXT.INVENTORY.TABLE.EM_DASH}
                     </TableCell>
                     <TableCell className="text-center font-semibold tabular-nums">
