@@ -51,7 +51,7 @@ const FeutureCashier = [
 
 const NavEmployee = () => {
   const [position, setPosition] = useState("bottom-left");
-  const { theme, selectTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const employee = useAuthStore((state) => state.employee);
 
   const FeaturesRole = employee?.role === EmployeeRole.CASHIER ? FeutureCashier : [];
@@ -145,7 +145,7 @@ const NavEmployee = () => {
           </FeatureItem>
 
           <FeatureItem title={UI_TEXT.PREFERENCE.THEME} des={UI_TEXT.PREFERENCE.THEME_DESC}>
-            <Select defaultValue={theme} onValueChange={(e) => selectTheme(e as ThemeMode)}>
+            <Select defaultValue={theme} onValueChange={() => toggleTheme()}>
               <SelectTrigger className="w-full max-w-32">
                 <SelectValue />
               </SelectTrigger>

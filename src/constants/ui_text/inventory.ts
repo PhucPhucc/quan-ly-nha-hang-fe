@@ -24,6 +24,10 @@ export const INVENTORY = {
   ALERTS_TITLE: "Cảnh báo kho",
   ALERTS_DESC: "Quản lý mức tồn kho tới hạn và hạn sử dụng sắp đến.",
   ALERTS_BTN: "Cảnh báo",
+  OPENING_STOCK_REMINDER_TITLE: "Bạn chưa nhập số dư đầu kỳ",
+  OPENING_STOCK_REMINDER_DESC:
+    "Vui lòng nhập số dư đầu kỳ trước khi tiếp tục quản lý kho để dữ liệu tồn kho được chính xác.",
+  OPENING_STOCK_REMINDER_ACTION: "Đi đến nhập số dư",
   OVERVIEW: {
     REFRESH: "Làm mới",
     PAGE_TITLE: "Kho nguyên liệu",

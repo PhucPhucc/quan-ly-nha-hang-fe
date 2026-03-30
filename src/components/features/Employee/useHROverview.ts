@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { endOfWeek, format, startOfWeek } from "date-fns";
-import { useState } from "react";
 
 import { attendanceService } from "@/services/attendanceService";
 import { getEmployees } from "@/services/employeeService";
@@ -32,9 +31,7 @@ interface HROverviewStats {
 }
 
 export function useHROverview() {
-  const [stats, setStats] = useState<HROverviewStats | null>(null);
-
-  const { isLoading, isFetching, error, refetch } = useQuery({
+  const { data, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: ["hr-overview"],
     queryFn: async () => {
       const now = new Date();
@@ -97,14 +94,12 @@ export function useHROverview() {
         lateToday,
         absentToday,
       };
-
-      setStats(calculatedStats);
       return calculatedStats;
     },
   });
 
   return {
-    stats,
+    stats: data,
     isLoading,
     isFetching,
     error: error instanceof Error ? error.message : null,

@@ -43,7 +43,7 @@ function StatCard({ title, value, trend, isUp, icon, chartColor, chartData }: St
   const displayData = chartData || mockSparklineData;
 
   return (
-    <Card className="border border-muted/60 shadow-none rounded-xl overflow-hidden bg-white hover:border-primary/20 transition-all group">
+    <Card className="border border-muted/60 shadow-none rounded-xl overflow-hidden bg-card hover:border-primary/20 transition-all group">
       <CardContent className="p-0">
         <div className="p-5 flex justify-between items-start">
           <div className="space-y-1">

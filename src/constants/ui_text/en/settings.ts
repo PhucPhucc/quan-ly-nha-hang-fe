@@ -1,0 +1,130 @@
+export const SETTINGS = {
+  PAGE_TITLE: "System Settings",
+  PAGE_DESC: "Manage and customize FoodHub system configuration",
+
+  NAV_GENERAL: "General Settings",
+  NAV_WAREHOUSE: "Warehouse Settings",
+  NAV_RESERVATION: "Reservation Settings",
+  NAV_SETTING: "KDS Settings",
+
+  GENERAL_TITLE: "General Settings",
+  GENERAL_DESC: "Basic restaurant and system information",
+
+  BRANCH_SECTION: "Branch Information",
+  BRANCH_SECTION_DESC: "Branch identification information in the system",
+  FIELD_BRANCH_NAME: "Branch name",
+  FIELD_BRANCH_NAME_PLACEHOLDER: "e.g. FoodHub - District 1",
+  FIELD_BRANCH_ID: "Branch code",
+  FIELD_BRANCH_ID_PLACEHOLDER: "e.g. BR-001",
+  FIELD_RESTAURANT_NAME: "Restaurant name",
+  FIELD_RESTAURANT_NAME_PLACEHOLDER: "e.g. FoodHub Restaurant",
+  FIELD_ADDRESS: "Address",
+  FIELD_ADDRESS_PLACEHOLDER: "Enter branch address",
+  FIELD_PHONE: "Phone number",
+  FIELD_PHONE_PLACEHOLDER: "e.g. 0901 234 567",
+
+  LOCALIZE_SECTION: "Format & Language",
+  LOCALIZE_SECTION_DESC: "Configure currency, timezone, and display format",
+  FIELD_CURRENCY: "Currency",
+  FIELD_DATE_FORMAT: "Date format",
+  FIELD_TIMEZONE: "Timezone",
+
+  CURRENCY_VND: "VNĐ - Vietnamese Dong",
+  DATE_FORMAT_DMY: "DD/MM/YYYY",
+  DATE_FORMAT_MDY: "MM/DD/YYYY",
+  DATE_FORMAT_YMD: "YYYY/MM/DD",
+  TIMEZONE_GMT7: "GMT+7 (Hanoi, Ho Chi Minh City)",
+
+  NOTIFY_SECTION: "System Notifications",
+  NOTIFY_SECTION_DESC: "Customize notification channels from the system",
+  FIELD_NOTIFY_EMAIL: "Email Notifications",
+  FIELD_NOTIFY_EMAIL_DESC: "Receive alerts and reports via email",
+  FIELD_NOTIFY_PUSH: "Push Notifications",
+  FIELD_NOTIFY_PUSH_DESC: "Receive instant notifications on browser",
+  FIELD_NOTIFY_SMS: "SMS Notifications",
+  FIELD_NOTIFY_SMS_DESC: "Receive SMS for important events",
+
+  SUCCESS_GENERAL: "General settings saved successfully",
+  GENERAL_FOOTER_NOTE: "Updating general settings will affect display across the entire branch.",
+
+  BRANDING_SECTION: "Branding & Display",
+  BRANDING_SECTION_DESC: "Customize logo, title, and display theme on applications",
+  FIELD_APP_TITLE: "Application title",
+  FIELD_KDS_TITLE: "KDS title",
+  FIELD_LOGO: "Brand logo",
+  FIELD_LOGO_DESC: "Recommended size: 512x512px. Supports PNG, JPG, WebP.",
+  FIELD_LOGO_URL_PLACEHOLDER: "Or enter URL directly...",
+  LOGO_UPLOAD_SUCCESS: "Logo uploaded successfully",
+  LOGO_UPLOAD_ERROR: "Logo upload failed",
+
+  PRINT_SECTION: "Print Settings",
+  PRINT_SECTION_DESC: "Set up information displayed on invoices and preparation tickets",
+  FIELD_BILL_TITLE: "Invoice title",
+  FIELD_BILL_FOOTER: "Invoice footer",
+  FIELD_LANGUAGE: "System language",
+  LANGUAGE_VI: "Vietnamese",
+  LANGUAGE_EN: "English",
+
+  WAREHOUSE_TITLE: "Warehouse Settings",
+  WAREHOUSE_DESC: "Customize operation rules and inventory alerts",
+
+  STOCK_SECTION: "Stock Settings",
+  STOCK_SECTION_DESC: "Manage alert thresholds and stock in/out rules",
+
+  FIELD_LOW_STOCK_ENABLED: "Enable low stock alert",
+  FIELD_LOW_STOCK_ENABLED_DESC:
+    "Send notification when ingredient quantity is below minimum threshold",
+  FIELD_LOW_STOCK_THRESHOLD: "Default minimum stock threshold",
+  FIELD_LOW_STOCK_THRESHOLD_DESC: "Applied to ingredients without a custom threshold",
+  FIELD_EXPIRY_WARNING: "Expiry warning (days)",
+  FIELD_EXPIRY_WARNING_DESC: "Alert days before ingredient expiration",
+
+  DISPATCH_SECTION: "Dispatch Rules",
+  DISPATCH_SECTION_DESC: "Set up cost calculation and dispatch methods",
+  FIELD_COST_METHOD: "Cost calculation method",
+  FIELD_COST_METHOD_FIFO: "FIFO – First in, first out",
+  FIELD_COST_METHOD_LIFO: "LIFO – Last in, first out",
+  FIELD_COST_METHOD_AVG: "Weighted average",
+  FIELD_AUTO_DEDUCT: "Auto-deduct stock on order completion",
+  FIELD_AUTO_DEDUCT_DESC: "Automatically record stock out when order moves to Completed status",
+
+  SUCCESS_WAREHOUSE: "Warehouse settings saved successfully",
+
+  RESERVATION_TITLE: "Reservation Settings",
+  RESERVATION_DESC: "Set up reservation rules and table management",
+
+  BOOKING_HOURS_SECTION: "Booking Hours",
+  BOOKING_HOURS_SECTION_DESC: "Set up daily operating hours and guest serving times.",
+  FIELD_OPEN_TIME: "Opening time (24h)",
+  FIELD_OPEN_TIME_DESC: "Earliest time the restaurant starts accepting reservations.",
+  FIELD_CLOSE_TIME: "Closing time (24h)",
+  FIELD_CLOSE_TIME_DESC: "Latest time the restaurant accepts new reservations.",
+  FIELD_BREAK_START: "Break start (24h)",
+  FIELD_BREAK_START_DESC: "Time to pause accepting guests for shift transition.",
+  FIELD_BREAK_END: "Break end (24h)",
+  FIELD_BREAK_END_DESC: "Time the restaurant resumes accepting guests after break.",
+  FIELD_BREAK_ENABLED: "Has mid-shift break",
+  FIELD_BREAK_ENABLED_DESC: "No reservations accepted during break time",
+
+  BOOKING_RULES_SECTION: "Booking Rules",
+  BOOKING_RULES_SECTION_DESC: "Limits and constraints for each booking",
+  FIELD_OVERLAP_BUFFER: "Overlap buffer (minutes)",
+  FIELD_OVERLAP_BUFFER_DESC: "Buffer time to avoid scheduling conflicts between bookings",
+  FIELD_MIN_LEAD_TIME: "Minimum advance booking (minutes)",
+  FIELD_MIN_LEAD_TIME_DESC: "How far in advance guests must book",
+  FIELD_GRACE_PERIOD: "Guest arrival grace period (minutes)",
+  FIELD_GRACE_PERIOD_DESC:
+    "After this time, guests who haven't checked in may be marked as no-show",
+  FIELD_UPCOMING_BUFFER: "Table reservation prep time (minutes)",
+  FIELD_UPCOMING_BUFFER_DESC:
+    "System auto-changes table status to 'Reserved' this many minutes before booking time",
+
+  ERR_UPCOMING_BUFFER_LIMIT: "Table hold time cannot exceed the minimum advance booking time",
+
+  SUCCESS_RESERVATION: "Reservation settings saved successfully",
+
+  BTN_SAVE: "Save settings",
+  BTN_SAVING: "Saving...",
+  LABEL_ENABLED: "Enabled",
+  LABEL_DISABLED: "Disabled",
+};

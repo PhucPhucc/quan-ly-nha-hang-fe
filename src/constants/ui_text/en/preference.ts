@@ -1,0 +1,26 @@
+export const PREFERENCE = {
+  TITLE: "Preferences",
+  THEME: "Theme",
+  THEME_DESC: "Change the application theme",
+  THEME_LIGHT: "Light mode",
+  THEME_DARK: "Dark mode",
+
+  POSITION: "Position",
+  POSITION_DESC: "Select navigation menu display position",
+  POSITION_BOTTOM_LEFT: "Bottom left",
+  POSITION_BOTTOM_RIGHT: "Bottom right",
+  POSITION_TOP_RIGHT: "Top right",
+  POSITION_TOP_LEFT: "Top left",
+
+  NAVIGATION: "Navigation",
+  NAVIGATION_DESC: "Select navigation function",
+  NAVIGATION_ACTION: "Select function",
+  NAVIGATION_RESERVATION: "Reservations",
+  NAVIGATION_REVENUE: "View revenue",
+  NAVIGATION_LOG: "View logs",
+  NAVIGATION_RESERVATION_DESC: "Reserve tables for restaurant customers",
+  NAVIGATION_REVENUE_DESC: "View restaurant revenue information",
+  NAVIGATION_LOG_DESC: "View restaurant activity logs",
+  EMP_INFO: "Employee information",
+  EMP_INFO_DESC: "View personal information and role",
+};

@@ -220,6 +220,7 @@ export const BUTTON = {
   PAGE: "Trang",
   NEXT_PAGE: "Tiếp",
   PREV_PAGE: "Trước",
+  TOGGLE_THEME: "Đổi giao diện",
 };
 
 export const API = {

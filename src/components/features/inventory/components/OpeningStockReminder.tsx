@@ -5,13 +5,13 @@ import Link from "next/link";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
+import { UI_TEXT } from "@/lib/UI_Text";
 
 const COMPLETED_OPENING_STOCK_STATUS = 2;
 const OPENING_STOCK_REMINDER_TEXT = {
-  title: "Bạn chưa nhập số dư đầu kỳ",
-  description:
-    "Vui lòng nhập số dư đầu kỳ trước khi tiếp tục quản lý kho để dữ liệu tồn kho được chính xác.",
-  action: "Đi đến nhập số dư",
+  title: UI_TEXT.INVENTORY.OPENING_STOCK_REMINDER_TITLE,
+  description: UI_TEXT.INVENTORY.OPENING_STOCK_REMINDER_DESC,
+  action: UI_TEXT.INVENTORY.OPENING_STOCK_REMINDER_ACTION,
 } as const;
 
 export function shouldShowOpeningStockReminder(

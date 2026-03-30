@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle, Box, Loader2, Thermometer } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -134,7 +135,7 @@ export function InventoryAlertWidget() {
           className="w-full mt-2 hover:bg-transparent hover:text-primary text-xs font-semibold"
           // className="w-full mt-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary transition-colors border-t border-dashed border-muted">
         >
-          {t.VIEW_DETAILS}
+          <Link href="/manager/inventory">{t.VIEW_DETAILS}</Link>
         </Button>
       </CardContent>
     </Card>

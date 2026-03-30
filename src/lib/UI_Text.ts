@@ -1,52 +1,29 @@
-import { PREFERENCE } from "@/constants/ui_text/preference";
-import { SETTINGS } from "@/constants/ui_text/settings";
+import type { UITextMap } from "@/constants/ui_text/locales";
+import { LOCALE_MAP } from "@/constants/ui_text/locales";
+import { useLanguageStore } from "@/store/useLanguageStore";
 
-import { ATTENDANCE } from "../constants/ui_text/attendance";
-import { AUDIT_LOG } from "../constants/ui_text/audit";
-import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "../constants/ui_text/auth";
-import { API, BUTTON, COMMON, FORM, NAVIGATION, ROLE, SIDE_BAR } from "../constants/ui_text/common";
-import { DASHBOARD } from "../constants/ui_text/dashboard";
-import { EMPLOYEE } from "../constants/ui_text/employee";
-import { HR_DASHBOARD } from "../constants/ui_text/hr_dashboard";
-import { INVENTORY } from "../constants/ui_text/inventory";
-import { KDS } from "../constants/ui_text/kds";
-import { LANDING } from "../constants/ui_text/landing";
-import { MENU } from "../constants/ui_text/menu";
-import { ORDER } from "../constants/ui_text/order";
-import { RESERVATION } from "../constants/ui_text/reservation";
-import { SALES_ANALYTICS } from "../constants/ui_text/salesAnalytics";
-import { SCHEDULE, SHIFT } from "../constants/ui_text/shift";
-import { TABLE } from "../constants/ui_text/table";
-import { VOUCHER } from "../constants/ui_text/voucher";
+/**
+ * Get the current locale's UI text map.
+ * Works in both React and non-React contexts.
+ */
+export function getUIText(): UITextMap {
+  const locale = useLanguageStore.getState().locale;
+  return LOCALE_MAP[locale];
+}
 
-export const UI_TEXT = {
-  ATTENDANCE,
-  COMMON,
-  SIDE_BAR,
-  NAVIGATION,
-  FORM,
-  ROLE,
-  BUTTON,
-  API,
-  AUTH,
-  CHANGE_PASSWORD,
-  PROFILE,
-  RESERVATION,
-  UNAUTHORIZED,
-  EMPLOYEE,
-  ORDER,
-  TABLE,
-  DASHBOARD,
-  MENU,
-  KDS,
-  LANDING,
-  AUDIT_LOG,
-  SALES_ANALYTICS,
-  INVENTORY,
-  PREFERENCE,
-  SETTINGS,
-  VOUCHER,
-  SHIFT,
-  SCHEDULE,
-  HR_DASHBOARD,
-};
+/**
+ * UI_TEXT — backward-compatible, locale-aware proxy.
+ *
+ * Every property access (e.g. `UI_TEXT.COMMON.LOADING`) is resolved
+ * at read-time from the active locale in `useLanguageStore`.
+ *
+ * React components can keep using `UI_TEXT.X.Y` without any changes.
+ * When the app re-renders after a locale switch (page reload),
+ * all text automatically reflects the new language.
+ */
+export const UI_TEXT: UITextMap = new Proxy({} as UITextMap, {
+  get(_target, prop: string) {
+    const texts = getUIText();
+    return texts[prop as keyof UITextMap];
+  },
+});

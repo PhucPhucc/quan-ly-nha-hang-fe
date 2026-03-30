@@ -57,7 +57,7 @@ export function KdsBacklogWidget() {
             {t.KDS_BACKLOG}
           </CardTitle>
           <div className="bg-card p-2.5 rounded-full shadow-premium border border-muted/30">
-            <ChefHat className="size-4.5 text-primary" />
+            <ChefHat className="size-6 text-primary" />
           </div>
         </div>
       </CardHeader>
@@ -103,15 +103,15 @@ export function KdsBacklogWidget() {
           </div>
 
           <div className="flex gap-4">
-            <div className="flex-1 bg-amber-100/50 p-3 rounded-2xl border border-amber-400/40 flex items-center gap-3">
-              <div className="size-8 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
-                <Pause className="size-4 text-amber-600" />
+            <div className="flex-1 bg-primary/10 p-3 rounded-xl border border-primary/30 flex items-center gap-3">
+              <div className="size-8 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                <Pause className="size-4 text-primary" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[13px] font-black leading-none text-amber-900">
+                <span className="text-[13px] font-black leading-none text-primary">
                   {t.ITEMS_COUNT(waitingCount)}
                 </span>
-                <span className="text-[8px] opacity-70 uppercase font-black tracking-wider mt-1.5 text-amber-700/80">
+                <span className="text-[8px] opacity-70 uppercase font-black tracking-wider mt-1.5 text-primary/70">
                   {t.WAITING}
                 </span>
               </div>

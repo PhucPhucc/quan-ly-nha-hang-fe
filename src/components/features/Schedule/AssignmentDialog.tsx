@@ -155,18 +155,17 @@ const AssignmentDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[500px] p-0 overflow-hidden border-none rounded-3xl shadow-2xl">
-        <div className="bg-slate-50/50 px-6 py-6 border-b border-slate-100 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 bg-primary/5 rounded-full -mr-10 -mt-10 blur-2xl group-hover:bg-primary/10 transition-colors" />
+      <DialogContent className="max-w-125 p-0 overflow-hidden border-none rounded-3xl shadow-2xl">
+        <div className="bg-muted px-6 py-6 border-b relative overflow-hidden group">
           <div className="flex items-center gap-4 relative z-10">
-            <div className="p-3 bg-primary/10 rounded-2xl transition-transform group-hover:rotate-3">
+            <div className="p-3 bg-primary/10 rounded-lg transition-transform group-hover:rotate-5">
               <Clock className="size-6 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-xl font-black text-slate-900 tracking-tight">
+              <DialogTitle className="text-xl font-bold text-muted-foreground tracking-tight">
                 {assignment ? UI_TEXT.SCHEDULE.EDIT_TITLE : UI_TEXT.SCHEDULE.ASSIGN_TITLE}
               </DialogTitle>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+              <p className="text-xs font-bold text-muted-foreground/70 uppercase tracking-widest mt-1">
                 {UI_TEXT.SCHEDULE.ASSIGN_DESC}
               </p>
             </div>
@@ -177,22 +176,22 @@ const AssignmentDialog = ({
           <FieldGroup className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Field>
-                <FieldLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2">
+                <FieldLabel className="text-[10px] font-semibold text-card-foreground uppercase tracking-[0.15em] mb-2">
                   {UI_TEXT.SCHEDULE.EMPLOYEE_NAME}
                 </FieldLabel>
-                <div className="flex items-center gap-3 p-3 bg-slate-50/80 rounded-xl border border-slate-100 shadow-sm transition-all hover:bg-white hover:border-primary/20">
-                  <User className="size-4 text-slate-400" />
-                  <span className="text-sm font-black text-slate-700">{employee?.fullName}</span>
+                <div className="flex items-center gap-3 p-3 rounded-lg border shadow-sm cursor-not-allowed">
+                  <User className="size-4 text-card-foreground" />
+                  <span className="text-sm font-semibold">{employee?.fullName}</span>
                 </div>
               </Field>
 
               <Field>
-                <FieldLabel className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-2">
+                <FieldLabel className="text-[10px] font-semibold text-card-foreground uppercase tracking-[0.15em] mb-2">
                   {UI_TEXT.SCHEDULE.WORK_DATE}
                 </FieldLabel>
-                <div className="flex items-center gap-3 p-3 bg-slate-50/80 rounded-xl border border-slate-100 shadow-sm transition-all hover:bg-white hover:border-primary/20">
-                  <CalendarIcon className="size-4 text-slate-400" />
-                  <span className="text-sm font-black text-slate-700">{formattedDate}</span>
+                <div className="flex items-center gap-3 p-3 rounded-lg border shadow-sm cursor-not-allowed">
+                  <CalendarIcon className="size-4 text-card-foreground" />
+                  <span className="text-sm font-semibold">{formattedDate}</span>
                 </div>
               </Field>
             </div>
@@ -200,19 +199,22 @@ const AssignmentDialog = ({
             <Field>
               <FieldLabel
                 htmlFor="shiftId"
-                className="text-sm font-black text-slate-700 mb-2 block"
+                className="text-sm font-semibold text-card-foreground mb-2 block"
               >
-                {UI_TEXT.SCHEDULE.SELECT_SHIFT}{" "}
-                <span className="text-primary">{UI_TEXT.COMMON.ASTERISK}</span>
+                {UI_TEXT.SCHEDULE.SELECT_SHIFT}
+                <span className="text-primary ml-1">{UI_TEXT.COMMON.ASTERISK}</span>
               </FieldLabel>
               <Select
                 onValueChange={(val) => form.setValue("shiftId", val)}
                 value={form.watch("shiftId")}
               >
-                <SelectTrigger className="h-12 rounded-xl border-slate-200 focus:ring-primary shadow-sm">
-                  <SelectValue placeholder={UI_TEXT.SCHEDULE.SELECT_SHIFT_PLACEHOLDER} />
+                <SelectTrigger>
+                  <SelectValue
+                    id="shiftId"
+                    placeholder={UI_TEXT.SCHEDULE.SELECT_SHIFT_PLACEHOLDER}
+                  />
                 </SelectTrigger>
-                <SelectContent className="rounded-2xl border-none shadow-2xl ring-1 ring-black/5">
+                <SelectContent className="rounded-lg border shadow-2xl">
                   {loadingShifts ? (
                     <div className="p-4 flex justify-center">
                       <Spinner className="border-primary" />
@@ -225,8 +227,8 @@ const AssignmentDialog = ({
                         className="rounded-xl px-3 py-2.5 mb-1 last:mb-0 focus:bg-primary/5 focus:text-primary transition-colors"
                       >
                         <div className="flex items-center justify-between w-full gap-4">
-                          <span className="font-bold">{shift.name}</span>
-                          <span className="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded-lg">
+                          <span className="font-semi">{shift.name}</span>
+                          <span className="text-[10px] font-semibold text-card-foreground/30 bg-card px-2 py-1 rounded-lg">
                             {shift.startTime.slice(0, 5)} {UI_TEXT.COMMON.HYPHEN}{" "}
                             {shift.endTime.slice(0, 5)}
                           </span>
@@ -237,14 +239,17 @@ const AssignmentDialog = ({
                 </SelectContent>
               </Select>
               {form.formState.errors.shiftId && (
-                <p className="text-xs text-red-500 mt-1 font-medium">
+                <p className="text-xs text-danger mt-1 font-medium">
                   {form.formState.errors.shiftId.message}
                 </p>
               )}
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="note" className="text-sm font-black text-slate-700 mb-2 block">
+              <FieldLabel
+                htmlFor="note"
+                className="text-sm font-semibold text-card-foreground mb-2 block"
+              >
                 {UI_TEXT.SCHEDULE.NOTE_LABEL}
               </FieldLabel>
               <Input
@@ -263,25 +268,16 @@ const AssignmentDialog = ({
                 variant="ghost"
                 disabled={deleting}
                 onClick={handleDelete}
-                className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-rose-500 hover:bg-rose-50 hover:text-rose-600 mr-auto transition-all active:scale-95"
+                className="h-12 px-6 rounded-xl font-semibold text-xs uppercase tracking-widest text-rose-500 hover:bg-rose-50 hover:text-rose-600 mr-auto transition-all active:scale-95"
               >
                 {UI_TEXT.SCHEDULE.REMOVE_BUTTON}
                 {deleting && <Spinner className="ml-2 border-rose-500" />}
               </Button>
             )}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest text-slate-500 border-slate-200 hover:bg-slate-50 transition-all active:scale-95"
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               {UI_TEXT.COMMON.CANCEL}
             </Button>
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="bg-primary hover:bg-primary/90 h-12 px-10 rounded-xl font-black text-xs uppercase tracking-[0.2em] text-white shadow-xl shadow-primary/20 transition-all active:scale-95 ring-offset-2 focus:ring-2 focus:ring-primary"
-            >
+            <Button type="submit" disabled={submitting}>
               {assignment ? UI_TEXT.COMMON.SAVE : UI_TEXT.SCHEDULE.ASSIGN_BUTTON}
               {submitting && <Spinner className="ml-2" />}
             </Button>

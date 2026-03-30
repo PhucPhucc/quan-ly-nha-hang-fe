@@ -5,16 +5,16 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { ThemeMode } from "@/types/enums";
 
 type ThemeContextType = {
-  theme: string;
-  selectTheme: (theme: ThemeMode) => void;
+  theme: ThemeMode;
+  toggleTheme: () => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState(() => {
+  const [theme, setTheme] = useState<ThemeMode>(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("theme") || ThemeMode.LIGHT;
+      return (localStorage.getItem("theme") as ThemeMode) || ThemeMode.LIGHT;
     }
     return ThemeMode.LIGHT;
   });
@@ -24,11 +24,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const selectTheme = (theme: ThemeMode) => {
-    setTheme(theme);
+  const toggleTheme = () => {
+    setTheme((theme) => (theme === ThemeMode.LIGHT ? ThemeMode.DARK : ThemeMode.LIGHT));
   };
 
-  return <ThemeContext.Provider value={{ theme, selectTheme }}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

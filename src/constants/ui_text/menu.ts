@@ -15,6 +15,12 @@ export const MENU = {
   DELETE_DEFAULT_ERROR:
     "Món ăn này đã có trong hóa đơn, không thể xóa. Hãy tắt trạng thái bán thay vì xóa!",
   MENUCOUNT: (count: number) => `${count} món`,
+  NAV: {
+    OVERVIEW: "Tổng quan",
+    MENU_LIST: "Danh sách món",
+    OPTIONS: "Nhóm tùy chọn",
+    RECIPES: "Công thức món",
+  },
   OPTIONS: {
     TITLE: "Tùy chọn món ăn",
     MENU_FAILED: "Không thể tải tùy chọn cho món ăn này!",

@@ -1,12 +1,12 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import Script from "next/dist/client/script";
 import { Geist_Mono, Inter } from "next/font/google";
 import { Toaster } from "sonner";
 
 import { BrandingDocumentSync } from "@/components/features/branding/BrandingDocumentSync";
 import { fetchBrandingSettingsServer } from "@/lib/branding-metadata";
+import { LanguageProvider } from "@/providers/LanguageProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import { ThemeProvider } from "@/store/ThemeContext";
 
@@ -48,16 +48,14 @@ export default async function RootLayout({
         className={`${inter.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Script
-          src="https://cdn.jsdelivr.net/npm/qz-tray/qz-tray.js"
-          strategy="beforeInteractive"
-        />
         <ThemeProvider>
-          <QueryProvider>
-            <BrandingDocumentSync />
-            <Toaster position="top-center" richColors />
-            {children}
-          </QueryProvider>
+          <LanguageProvider>
+            <QueryProvider>
+              <BrandingDocumentSync />
+              <Toaster position="top-center" richColors />
+              {children}
+            </QueryProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

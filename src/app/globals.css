@@ -379,33 +379,68 @@
 }
 
 .dark {
-  /* Dark Mode: Deep Charcoal (Warm) */
-  --background: oklch(0.14 0.01 40);
-  /* Hơi nâu/ấm rất nhẹ thay vì xanh */
-  --foreground: oklch(0.98 0.005 50);
+  /* ===============================
+     Dark Mode: Deep Warm Charcoal
+     Layer hierarchy (lightness):
+     sidebar(12%) < background(15%) < card(21%) < popover(26%) < secondary(28%) < border(32%)
+     =============================== */
 
-  --card: oklch(0.18 0.015 40);
-  --card-foreground: oklch(0.98 0.005 50);
+  /* Base surface */
+  --background: oklch(0.15 0.012 42);
+  /* Chữ trắng ấm, không quá lóa */
+  --foreground: oklch(0.93 0.008 50);
 
-  --popover: oklch(0.18 0.015 40);
-  --popover-foreground: oklch(0.98 0.005 50);
+  /* Card nổi lên rõ hơn so với background */
+  --card: oklch(0.21 0.016 42);
+  --card-foreground: oklch(0.93 0.008 50);
 
-  --primary: oklch(0.65 0.2 35);
-  /* Sáng hơn trong dark mode */
+  /* Popover / dropdown cao hơn card 1 bậc */
+  --popover: oklch(0.26 0.018 42);
+  --popover-foreground: oklch(0.93 0.008 50);
+
+  /* Primary: cam đỏ sáng hơn để nổi bật trên nền tối */
+  --primary: oklch(0.68 0.2 35);
+  --primary-hover: oklch(0.72 0.2 35);
+  --primary-active: oklch(0.64 0.2 35);
+  --primary-disabled: oklch(0.35 0.06 35);
   --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.22 0.02 40);
-  --secondary-foreground: oklch(0.98 0.005 50);
+  /* Secondary & muted phân cấp rõ */
+  --secondary: oklch(0.28 0.02 42);
+  --secondary-foreground: oklch(0.88 0.008 50);
 
-  --muted: oklch(0.22 0.02 40);
-  --muted-foreground: oklch(0.7 0.02 40);
+  --muted: oklch(0.24 0.016 42);
+  --muted-foreground: oklch(0.62 0.022 48);
 
-  --border: oklch(0.26 0.02 40);
-  --input: oklch(0.26 0.02 40);
-  --ring: oklch(0.65 0.2 35);
+  /* Accent cho hover states */
+  --accent: oklch(0.26 0.018 42);
+  --accent-foreground: oklch(0.88 0.008 50);
 
-  --order-cooking: oklch(0.7 0.2 45);
+  /* Border rõ hơn để phân tách elements */
+  --border: oklch(0.32 0.022 42);
+  --input: oklch(0.29 0.02 42);
+  --ring: oklch(0.68 0.2 35);
 
+  /* Semantic states sáng hơn để đọc được trong dark */
+  --success: oklch(0.62 0.17 145);
+  --success-foreground: oklch(1 0 0);
+
+  --warning: oklch(0.80 0.15 85);
+  --warning-foreground: oklch(0.22 0.05 85);
+
+  --danger: oklch(0.62 0.22 25);
+  --danger-foreground: oklch(1 0 0);
+
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+
+  --info: oklch(0.68 0.13 230);
+  --info-foreground: oklch(1 0 0);
+
+  /* Order status */
+  --order-cooking: oklch(0.72 0.2 45);
+
+  /* Shared table surfaces */
   --table-shell-bg: linear-gradient(
     180deg,
     color-mix(in oklab, var(--card) 90%, var(--accent) 10%) 0%,
@@ -414,22 +449,30 @@
   --table-header-bg: color-mix(in oklab, var(--secondary) 80%, var(--card) 20%);
   --table-border-strong: color-mix(in oklab, var(--border) 88%, white 12%);
   --table-border-soft: color-mix(in oklab, var(--border) 70%, var(--card) 30%);
-  --table-row-hover: color-mix(in oklab, var(--primary) 12%, var(--card) 88%);
-  --table-row-muted: color-mix(in oklab, var(--muted) 78%, var(--card) 22%);
-  --table-heading: color-mix(in oklab, var(--foreground) 78%, var(--primary) 22%);
+  --table-row-hover: color-mix(in oklab, var(--primary) 14%, var(--card) 86%);
+  --table-row-muted: color-mix(in oklab, var(--muted) 80%, var(--card) 20%);
+  --table-heading: color-mix(in oklab, var(--foreground) 80%, var(--primary) 20%);
   --table-text-strong: color-mix(in oklab, var(--foreground) 96%, white 4%);
   --table-text: color-mix(in oklab, var(--foreground) 85%, var(--muted-foreground) 15%);
   --table-text-muted: var(--muted-foreground);
   --table-skeleton: color-mix(in oklab, var(--accent) 78%, var(--primary) 22%);
   --table-skeleton-soft: color-mix(in oklab, var(--accent) 92%, white 8%);
 
-  --sidebar: oklch(0.16 0.015 40);
-  --sidebar-foreground: oklch(0.98 0.005 50);
-  --sidebar-primary: oklch(0.65 0.2 35);
+  /* Sidebar: tối hơn background → phân cấp layout rõ ràng */
+  --sidebar: oklch(0.12 0.01 42);
+  --sidebar-foreground: oklch(0.88 0.008 50);
+  --sidebar-primary: oklch(0.68 0.2 35);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.22 0.02 40);
-  --sidebar-accent-foreground: oklch(0.98 0.005 50);
-  --sidebar-border: oklch(0.26 0.02 40);
+  --sidebar-accent: oklch(0.22 0.016 42);
+  --sidebar-accent-foreground: oklch(0.88 0.008 50);
+  --sidebar-border: oklch(0.28 0.018 42);
+  --sidebar-ring: oklch(0.68 0.2 35);
+
+  /* Shadows rõ hơn trong dark mode */
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.25);
+  --shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.35), 0 2px 4px -2px rgb(0 0 0 / 0.25);
+  --shadow-lg: 0 10px 20px -3px rgb(0 0 0 / 0.40), 0 4px 8px -4px rgb(0 0 0 / 0.30);
+  --shadow-xl: 0 20px 30px -5px rgb(0 0 0 / 0.45), 0 8px 12px -6px rgb(0 0 0 / 0.35);
 }
 
 /*

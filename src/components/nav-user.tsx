@@ -25,6 +25,9 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
 import { EmployeeRole } from "@/types/Employee";
 
+import { LanguageSwitcher } from "./shared/LanguageSwitcher";
+import ToggleTheme from "./shared/ToggleTheme";
+
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { employee } = useAuthStore();
@@ -45,9 +48,9 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-2xl transition-all"
             >
-              <Avatar className="h-9 w-9 border-2 border-primary/10 shadow-sm overflow-hidden bg-slate-100 flex items-center justify-center">
-                <AvatarFallback className="bg-slate-100 p-2">
-                  <User className="size-5 text-slate-400" />
+              <Avatar className="h-9 w-9 border-2 border-primary/10 shadow-sm overflow-hidden bg-muted flex items-center justify-center">
+                <AvatarFallback className="bg-muted p-2">
+                  <User className="size-5 text-muted-foreground" />
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight ml-1">
@@ -64,16 +67,16 @@ export function NavUser() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-60 rounded-2xl p-2 shadow-2xl"
+            className="w-60 rounded-xl p-2 shadow-2xl bg-card text-card-foreground"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={12}
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-3 py-2.5 text-left">
-                <Avatar className="h-10 w-10 border-2 border-primary/10 overflow-hidden bg-slate-100 flex items-center justify-center">
-                  <AvatarFallback className="bg-slate-100 p-2">
-                    <User className="size-6 text-slate-400" />
+                <Avatar className="h-10 w-10 border-2 border-primary/10 overflow-hidden bg-muted flex items-center justify-center">
+                  <AvatarFallback className="bg-muted p-2">
+                    <User className="size-6 text-muted-foreground" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -91,6 +94,7 @@ export function NavUser() {
                   <div className="bg-primary/10 p-2 rounded-lg">
                     <User className="size-4 text-primary" />
                   </div>
+
                   <div className="flex flex-col">
                     <span className="font-semibold text-sm">{UI_TEXT.PROFILE.PROFILE_TAB}</span>
                     <span className="text-[10px] text-muted-foreground">
@@ -100,9 +104,18 @@ export function NavUser() {
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
+
+            <DropdownMenuItem>
+              <LanguageSwitcher />
+            </DropdownMenuItem>
+
+            <DropdownMenuItem>
+              <ToggleTheme />
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuItem
-              className="rounded-xl p-2.5 gap-3 text-primary focus:bg-rose-50 focus:text-primary-hover cursor-pointer"
+              className="rounded-xl p-2.5 gap-3 text-primary focus:bg-primary/10 focus:text-primary-hover cursor-pointer"
               onClick={handleLogout}
             >
               <div className="bg-primary/10 p-2 rounded-lg">

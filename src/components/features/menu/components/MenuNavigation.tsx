@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -16,18 +17,18 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Tổng quan",
+    label: UI_TEXT.MENU.NAV.OVERVIEW,
     href: "/manager/menu",
     icon: LayoutDashboard,
     exact: true,
   },
   {
-    label: "Danh sách món",
+    label: UI_TEXT.MENU.NAV.MENU_LIST,
     href: "/manager/menu/list",
     icon: BookOpenText,
   },
   {
-    label: "Danh sách tùy chọn",
+    label: UI_TEXT.MENU.NAV.OPTIONS,
     href: "/manager/menu/options",
     icon: Library,
   },

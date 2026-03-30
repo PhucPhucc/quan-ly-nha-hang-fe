@@ -71,6 +71,7 @@ export const SCHEDULE = {
   HOURS_UNIT: "h",
   REQUEST_TYPE_SHIFT_CHANGE: "Đổi ca - Ca chiều",
   REQUEST_TYPE_LEAVE: "Nghỉ phép - Thứ Sáu",
+  NOW: "Bây giờ",
   NEXT_WEEK: "Tuần sau",
   NEXT_2_WEEKS: "2 tuần nữa",
   NEXT_MONTH: "Tháng sau",
