@@ -5,6 +5,7 @@ import { BarChart3, DollarSign, ShoppingCart, TrendingDown, TrendingUp } from "l
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { DashboardStats } from "@/types/salesAnalytics.types";
 
@@ -19,7 +20,7 @@ export function StatsGrid({ stats, loading }: StatsGridProps) {
   const items = [
     {
       title: t.TOTAL_REVENUE,
-      value: `${stats.totalRevenue.toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`,
+      value: formatCurrency(stats.totalRevenue),
       growth: stats.revenueGrowth,
       icon: DollarSign,
       color: "text-primary",
@@ -32,7 +33,7 @@ export function StatsGrid({ stats, loading }: StatsGridProps) {
     },
     {
       title: t.AVG_ORDER_VALUE,
-      value: `${stats.avgOrderValue.toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`,
+      value: formatCurrency(stats.avgOrderValue),
       icon: BarChart3,
       color: "text-emerald-500",
     },

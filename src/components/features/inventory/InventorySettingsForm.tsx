@@ -38,12 +38,14 @@ type Props = {
   onSubmit: (data: InventorySettingsInput) => Promise<void> | void;
 };
 
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
+
 function formatDateTime(value?: string | null) {
   if (!value) {
     return SETTINGS.NO_IMPORT_YET;
   }
 
-  return new Date(value).toLocaleString();
+  return formatDateTimeWithBranding(value, undefined, true);
 }
 
 function formatCooldownValue(value?: number) {

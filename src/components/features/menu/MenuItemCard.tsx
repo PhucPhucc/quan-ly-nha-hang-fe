@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useMenuStore } from "@/store/useMenuStore";
 import { MenuItem, SetMenu } from "@/types/Menu";
 
@@ -101,11 +101,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
       </TableCell>
 
       <TableCell>
-        <div className="text-sm font-semibold text-primary">
-          {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
-            item.price
-          )}
-        </div>
+        <div className="text-sm font-semibold text-primary">{formatCurrency(item.price)}</div>
       </TableCell>
 
       <TableCell>

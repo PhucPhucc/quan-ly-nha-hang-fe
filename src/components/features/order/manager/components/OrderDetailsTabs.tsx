@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import { CalendarClock, FileText, UserCircle2 } from "lucide-react";
 import React from "react";
 
@@ -10,27 +9,12 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { PreCheckBill } from "@/types/Billing";
 import { OrderItemStatus, OrderStatus } from "@/types/enums";
 import { Order as OrderModel, OrderItemOptionGroup } from "@/types/Order";
-
-interface OrderDetailsContentProps {
-  current: OrderModel;
-  preCheckBill: PreCheckBill | null;
-  handleSplitBill?: (item: OrderModel["orderItems"][number]) => Promise<void>;
-}
-
-const money = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" });
-
-const fmt = (value?: string | null) => {
-  if (!value) return UI_TEXT.COMMON.NOT_APPLICABLE;
-  const d = new Date(value);
-  return Number.isNaN(d.getTime())
-    ? UI_TEXT.COMMON.NOT_APPLICABLE
-    : format(d, "dd/MM/yyyy HH:mm:ss");
-};
 
 const itemStatusClass = (status: OrderItemStatus) => {
   if (status === OrderItemStatus.Completed) return "table-pill-success";
@@ -45,7 +29,7 @@ const buildOptionLines = (groups?: OrderItemOptionGroup[]) =>
     group.optionValues.map((value) => {
       const qty = value.quantity > 1 ? ` x${value.quantity}` : "";
       const extra =
-        value.extraPriceSnapshot > 0 ? ` (+${money.format(value.extraPriceSnapshot)})` : "";
+        value.extraPriceSnapshot > 0 ? ` (+${formatCurrency(value.extraPriceSnapshot)})` : "";
       return `${group.groupNameSnapshot}: ${value.labelSnapshot}${qty}${extra}`;
     })
   );
@@ -57,29 +41,47 @@ function formatOrderType(orderType: string) {
   return orderType;
 }
 
+interface OrderDetailsContentProps {
+  current: OrderModel;
+  preCheckBill: PreCheckBill | null;
+  handleSplitBill?: (item: OrderModel["orderItems"][number]) => Promise<void>;
+}
+
 export function OrderDetailsTabs({
   current,
   preCheckBill,
   handleSplitBill,
 }: OrderDetailsContentProps) {
+  const { formatDateTime } = useBrandingFormatter();
+
   const itemTotal = (current?.orderItems ?? []).reduce(
     (sum, item) => sum + item.quantity * item.unitPriceSnapshot,
     0
   );
 
   const timeline = [
-    { label: UI_TEXT.ORDER.DETAIL.TIMELINE_CREATE, value: fmt(current.createdAt) },
+    { label: UI_TEXT.ORDER.DETAIL.TIMELINE_CREATE, value: formatDateTime(current.createdAt) },
     ...(current.updatedAt
-      ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_UPDATE, value: fmt(current.updatedAt) }]
+      ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_UPDATE, value: formatDateTime(current.updatedAt) }]
       : []),
     ...(current.paidAt
-      ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_PAID, value: fmt(current.paidAt) }]
+      ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_PAID, value: formatDateTime(current.paidAt) }]
       : []),
     ...(current.completedAt
-      ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_COMPLETE, value: fmt(current.completedAt) }]
+      ? [
+          {
+            label: UI_TEXT.ORDER.DETAIL.TIMELINE_COMPLETE,
+            value: formatDateTime(current.completedAt),
+          },
+        ]
       : []),
     ...(current.cancelledAt
-      ? [{ label: UI_TEXT.ORDER.DETAIL.TIMELINE_CANCEL, value: fmt(current.cancelledAt) }]
+      ? [
+          {
+            label: UI_TEXT.ORDER.DETAIL.TIMELINE_CANCEL,
+            value: formatDateTime(current.cancelledAt),
+          },
+        ]
       : []),
   ];
 
@@ -122,11 +124,11 @@ export function OrderDetailsTabs({
               />
               <InfoCard
                 label={UI_TEXT.ORDER.DETAIL.SUBTOTAL}
-                value={money.format(current.subTotal ?? itemTotal)}
+                value={formatCurrency(current.subTotal ?? itemTotal)}
               />
               <InfoCard
                 label={UI_TEXT.ORDER.DETAIL.TOTAL_AMOUNT}
-                value={money.format(current.totalAmount)}
+                value={formatCurrency(current.totalAmount)}
                 isHighlight
               />
             </div>
@@ -231,7 +233,7 @@ export function OrderDetailsTabs({
                       </p>
                       <p className="font-bold text-danger">
                         {UI_TEXT.COMMON.MINUS}
-                        {money.format(current.discountAmount!)}
+                        {formatCurrency(current.discountAmount!)}
                       </p>
                     </div>
                   )}
@@ -342,7 +344,7 @@ export function OrderDetailsTabs({
                           {UI_TEXT.ORDER.DETAIL.PRICE_LABEL}
                         </span>
                         <span className="text-table-text-strong">
-                          {money.format(item.isFreeItem ? 0 : item.unitPriceSnapshot)}
+                          {formatCurrency(item.isFreeItem ? 0 : item.unitPriceSnapshot)}
                         </span>
                       </div>
                     </div>
@@ -380,7 +382,9 @@ export function OrderDetailsTabs({
                         {UI_TEXT.ORDER.DETAIL.LINE_TOTAL}
                       </p>
                       <p className="text-xl font-bold tracking-tight text-primary">
-                        {money.format(item.isFreeItem ? 0 : item.quantity * item.unitPriceSnapshot)}
+                        {formatCurrency(
+                          item.isFreeItem ? 0 : item.quantity * item.unitPriceSnapshot
+                        )}
                       </p>
                     </div>
                     {current.status === OrderStatus.Serving && handleSplitBill && (
@@ -428,14 +432,17 @@ export function OrderDetailsTabs({
                 label={UI_TEXT.ORDER.DETAIL.PAYMENT_RECEIVED}
                 value={
                   current.amountPaid
-                    ? money.format(current.amountPaid)
+                    ? formatCurrency(current.amountPaid)
                     : UI_TEXT.COMMON.NOT_APPLICABLE
                 }
               />
-              <PaymentRow label={UI_TEXT.ORDER.DETAIL.PAID_AT} value={fmt(current.paidAt)} />
+              <PaymentRow
+                label={UI_TEXT.ORDER.DETAIL.PAID_AT}
+                value={formatDateTime(current.paidAt)}
+              />
               <PaymentRow
                 label={UI_TEXT.ORDER.DETAIL.VAT}
-                value={money.format(current.vatAmount ?? preCheckBill?.vat ?? 0)}
+                value={formatCurrency(current.vatAmount ?? preCheckBill?.vat ?? 0)}
               />
               <Separator className="!my-2" />
               <div className="flex items-center justify-between py-2">
@@ -443,7 +450,7 @@ export function OrderDetailsTabs({
                   {UI_TEXT.ORDER.DETAIL.TOTAL_AMOUNT}
                 </span>
                 <span className="text-2xl font-bold tracking-tight text-primary">
-                  {money.format(current.totalAmount)}
+                  {formatCurrency(current.totalAmount)}
                 </span>
               </div>
             </div>
@@ -459,22 +466,22 @@ export function OrderDetailsTabs({
               <div className="space-y-4">
                 <PaymentRow
                   label={UI_TEXT.ORDER.DETAIL.PRE_SUBTOTAL}
-                  value={money.format(preCheckBill.subTotal)}
+                  value={formatCurrency(preCheckBill.subTotal)}
                 />
                 <PaymentRow
                   label={UI_TEXT.ORDER.DETAIL.PRE_PRETAX}
-                  value={money.format(preCheckBill.preTaxAmount)}
+                  value={formatCurrency(preCheckBill.preTaxAmount)}
                 />
                 {preCheckBill.discount > 0 && (
                   <PaymentRow
                     label={UI_TEXT.ORDER.DETAIL.DISCOUNT_AMOUNT}
-                    value={`-${money.format(preCheckBill.discount)}`}
+                    value={`-${formatCurrency(preCheckBill.discount)}`}
                     className="text-danger"
                   />
                 )}
                 <PaymentRow
                   label={UI_TEXT.ORDER.DETAIL.PRE_VAT}
-                  value={money.format(preCheckBill.vat)}
+                  value={formatCurrency(preCheckBill.vat)}
                 />
                 <Separator className="!my-2" />
                 <div className="flex items-center justify-between py-2">
@@ -482,7 +489,7 @@ export function OrderDetailsTabs({
                     {UI_TEXT.ORDER.DETAIL.PRE_TOTAL}
                   </span>
                   <span className="text-2xl font-bold tracking-tight text-emerald-600">
-                    {money.format(preCheckBill.totalAmount)}
+                    {formatCurrency(preCheckBill.totalAmount)}
                   </span>
                 </div>
               </div>

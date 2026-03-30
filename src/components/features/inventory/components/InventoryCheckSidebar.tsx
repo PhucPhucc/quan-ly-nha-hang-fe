@@ -7,6 +7,7 @@ import { DateRange } from "react-day-picker";
 import { DateRangePicker } from "@/components/shared/DateRangePicker";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { InventoryCheckDetail } from "@/types/Inventory";
 
@@ -31,6 +32,8 @@ export function InventoryCheckSidebar({
   note,
   setNote,
 }: InventoryCheckSidebarProps) {
+  const { formatDate, formatDateTime } = useBrandingFormatter();
+
   return (
     <div className="rounded-lg border bg-card p-6 space-y-8 shadow-sm">
       <div className="space-y-4">
@@ -42,9 +45,7 @@ export function InventoryCheckSidebar({
         </div>
         {isProcessed ? (
           <div className="p-4 bg-card rounded-lg text-sm font-semibold text-card-foreground border text-center">
-            {new Date(checkDate).toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI, {
-              dateStyle: "long",
-            })}
+            {formatDate(checkDate)}
           </div>
         ) : (
           <DateRangePicker
@@ -84,7 +85,7 @@ export function InventoryCheckSidebar({
           <div className="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest">
             <span className="text-card-foreground/80">{UI_TEXT.INVENTORY.TABLE.COL_DATE}</span>
             <span className="text-card-foreground font-bold">
-              {new Date(check?.createdAt || "").toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+              {formatDateTime(check?.createdAt)}
             </span>
           </div>
         </div>

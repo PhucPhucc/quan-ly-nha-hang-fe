@@ -3,7 +3,7 @@ import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { OrderItem } from "@/types/Order";
 
 import { getRemoteItemTotal } from "./order-item-list.utils";
@@ -82,12 +82,7 @@ export const RemoteOrderItemCard: React.FC<RemoteOrderItemCardProps> = ({
         </div>
 
         <div className={cn("text-sm font-medium text-right", isFree ? "text-emerald-600" : "")}>
-          {!hidePrice && (
-            <p>
-              {(isFree ? 0 : getRemoteItemTotal(item)).toLocaleString()}
-              {UI_TEXT.COMMON.CURRENCY}
-            </p>
-          )}
+          {!hidePrice && <p>{formatCurrency(isFree ? 0 : getRemoteItemTotal(item))}</p>}
           <p>{UI_TEXT.ORDER.QUANTITY(item.quantity)}</p>
         </div>
       </div>

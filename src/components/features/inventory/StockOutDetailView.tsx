@@ -14,9 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { formatCurrency } from "@/lib/utils";
 import { StockOutReceipt } from "@/types/StockOut";
 
 import {
@@ -36,6 +36,7 @@ interface StockOutDetailViewProps {
 }
 
 export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetailViewProps) => {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -137,11 +138,7 @@ export const StockOutDetailView = ({ receipt, onBack, onDelete }: StockOutDetail
                     {UI_TEXT.INVENTORY.TABLE.COL_DATE}
                   </span>
                   <span className="text-foreground/80 font-bold">
-                    {new Date(receipt.stockOutDate).toLocaleDateString(UI_TEXT.COMMON.LOCALE_VI, {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
+                    {formatDate(receipt.stockOutDate)}
                   </span>
                 </div>
                 {receipt.reason && (

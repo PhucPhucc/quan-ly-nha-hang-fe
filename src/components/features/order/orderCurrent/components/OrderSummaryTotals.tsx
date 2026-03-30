@@ -3,6 +3,7 @@ import React from "react";
 
 import { Separator } from "@/components/ui/separator";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 
 interface OrderSummaryTotalsProps {
   subtotal: number;
@@ -23,18 +24,12 @@ export const OrderSummaryTotals: React.FC<OrderSummaryTotalsProps> = ({
     <div className="w-full space-y-1.5">
       <div className="flex justify-between items-center text-muted-foreground gap-2 px-1">
         <span className="text-[10px]">{UI_TEXT.ORDER.CURRENT.SUBTOTAL}</span>
-        <span className="font-semibold text-xs text-foreground">
-          {subtotal.toLocaleString()}
-          {UI_TEXT.COMMON.CURRENCY}
-        </span>
+        <span className="font-semibold text-xs text-foreground">{formatCurrency(subtotal)}</span>
       </div>
 
       <div className="flex justify-between items-center text-muted-foreground gap-2 px-1">
         <span className="text-[10px]">{UI_TEXT.ORDER.CURRENT.TAX}</span>
-        <span className="font-semibold text-xs text-foreground">
-          {tax.toLocaleString()}
-          {UI_TEXT.COMMON.CURRENCY}
-        </span>
+        <span className="font-semibold text-xs text-foreground">{formatCurrency(tax)}</span>
       </div>
 
       {voucherCode && (
@@ -56,8 +51,7 @@ export const OrderSummaryTotals: React.FC<OrderSummaryTotalsProps> = ({
           <span className="text-[10px] uppercase font-bold">{UI_TEXT.ORDER.CURRENT.DISCOUNT}</span>
           <span className="font-bold text-xs">
             {UI_TEXT.COMMON.MINUS}
-            {discount.toLocaleString()}
-            {UI_TEXT.COMMON.CURRENCY}
+            {formatCurrency(discount)}
           </span>
         </div>
       )}
@@ -70,8 +64,7 @@ export const OrderSummaryTotals: React.FC<OrderSummaryTotalsProps> = ({
             {UI_TEXT.ORDER.CURRENT.TOTAL_AMOUNT}
           </span>
           <span className="font-black text-primary leading-none tracking-tighter">
-            {total.toLocaleString()}
-            {UI_TEXT.COMMON.CURRENCY}
+            {formatCurrency(total)}
           </span>
         </div>
       </div>

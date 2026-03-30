@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import { formatCurrencyWithBranding } from "./branding-formatting";
 import { UI_TEXT } from "./UI_Text";
 
 export function cn(...inputs: ClassValue[]) {
@@ -80,5 +81,5 @@ export function toFormData(obj: Record<string, unknown>): FormData {
 }
 
 export function formatCurrency(value: number) {
-  return `${value.toLocaleString()}${UI_TEXT.COMMON.CURRENCY}`;
+  return formatCurrencyWithBranding(value);
 }

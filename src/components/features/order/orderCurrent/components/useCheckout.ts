@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
+import { AuthState, useAuthStore } from "@/store/useAuthStore";
 import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
 import { PreCheckBillResponse } from "@/types/Billing";
@@ -27,6 +28,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
   } | null>(null);
 
   const { data: branding } = useBrandingSettings();
+  const fullNameEmployee = useAuthStore((state: AuthState) => state.employee?.fullName);
 
   const { selectedOrderId, checkoutOrder, clearOrderDetails, fetchOrders } = useOrderBoardStore(
     (state: OrderBoardState) => ({
@@ -42,35 +44,66 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     fetchTablesByArea: state.fetchTablesByArea,
   }));
 
+  const getCookie = (name: string) => {
+    if (typeof document === "undefined") return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(";").shift();
+    return null;
+  };
+
   const buildReceiptFromOrder = useCallback(
-    (order: Order, invoiceAmount?: number): PreCheckBillResponse => ({
-      orderId: order.orderId,
-      orderCode: order.orderCode,
-      tableNumber: order.tableId ? Number.parseInt(order.tableId, 10) || undefined : undefined,
-      employeeName: UI_TEXT.COMMON.NOT_APPLICABLE,
-      printedAt: new Date().toISOString(),
-      items: order.orderItems.map((item) => ({
-        itemName: item.itemNameSnapshot,
-        quantity: item.quantity,
-        unitPrice: item.unitPriceSnapshot,
-        optionsSummary: item.itemOptions,
-        lineTotal: item.unitPriceSnapshot * item.quantity,
-      })),
-      subTotal: order.subTotal ?? order.totalAmount,
-      discount: order.discountAmount ?? order.discount ?? 0,
-      voucherCode: order.voucherCode ?? order.appliedVoucherCode,
-      preTaxAmount: order.subTotal ?? order.totalAmount,
-      vatRate: order.vatRate ?? 0,
-      vat: order.vatAmount ?? 0,
-      totalAmount: invoiceAmount ?? order.totalAmount,
-      paymentMethod: order.paymentMethod,
-      amountReceived: invoiceAmount ?? order.amountPaid ?? order.totalAmount,
-      changeAmount:
-        typeof invoiceAmount === "number"
-          ? Math.max(0, invoiceAmount - (order.totalAmount || 0))
-          : Math.max(0, (order.amountPaid ?? order.totalAmount) - (order.totalAmount || 0)),
-    }),
-    []
+    (order: Order, invoiceAmount?: number): PreCheckBillResponse => {
+      // Tính toán giá trị dựa trên danh sách món để đảm bảo độ chính xác
+      const itemsLineTotal = order.orderItems.reduce(
+        (sum, item) => sum + (item.unitPriceSnapshot || 0) * (item.quantity || 0),
+        0
+      );
+
+      // Ưu tiên subTotal từ BE, nếu không có thì lấy tổng tính từ items, cuối cùng là totalAmount truyền vào
+      const subTotalVal = order.subTotal || itemsLineTotal || order.totalAmount || totalAmount;
+      const discountVal = order.discountAmount ?? order.discount ?? 0;
+
+      // Tính thuế 10% dựa trên (Thành tiền - Giảm giá)
+      const vatRate = 0.1;
+      const computedVat = Math.max(0, (subTotalVal - discountVal) * vatRate);
+      const finalTotal = subTotalVal - discountVal + computedVat;
+
+      // Lấy tên nhân viên từ store hoặc cookie nếu store trống
+      const employeeNameFromStore =
+        fullNameEmployee || useAuthStore.getState().employee?.employeeCode;
+      const employeeNameFromCookie = getCookie("fullName") || getCookie("employeeName");
+
+      return {
+        orderId: order.orderId,
+        orderCode: order.orderCode,
+        tableNumber: order.tableId ? Number.parseInt(order.tableId, 10) || undefined : undefined,
+        employeeName:
+          employeeNameFromStore || employeeNameFromCookie || UI_TEXT.COMMON.NOT_APPLICABLE,
+        printedAt: new Date().toISOString(),
+        items: order.orderItems.map((item) => ({
+          itemName: item.itemNameSnapshot,
+          quantity: item.quantity,
+          unitPrice: item.unitPriceSnapshot,
+          optionsSummary: item.itemOptions,
+          lineTotal: item.unitPriceSnapshot * item.quantity,
+        })),
+        subTotal: subTotalVal,
+        discount: discountVal,
+        voucherCode: order.voucherCode ?? order.appliedVoucherCode,
+        preTaxAmount: subTotalVal - discountVal,
+        vatRate: 10, // Hiển thị 10% trên bill
+        vat: computedVat,
+        totalAmount: invoiceAmount ?? finalTotal,
+        paymentMethod: order.paymentMethod,
+        amountReceived: invoiceAmount ?? order.amountPaid ?? finalTotal,
+        changeAmount:
+          typeof invoiceAmount === "number"
+            ? Math.max(0, invoiceAmount - finalTotal)
+            : Math.max(0, (order.amountPaid ?? finalTotal) - finalTotal),
+      };
+    },
+    [fullNameEmployee, totalAmount]
   );
 
   const refreshBoardState = useCallback(async () => {

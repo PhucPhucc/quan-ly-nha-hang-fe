@@ -14,10 +14,12 @@ import { invalidateInventoryQueries } from "@/components/features/inventory/inve
 import { StockInListTable } from "@/components/features/inventory/StockInListTable";
 import { StockOutListTable } from "@/components/features/inventory/StockOutListTable";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { stockInService } from "@/services/stock-in.service";
 import { stockOutService } from "@/services/stock-out.service";
@@ -42,22 +44,27 @@ export default function StockInPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [receiptToDelete, setReceiptToDelete] = useState<string | null>(null);
 
+  const { formatDate } = useBrandingFormatter();
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      const startStr = startDate?.toISOString().split("T")[0];
+      const endStr = endDate?.toISOString().split("T")[0];
+
       if (receiptType === "in") {
         const response = await stockInService.getReceipts(
           currentPage,
           10,
           search || undefined,
-          startDate || undefined,
-          endDate || undefined
+          startStr,
+          endStr
         );
 
         if (response.isSuccess && response.data) {
@@ -70,8 +77,8 @@ export default function StockInPage() {
           currentPage,
           10,
           search || undefined,
-          startDate || undefined,
-          endDate || undefined
+          startStr,
+          endStr
         );
 
         if (response.isSuccess && response.data) {
@@ -189,14 +196,11 @@ export default function StockInPage() {
               >
                 {START_DATE_LABEL}
               </Label>
-              <Input
-                id="receipt-start-date"
-                type="date"
-                aria-label={START_DATE_LABEL}
-                className={`${INVENTORY_INPUT_CLASS}  w-40 bg-card focus:bg-background`}
+              <DatePicker
+                placeholder={formatDate(new Date())}
                 value={startDate}
-                onChange={(e) => {
-                  setStartDate(e.target.value);
+                onChange={(val: Date | undefined) => {
+                  setStartDate(val);
                   setCurrentPage(1);
                 }}
               />
@@ -209,25 +213,22 @@ export default function StockInPage() {
               >
                 {END_DATE_LABEL}
               </Label>
-              <Input
-                id="receipt-end-date"
-                type="date"
-                aria-label={END_DATE_LABEL}
-                className={`${INVENTORY_INPUT_CLASS} w-40 bg-card focus:bg-background`}
+              <DatePicker
+                placeholder={formatDate(new Date())}
                 value={endDate}
-                onChange={(e) => {
-                  setEndDate(e.target.value);
+                onChange={(val: Date | undefined) => {
+                  setEndDate(val);
                   setCurrentPage(1);
                 }}
               />
             </div>
 
             <Button
+              type="button"
               variant="ghost"
-              size={"icon"}
               onClick={() => {
-                setStartDate("");
-                setEndDate("");
+                setStartDate(undefined);
+                setEndDate(undefined);
                 setSearch("");
                 setCurrentPage(1);
               }}

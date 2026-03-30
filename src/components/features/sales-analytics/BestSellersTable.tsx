@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { BestSeller } from "@/types/salesAnalytics.types";
 
 interface BestSellersTableProps {
@@ -72,12 +72,10 @@ function BestSellerRow({ item }: { item: BestSeller }) {
       </TableCell>
       <TableCell className="text-right font-medium">{item.quantitySold}</TableCell>
       <TableCell className="text-right font-bold text-primary">
-        {item.revenue.toLocaleString()}
-        {UI_TEXT.COMMON.CURRENCY}
+        {formatCurrency(item.revenue)}
       </TableCell>
       <TableCell className="text-right font-medium text-emerald-600 hidden lg:table-cell">
-        {(item.grossProfit ?? 0).toLocaleString()}
-        {UI_TEXT.COMMON.CURRENCY}
+        {formatCurrency(item.grossProfit ?? 0)}
       </TableCell>
       <TableCell className="text-right">
         <div className="flex flex-col items-end gap-1.5">

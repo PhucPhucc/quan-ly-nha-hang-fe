@@ -6,6 +6,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 
 interface SelectionDialogFooterProps {
   quantity: number;
@@ -53,8 +54,7 @@ export const SelectionDialogFooter: React.FC<SelectionDialogFooterProps> = ({
           onClick={onAddToCart}
           disabled={loading}
         >
-          {UI_TEXT.MENU.OPTIONS.ADD_TO_ORDER} {totalPrice.toLocaleString()}
-          {UI_TEXT.COMMON.CURRENCY}
+          {UI_TEXT.MENU.OPTIONS.ADD_TO_ORDER} {formatCurrency(totalPrice)}
         </Button>
       </div>
     </DialogFooter>

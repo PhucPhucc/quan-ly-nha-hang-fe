@@ -1,11 +1,11 @@
 "use client";
 
-import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { cn } from "@/lib/utils";
 
 interface DatePickerProps {
@@ -16,6 +16,8 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ value, onChange, placeholder, className }: DatePickerProps) {
+  const { formatDate } = useBrandingFormatter();
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -28,7 +30,7 @@ export function DatePicker({ value, onChange, placeholder, className }: DatePick
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-            {value ? format(value, "dd/MM/yyyy") : <span>{placeholder}</span>}
+            {value ? formatDate(value) : <span>{placeholder}</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

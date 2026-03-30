@@ -4,12 +4,16 @@ import { ArrowRight, ChefHat, Flame } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export function HeroSection() {
   const { employee } = useAuthStore();
+  const { data: branding } = useBrandingSettings();
   const t = UI_TEXT.LANDING;
+
+  const restaurantName = branding?.restaurantName || t.HERO_TITLE;
 
   return (
     <section className="relative flex flex-1 items-center justify-center pt-32 pb-20 md:pt-48 md:pb-32">
@@ -35,7 +39,7 @@ export function HeroSection() {
           className="mt-8 text-5xl font-bold tracking-tight text-foreground md:text-7xl text-balance animate-fade-in-up"
           style={{ animationDelay: "0.1s" }}
         >
-          {t.HERO_TITLE} <br />
+          {restaurantName} <br />
           <span className="bg-linear-to-r from-primary to-orange-500 bg-clip-text text-transparent px-2">
             {t.HERO_SUBTITLE}
           </span>

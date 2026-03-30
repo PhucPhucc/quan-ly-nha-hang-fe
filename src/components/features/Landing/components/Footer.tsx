@@ -1,9 +1,11 @@
 import { Utensils } from "lucide-react";
 import Link from "next/link";
 
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 export function Footer() {
+  const { data: branding } = useBrandingSettings();
   const t = UI_TEXT.LANDING;
   return (
     <footer className="border-t border-border bg-card pb-12 pt-16">
@@ -15,7 +17,7 @@ export function Footer() {
                 <Utensils className="h-4 w-4" />
               </div>
               <span className="text-xl font-bold tracking-tight text-foreground">
-                {t.FOOTER_BRAND}
+                {branding?.restaurantName ?? t.FOOTER_BRAND}
               </span>
             </div>
             <p className="text-muted-foreground leading-relaxed">{t.FOOTER_DESC}</p>

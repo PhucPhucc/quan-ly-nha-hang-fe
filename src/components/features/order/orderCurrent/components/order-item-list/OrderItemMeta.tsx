@@ -1,6 +1,7 @@
 import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { OrderItem } from "@/types/Order";
 
 import { getDisplayNote } from "./order-item-list.utils";
@@ -35,8 +36,7 @@ export const OrderItemMeta: React.FC<OrderItemMetaProps> = ({ item }) => {
                 {value.extraPriceSnapshot > 0 && (
                   <span className="ml-2">
                     {UI_TEXT.COMMON.PLUS}
-                    {value.extraPriceSnapshot.toLocaleString()}
-                    {UI_TEXT.COMMON.CURRENCY}
+                    {formatCurrency(value.extraPriceSnapshot)}
                   </span>
                 )}
               </p>

@@ -8,6 +8,7 @@ export interface AuthResponse {
   employeeId: string;
   employeeCode: string;
   fullName?: string;
+  username?: string;
   role: string;
   email: string;
 }

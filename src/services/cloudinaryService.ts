@@ -14,9 +14,15 @@ export const cloudinaryService = {
     const formData = new FormData();
     formData.append("file", file);
 
-    return apiFetch<UploadImageResponse>(`/images/upload?folder=${encodeURIComponent(folder)}`, {
+    return apiFetch<UploadImageResponse>(`/image/upload?folder=${encodeURIComponent(folder)}`, {
       method: "POST",
       body: formData,
+    });
+  },
+
+  deleteImage: async (publicId: string): Promise<ApiResponse<void>> => {
+    return apiFetch<void>(`/images/delete?publicId=${encodeURIComponent(publicId)}`, {
+      method: "DELETE",
     });
   },
 };

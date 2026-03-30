@@ -13,8 +13,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { inventoryService } from "@/services/inventory.service";
 import { InventoryTransaction, InventoryTransactionType } from "@/types/Inventory";
 
@@ -130,9 +132,7 @@ export function InventoryTransactionsTable() {
                   {formatInventoryQuantity(item.quantity)}
                 </TableCell>
                 <TableCell className="text-right font-medium text-muted-foreground tabular-nums">
-                  {item.unitCost
-                    ? item.unitCost.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)
-                    : UI_TEXT.COMMON.DASH}
+                  {item.unitCost ? formatCurrency(item.unitCost) : UI_TEXT.COMMON.DASH}
                 </TableCell>
                 <TableCell className="text-right font-black tabular-nums text-primary/80 bg-primary/5">
                   {formatInventoryQuantity(item.balanceAfter)}
@@ -141,13 +141,7 @@ export function InventoryTransactionsTable() {
                   {item.reference || UI_TEXT.COMMON.DASH}
                 </TableCell>
                 <TableCell className="text-center pr-6 font-medium text-muted-foreground/70 text-[11px] tabular-nums">
-                  {new Date(item.occurredAt).toLocaleString(UI_TEXT.COMMON.LOCALE_VI, {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {formatDateTimeWithBranding(item.occurredAt, undefined, true)}
                 </TableCell>
               </TableRow>
             ))}

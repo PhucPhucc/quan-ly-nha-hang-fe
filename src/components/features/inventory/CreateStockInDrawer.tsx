@@ -3,12 +3,12 @@
 import { Plus } from "lucide-react";
 import React from "react";
 
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { formatInventoryQuantity } from "@/lib/inventory-number";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 import { StockInItemEntry } from "./components/StockInItemEntry";
@@ -25,6 +25,7 @@ export const CreateStockInDrawer = ({
   onOpenChange,
   onSuccess,
 }: CreateStockInDrawerProps) => {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
   const {
     ingredients,
     items,
@@ -55,11 +56,11 @@ export const CreateStockInDrawer = ({
               <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {UI_TEXT.INVENTORY.TABLE.COL_DATE}
               </Label>
-              <Input
-                type="date"
-                className="bg-background rounded-lg"
+              <DatePicker
+                className="w-full"
+                placeholder={formatDate(new Date())}
                 value={receivedDate}
-                onChange={(e) => setReceivedDate(e.target.value)}
+                onChange={setReceivedDate}
               />
             </div>
             <div className="space-y-2">
@@ -115,7 +116,7 @@ export const CreateStockInDrawer = ({
             </span>
             <div className="text-right">
               <span className="text-2xl font-black text-primary tracking-tighter">
-                {formatInventoryQuantity(calculateTotal(), 2)}
+                {formatCurrency(calculateTotal())}
               </span>
               <span className="text-sm font-bold text-primary ml-1 uppercase">
                 {UI_TEXT.COMMON.CURRENCY}

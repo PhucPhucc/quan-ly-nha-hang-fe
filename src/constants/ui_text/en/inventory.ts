@@ -202,6 +202,8 @@ export const INVENTORY = {
     COL_SORT: "Sort",
     SORT_NEWEST: "Newest",
     SORT_OLDEST: "Oldest",
+    SORT_ASC: "Ascending",
+    SORT_DESC: "Descending",
     TRANS_HISTORY: "Stock history",
     THRESHOLD_PREFIX: "Threshold:",
     ERROR_PREFIX: "Error:",

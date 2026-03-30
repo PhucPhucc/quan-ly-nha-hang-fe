@@ -3,6 +3,7 @@
 import { Trash2 } from "lucide-react";
 import React from "react";
 
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatInventoryQuantity, normalizeInventoryQuantity } from "@/lib/inventory-number";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { Ingredient } from "@/types/Inventory";
 
@@ -38,6 +40,7 @@ export function StockInItemEntry({
   updateItem,
   removeItem,
 }: StockInItemEntryProps) {
+  const { formatDate, formatCurrency } = useBrandingFormatter();
   const selectedIng = ingredients.find((i) => i.ingredientId === item.ingredientId);
 
   return (
@@ -129,11 +132,11 @@ export function StockInItemEntry({
           <Label className="text-[10px] font-bold uppercase text-muted-foreground block text-left">
             {UI_TEXT.INVENTORY.TABLE.COL_EXPIRATION}
           </Label>
-          <Input
-            type="date"
-            className="h-9 rounded-lg"
-            value={item.expirationDate || ""}
-            onChange={(e) => updateItem(index, "expirationDate", e.target.value)}
+          <DatePicker
+            className="w-full"
+            placeholder={formatDate(new Date())}
+            value={item.expirationDate || undefined}
+            onChange={(val) => updateItem(index, "expirationDate", val || null)}
           />
         </div>
 
@@ -156,8 +159,7 @@ export function StockInItemEntry({
           {UI_TEXT.INVENTORY.OPENING_STOCK.COL_TOTAL}
         </span>
         <span className="text-sm font-bold text-primary">
-          {formatInventoryQuantity(item.quantity * item.unitPrice, 2)}
-          <span className="text-[10px] ml-1">{UI_TEXT.COMMON.CURRENCY}</span>
+          {formatCurrency(item.quantity * item.unitPrice)}
         </span>
       </div>
     </div>

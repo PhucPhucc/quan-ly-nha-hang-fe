@@ -3,12 +3,14 @@
 import { ChefHat } from "lucide-react";
 import Link from "next/link";
 
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
 import { EmployeeRole } from "@/types/Employee";
 
 export function Navbar() {
   const { employee } = useAuthStore();
+  const { data: branding } = useBrandingSettings();
   const t = UI_TEXT.LANDING;
 
   return (
@@ -19,7 +21,7 @@ export function Navbar() {
             <ChefHat className="h-8 w-8 text-white drop-shadow-md" />
           </div>
           <span className="text-2xl font-bold drop-shadow-md tracking-tight">
-            {UI_TEXT.LANDING.NAV_BRAND}
+            {branding?.restaurantName ?? UI_TEXT.LANDING.NAV_BRAND}
           </span>
         </div>
         <div className="hidden items-center gap-8 md:flex">

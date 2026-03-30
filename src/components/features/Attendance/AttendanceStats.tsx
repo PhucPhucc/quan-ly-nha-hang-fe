@@ -2,6 +2,7 @@ import React from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 
 interface AttendanceStatsProps {
   totalStaff: number;
@@ -65,13 +66,8 @@ const AttendanceStats = ({
           <p className="text-[10px] font-bold text-red-200 uppercase tracking-widest mb-4">
             {UI_TEXT.ATTENDANCE.STAT_PENALTY}
           </p>
-          <div className="flex items-end gap-2">
-            <h3 className="text-3xl font-black text-white leading-none">
-              {estimatedPenalty.toLocaleString("vi-VN")}
-            </h3>
-            <span className="text-[10px] font-bold text-white mb-1">
-              {UI_TEXT.ATTENDANCE.STAT_CURRENCY}
-            </span>
+          <div className="flex items-end gap-2 text-white">
+            <h3 className="text-3xl font-black leading-none">{formatCurrency(estimatedPenalty)}</h3>
           </div>
         </CardContent>
       </Card>

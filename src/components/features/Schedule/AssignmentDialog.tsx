@@ -1,8 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon, Clock, User } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -21,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { shiftAssignmentService } from "@/services/shiftAssignmentService";
 import { shiftService } from "@/services/shiftService";
@@ -151,7 +150,8 @@ const AssignmentDialog = ({
     }
   };
 
-  const formattedDate = date ? format(new Date(date), "EEEE, dd/MM/yyyy", { locale: vi }) : "";
+  const { formatDate } = useBrandingFormatter();
+  const formattedDate = date ? formatDate(date) : "";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

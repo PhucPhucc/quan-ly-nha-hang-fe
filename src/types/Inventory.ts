@@ -272,6 +272,7 @@ export interface InventoryExpiryAlertItem {
   unit: string;
   daysRemaining?: number;
   status: InventoryLotStatus;
+  receivedAt?: string;
 }
 
 export interface InventoryAlertsResponse {

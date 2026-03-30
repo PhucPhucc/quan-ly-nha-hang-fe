@@ -3,13 +3,16 @@ import React, { useEffect } from "react";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 import { Button } from "../ui/button";
 import { Field } from "../ui/field";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+
 const DOBPicker = ({ dob }: { dob: string | undefined }) => {
+  const { formatDate } = useBrandingFormatter();
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
 
@@ -45,7 +48,7 @@ const DOBPicker = ({ dob }: { dob: string | undefined }) => {
             id="date"
             className="justify-start font-normal border-input w-full"
           >
-            {date ? date.toLocaleDateString() : "Select date"}
+            {date ? formatDate(date) : "Select date"}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">

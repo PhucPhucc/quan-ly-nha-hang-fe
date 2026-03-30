@@ -17,6 +17,7 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
@@ -73,12 +74,12 @@ interface ReservationTableProps {
 
 export const ReservationTable = ({
   data,
-  totalItems,
   currentPage,
   totalPages,
   onPageChange,
   onRefresh,
 }: ReservationTableProps) => {
+  const { formatDate, formatTime } = useBrandingFormatter();
   const [actionRow, setActionRow] = useState<ReservationDto | null>(null);
   const [isStartOpen, setIsStartOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -137,9 +138,11 @@ export const ReservationTable = ({
                     <TableCell>
                       <div className="flex flex-col">
                         <span className="font-semibold text-muted-foreground text-sm">
-                          {row.date}
+                          {formatDate(row.date)}
                         </span>
-                        <span className="text-[11px] text-muted-foreground/70">{row.time}</span>
+                        <span className="text-[11px] text-muted-foreground/70">
+                          {formatTime(row.time)}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm font-semibold">

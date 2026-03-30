@@ -20,6 +20,7 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { StockInReceipt } from "@/types/StockIn";
 
@@ -36,8 +37,7 @@ interface StockInTableProps {
 }
 
 export const StockInListTable = ({ data, onViewDetail, onEdit, onDelete }: StockInTableProps) => {
-  const pageSize = 10;
-  const missingRows = Math.max(0, pageSize - data.length);
+  const { formatDate, formatCurrency } = useBrandingFormatter();
 
   return (
     <TableShell>
@@ -65,13 +65,7 @@ export const StockInListTable = ({ data, onViewDetail, onEdit, onDelete }: Stock
               {data.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>{item.receiptCode}</TableCell>
-                  <TableCell>
-                    {new Date(item.receivedDate).toLocaleDateString("vi-VN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
-                  </TableCell>
+                  <TableCell>{formatDate(item.receivedDate)}</TableCell>
                   <TableCell>
                     <Badge
                       variant="secondary"
@@ -80,12 +74,7 @@ export const StockInListTable = ({ data, onViewDetail, onEdit, onDelete }: Stock
                       {item.totalItems}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {item.totalAmount.toLocaleString("vi-VN")}
-                    <span className="ml-1 text-[10px] font-bold opacity-50">
-                      {UI_TEXT.COMMON.CURRENCY}
-                    </span>
-                  </TableCell>
+                  <TableCell>{formatCurrency(item.totalAmount)}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <div className={INVENTORY_AVATAR_CLASS}>

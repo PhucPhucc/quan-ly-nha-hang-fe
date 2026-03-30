@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { RevenuePoint } from "@/types/salesAnalytics.types";
 
 interface RevenueChartProps {
@@ -28,8 +29,8 @@ function RevenueBar({
           animationDelay: `${index * 80}ms`,
         }}
       >
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 scale-0 rounded bg-foreground px-2 py-1 text-[10px] text-background transition-transform group-hover:scale-100 z-10 whitespace-nowrap">
-          {point.revenue.toLocaleString()} {UI_TEXT.COMMON.CURRENCY}
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 scale-0 rounded bg-foreground px-2 py-1 text-[10px] text-background transition-transform group-hover:scale-100 z-10 whitespace-nowrap text-center">
+          {formatCurrency(point.revenue)}
           <br />
           <span className="text-[8px] opacity-70">{point.date}</span>
         </div>

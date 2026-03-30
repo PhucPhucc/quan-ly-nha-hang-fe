@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { History, List } from "lucide-react";
+import { History, List, Wallet } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -23,6 +23,7 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
@@ -43,6 +44,8 @@ export function InventoryReportTable() {
     setIngredientId,
     isLoading,
   } = useInventoryReport();
+
+  const { formatCurrency } = useBrandingFormatter();
 
   const { data: ingredientsData } = useQuery({
     queryKey: ["inventory-report-ingredients"],
@@ -69,7 +72,23 @@ export function InventoryReportTable() {
 
   return (
     <div className="space-y-6">
-      <InventoryToolbar>
+      <InventoryToolbar
+        actions={
+          <div className="flex items-center gap-4 bg-primary/5 px-6 py-2.5 rounded-[1.5rem] border border-primary/10 shadow-sm">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Wallet className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">
+                {UI_TEXT.INVENTORY.REPORT.TOTAL_VALUE_LABEL}
+              </span>
+              <span className="text-xl font-black text-primary tabular-nums">
+                {formatCurrency(totalInventoryValue)}
+              </span>
+            </div>
+          </div>
+        }
+      >
         <DatePicker
           value={fromDate}
           onChange={setFromDate}
@@ -102,8 +121,7 @@ export function InventoryReportTable() {
             {UI_TEXT.COMMON.COLON}
           </span>
           <span className=" font-semibold text-primary tabular-nums">
-            {totalInventoryValue.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}{" "}
-            <span className="ml-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
+            {formatCurrency(totalInventoryValue)}
           </span>
         </div>
         <TableShell>
@@ -166,10 +184,10 @@ export function InventoryReportTable() {
                       {formatInventoryQuantity(item.closingStock)}
                     </TableCell>
                     <TableCell className="text-right font-medium text-card-foreground tabular-nums">
-                      {item.averageUnitCost.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+                      {formatCurrency(item.averageUnitCost)}
                     </TableCell>
                     <TableCell className="text-right font-black tabular-nums text-primary ">
-                      {item.closingStockValue.toLocaleString(UI_TEXT.COMMON.LOCALE_VI)}
+                      {formatCurrency(item.closingStockValue)}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

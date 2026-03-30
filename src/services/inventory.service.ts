@@ -668,9 +668,25 @@ export const inventoryService = {
     let url = "/inventory/lots";
     if (params) {
       const qs = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined) qs.set(key, String(value));
-      });
+      const { pageNumber, pageSize, search, orderBy, isDescending, status, ingredientId } = params;
+
+      if (pageNumber) qs.set("pageNumber", String(pageNumber));
+      if (pageSize) qs.set("pageSize", String(pageSize));
+      if (search) qs.set("search", String(search));
+
+      // Handle Sorting
+      if (orderBy) {
+        qs.set("orderBy", `${isDescending ? "-" : ""}${orderBy}`);
+      }
+
+      // Handle Filters
+      if (status && status !== "all") {
+        qs.append("filters", `status:${status}`);
+      }
+      if (ingredientId) {
+        qs.append("filters", `ingredientId:${ingredientId}`);
+      }
+
       url += `?${qs.toString()}`;
     }
 

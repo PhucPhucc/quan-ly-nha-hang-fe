@@ -5,10 +5,12 @@ import Image from "next/image"; // Keep Image import as it's still used
 
 // Added
 import { Button } from "@/components/ui/button";
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 // Added
 import { UI_TEXT } from "@/lib/UI_Text";
 
 export function BlogSection() {
+  const { data: branding } = useBrandingSettings();
   const blogs = [
     {
       img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC6Sj8M56b_ZV7gRmV3GbBw6atD7B5klFOy8Kggy3y-BObZPputtQvRhLOFDdENE2dBRxjTr6K7lolR8gyPoCDsJuqlHVOOO3nk8_N8PiNAwtafdb7SKcQ6ifaGqPqrqrCDIkYGD5fVec8J-zPGtfm9xqCPcfJ732iw2kg4omyYckxmPZSTp0X2g8RXenepBV3EphJj-6OaNA-g4dPyKLu6qOQC8eIImwdymYzwg_VLqWxhw3JLQrP1fF4nIJxcTdW4W2s5RCAW1_CX",
@@ -18,7 +20,7 @@ export function BlogSection() {
     },
     {
       img: "https://images.unsplash.com/photo-1551218808-94e220e084d2?q=80&w=600",
-      title: "Kế hoạch mở rộng FoodHub sang thị trường SEA",
+      title: `Kế hoạch mở rộng ${branding?.restaurantName ?? "FoodHub"} sang thị trường SEA`,
       date: "Feb 03, 2026",
       href: "/news/expansion",
     },

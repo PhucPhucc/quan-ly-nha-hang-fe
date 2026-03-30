@@ -10,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
+import { formatInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
 
@@ -40,14 +42,15 @@ interface InventoryCogsResultsTableProps {
 }
 
 export function InventoryCogsResultsTable({ results, dateRange }: InventoryCogsResultsTableProps) {
+  const { formatDate } = useBrandingFormatter();
   if (!results || results.length === 0) return null;
 
   return (
     <div className="p-6 bg-card border shadow-sm rounded-[12px]">
       <div className="flex items-center gap-3 mb-4">
         <h3 className="font-semibold text-base text-card-foreground">
-          {UI_TEXT.INVENTORY.COGS.RESULTS_TITLE} {dateRange?.from?.toLocaleDateString()}{" "}
-          {UI_TEXT.INVENTORY.TABLE.EM_DASH} {dateRange?.to?.toLocaleDateString()}
+          {UI_TEXT.INVENTORY.COGS.RESULTS_TITLE} {formatDate(dateRange?.from)}{" "}
+          {UI_TEXT.INVENTORY.TABLE.EM_DASH} {formatDate(dateRange?.to)}
         </h3>
         <span className="table-pill table-pill-success text-[10px]!">
           {UI_TEXT.INVENTORY.COGS.BADGE_CALCULATED}
@@ -99,20 +102,19 @@ export function InventoryCogsResultsTable({ results, dateRange }: InventoryCogsR
                 <TableCell className="font-semibold text-foreground">{item.name}</TableCell>
                 <TableCell className="text-center text-muted-foreground">{item.unit}</TableCell>
                 <TableCell className="text-right tabular-nums">
-                  {item.openingQty.toLocaleString()}
+                  {formatInventoryQuantity(item.openingQty)}
                 </TableCell>
                 <TableCell className="text-right tabular-nums text-muted-foreground">
                   {formatCurrency(item.openingVal)}
                 </TableCell>
                 <TableCell className="text-right tabular-nums">
-                  {item.inQty.toLocaleString()}
+                  {formatInventoryQuantity(item.inQty)}
                 </TableCell>
                 <TableCell className="text-right tabular-nums text-muted-foreground">
                   {formatCurrency(item.inVal)}
                 </TableCell>
                 <TableCell className="text-right tabular-nums font-bold text-primary">
-                  {Math.round(item.avgPrice * 1000).toLocaleString()}
-                  {UI_TEXT.INVENTORY.COGS.TXT_VND_PER_KG}
+                  {formatCurrency(item.avgPrice * 1000)}
                 </TableCell>
                 <TableCell className="text-center tabular-nums">{item.outCount}</TableCell>
                 <TableCell className="text-right pr-4 tabular-nums font-bold">
