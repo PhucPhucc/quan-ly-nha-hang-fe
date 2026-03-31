@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -33,6 +33,13 @@ export function MenuOptionSelectionDialog({
 }: MenuOptionSelectionDialogProps) {
   const [state, dispatch] = useReducer(menuOptionReducer, initialMenuOptionState);
   const { optionGroups, loading, quantity, note, selectedOptions } = state;
+  const [comboOptionGroupsByChildId, setComboOptionGroupsByChildId] = useState<
+    Record<string, MenuItemOptionGroup[]>
+  >({});
+  const [comboSelectedOptionsByChildId, setComboSelectedOptionsByChildId] = useState<
+    Record<string, Record<string, OptionItem[]>>
+  >({});
+  const [comboLoading, setComboLoading] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
 
   const resetLocalState = useCallback(() => {
@@ -48,15 +55,38 @@ export function MenuOptionSelectionDialog({
           if (res.isSuccess && res.data) {
             dispatch({ type: "SET_GROUPS", payload: res.data });
           }
+
+          if (menuItem.items?.length) {
+            setComboLoading(true);
+            const grouped: Record<string, MenuItemOptionGroup[]> = {};
+
+            await Promise.all(
+              menuItem.items.map(async (child) => {
+                const childRes = await optionService.getOptionGroupsByMenuItem(child.menuItemId);
+                grouped[child.menuItemId] =
+                  childRes.isSuccess && childRes.data ? childRes.data : [];
+              })
+            );
+
+            setComboOptionGroupsByChildId(grouped);
+            setComboSelectedOptionsByChildId({});
+          } else {
+            setComboOptionGroupsByChildId({});
+            setComboSelectedOptionsByChildId({});
+          }
         } catch {
           toast.error(ERROR_MESSAGES.loadOptions);
         } finally {
           dispatch({ type: "SET_LOADING", payload: false });
+          setComboLoading(false);
         }
       };
       fetchData();
     } else {
       resetLocalState();
+      setComboOptionGroupsByChildId({});
+      setComboSelectedOptionsByChildId({});
+      setComboLoading(false);
     }
   }, [open, menuItem, resetLocalState]);
 
@@ -129,8 +159,95 @@ export function MenuOptionSelectionDialog({
     });
   };
 
+  const buildComboChildren = () =>
+    (menuItem?.items ?? []).map((child) => {
+      const childGroups = comboOptionGroupsByChildId[child.menuItemId] || [];
+      const childSelected = comboSelectedOptionsByChildId[child.menuItemId] || {};
+
+      return {
+        menuItemId: child.menuItemId,
+        menuItemName: child.menuItemName,
+        quantity: child.quantity,
+        selectedOptions: Object.entries(childSelected).map(([groupId, items]) => {
+          const groupInfo = childGroups.find((g) => g.optionGroupId === groupId);
+          return {
+            optionGroupId: groupId,
+            groupName: groupInfo?.name || "",
+            selectedValues: items.map((item) => ({
+              optionItemId: item.optionItemId,
+              quantity: 1,
+              label: item.label,
+              extraPrice: item.extraPrice,
+            })),
+          };
+        }),
+      };
+    });
+
+  const validateComboSelection = (): boolean => {
+    for (const child of menuItem?.items ?? []) {
+      const groups = comboOptionGroupsByChildId[child.menuItemId] || [];
+      const selected = comboSelectedOptionsByChildId[child.menuItemId] || {};
+
+      for (const group of groups) {
+        const selection = selected[group.optionGroupId] || [];
+        if (group.isRequired && selection.length < group.minSelect) {
+          toast.error(
+            UI_TEXT.MENU.PLEASE_SELECT_GROUP(
+              `${child.menuItemName || child.menuItemId} - ${group.name}`
+            )
+          );
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  const handleToggleComboOption = (
+    childMenuItemId: string,
+    group: MenuItemOptionGroup,
+    item: OptionItem,
+    isChecked: boolean
+  ) => {
+    const currentChild = comboSelectedOptionsByChildId[childMenuItemId] || {};
+    const currentSelection = currentChild[group.optionGroupId] || [];
+
+    if (group.optionType === OPTION_TYPE_SINGLE_SELECT) {
+      setComboSelectedOptionsByChildId({
+        ...comboSelectedOptionsByChildId,
+        [childMenuItemId]: { ...currentChild, [group.optionGroupId]: [item] },
+      });
+      return;
+    }
+
+    if (isChecked) {
+      if (currentSelection.length >= group.maxSelect) {
+        toast.warning(UI_TEXT.MENU.MAX_SELECT_REACHED(group.maxSelect));
+        return;
+      }
+      setComboSelectedOptionsByChildId({
+        ...comboSelectedOptionsByChildId,
+        [childMenuItemId]: {
+          ...currentChild,
+          [group.optionGroupId]: [...currentSelection, item],
+        },
+      });
+      return;
+    }
+
+    setComboSelectedOptionsByChildId({
+      ...comboSelectedOptionsByChildId,
+      [childMenuItemId]: {
+        ...currentChild,
+        [group.optionGroupId]: currentSelection.filter((i) => i.optionItemId !== item.optionItemId),
+      },
+    });
+  };
+
   const handleAddToCart = () => {
     if (!validateSelection()) return;
+    if (!validateComboSelection()) return;
 
     const { selectedOrderId } = useOrderBoardStore.getState();
     if (!selectedOrderId) {
@@ -144,10 +261,19 @@ export function MenuOptionSelectionDialog({
     }
 
     const cartOptionGroups = buildCartOptionGroups();
+    const comboChildren = buildComboChildren();
 
     // Chỉ lưu vào CartStore local, không gọi API
     // API sẽ được gọi khi nhấn "Gửi yêu cầu" (submitToKitchen)
-    addItem(selectedOrderId, menuItem, quantity, cartOptionGroups, note, menuItem.price);
+    addItem(
+      selectedOrderId,
+      menuItem,
+      quantity,
+      cartOptionGroups,
+      comboChildren,
+      note,
+      menuItem.price
+    );
     toast.success(UI_TEXT.MENU.ADDED_TO_ORDER);
     resetLocalState();
     onOpenChange(false);
@@ -173,9 +299,14 @@ export function MenuOptionSelectionDialog({
           optionGroups={optionGroups}
           selectedOptions={selectedOptions}
           loading={loading}
+          comboLoading={comboLoading}
+          comboChildren={menuItem?.items || []}
+          comboOptionGroupsByChildId={comboOptionGroupsByChildId}
+          comboSelectedOptionsByChildId={comboSelectedOptionsByChildId}
           note={note}
           menuItemName={menuItem?.name || ""}
           onToggleOption={handleToggleOption}
+          onToggleComboOption={handleToggleComboOption}
           onNoteChange={handleNoteChange}
         />
 

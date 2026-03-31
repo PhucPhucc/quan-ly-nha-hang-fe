@@ -53,6 +53,7 @@ export const submitToKitchen = async ({
       note: activeOrder.note || "",
       items: items.map((item) => ({
         menuItemId: item.menuItem.menuItemId,
+        setMenuId: item.menuItem.setMenuId,
         quantity: item.quantity,
         note: item.note,
         selectedOptions: item.selectedOptions.map((group) => ({
@@ -61,6 +62,18 @@ export const submitToKitchen = async ({
             optionItemId: value.optionItemId,
             quantity: value.quantity,
             note: value.note,
+          })),
+        })),
+        comboItems: item.comboChildren?.map((child) => ({
+          menuItemId: child.menuItemId,
+          quantity: child.quantity,
+          selectedOptions: child.selectedOptions.map((group) => ({
+            optionGroupId: group.optionGroupId,
+            selectedValues: group.selectedValues.map((value) => ({
+              optionItemId: value.optionItemId,
+              quantity: value.quantity,
+              note: value.note,
+            })),
           })),
         })),
       })),

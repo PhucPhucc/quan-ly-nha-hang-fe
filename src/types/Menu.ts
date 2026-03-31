@@ -69,6 +69,8 @@ export interface Category {
 
 export interface MenuItem {
   menuItemId: string;
+  setMenuId?: string;
+  items?: SetMenuItemPreview[];
   name: string;
   code: string;
   description: string;
@@ -95,6 +97,14 @@ export interface SetMenu {
   price: number;
   costPrice: number;
   isOutOfStock: boolean;
+  items?: SetMenuItemPreview[];
+}
+
+export interface SetMenuItemPreview {
+  setMenuItemId?: string;
+  menuItemId: string;
+  menuItemName?: string;
+  quantity: number;
 }
 
 export interface MenuFilter {

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { CartItem, CartItemOptionGroup } from "@/types/Cart";
+import { CartComboChildSelection, CartItem, CartItemOptionGroup } from "@/types/Cart";
 import { MenuItem } from "@/types/Menu";
 
 // Tạo key duy nhất cho từng dòng trong giỏ hàng dựa trên menuItemId + options đã chọn.
@@ -19,6 +19,26 @@ function buildCartItemKey(menuItemId: string, options: CartItemOptionGroup[]): s
   return `${menuItemId}__${optionsPart}`;
 }
 
+function buildComboChildrenKey(children: CartComboChildSelection[] = []): string {
+  if (!Array.isArray(children)) return "";
+  return children
+    .map(
+      (child) =>
+        `${child.menuItemId}:${child.selectedOptions
+          .map(
+            (g) =>
+              `${g.optionGroupId}:${g.selectedValues
+                .map((v) => v.optionItemId)
+                .sort()
+                .join(",")}`
+          )
+          .sort()
+          .join(";")}`
+    )
+    .sort()
+    .join("|");
+}
+
 interface CartState {
   items: Record<string, CartItem[]>; // Keyed by orderId (or tableId)
 
@@ -27,8 +47,9 @@ interface CartState {
     menuItem: MenuItem,
     quantity: number,
     selectedOptions: CartItemOptionGroup[],
-    note: string,
-    baseUnitPrice: number
+    comboChildren?: CartComboChildSelection[],
+    note?: string,
+    baseUnitPrice?: number
   ) => void;
   updateQuantity: (orderId: string, cartItemKey: string, delta: number) => void;
   removeItem: (orderId: string, cartItemKey: string) => void;
@@ -38,7 +59,15 @@ interface CartState {
 export const useCartStore = create<CartState>((set) => ({
   items: {},
 
-  addItem: (orderId, menuItem, quantity, selectedOptions, note, baseUnitPrice) => {
+  addItem: (
+    orderId,
+    menuItem,
+    quantity,
+    selectedOptions,
+    comboChildren = [],
+    note = "",
+    baseUnitPrice = 0
+  ) => {
     if (!orderId) return;
 
     const extraPrice = selectedOptions
@@ -46,7 +75,9 @@ export const useCartStore = create<CartState>((set) => ({
       .reduce((acc, v) => acc + Number(v.extraPrice || 0) * (v.quantity || 1), 0);
 
     const unitPrice = baseUnitPrice + extraPrice;
-    const cartItemKey = buildCartItemKey(menuItem.menuItemId, selectedOptions);
+    const cartItemKey =
+      buildCartItemKey(menuItem.menuItemId, selectedOptions) +
+      `__combo:${buildComboChildrenKey(comboChildren)}`;
 
     set((state) => {
       const currentItems = state.items[orderId] || [];
@@ -65,6 +96,7 @@ export const useCartStore = create<CartState>((set) => ({
           menuItem,
           quantity,
           selectedOptions,
+          comboChildren,
           note,
           unitPrice,
         };

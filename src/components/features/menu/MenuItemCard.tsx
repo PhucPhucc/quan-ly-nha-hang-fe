@@ -35,7 +35,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
   const handleDelete = () => {
     const confirmDelete = async () => {
       if (isSetMenu) {
-        await deleteSetMenu(item.setMenuId);
+        await deleteSetMenu(item.setMenuId!);
       } else {
         await deleteMenuItem(item.menuItemId);
       }
@@ -58,7 +58,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item }) => {
 
   const handleToggleStock = (checked: boolean) => {
     if (isSetMenu) {
-      toggleSetMenuStock(item.setMenuId, !checked);
+      toggleSetMenuStock(item.setMenuId!, !checked);
     } else {
       toggleMenuItemStock(item.menuItemId, !checked);
     }

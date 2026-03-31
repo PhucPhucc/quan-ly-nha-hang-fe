@@ -14,7 +14,7 @@ export const cloudinaryService = {
     const formData = new FormData();
     formData.append("file", file);
 
-    return apiFetch<UploadImageResponse>(`/image/upload?folder=${encodeURIComponent(folder)}`, {
+    return apiFetch<UploadImageResponse>(`/images/upload?folder=${encodeURIComponent(folder)}`, {
       method: "POST",
       body: formData,
     });

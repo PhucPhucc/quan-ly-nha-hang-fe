@@ -360,4 +360,14 @@ export const ORDER = {
       STATUS: "Status",
     },
   },
+  COMBO: {
+    BADGE_LABEL: "Combo",
+    ITEMS_HEADING: "Combo items",
+    ITEMS_HOVER_HINT: "Hover to view sub-items in combo",
+    ITEMS_LABEL: "Combo Items",
+    ITEMS_SELECTION_HINT: "Select sub-items and options if available",
+    QUANTITY_LABEL: "Quantity:",
+    QUANTITY_SEPARATOR: "x",
+    NO_ITEMS_MESSAGE: "No sub-items for this combo yet.",
+  },
 };
