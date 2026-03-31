@@ -13,54 +13,96 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { brandingService } from "@/services/brandingService";
+import { useLanguageStore } from "@/store/useLanguageStore";
 
 import { BranchInfoSection } from "./sections/BranchInfoSection";
 import { LocalizationSection } from "./sections/LocalizationSection";
-import { NotifySection } from "./sections/NotifySection";
-import { PrintSection } from "./sections/PrintSection";
 
-const { SETTINGS, FORM } = UI_TEXT;
+// ── Schema (lazy — avoids module-level UI_TEXT access during SSR) ────────────
+type SchemaType = z.ZodObject<{
+  restaurantName: z.ZodString;
+  branchName: z.ZodOptional<z.ZodString>;
+  address: z.ZodOptional<z.ZodString>;
+  phone: z.ZodOptional<z.ZodString>;
+  currency: z.ZodString;
+  dateFormat: z.ZodString;
+  timezone: z.ZodString;
+  language: z.ZodString;
+  billTitle: z.ZodString;
+  billFooter: z.ZodString;
+  kdsTitle: z.ZodOptional<z.ZodString>;
+  appTitle: z.ZodOptional<z.ZodString>;
+  logoUrl: z.ZodOptional<z.ZodString>;
+  notifyEmail: z.ZodBoolean;
+  notifyPush: z.ZodBoolean;
+  notifySms: z.ZodBoolean;
+}>;
 
-// ── Schema ───────────────────────────────────────────────────────────────────
-const schema = z.object({
-  restaurantName: z.string().min(1, FORM.REQUIRED),
-  branchName: z.string().optional(),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  currency: z.string().min(1),
-  dateFormat: z.string().min(1),
-  timezone: z.string().min(1),
-  language: z.string().min(1),
-  billTitle: z.string().min(1, FORM.REQUIRED),
-  billFooter: z.string().min(1, FORM.REQUIRED),
-  kdsTitle: z.string().optional(),
-  appTitle: z.string().optional(),
-  logoUrl: z.string().optional(),
-  notifyEmail: z.boolean(),
-  notifyPush: z.boolean(),
-  notifySms: z.boolean(),
-});
+function getSchema(): SchemaType {
+  const { FORM } = UI_TEXT;
+  return z.object({
+    restaurantName: z.string().min(1, FORM.REQUIRED),
+    branchName: z.string().optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    currency: z.string().min(1),
+    dateFormat: z.string().min(1),
+    timezone: z.string().min(1),
+    language: z.string().min(1),
+    billTitle: z.string().min(1, FORM.REQUIRED),
+    billFooter: z.string().min(1, FORM.REQUIRED),
+    kdsTitle: z.string().optional(),
+    appTitle: z.string().optional(),
+    logoUrl: z.string().optional(),
+    notifyEmail: z.boolean(),
+    notifyPush: z.boolean(),
+    notifySms: z.boolean(),
+  }) as SchemaType;
+}
 
-export type GeneralSettingsInput = z.infer<typeof schema>;
-
-const DEFAULT_VALUES: GeneralSettingsInput = {
-  restaurantName: SETTINGS.FIELD_RESTAURANT_NAME_PLACEHOLDER.replace("VD: ", ""),
-  branchName: SETTINGS.FIELD_BRANCH_NAME_PLACEHOLDER.replace("VD: ", ""),
-  address: "",
-  phone: "",
-  currency: "VND",
-  dateFormat: SETTINGS.DATE_FORMAT_DMY,
-  timezone: "GMT+7",
-  language: "vi",
-  billTitle: UI_TEXT.ORDER.PRINT_TEMP.TITLE,
-  billFooter: UI_TEXT.ORDER.PRINT_TEMP.FOOTER_THANK_YOU,
-  kdsTitle: UI_TEXT.KDS.TITLE,
-  appTitle: "FoodHub | Premium Restaurant Management",
-  logoUrl: "",
-  notifyEmail: true,
-  notifyPush: true,
-  notifySms: false,
+export type GeneralSettingsInput = {
+  restaurantName: string;
+  branchName?: string;
+  address?: string;
+  phone?: string;
+  currency: string;
+  dateFormat: string;
+  timezone: string;
+  language: string;
+  billTitle: string;
+  billFooter: string;
+  kdsTitle?: string;
+  appTitle?: string;
+  logoUrl?: string;
+  notifyEmail: boolean;
+  notifyPush: boolean;
+  notifySms: boolean;
 };
+
+function getDefaultValues(): GeneralSettingsInput {
+  const { SETTINGS, ORDER, KDS } = UI_TEXT;
+  return {
+    restaurantName: SETTINGS.FIELD_RESTAURANT_NAME_PLACEHOLDER.replace("VD: ", "").replace(
+      "e.g. ",
+      ""
+    ),
+    branchName: SETTINGS.FIELD_BRANCH_NAME_PLACEHOLDER.replace("VD: ", "").replace("e.g. ", ""),
+    address: "",
+    phone: "",
+    currency: "VND",
+    dateFormat: SETTINGS.DATE_FORMAT_DMY,
+    timezone: "GMT+7",
+    language: "vi",
+    billTitle: ORDER.PRINT_TEMP.TITLE,
+    billFooter: ORDER.PRINT_TEMP.FOOTER_THANK_YOU,
+    kdsTitle: KDS.TITLE,
+    appTitle: "FoodHub | Premium Restaurant Management",
+    logoUrl: "",
+    notifyEmail: true,
+    notifyPush: true,
+    notifySms: false,
+  };
+}
 
 // ── Form ─────────────────────────────────────────────────────────────────────
 type FormProps = {
@@ -69,11 +111,11 @@ type FormProps = {
   onSubmit: (data: GeneralSettingsInput) => Promise<void> | void;
 };
 
-export function GeneralSettingsForm({
-  initialValues = DEFAULT_VALUES,
-  saving = false,
-  onSubmit,
-}: FormProps) {
+export function GeneralSettingsForm({ initialValues, saving = false, onSubmit }: FormProps) {
+  const locale = useLanguageStore((state) => state.locale);
+  const defaults = React.useMemo(() => initialValues ?? getDefaultValues(), [initialValues]);
+  const schema = React.useMemo(() => getSchema(), []);
+  const { SETTINGS } = UI_TEXT;
   const {
     register,
     handleSubmit,
@@ -83,17 +125,20 @@ export function GeneralSettingsForm({
     formState: { errors },
   } = useForm<GeneralSettingsInput>({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
+    defaultValues: defaults,
   });
 
   React.useEffect(() => {
-    reset(initialValues);
-  }, [initialValues, reset]);
+    reset(defaults);
+  }, [defaults, reset]);
+
+  React.useEffect(() => {
+    setValue("language", locale, {
+      shouldDirty: locale !== defaults.language,
+    });
+  }, [defaults.language, locale, setValue]);
 
   const formValues = useWatch({ control });
-  const notifyEmail = useWatch({ control, name: "notifyEmail" });
-  const notifyPush = useWatch({ control, name: "notifyPush" });
-  const notifySms = useWatch({ control, name: "notifySms" });
   const logoUrl = useWatch({ control, name: "logoUrl" });
 
   return (
@@ -128,25 +173,6 @@ export function GeneralSettingsForm({
               />
             </section>
 
-            <div className="h-px bg-border/60" />
-
-            {/* 4. Printing Configuration */}
-            <section>
-              <PrintSection register={register} />
-            </section>
-
-            <div className="h-px bg-border/60" />
-
-            {/* 5. Notifications */}
-            <section className="pb-4">
-              <NotifySection
-                notifyEmail={notifyEmail}
-                notifyPush={notifyPush}
-                notifySms={notifySms}
-                setValue={setValue}
-              />
-            </section>
-
             {/* Unified Action Bar */}
             <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-8 mt-10">
               <div className="flex-1">
@@ -157,7 +183,7 @@ export function GeneralSettingsForm({
               <Button
                 type="submit"
                 disabled={saving}
-                className="h-11 min-w-[200px] bg-primary text-base font-semibold shadow-md transition-all hover:bg-primary/90 hover:shadow-lg active:scale-[0.98]"
+                className="h-11 min-w-50 bg-primary text-base font-semibold shadow-md transition-all hover:bg-primary/90 hover:shadow-lg active:scale-[0.98]"
               >
                 {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-5 w-5" />}
                 {saving ? SETTINGS.BTN_SAVING : SETTINGS.BTN_SAVE}
@@ -173,7 +199,8 @@ export function GeneralSettingsForm({
 // ── Container ─────────────────────────────────────────────────────────────────
 export function GeneralSettingsContainer() {
   const queryClient = useQueryClient();
-  const [initialValues, setInitialValues] = React.useState<GeneralSettingsInput>(DEFAULT_VALUES);
+  const { SETTINGS } = UI_TEXT;
+  const [initialValues, setInitialValues] = React.useState<GeneralSettingsInput>(getDefaultValues);
   const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
 
@@ -266,7 +293,7 @@ export function GeneralSettingsContainer() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
+      <div className="flex min-h-100 items-center justify-center">
         <Spinner className="h-8 w-8 text-primary" />
       </div>
     );

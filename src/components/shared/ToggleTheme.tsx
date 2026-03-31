@@ -12,8 +12,8 @@ const ToggleTheme = () => {
 
   return (
     <div className="flex gap-2 items-center justify-between">
-      <Switch checked={theme === ThemeMode.DARK} onCheckedChange={toggleTheme} />
-      <Label>{UI_TEXT.BUTTON.TOGGLE_THEME}</Label>
+      <Switch id="toggle-theme" checked={theme === ThemeMode.DARK} onCheckedChange={toggleTheme} />
+      <Label htmlFor="toggle-theme">{UI_TEXT.BUTTON.TOGGLE_THEME}</Label>
     </div>
   );
 };

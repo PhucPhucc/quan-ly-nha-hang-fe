@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Plus, Search } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -65,14 +66,10 @@ export const OptionLibraryDrawer: React.FC<OptionLibraryDrawerProps> = ({
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-9 w-9 border-primary/20 text-primary hover:bg-primary/5 shadow-sm"
-            onClick={() => window.open("/menu/options", "_blank")}
-            title={UI_TEXT.MENU.OPTIONS.CREATE_NEW_GROUP}
-          >
-            <Plus className="h-4 w-4" />
+          <Button size="icon" title={UI_TEXT.MENU.OPTIONS.CREATE_NEW_GROUP} asChild>
+            <Link href="/manager/menu/options" className="flex items-center justify-center">
+              <Plus className="h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>

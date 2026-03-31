@@ -8,8 +8,6 @@ import React from "react";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
-const { SETTINGS } = UI_TEXT;
-
 interface NavItem {
   label: string;
   href: string;
@@ -17,32 +15,36 @@ interface NavItem {
   exact?: boolean;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  {
-    label: SETTINGS.NAV_GENERAL,
-    href: "/manager/settings",
-    icon: Building2,
-    exact: true,
-  },
-  {
-    label: SETTINGS.NAV_WAREHOUSE,
-    href: "/manager/settings/warehouse",
-    icon: Warehouse,
-  },
-  {
-    label: SETTINGS.NAV_RESERVATION,
-    href: "/manager/settings/reservation",
-    icon: CalendarDays,
-  },
-  {
-    label: SETTINGS.NAV_SETTING,
-    href: "/manager/settings/kds",
-    icon: ChefHat,
-  },
-];
-
 export function SettingsNavigation() {
   const pathname = usePathname();
+  const { SETTINGS } = UI_TEXT;
+
+  const NAV_ITEMS: NavItem[] = React.useMemo(
+    () => [
+      {
+        label: SETTINGS.NAV_GENERAL,
+        href: "/manager/settings",
+        icon: Building2,
+        exact: true,
+      },
+      {
+        label: SETTINGS.NAV_WAREHOUSE,
+        href: "/manager/settings/warehouse",
+        icon: Warehouse,
+      },
+      {
+        label: SETTINGS.NAV_RESERVATION,
+        href: "/manager/settings/reservation",
+        icon: CalendarDays,
+      },
+      {
+        label: SETTINGS.NAV_SETTING,
+        href: "/manager/settings/kds",
+        icon: ChefHat,
+      },
+    ],
+    [SETTINGS]
+  );
 
   const isActive = (item: NavItem) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href);
