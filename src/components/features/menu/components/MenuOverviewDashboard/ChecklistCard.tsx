@@ -24,7 +24,7 @@ export const ChecklistCard: React.FC<ChecklistCardProps> = ({
   unavailableCount,
 }) => {
   return (
-    <Card className="border-none shadow-md py-">
+    <Card className="border-none shadow-md py-5">
       <CardHeader className="space-y-1">
         <CardTitle className="flex items-center gap-2 text-base font-bold">
           <ImageIcon className="h-4 w-4 text-primary" />
