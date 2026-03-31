@@ -63,6 +63,8 @@ const CardMenu = () => {
   const mappedSetMenus = useMemo<MenuItem[]>(() => {
     return setMenus.map((sm) => ({
       menuItemId: sm.setMenuId,
+      setMenuId: sm.setMenuId,
+      items: sm.items,
       name: sm.name,
       code: sm.code,
       description: sm.description || "",

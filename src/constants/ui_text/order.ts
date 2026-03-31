@@ -360,4 +360,14 @@ export const ORDER = {
       STATUS: "Trạng thái",
     },
   },
+  COMBO: {
+    BADGE_LABEL: "Combo",
+    ITEMS_HEADING: "Combo items",
+    ITEMS_HOVER_HINT: "Hover để xem món con trong combo",
+    ITEMS_LABEL: "Combo Items",
+    ITEMS_SELECTION_HINT: "Chọn món con và option nếu có",
+    QUANTITY_LABEL: "Số lượng:",
+    QUANTITY_SEPARATOR: "x",
+    NO_ITEMS_MESSAGE: "Chưa có món con cho combo này.",
+  },
 };
