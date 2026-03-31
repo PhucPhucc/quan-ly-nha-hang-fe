@@ -7,9 +7,8 @@ import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 import { Button } from "../ui/button";
-import { Field } from "../ui/field";
+import { Field, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 
 const DOBPicker = ({ dob }: { dob: string | undefined }) => {
   const { formatDate } = useBrandingFormatter();
@@ -40,13 +39,13 @@ const DOBPicker = ({ dob }: { dob: string | undefined }) => {
 
   return (
     <Field className="">
-      <Label htmlFor="date">{UI_TEXT.EMPLOYEE.DOB}</Label>
+      <FieldLabel htmlFor="date">{UI_TEXT.EMPLOYEE.DOB}</FieldLabel>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             id="date"
-            className="justify-start font-normal border-input w-full"
+            className="justify-start items-baseline font-normal border-input w-full bg-card text-card-foreground"
           >
             {date ? formatDate(date) : "Select date"}
           </Button>

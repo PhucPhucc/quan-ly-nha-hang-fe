@@ -88,7 +88,7 @@ const ProfileForm = () => {
               <Input
                 disabled
                 defaultValue={employee?.employeeCode}
-                className="rounded-xl border-dashed bg-muted/30 pl-10"
+                className="rounded-lg border-dashed bg-muted/30 pl-10"
               />
             </div>
           </Field>
@@ -100,7 +100,7 @@ const ProfileForm = () => {
               <Input
                 disabled
                 defaultValue={employee?.role}
-                className="rounded-xl border-dashed bg-muted/30 pl-10"
+                className="rounded-lg border-dashed bg-muted/30 pl-10"
               />
             </div>
           </Field>
@@ -120,7 +120,7 @@ const ProfileForm = () => {
                 id="fullName"
                 defaultValue={employee?.fullName}
                 required
-                className="rounded-xl pl-10 focus:ring-slate-900/10 focus:border-slate-300"
+                className="rounded-lg pl-10"
               />
             </div>
           </Field>
@@ -135,7 +135,7 @@ const ProfileForm = () => {
                 type="email"
                 defaultValue={employee?.email}
                 required
-                className="rounded-xl pl-10 focus:ring-slate-900/10 focus:border-slate-300"
+                className="rounded-lg pl-10"
               />
             </div>
           </Field>
@@ -149,14 +149,12 @@ const ProfileForm = () => {
                 type="number"
                 id="phone"
                 defaultValue={employee?.phone}
-                className="rounded-xl pl-10 focus:ring-slate-900/10 focus:border-slate-300"
+                className="rounded-lg pl-10"
               />
             </div>
           </Field>
 
-          <div className="group relative">
-            <DOBPicker dob={employee?.dateOfBirth} />
-          </div>
+          <DOBPicker dob={employee?.dateOfBirth} />
 
           <Field className="col-span-2">
             <FieldLabel htmlFor="address">{UI_TEXT.EMPLOYEE.ADDRESS}</FieldLabel>
@@ -166,29 +164,20 @@ const ProfileForm = () => {
                 name="address"
                 id="address"
                 defaultValue={employee?.address}
-                className="rounded-xl pl-10 focus:ring-slate-900/10 focus:border-slate-300"
+                className="rounded-lg pl-10"
               />
             </div>
           </Field>
         </FieldGroup>
       </section>
 
-      <div className="flex justify-end gap-3 pt-6">
-        <Button
-          type="reset"
-          variant="ghost"
-          onClick={() => setIsDirty(false)}
-          className="rounded-xl px-6 hover:bg-slate-100"
-        >
+      <div className="flex justify-end gap-3">
+        <Button type="reset" variant="ghost" onClick={() => setIsDirty(false)} className="px-6">
           <RefreshCw className="mr-2 h-4 w-4" />
           {UI_TEXT.COMMON.RESET}
         </Button>
 
-        <Button
-          type="submit"
-          disabled={!isDirty || loading}
-          className="rounded-xl bg-slate-900 px-8 shadow-sm hover:bg-slate-800 transition-all text-white"
-        >
+        <Button type="submit" disabled={!isDirty || loading}>
           {loading ? <Spinner className="mr-2" /> : <Save className="mr-2 h-4 w-4" />}
           {loading ? UI_TEXT.COMMON.LOADING : UI_TEXT.COMMON.SAVE}
         </Button>
