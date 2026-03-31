@@ -67,6 +67,7 @@ export const submitToKitchen = async ({
         comboItems: item.comboChildren?.map((child) => ({
           menuItemId: child.menuItemId,
           quantity: child.quantity,
+          note: child.note,
           selectedOptions: child.selectedOptions.map((group) => ({
             optionGroupId: group.optionGroupId,
             selectedValues: group.selectedValues.map((value) => ({

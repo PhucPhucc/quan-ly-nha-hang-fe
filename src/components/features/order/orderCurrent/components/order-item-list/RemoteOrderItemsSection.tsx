@@ -4,6 +4,7 @@ import { OrderItem } from "@/types/Order";
 
 import {
   getComboNameFromNote,
+  getRemoteItemTotal,
   sortOrderItemsByStatus,
   sortTopLevelRemoteItems,
 } from "./order-item-list.utils";
@@ -42,6 +43,11 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
           comboDisplayMap.childrenByParentId.get(item.orderItemId) ?? [],
           itemIndexMap
         );
+        const comboChildrenTotal = sortedComboChildren.reduce(
+          (sum, comboChild) => sum + getRemoteItemTotal(comboChild) * comboChild.quantity,
+          0
+        );
+        const itemTotal = getRemoteItemTotal(item) * item.quantity + comboChildrenTotal;
 
         const isComboExpanded =
           sortedComboChildren.length > 0 &&
@@ -60,6 +66,7 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
             isFree={itemIsFree}
             isCombo={sortedComboChildren.length > 0}
             isClickable={sortedComboChildren.length > 0}
+            priceOverride={itemTotal / Math.max(item.quantity, 1)}
             onMouseEnter={
               sortedComboChildren.length > 0 ? () => setHoveredComboId(item.orderItemId) : undefined
             }

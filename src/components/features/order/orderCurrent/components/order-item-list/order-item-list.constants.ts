@@ -1,6 +1,7 @@
 import { OrderItemStatus } from "@/types/enums";
 
 export const COMBO_PARENT_ORDER_ITEM_ID_FIELDS = [
+  "comboParentOrderItemId",
   "parentOrderItemId",
   "parentItemId",
   "orderItemParentId",

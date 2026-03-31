@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
-import { CartItem, CartItemOptionGroup } from "@/types/Cart";
+import { CartComboChildSelection, CartItem, CartItemOptionGroup } from "@/types/Cart";
 
 interface CartOrderItemCardProps {
   item: CartItem;
@@ -64,6 +64,19 @@ export const CartOrderItemCard: React.FC<CartOrderItemCardProps> = ({
               {UI_TEXT.ORDER.NOTE(item.note)}
             </p>
           )}
+
+          {item.comboChildren?.length ? (
+            <div className="mt-2 space-y-2 rounded-lg border border-dashed border-primary/20 bg-background/60 p-2">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                {UI_TEXT.ORDER.COMBO.ITEMS_LABEL}
+              </p>
+              <div className="space-y-2">
+                {item.comboChildren.map((child) => (
+                  <ComboChildBlock key={child.menuItemId} child={child} />
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <Button
@@ -107,3 +120,53 @@ export const CartOrderItemCard: React.FC<CartOrderItemCardProps> = ({
     </div>
   );
 };
+
+function ComboChildBlock({ child }: { child: CartComboChildSelection }) {
+  const selectedValues = child.selectedOptions.flatMap((group: CartItemOptionGroup) =>
+    group.selectedValues.map((value) => ({ ...value, groupName: group.groupName }))
+  );
+
+  return (
+    <div className="rounded-md border border-border/70 bg-card p-2 text-xs">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="font-medium text-foreground leading-tight">
+            {child.menuItemName || child.menuItemId}
+          </p>
+          {child.note ? (
+            <p className="mt-0.5 text-[10px] italic text-orange-600">
+              {UI_TEXT.ORDER.NOTE(child.note)}
+            </p>
+          ) : null}
+        </div>
+        <Badge variant="outline" className="shrink-0 text-[10px] font-bold">
+          {UI_TEXT.ORDER.COMBO.QUANTITY_SEPARATOR}
+          {child.quantity}
+        </Badge>
+      </div>
+
+      {selectedValues.length > 0 ? (
+        <div className="mt-2 space-y-0.5">
+          {selectedValues.map((value) => (
+            <p
+              key={value.optionItemId}
+              className="flex items-center justify-between text-[10px] text-muted-foreground"
+            >
+              <span>
+                {UI_TEXT.COMMON.BULLET}
+                {value.groupName ? `${value.groupName}: ` : ""}
+                {value.label}
+              </span>
+              {value.extraPrice > 0 ? (
+                <span>
+                  {UI_TEXT.COMMON.PLUS}
+                  {formatCurrency(value.extraPrice)}
+                </span>
+              ) : null}
+            </p>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}

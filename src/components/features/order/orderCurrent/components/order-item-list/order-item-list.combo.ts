@@ -11,21 +11,6 @@ export const buildComboDisplayMap = (remoteItems: OrderItem[]): ComboDisplayMap 
   const orderItemIds = new Set(remoteItems.map((item) => item.orderItemId));
   const parentIdByChildId = new Map<string, string>();
   const childrenByParentId = new Map<string, OrderItem[]>();
-  const normalizedNameByOrderItemId = new Map<string, string>();
-  const candidateParentsByName = new Map<string, OrderItem[]>();
-
-  remoteItems.forEach((item) => {
-    const normalizedName = normalizeComboName(item.itemNameSnapshot);
-    normalizedNameByOrderItemId.set(item.orderItemId, normalizedName);
-
-    if (!normalizedName) {
-      return;
-    }
-
-    const existingCandidates = candidateParentsByName.get(normalizedName) ?? [];
-    existingCandidates.push(item);
-    candidateParentsByName.set(normalizedName, existingCandidates);
-  });
 
   const pushChildToParent = (childItem: OrderItem, parentOrderItemId: string): void => {
     if (childItem.orderItemId === parentOrderItemId) {
@@ -45,6 +30,22 @@ export const buildComboDisplayMap = (remoteItems: OrderItem[]): ComboDisplayMap 
     }
 
     pushChildToParent(item, parentOrderItemId);
+  });
+
+  const normalizedNameByOrderItemId = new Map<string, string>();
+  const candidateParentsByName = new Map<string, OrderItem[]>();
+
+  remoteItems.forEach((item) => {
+    const normalizedName = normalizeComboName(item.itemNameSnapshot);
+    normalizedNameByOrderItemId.set(item.orderItemId, normalizedName);
+
+    if (!normalizedName) {
+      return;
+    }
+
+    const existingCandidates = candidateParentsByName.get(normalizedName) ?? [];
+    existingCandidates.push(item);
+    candidateParentsByName.set(normalizedName, existingCandidates);
   });
 
   remoteItems.forEach((item) => {

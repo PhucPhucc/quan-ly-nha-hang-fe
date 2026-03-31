@@ -368,6 +368,7 @@ export const ORDER = {
     ITEMS_SELECTION_HINT: "Select sub-items and options if available",
     QUANTITY_LABEL: "Quantity:",
     QUANTITY_SEPARATOR: "x",
+    CHILD_NOTE_LABEL: "Item note",
     NO_ITEMS_MESSAGE: "No sub-items for this combo yet.",
   },
 };

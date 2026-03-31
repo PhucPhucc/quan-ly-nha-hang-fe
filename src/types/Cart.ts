@@ -18,6 +18,7 @@ export interface CartComboChildSelection {
   menuItemId: string;
   menuItemName?: string;
   quantity: number;
+  note?: string;
   selectedOptions: CartItemOptionGroup[];
 }
 
