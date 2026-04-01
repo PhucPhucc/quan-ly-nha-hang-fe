@@ -39,7 +39,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
   };
 
   return (
-    <ScrollArea className="flex-1 overflow-auto" type="always">
+    <ScrollArea className="flex-1 overflow-auto no-scrollbar" type="always">
       <div className="py-4 space-y-4 px-2">
         {items.length === 0 && remoteItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground italic text-sm text-center">

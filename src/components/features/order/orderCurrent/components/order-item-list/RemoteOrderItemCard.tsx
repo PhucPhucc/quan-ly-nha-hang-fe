@@ -17,6 +17,7 @@ interface RemoteOrderItemCardProps {
   hidePrice?: boolean;
   isClickable?: boolean;
   className?: string;
+  isComboExpanded?: boolean;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   onClick?: () => void;
@@ -30,6 +31,7 @@ export const RemoteOrderItemCard: React.FC<RemoteOrderItemCardProps> = ({
   hidePrice = false,
   isClickable = false,
   className,
+  isComboExpanded = false,
   onMouseEnter,
   onMouseLeave,
   onClick,
@@ -41,14 +43,17 @@ export const RemoteOrderItemCard: React.FC<RemoteOrderItemCardProps> = ({
       onMouseLeave={onMouseLeave}
       onClick={onClick}
       className={cn(
-        "group relative flex flex-col gap-2 p-3 rounded-xl border transition-all",
+        "group relative flex flex-col gap-2 rounded-xl border p-3 transition-all duration-500 ease-out motion-reduce:transition-none",
         isClickable && "cursor-pointer",
         isCombo
           ? "border-primary/20 bg-primary/5"
           : isFree
             ? "bg-emerald-500/10 border-emerald-500/20"
             : "border-border/50 bg-secondary/20",
-        className
+        isClickable &&
+          "hover:-translate-y-0.5 hover:border-primary/35 hover:bg-primary/[0.07] hover:shadow-md hover:shadow-primary/10 active:scale-[0.99]",
+        className,
+        isComboExpanded && "border-primary/35 bg-primary/[0.08] shadow-md shadow-primary/10"
       )}
     >
       <div className="flex justify-between flex-1 text-muted-foreground">

@@ -60,6 +60,7 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
             isFree={itemIsFree}
             isCombo={sortedComboChildren.length > 0}
             isClickable={sortedComboChildren.length > 0}
+            isComboExpanded={isComboExpanded}
             onMouseEnter={
               sortedComboChildren.length > 0 ? () => setHoveredComboId(item.orderItemId) : undefined
             }
@@ -77,23 +78,43 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
                 : undefined
             }
           >
-            {sortedComboChildren.length > 0 && isComboExpanded && (
-              <div id={`combo-items-${item.orderItemId}`} className="mt-3 space-y-3">
-                {sortedComboChildren.map((comboItem) => {
-                  const comboItemHasComboNote = Boolean(getComboNameFromNote(comboItem.itemNote));
-                  const comboItemIsFree =
-                    !comboItemHasComboNote &&
-                    (comboItem.isFreeItem || comboItem.unitPriceSnapshot === 0);
+            {sortedComboChildren.length > 0 && (
+              <div
+                id={`combo-items-${item.orderItemId}`}
+                aria-hidden={!isComboExpanded}
+                className={
+                  isComboExpanded
+                    ? "mt-3 grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity,margin-top] duration-500 ease-out"
+                    : "mt-0 grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity,margin-top] duration-500 ease-in-out pointer-events-none"
+                }
+              >
+                <div
+                  className={
+                    isComboExpanded
+                      ? "min-h-0 translate-y-0 overflow-hidden transition-transform duration-500 ease-out"
+                      : "min-h-0 translate-y-1 overflow-hidden transition-transform duration-500 ease-in-out"
+                  }
+                >
+                  <div className="space-y-3">
+                    {sortedComboChildren.map((comboItem) => {
+                      const comboItemHasComboNote = Boolean(
+                        getComboNameFromNote(comboItem.itemNote)
+                      );
+                      const comboItemIsFree =
+                        !comboItemHasComboNote &&
+                        (comboItem.isFreeItem || comboItem.unitPriceSnapshot === 0);
 
-                  return (
-                    <RemoteOrderItemCard
-                      key={comboItem.orderItemId}
-                      item={comboItem}
-                      isFree={comboItemIsFree}
-                      hidePrice
-                    />
-                  );
-                })}
+                      return (
+                        <RemoteOrderItemCard
+                          key={comboItem.orderItemId}
+                          item={comboItem}
+                          isFree={comboItemIsFree}
+                          hidePrice
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             )}
           </RemoteOrderItemCard>
