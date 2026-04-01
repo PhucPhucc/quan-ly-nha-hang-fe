@@ -4,19 +4,77 @@ import { ApiResponse } from "@/types/Api";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 const NETWORK_ERROR_MESSAGE =
   "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng hoặc đảm bảo backend đang chạy.";
+const CSRF_HEADER_NAME = "X-XSRF-TOKEN";
+const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 let isRefreshing = false;
 let refreshQueue: (() => void)[] = [];
+let csrfToken: string | null = null;
+
+export function clearCsrfToken() {
+  csrfToken = null;
+}
+
+function isMutationRequest(method?: string): boolean {
+  return MUTATION_METHODS.has((method || "GET").toUpperCase());
+}
+
+async function ensureCsrfToken(): Promise<void> {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  if (csrfToken) {
+    return;
+  }
+
+  const res = await fetch(BASE_URL + "/api/v1/auth/csrf-token", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Unable to initialize CSRF token");
+  }
+
+  const data = (await res.json()) as { csrfToken?: string };
+  if (!data.csrfToken) {
+    throw new Error("CSRF token was not returned");
+  }
+
+  csrfToken = data.csrfToken;
+}
+
+async function buildRequestOptions(options: RequestInit): Promise<RequestInit> {
+  const method = (options.method || "GET").toUpperCase();
+  const headers = new Headers(options.headers);
+
+  if (isMutationRequest(method)) {
+    await ensureCsrfToken();
+    if (csrfToken) {
+      headers.set(CSRF_HEADER_NAME, csrfToken);
+    }
+  }
+
+  return {
+    ...options,
+    method,
+    headers,
+  };
+}
 
 export async function refreshToken() {
-  const res = await fetch(BASE_URL + "/api/v1/auth/refresh-token", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-  });
+  const res = await fetch(
+    BASE_URL + "/api/v1/auth/refresh-token",
+    await buildRequestOptions({
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+  );
 
   if (!res.ok) {
     throw new Error("Refresh token failed");
@@ -28,7 +86,7 @@ export async function refreshToken() {
 async function performRequest(path: string, options: RequestInit): Promise<Response> {
   const prefix = path.startsWith("/v") ? "/api" : "/api/v1";
   try {
-    return await fetch(BASE_URL + prefix + path, options);
+    return await fetch(BASE_URL + prefix + path, await buildRequestOptions(options));
   } catch {
     throw new Error(NETWORK_ERROR_MESSAGE);
   }
@@ -87,8 +145,9 @@ export async function apiFetch<T>(
   }
 
   let res = await performRequest(path, fetchOptions);
+  const shouldAttemptRefresh = path !== "/auth/logout";
 
-  if (res.status === 401) {
+  if (res.status === 401 && shouldAttemptRefresh) {
     if (!isRefreshing) {
       isRefreshing = true;
 
@@ -100,6 +159,7 @@ export async function apiFetch<T>(
       } catch (err) {
         isRefreshing = false;
         refreshQueue = [];
+        clearCsrfToken();
         useAuthStore.getState().logout();
 
         if (typeof window !== "undefined") {

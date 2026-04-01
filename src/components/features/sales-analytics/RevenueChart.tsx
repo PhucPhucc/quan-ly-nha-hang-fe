@@ -51,7 +51,7 @@ export function RevenueChart({ data, loading }: RevenueChartProps) {
     <Card className="glass-card h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
         <div className="space-y-1">
-          <CardTitle className="text-base font-semibold">{t.REVENUE_OVER_TIME}</CardTitle>
+          <CardTitle className="text-base font-semibold pt-5">{t.REVENUE_OVER_TIME}</CardTitle>
         </div>
       </CardHeader>
       <CardContent>

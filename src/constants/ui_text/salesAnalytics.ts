@@ -15,6 +15,7 @@ export const SALES_ANALYTICS = {
   REVENUE_BY_CATEGORY: "Doanh thu theo danh mục",
   DAILY: "Ngày",
   MONTHLY: "Tháng",
+  QUARTERLY: "Quý",
   MAIN_DISH: "Món chính",
   STARTER: "Khai vị",
   DRINK: "Đồ uống",
@@ -39,7 +40,9 @@ export const SALES_ANALYTICS = {
   SELECT_DATE: "Chọn ngày",
   EXPORT_BY_RANGE: "Theo khoảng ngày",
   EXPORT_BY_MONTH: "Theo tháng",
+  EXPORT_BY_QUARTER: "Theo quý",
   SELECT_MONTH: "Chọn tháng",
+  SELECT_QUARTER: "Chọn quý",
   SELECT_YEAR: "Chọn năm",
   BEST_ITEM_INSIGHT: (name: string, percent: number) =>
     `Món ${name} hiệu quả nhất, đóng góp ${percent}% doanh thu.`,

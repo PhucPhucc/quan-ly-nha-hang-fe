@@ -15,6 +15,7 @@ export const SALES_ANALYTICS = {
   REVENUE_BY_CATEGORY: "Revenue by category",
   DAILY: "Daily",
   MONTHLY: "Monthly",
+  QUARTERLY: "Quarterly",
   MAIN_DISH: "Main dish",
   STARTER: "Appetizer",
   DRINK: "Beverages",
@@ -39,7 +40,9 @@ export const SALES_ANALYTICS = {
   SELECT_DATE: "Select date",
   EXPORT_BY_RANGE: "By date range",
   EXPORT_BY_MONTH: "By month",
+  EXPORT_BY_QUARTER: "By quarter",
   SELECT_MONTH: "Select month",
+  SELECT_QUARTER: "Select quarter",
   SELECT_YEAR: "Select year",
   BEST_ITEM_INSIGHT: (name: string, percent: number) =>
     `${name} is the most effective, contributing ${percent}% of revenue.`,

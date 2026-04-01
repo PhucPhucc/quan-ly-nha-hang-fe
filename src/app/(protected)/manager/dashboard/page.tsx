@@ -1,14 +1,14 @@
 "use client";
 
 import { format } from "date-fns";
-import { ChevronRight, Clock, Rocket, Trophy, Zap } from "lucide-react";
+import { ChevronRight, Clock, Rocket, Trophy } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { DashboardStats } from "@/components/features/Dashboard/analysis/DashboardStats";
 import { InventoryAlertWidget } from "@/components/features/Dashboard/analysis/InventoryAlertWidget";
 import { KdsBacklogWidget } from "@/components/features/Dashboard/analysis/KdsBacklogWidget";
-import { Badge } from "@/components/ui/badge";
+import { SalesAnalyticsSection } from "@/components/features/sales-analytics/SalesAnalyticsSection";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { dashboardService } from "@/services/dashboardService";
 import { salesAnalyticsService } from "@/services/salesAnalyticsService";
@@ -76,12 +76,6 @@ export default function DashboardPage() {
                 <Rocket className="size-6 text-primary" />
               </div>
               {t.OVERVIEW}
-              <Badge
-                variant="outline"
-                className="hidden sm:flex border-primary/20 text-primary bg-primary/5 uppercase font-black tracking-tighter"
-              >
-                {t.ANALYTICS.LIVE_MONITORING}
-              </Badge>
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-muted-foreground text-sm font-medium">
@@ -97,13 +91,6 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
-
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 items-center gap-2 px-3 rounded-xl bg-card shadow-sm border text-[11px] font-bold text-foreground">
-              <Zap className="size-3 text-warning fill-warning" />
-              {t.SIGNALR_CONNECTED}
-            </div>
-          </div>
         </div>
 
         <section className="space-y-4">
@@ -116,6 +103,8 @@ export default function DashboardPage() {
             revenueChart={analyticsData?.revenueChart}
           />
         </section>
+
+        <SalesAnalyticsSection id="sales-analytics-section" />
 
         <section className="space-y-4">
           <h3 className="text-xs font-black uppercase tracking-widest text-foreground opacity-60">
@@ -172,7 +161,7 @@ export default function DashboardPage() {
                 </div>
 
                 <Link
-                  href="/manager/sales-analytics"
+                  href="#sales-analytics-section"
                   className="mt-6 text-[10px] font-black text-primary uppercase tracking-widest text-center hover:underline bg-primary/5 py-2.5 rounded-xl border border-primary/10 flex items-center justify-center gap-2"
                 >
                   {t.ANALYTICS.QUICK_INSIGHTS}

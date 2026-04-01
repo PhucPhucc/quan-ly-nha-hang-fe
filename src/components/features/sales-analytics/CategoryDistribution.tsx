@@ -15,7 +15,7 @@ export function CategoryDistributionCard({ data, loading }: CategoryDistribution
   return (
     <Card className="glass-card h-full">
       <CardHeader>
-        <CardTitle className="text-base font-medium">{t.REVENUE_BY_CATEGORY}</CardTitle>
+        <CardTitle className="text-base font-medium pt-5">{t.REVENUE_BY_CATEGORY}</CardTitle>
       </CardHeader>
       <CardContent>
         {loading ? (

@@ -35,9 +35,11 @@ describe("apiFetch", () => {
   });
 
   it("does not refresh token for forbidden responses", async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(
-      createJsonResponse({ message: "Bạn không có quyền truy cập." }, 403, "Forbidden")
-    );
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(createJsonResponse({ csrfToken: "csrf-token-value" }, 200))
+      .mockResolvedValueOnce(
+        createJsonResponse({ message: "Bạn không có quyền truy cập." }, 403, "Forbidden")
+      );
 
     const { apiFetch } = await import("../api");
 
@@ -45,12 +47,39 @@ describe("apiFetch", () => {
       "Bạn không có quyền truy cập."
     );
 
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledTimes(2);
     expect(mockLogout).not.toHaveBeenCalled();
+  });
+
+  it("bootstraps csrf token before mutation requests when missing", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(createJsonResponse({ csrfToken: "csrf-token-value" }, 200))
+      .mockResolvedValueOnce(createJsonResponse({ ok: true }, 200));
+
+    const { apiFetch } = await import("../api");
+
+    const result = await apiFetch("/inventory/opening-stock", { method: "POST" });
+
+    expect(result.isSuccess).toBe(true);
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      expect.stringContaining("/api/v1/auth/csrf-token"),
+      expect.objectContaining({ method: "GET", credentials: "include" })
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.any(Headers),
+        method: "POST",
+      })
+    );
   });
 
   it("returns the retried backend error instead of forcing session expired", async () => {
     vi.mocked(fetch)
+      .mockResolvedValueOnce(createJsonResponse({ csrfToken: "csrf-token-value" }, 200))
       .mockResolvedValueOnce(createJsonResponse({ message: "Unauthorized" }, 401, "Unauthorized"))
       .mockResolvedValueOnce(createJsonResponse({ data: { ok: true } }, 200))
       .mockResolvedValueOnce(
@@ -63,7 +92,7 @@ describe("apiFetch", () => {
       "Bạn không có quyền cập nhật kho."
     );
 
-    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(fetch).toHaveBeenCalledTimes(4);
     expect(mockLogout).not.toHaveBeenCalled();
   });
 
