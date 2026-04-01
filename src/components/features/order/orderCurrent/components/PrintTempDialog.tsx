@@ -29,6 +29,7 @@ import { PreCheckBillResponse } from "@/types/Billing";
 import { printThermalReceipt } from "@/utils/thermalPrint";
 
 import { buildComboDisplayMap } from "./order-item-list/order-item-list.combo";
+import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
 
 const money = (value: number) => formatCurrency(value);
 
@@ -74,17 +75,21 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
   rawItems.forEach((item) => {
     // Only add top-level items directly
     if (!comboMap.parentIdByChildId.has(item.orderItemId)) {
+      const children = comboMap.childrenByParentId.get(item.orderItemId) || [];
+      const parentAmount =
+        getRemoteItemTotal(item) * item.quantity +
+        children.reduce((sum, child) => sum + getRemoteItemTotal(child) * child.quantity, 0);
+
       orderItems.push({
         id: item.orderItemId,
         name: item.itemNameSnapshot,
         quantity: item.quantity,
         unitPrice: money(item.unitPriceSnapshot),
-        amount: money(item.quantity * item.unitPriceSnapshot),
+        amount: money(parentAmount),
         isChild: false,
       });
 
       // Add children immediately after parent
-      const children = comboMap.childrenByParentId.get(item.orderItemId) || [];
       children.forEach((child) => {
         orderItems.push({
           id: child.orderItemId,
@@ -247,7 +252,7 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
                   quantity: item.quantity,
                   unitPrice: item.unitPriceSnapshot,
                   optionsSummary: item.itemOptions,
-                  lineTotal: item.unitPriceSnapshot * item.quantity,
+                  lineTotal: getRemoteItemTotal(item) * item.quantity,
                 })),
                 subTotal: subtotalValue,
                 discount: discountValue,

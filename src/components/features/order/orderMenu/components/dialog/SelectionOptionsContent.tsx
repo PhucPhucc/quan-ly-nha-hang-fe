@@ -21,6 +21,7 @@ interface SelectionOptionsContentProps {
   comboChildren: SetMenuItemPreview[];
   comboOptionGroupsByChildId: Record<string, MenuItemOptionGroup[]>;
   comboSelectedOptionsByChildId: Record<string, Record<string, OptionItem[]>>;
+  comboNotesByChildId: Record<string, string>;
   note: string;
   menuItemName: string;
   onToggleOption: (group: MenuItemOptionGroup, item: OptionItem, isChecked: boolean) => void;
@@ -30,6 +31,7 @@ interface SelectionOptionsContentProps {
     item: OptionItem,
     isChecked: boolean
   ) => void;
+  onComboNoteChange: (childMenuItemId: string, value: string) => void;
   onNoteChange: (value: string) => void;
 }
 
@@ -41,10 +43,12 @@ export const SelectionOptionsContent: React.FC<SelectionOptionsContentProps> = (
   comboChildren,
   comboOptionGroupsByChildId,
   comboSelectedOptionsByChildId,
+  comboNotesByChildId,
   note,
   menuItemName,
   onToggleOption,
   onToggleComboOption,
+  onComboNoteChange,
   onNoteChange,
 }) => {
   if (loading || comboLoading) {
@@ -115,6 +119,18 @@ export const SelectionOptionsContent: React.FC<SelectionOptionsContentProps> = (
                       }
                     />
                   ))}
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-700">
+                      {UI_TEXT.ORDER.COMBO.CHILD_NOTE_LABEL}
+                    </Label>
+                    <Input
+                      placeholder="Ví dụ: ít cay, không hành..."
+                      value={comboNotesByChildId[child.menuItemId] || ""}
+                      onChange={(e) => onComboNoteChange(child.menuItemId, e.target.value)}
+                      className="border-slate-200 focus:border-primary hover:border-slate-300 transition-colors"
+                    />
+                  </div>
                 </div>
               );
             })}

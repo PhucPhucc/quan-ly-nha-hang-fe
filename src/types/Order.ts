@@ -22,6 +22,7 @@ export interface OrderItem {
   orderItemId: string;
   orderId: string;
   menuItemId: string;
+  comboParentOrderItemId?: string;
 
   itemCodeSnapshot: string;
   itemNameSnapshot: string;

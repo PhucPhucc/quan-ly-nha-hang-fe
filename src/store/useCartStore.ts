@@ -39,6 +39,22 @@ function buildComboChildrenKey(children: CartComboChildSelection[] = []): string
     .join("|");
 }
 
+function buildComboChildrenExtraPrice(children: CartComboChildSelection[] = []): number {
+  if (!Array.isArray(children)) return 0;
+
+  return children.reduce((total, child) => {
+    const childOptionsTotal = child.selectedOptions.reduce((groupTotal, group) => {
+      const valuesTotal = group.selectedValues.reduce(
+        (valueTotal, value) => valueTotal + Number(value.extraPrice || 0) * (value.quantity || 1),
+        0
+      );
+      return groupTotal + valuesTotal;
+    }, 0);
+
+    return total + childOptionsTotal * (child.quantity || 1);
+  }, 0);
+}
+
 interface CartState {
   items: Record<string, CartItem[]>; // Keyed by orderId (or tableId)
 
@@ -74,7 +90,8 @@ export const useCartStore = create<CartState>((set) => ({
       .flatMap((g) => g.selectedValues)
       .reduce((acc, v) => acc + Number(v.extraPrice || 0) * (v.quantity || 1), 0);
 
-    const unitPrice = baseUnitPrice + extraPrice;
+    const comboExtraPrice = buildComboChildrenExtraPrice(comboChildren);
+    const unitPrice = baseUnitPrice + extraPrice + comboExtraPrice;
     const cartItemKey =
       buildCartItemKey(menuItem.menuItemId, selectedOptions) +
       `__combo:${buildComboChildrenKey(comboChildren)}`;

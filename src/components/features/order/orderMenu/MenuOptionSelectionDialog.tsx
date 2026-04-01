@@ -39,6 +39,7 @@ export function MenuOptionSelectionDialog({
   const [comboSelectedOptionsByChildId, setComboSelectedOptionsByChildId] = useState<
     Record<string, Record<string, OptionItem[]>>
   >({});
+  const [comboNotesByChildId, setComboNotesByChildId] = useState<Record<string, string>>({});
   const [comboLoading, setComboLoading] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
 
@@ -70,9 +71,11 @@ export function MenuOptionSelectionDialog({
 
             setComboOptionGroupsByChildId(grouped);
             setComboSelectedOptionsByChildId({});
+            setComboNotesByChildId({});
           } else {
             setComboOptionGroupsByChildId({});
             setComboSelectedOptionsByChildId({});
+            setComboNotesByChildId({});
           }
         } catch {
           toast.error(ERROR_MESSAGES.loadOptions);
@@ -86,6 +89,7 @@ export function MenuOptionSelectionDialog({
       resetLocalState();
       setComboOptionGroupsByChildId({});
       setComboSelectedOptionsByChildId({});
+      setComboNotesByChildId({});
       setComboLoading(false);
     }
   }, [open, menuItem, resetLocalState]);
@@ -98,7 +102,26 @@ export function MenuOptionSelectionDialog({
     [selectedOptions]
   );
 
-  const totalPrice = menuItem ? (menuItem.price + extraPrice) * quantity : 0;
+  const comboExtraPrice = useMemo(() => {
+    return (menuItem?.items ?? []).reduce((total, child) => {
+      const childGroups = comboOptionGroupsByChildId[child.menuItemId] || [];
+      const childSelected = comboSelectedOptionsByChildId[child.menuItemId] || {};
+
+      const childOptionPrice = Object.entries(childSelected).reduce(
+        (groupTotal, [groupId, items]) => {
+          const groupInfo = childGroups.find((g) => g.optionGroupId === groupId);
+          const groupMultiplier = groupInfo?.optionType === OPTION_TYPE_SINGLE_SELECT ? 1 : 1;
+          const itemTotal = items.reduce((itemSum, item) => itemSum + item.extraPrice, 0);
+          return groupTotal + itemTotal * groupMultiplier;
+        },
+        0
+      );
+
+      return total + childOptionPrice * child.quantity;
+    }, 0);
+  }, [comboOptionGroupsByChildId, comboSelectedOptionsByChildId, menuItem?.items]);
+
+  const totalPrice = menuItem ? (menuItem.price + extraPrice + comboExtraPrice) * quantity : 0;
 
   const handleToggleOption = (group: MenuItemOptionGroup, item: OptionItem, isChecked: boolean) => {
     const currentSelection = selectedOptions[group.optionGroupId] || [];
@@ -168,6 +191,7 @@ export function MenuOptionSelectionDialog({
         menuItemId: child.menuItemId,
         menuItemName: child.menuItemName,
         quantity: child.quantity,
+        note: comboNotesByChildId[child.menuItemId] || "",
         selectedOptions: Object.entries(childSelected).map(([groupId, items]) => {
           const groupInfo = childGroups.find((g) => g.optionGroupId === groupId);
           return {
@@ -245,6 +269,10 @@ export function MenuOptionSelectionDialog({
     });
   };
 
+  const handleComboNoteChange = (childMenuItemId: string, value: string) => {
+    setComboNotesByChildId((prev) => ({ ...prev, [childMenuItemId]: value }));
+  };
+
   const handleAddToCart = () => {
     if (!validateSelection()) return;
     if (!validateComboSelection()) return;
@@ -303,10 +331,12 @@ export function MenuOptionSelectionDialog({
           comboChildren={menuItem?.items || []}
           comboOptionGroupsByChildId={comboOptionGroupsByChildId}
           comboSelectedOptionsByChildId={comboSelectedOptionsByChildId}
+          comboNotesByChildId={comboNotesByChildId}
           note={note}
           menuItemName={menuItem?.name || ""}
           onToggleOption={handleToggleOption}
           onToggleComboOption={handleToggleComboOption}
+          onComboNoteChange={handleComboNoteChange}
           onNoteChange={handleNoteChange}
         />
 

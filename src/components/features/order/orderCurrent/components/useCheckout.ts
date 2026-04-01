@@ -14,6 +14,8 @@ import { OrderStatus, PaymentMethod } from "@/types/enums";
 import { Order } from "@/types/Order";
 import { printThermalReceipt } from "@/utils/thermalPrint";
 
+import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
+
 export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: number) {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(PaymentMethod.Cash);
   const [customerGiven, setCustomerGiven] = useState<string>("");
@@ -86,7 +88,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
           quantity: item.quantity,
           unitPrice: item.unitPriceSnapshot,
           optionsSummary: item.itemOptions,
-          lineTotal: item.unitPriceSnapshot * item.quantity,
+          lineTotal: getRemoteItemTotal(item) * item.quantity,
         })),
         subTotal: subTotalVal,
         discount: discountVal,

@@ -63,6 +63,19 @@ export interface SubmitOrderToKitchenRequest {
         note?: string;
       }[];
     }[];
+    comboItems?: {
+      menuItemId: string;
+      quantity: number;
+      note?: string;
+      selectedOptions?: {
+        optionGroupId: string;
+        selectedValues: {
+          optionItemId: string;
+          quantity: number;
+          note?: string;
+        }[];
+      }[];
+    }[];
   }[];
 }
 

@@ -368,6 +368,7 @@ export const ORDER = {
     ITEMS_SELECTION_HINT: "Chọn món con và option nếu có",
     QUANTITY_LABEL: "Số lượng:",
     QUANTITY_SEPARATOR: "x",
+    CHILD_NOTE_LABEL: "Ghi chú món con",
     NO_ITEMS_MESSAGE: "Chưa có món con cho combo này.",
   },
 };

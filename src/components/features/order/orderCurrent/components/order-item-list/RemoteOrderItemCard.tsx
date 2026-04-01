@@ -15,6 +15,7 @@ interface RemoteOrderItemCardProps {
   isFree: boolean;
   isCombo?: boolean;
   hidePrice?: boolean;
+  priceOverride?: number;
   isClickable?: boolean;
   className?: string;
   isComboExpanded?: boolean;
@@ -29,6 +30,7 @@ export const RemoteOrderItemCard: React.FC<RemoteOrderItemCardProps> = ({
   isFree,
   isCombo = false,
   hidePrice = false,
+  priceOverride,
   isClickable = false,
   className,
   isComboExpanded = false,
@@ -87,7 +89,9 @@ export const RemoteOrderItemCard: React.FC<RemoteOrderItemCardProps> = ({
         </div>
 
         <div className={cn("text-sm font-medium text-right", isFree ? "text-emerald-600" : "")}>
-          {!hidePrice && <p>{formatCurrency(isFree ? 0 : getRemoteItemTotal(item))}</p>}
+          {!hidePrice && (
+            <p>{formatCurrency(isFree ? 0 : (priceOverride ?? getRemoteItemTotal(item)))}</p>
+          )}
           <p>{UI_TEXT.ORDER.QUANTITY(item.quantity)}</p>
         </div>
       </div>
