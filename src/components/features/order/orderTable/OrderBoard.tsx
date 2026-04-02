@@ -35,7 +35,6 @@ const OrderBoard = () => {
     setLoadingTakeaway(true);
     try {
       const res = await orderService.createTakeAwayOrder();
-      console.log("res: " + JSON.stringify(res));
       if (res.isSuccess) {
         const newOrderId = res.data;
         setSelectedOrderId(newOrderId);

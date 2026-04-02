@@ -37,7 +37,6 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
     try {
       setError("");
-      console.log(employee);
       await addEmployee(employee);
     } catch (err) {
       setError((err as Error).message);

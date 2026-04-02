@@ -201,7 +201,6 @@ export const orderService = {
         }
       });
     }
-    console.log(queryParams);
     return apiFetch<PaginationResult<Order>>(`/orders?${queryParams.toString()}`);
   },
 

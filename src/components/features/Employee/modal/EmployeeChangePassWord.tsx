@@ -44,7 +44,6 @@ const EmployeeChangePassword = ({
       toast.error("Vui long dien ly do thay doi mat khau");
       return;
     }
-    console.log(employeeId);
     try {
       await changeEmployeePassword(employeeId, reason, newPassword);
       toast.success("Thay doi mat khau thanh cong");

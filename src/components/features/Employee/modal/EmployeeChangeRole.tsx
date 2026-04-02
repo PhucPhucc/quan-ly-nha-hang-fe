@@ -72,7 +72,6 @@ const EmployeeChangeRole = ({
       onToggle(false);
     } catch (error) {
       toast.error(UI_TEXT.EMPLOYEE.CHANGE_FAILED);
-      console.log(error);
     }
   };
 

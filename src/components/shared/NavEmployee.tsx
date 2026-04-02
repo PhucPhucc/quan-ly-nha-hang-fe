@@ -131,7 +131,7 @@ const NavEmployee = () => {
               </SelectTrigger>
               <SelectContent className="text-xs" position="popper">
                 <SelectGroup>
-                  <SelectItem value="bottom-left" onClick={() => console.log(123)}>
+                  <SelectItem value="bottom-left">
                     {UI_TEXT.PREFERENCE.POSITION_BOTTOM_LEFT}
                   </SelectItem>
                   <SelectItem value="bottom-right">

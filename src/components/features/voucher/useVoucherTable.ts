@@ -31,7 +31,6 @@ export function useVoucherTable(refreshKey: number) {
       if (statusFilter !== "all") {
         filters.push(`isActive:${statusFilter}`);
       }
-      console.log(filters);
       const res = await voucherService.getAll({
         pageNumber: currentPage,
         pageSize,

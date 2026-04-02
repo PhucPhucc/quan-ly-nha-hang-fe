@@ -42,7 +42,6 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
       address,
       role: role,
     };
-    console.log(employeeUpdate);
     try {
       await updateEmployee(employeeUpdate);
       toast.success(UI_TEXT.EMPLOYEE.UPDATE_SUSCESS);

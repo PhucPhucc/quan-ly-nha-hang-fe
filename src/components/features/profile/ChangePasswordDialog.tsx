@@ -26,7 +26,6 @@ export default function ChangePasswordDialog() {
     confirm: "",
   });
   const [open, setOpen] = useState(false);
-  console.log(passwords);
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +62,6 @@ export default function ChangePasswordDialog() {
 
       setOpen(false);
     } catch (err: unknown) {
-      console.log(err);
       setServerError(String(err));
     } finally {
       setLoading(false);

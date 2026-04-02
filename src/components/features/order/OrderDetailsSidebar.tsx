@@ -14,7 +14,6 @@ import OrderHistory from "./orderCurrent/OrderHistory";
 const OrderDetailsSidebar = () => {
   const order = useOrderBoardStore((state) => state.activeOrderDetails);
   const tables = useTableStore((state) => state.tables.find((t) => t.tableId === order?.tableId));
-  console.log(tables);
   const tableName = order
     ? order.orderType === OrderType.Takeaway
       ? UI_TEXT.ORDER.BOARD.TAKEAWAY
