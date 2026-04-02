@@ -1,4 +1,12 @@
 echo "🔍 Running lint-staged..."
+# ensure node from nvm + local node_modules bin are available in non-login GUI environments
+export PATH="$HOME/.nvm/versions/node/v24.14.1/bin:$PATH"
+export PATH="$(pwd)/node_modules/.bin:$PATH"
+
+# debug - optional
+echo "pre-commit PATH=$PATH"
+command -v npx || echo "npx not found"
+
 npx lint-staged
 
 echo "🔍 Running TypeScript check..."
