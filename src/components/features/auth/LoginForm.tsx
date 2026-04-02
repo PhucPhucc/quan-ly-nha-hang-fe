@@ -26,6 +26,7 @@ const LoginForm = () => {
       const res = await login({
         employeeCode: formData.get("employeeCode") as string,
         password: formData.get("password") as string,
+        rememberMe: formData.get("remember") === "on",
       });
 
       if (res.data) {

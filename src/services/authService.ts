@@ -14,6 +14,7 @@ export interface AuthResponse {
 type LoginPayload = {
   employeeCode: string | null;
   password: string | null;
+  rememberMe: boolean;
 };
 
 export async function login(payload: LoginPayload): Promise<ApiResponse<AuthResponse>> {
