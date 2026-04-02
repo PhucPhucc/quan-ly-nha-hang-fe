@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { UI_TEXT } from "@/lib/UI_Text";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { logout } from "@/services/authService";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -26,9 +26,5 @@ export default function LogoutPage() {
     handleLogout();
   }, [logoutStore, router]);
 
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <p>{UI_TEXT.AUTH.LOGGING_OUT}</p>
-    </div>
-  );
+  return <LoadingSpinner></LoadingSpinner>;
 }
