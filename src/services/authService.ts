@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/Api";
 
-import { apiFetch, clearCsrfToken } from "./api";
+import { apiFetch, clearCsrfToken, refreshCsrfToken } from "./api";
 
 export interface AuthResponse {
   employeeId: string;
@@ -17,10 +17,13 @@ type LoginPayload = {
 };
 
 export async function login(payload: LoginPayload): Promise<ApiResponse<AuthResponse>> {
-  return apiFetch<AuthResponse>("/auth/login", {
+  clearCsrfToken();
+  const response = await apiFetch<AuthResponse>("/auth/login", {
     method: "POST",
     body: payload,
   });
+  await refreshCsrfToken();
+  return response;
 }
 
 export async function logout(): Promise<ApiResponse<void>> {

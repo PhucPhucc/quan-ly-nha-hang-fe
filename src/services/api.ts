@@ -10,9 +10,29 @@ const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 let isRefreshing = false;
 let refreshQueue: (() => void)[] = [];
 let csrfToken: string | null = null;
+let csrfTokenPromise: Promise<void> | null = null;
 
 export function clearCsrfToken() {
   csrfToken = null;
+  csrfTokenPromise = null;
+}
+
+export async function refreshCsrfToken(): Promise<void> {
+  clearCsrfToken();
+  await ensureCsrfToken();
+}
+
+async function isCsrfValidationError(res: Response): Promise<boolean> {
+  if (res.status !== 400) {
+    return false;
+  }
+
+  try {
+    const payload = (await res.clone().json()) as { message?: string };
+    return payload.message === "Invalid or missing CSRF token.";
+  } catch {
+    return false;
+  }
 }
 
 function isMutationRequest(method?: string): boolean {
@@ -28,21 +48,34 @@ async function ensureCsrfToken(): Promise<void> {
     return;
   }
 
-  const res = await fetch(BASE_URL + "/api/v1/auth/csrf-token", {
-    method: "GET",
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Unable to initialize CSRF token");
+  if (csrfTokenPromise) {
+    await csrfTokenPromise;
+    return;
   }
 
-  const data = (await res.json()) as { csrfToken?: string };
-  if (!data.csrfToken) {
-    throw new Error("CSRF token was not returned");
-  }
+  csrfTokenPromise = (async () => {
+    const res = await fetch(BASE_URL + "/api/v1/auth/csrf-token", {
+      method: "GET",
+      credentials: "include",
+    });
 
-  csrfToken = data.csrfToken;
+    if (!res.ok) {
+      throw new Error("Unable to initialize CSRF token");
+    }
+
+    const data = (await res.json()) as { csrfToken?: string };
+    if (!data.csrfToken) {
+      throw new Error("CSRF token was not returned");
+    }
+
+    csrfToken = data.csrfToken;
+  })();
+
+  try {
+    await csrfTokenPromise;
+  } finally {
+    csrfTokenPromise = null;
+  }
 }
 
 async function buildRequestOptions(options: RequestInit): Promise<RequestInit> {
@@ -64,6 +97,7 @@ async function buildRequestOptions(options: RequestInit): Promise<RequestInit> {
 }
 
 export async function refreshToken() {
+  clearCsrfToken();
   const res = await fetch(
     BASE_URL + "/api/v1/auth/refresh-token",
     await buildRequestOptions({
@@ -80,7 +114,9 @@ export async function refreshToken() {
     throw new Error("Refresh token failed");
   }
 
-  return res.json();
+  const data = await res.json();
+  await refreshCsrfToken();
+  return data;
 }
 
 async function performRequest(path: string, options: RequestInit): Promise<Response> {
@@ -145,7 +181,14 @@ export async function apiFetch<T>(
   }
 
   let res = await performRequest(path, fetchOptions);
+  const method = (options.method || "GET").toUpperCase();
+  const isMutation = isMutationRequest(method);
   const shouldAttemptRefresh = path !== "/auth/logout";
+
+  if (isMutation && (await isCsrfValidationError(res))) {
+    clearCsrfToken();
+    res = await performRequest(path, fetchOptions);
+  }
 
   if (res.status === 401 && shouldAttemptRefresh) {
     if (!isRefreshing) {
@@ -176,6 +219,11 @@ export async function apiFetch<T>(
     }
 
     res = await performRequest(path, fetchOptions);
+
+    if (isMutation && (await isCsrfValidationError(res))) {
+      clearCsrfToken();
+      res = await performRequest(path, fetchOptions);
+    }
   }
 
   if (!res.ok) {
