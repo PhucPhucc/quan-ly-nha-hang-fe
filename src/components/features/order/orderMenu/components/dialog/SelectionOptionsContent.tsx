@@ -6,7 +6,6 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { MenuItemOptionGroup, OptionItem, SetMenuItemPreview } from "@/types/Menu";
@@ -53,14 +52,14 @@ export const SelectionOptionsContent: React.FC<SelectionOptionsContentProps> = (
 }) => {
   if (loading || comboLoading) {
     return (
-      <div className="flex justify-center py-10">
+      <div className="flex flex-1 min-h-0 items-center justify-center p-4">
         <Loader2 className="animate-spin text-slate-400" />
       </div>
     );
   }
 
   return (
-    <ScrollArea className="flex-1 p-4">
+    <div className="min-h-0 overflow-y-auto overscroll-contain p-4 pb-6">
       <div className="space-y-6">
         {optionGroups.map((group) => (
           <OptionGroupSection
@@ -153,6 +152,6 @@ export const SelectionOptionsContent: React.FC<SelectionOptionsContentProps> = (
 
         <Separator className="opacity-40" />
       </div>
-    </ScrollArea>
+    </div>
   );
 };

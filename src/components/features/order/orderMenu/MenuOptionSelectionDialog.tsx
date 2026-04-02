@@ -320,7 +320,7 @@ export function MenuOptionSelectionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden shadow-2xl border-none">
+      <DialogContent className="max-w-md max-h-[90vh] min-h-0 grid grid-rows-[auto_minmax(0,1fr)_auto] p-0 gap-0 overflow-hidden shadow-2xl border-none">
         <SelectionDialogHeader menuItem={menuItem} />
 
         <SelectionOptionsContent
