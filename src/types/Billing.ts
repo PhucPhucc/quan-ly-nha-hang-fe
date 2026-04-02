@@ -6,6 +6,7 @@ export interface PreCheckBillItem {
   unitPrice: number;
   optionsSummary?: string;
   lineTotal: number;
+  isFreeItem?: boolean;
 }
 
 export interface PreCheckBillResponse {

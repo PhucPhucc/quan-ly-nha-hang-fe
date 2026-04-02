@@ -1,12 +1,14 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
+import { voucherService } from "@/services/voucherService";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { OrderType } from "@/types/enums";
+import { Voucher, VoucherType } from "@/types/voucher";
 
 import CardContainer from "../CardContainer";
 import OrderCurrentHeader from "./components/OrderCurrentHeader";
@@ -16,6 +18,8 @@ import OrderSummaryFooter from "./components/OrderSummaryFooter";
 const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
   const { items: cartData, updateQuantity, removeItem } = useCartStore();
   const { selectedOrderId, activeOrderDetails, orderDetailsLoading } = useOrderBoardStore();
+  const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
+  const [isVoucherLoading, setIsVoucherLoading] = useState(false);
 
   // const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
   // const activeOrder = useOrderBoardStore((state) => state.activeOrderDetails);
@@ -51,6 +55,45 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
     activeOrderDetails?.voucher?.voucherCode ??
     undefined;
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchAppliedVoucher = async () => {
+      if (!voucherCode) {
+        setAppliedVoucher(null);
+        return;
+      }
+
+      try {
+        setIsVoucherLoading(true);
+        const res = await voucherService.getAll({ search: voucherCode, pageSize: 20 });
+        const matchedVoucher =
+          res.data?.items.find(
+            (voucher) => voucher.code.toUpperCase() === voucherCode.toUpperCase()
+          ) ?? null;
+
+        if (isMounted) {
+          setAppliedVoucher(matchedVoucher);
+        }
+      } catch (error) {
+        console.error("Failed to fetch applied voucher:", error);
+        if (isMounted) {
+          setAppliedVoucher(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsVoucherLoading(false);
+        }
+      }
+    };
+
+    void fetchAppliedVoucher();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [voucherCode]);
+
   const tax =
     activeOrderDetails?.vatAmount && activeOrderDetails.vatAmount > 0
       ? activeOrderDetails.vatAmount
@@ -69,7 +112,20 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
       ? Math.max(0, subtotal + tax - serverTotal)
       : baseDiscount;
 
-  const total = Math.max(0, subtotal + tax - discount);
+  const dynamicDiscount =
+    appliedVoucher?.type === VoucherType.Percent
+      ? Math.min(
+          subtotal,
+          appliedVoucher.maxDiscount ?? Number.POSITIVE_INFINITY,
+          Math.round((subtotal * appliedVoucher.value) / 100)
+        )
+      : appliedVoucher?.type === VoucherType.Fixed
+        ? Math.min(subtotal, appliedVoucher.value)
+        : discount;
+
+  const resolvedDiscount = voucherCode && !isVoucherLoading ? dynamicDiscount : discount;
+
+  const total = Math.max(0, subtotal + tax - resolvedDiscount);
 
   if (orderDetailsLoading && !activeOrderDetails) {
     return (
@@ -99,7 +155,7 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
           subtotal={subtotal}
           tax={tax}
           total={total}
-          discount={discount}
+          discount={resolvedDiscount}
           voucherCode={voucherCode}
         />
       </div>

@@ -35,6 +35,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     isProcessing,
     payOSUrl,
     bankInfo,
+    payableAmount,
     handleCheckout,
     calculateChange,
     handleQuickAmount,
@@ -57,7 +58,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
             <span className="font-semibold text-secondary-foreground">
               {UI_TEXT.ORDER.CURRENT.TOTAL_AMOUNT}
             </span>
-            <span className="text-2xl font-black text-primary">{formatCurrency(totalAmount)}</span>
+            <span className="text-2xl font-black text-primary">
+              {formatCurrency(payableAmount)}
+            </span>
           </div>
 
           <div className="space-y-2">
@@ -101,7 +104,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                {[totalAmount, 500000, 1000000].map((amount) => (
+                {[payableAmount, 500000, 1000000].map((amount) => (
                   <Button
                     key={amount}
                     variant="secondary"
@@ -126,7 +129,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           )}
 
           {selectedMethod === PaymentMethod.BankTransfer && payOSUrl && (
-            <BankTransferView payOSUrl={payOSUrl} bankInfo={bankInfo} totalAmount={totalAmount} />
+            <BankTransferView payOSUrl={payOSUrl} bankInfo={bankInfo} totalAmount={payableAmount} />
           )}
         </div>
         <DialogFooter className="sm:justify-end">

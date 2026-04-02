@@ -41,6 +41,10 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     })
   );
 
+  const payableAmount = useOrderBoardStore(
+    (state) => state.activeOrderDetails?.totalAmount ?? totalAmount
+  );
+
   const { selectedAreaId, fetchTablesByArea } = useTableStore((state) => ({
     selectedAreaId: state.selectedAreaId,
     fetchTablesByArea: state.fetchTablesByArea,
@@ -58,7 +62,8 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     (order: Order, invoiceAmount?: number): PreCheckBillResponse => {
       // Tính toán giá trị dựa trên danh sách món để đảm bảo độ chính xác
       const itemsLineTotal = order.orderItems.reduce(
-        (sum, item) => sum + (item.unitPriceSnapshot || 0) * (item.quantity || 0),
+        (sum, item) =>
+          sum + (item.isFreeItem ? 0 : getRemoteItemTotal(item) * (item.quantity || 0)),
         0
       );
 
@@ -86,9 +91,10 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         items: order.orderItems.map((item) => ({
           itemName: item.itemNameSnapshot,
           quantity: item.quantity,
-          unitPrice: item.unitPriceSnapshot,
+          unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
           optionsSummary: item.itemOptions,
-          lineTotal: getRemoteItemTotal(item) * item.quantity,
+          lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
+          isFreeItem: item.isFreeItem ?? false,
         })),
         subTotal: subTotalVal,
         discount: discountVal,
@@ -187,7 +193,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
           if (res.isSuccess && res.data?.status === OrderStatus.Paid) {
             // In hóa đơn tự động khi nhận được tiền chuyển khoản
             try {
-              await printInvoiceAfterPayment(totalAmount);
+              await printInvoiceAfterPayment(payableAmount);
             } catch (printError) {
               console.error("Failed to print thermal receipt for bank transfer:", printError);
             }
@@ -215,7 +221,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     clearOrderDetails,
     refreshBoardState,
     printInvoiceAfterPayment,
-    totalAmount,
+    payableAmount,
   ]);
 
   const handleCheckout = async () => {
@@ -228,7 +234,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         return;
       }
       amountReceived = parseFloat(customerGiven.replace(/,/g, ""));
-      if (isNaN(amountReceived) || amountReceived < totalAmount) {
+      if (isNaN(amountReceived) || amountReceived < payableAmount) {
         toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
         return;
       }
@@ -245,7 +251,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
 
       if (success) {
         try {
-          const invoiceAmount = amountReceived ?? totalAmount;
+          const invoiceAmount = amountReceived ?? payableAmount;
           await printInvoiceAfterPayment(invoiceAmount);
         } catch (printError) {
           console.error("Failed to print thermal receipt:", printError);
@@ -296,7 +302,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     if (!customerGiven || selectedMethod !== PaymentMethod.Cash) return 0;
     const given = parseFloat(customerGiven.replace(/,/g, ""));
     if (isNaN(given)) return 0;
-    return Math.max(0, given - totalAmount);
+    return Math.max(0, given - payableAmount);
   };
 
   const handleQuickAmount = (amount: number) => {
@@ -311,6 +317,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     isProcessing,
     payOSUrl,
     bankInfo,
+    payableAmount,
     handleCheckout,
     calculateChange,
     handleQuickAmount,

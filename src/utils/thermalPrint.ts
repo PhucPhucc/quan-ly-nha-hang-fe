@@ -3,6 +3,103 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import type { BrandingSettingsDto } from "@/services/brandingService";
 import { PreCheckBillItem, PreCheckBillResponse } from "@/types/Billing";
 
+const normalizeReceiptText = (value?: string): string =>
+  (value ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+
+const normalizeOptionsSummary = (value?: string): string => {
+  if (!value) {
+    return "";
+  }
+
+  return value
+    .split(/[;,]/)
+    .map((part) => normalizeReceiptText(part))
+    .filter(Boolean)
+    .sort()
+    .join("|");
+};
+
+export const aggregateReceiptItems = (items: PreCheckBillItem[]): PreCheckBillItem[] => {
+  const groupedItems = new Map<string, PreCheckBillItem>();
+
+  items.forEach((item) => {
+    const key = [
+      normalizeReceiptText(item.itemName),
+      item.isFreeItem ? "free" : "paid",
+      item.unitPrice,
+      normalizeOptionsSummary(item.optionsSummary),
+    ].join("||");
+    const existing = groupedItems.get(key);
+
+    if (!existing) {
+      groupedItems.set(key, { ...item });
+      return;
+    }
+
+    existing.quantity += item.quantity;
+    existing.lineTotal += item.lineTotal;
+  });
+
+  return Array.from(groupedItems.values());
+};
+
+export interface ReceiptDisplayItem extends PreCheckBillItem {
+  isChild: boolean;
+}
+
+export const buildReceiptDisplayItems = (items: PreCheckBillItem[]): ReceiptDisplayItem[] => {
+  const aggregatedItems = aggregateReceiptItems(items);
+  const processedItems: ReceiptDisplayItem[] = [];
+  const hasCombo = aggregatedItems.some((item) => item.itemName.includes("(Combo)"));
+
+  if (!hasCombo) {
+    return aggregatedItems.map((item) => ({ ...item, isChild: false }));
+  }
+
+  const usedIndices = new Set<number>();
+
+  aggregatedItems.forEach((item, index) => {
+    if (usedIndices.has(index)) {
+      return;
+    }
+
+    const isComboParent = item.itemName.includes("(Combo)");
+    const isZeroPrice = !item.isFreeItem && (item.unitPrice === 0 || item.lineTotal === 0);
+
+    if (isComboParent) {
+      processedItems.push({ ...item, isChild: false });
+      usedIndices.add(index);
+
+      aggregatedItems.forEach((childItem, childIndex) => {
+        if (
+          !usedIndices.has(childIndex) &&
+          !childItem.isFreeItem &&
+          (childItem.unitPrice === 0 || childItem.lineTotal === 0) &&
+          !childItem.itemName.includes("(Combo)")
+        ) {
+          processedItems.push({ ...childItem, isChild: true });
+          usedIndices.add(childIndex);
+        }
+      });
+
+      return;
+    }
+
+    if (!isZeroPrice) {
+      processedItems.push({ ...item, isChild: false });
+      usedIndices.add(index);
+    }
+  });
+
+  aggregatedItems.forEach((item, index) => {
+    if (!usedIndices.has(index)) {
+      processedItems.push({ ...item, isChild: false });
+    }
+  });
+
+  return processedItems;
+};
+
 export const generateThermalHtml = (
   data: PreCheckBillResponse,
   branding?: Partial<BrandingSettingsDto>
@@ -14,52 +111,8 @@ export const generateThermalHtml = (
   const address = branding?.address ?? UI_TEXT.ORDER.PRINT_TEMP.SHOP_ADDRESS;
   const phone = branding?.phone ?? UI_TEXT.ORDER.PRINT_TEMP.SHOP_PHONE;
   const logoUrl = branding?.logoUrl;
-
-  // Process items to group combo children
-  const processedItems: Array<PreCheckBillItem & { isChild: boolean }> = [];
-  const hasCombo = data.items.some((item) => item.itemName.includes("(Combo)"));
-
-  if (hasCombo) {
-    const usedIndices = new Set<number>();
-
-    data.items.forEach((item, index) => {
-      if (usedIndices.has(index)) return;
-
-      const isComboParent = item.itemName.includes("(Combo)");
-      const isZeroPrice = item.unitPrice === 0 || item.lineTotal === 0;
-
-      if (isComboParent) {
-        processedItems.push({ ...item, isChild: false });
-        usedIndices.add(index);
-
-        // Gather all zero-price items as children of this combo
-        data.items.forEach((childItem, childIndex) => {
-          if (
-            !usedIndices.has(childIndex) &&
-            (childItem.unitPrice === 0 || childItem.lineTotal === 0) &&
-            !childItem.itemName.includes("(Combo)")
-          ) {
-            processedItems.push({ ...childItem, isChild: true });
-            usedIndices.add(childIndex);
-          }
-        });
-      } else if (!isZeroPrice) {
-        processedItems.push({ ...item, isChild: false });
-        usedIndices.add(index);
-      }
-    });
-
-    // Add remaining orphan zero-price items
-    data.items.forEach((item, index) => {
-      if (!usedIndices.has(index)) {
-        processedItems.push({ ...item, isChild: false });
-      }
-    });
-  } else {
-    data.items.forEach((item) => {
-      processedItems.push({ ...item, isChild: false });
-    });
-  }
+  const processedItems = buildReceiptDisplayItems(data.items);
+  const giftLabel = UI_TEXT.VOUCHER.GIFT_LABEL;
 
   return `
     <!DOCTYPE html>
@@ -154,7 +207,7 @@ export const generateThermalHtml = (
                 (item) => `
               <tr>
                 <td style="${item.isChild ? "padding-left: 15px;" : ""}">
-                  <div class="${item.isChild ? "" : "bold"}">${item.isChild ? "- " + item.itemName : item.itemName}</div>
+                  <div class="${item.isChild ? "" : "bold"}">${item.isChild ? "- " + item.itemName : `${item.itemName}${item.isFreeItem ? ` (${giftLabel})` : ""}`}</div>
                   ${item.optionsSummary ? `<div style="font-size: 10px; color: #444;">+ ${item.optionsSummary}</div>` : ""}
                 </td>
                 <td class="text-center">${item.quantity}</td>

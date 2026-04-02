@@ -25,10 +25,9 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
-import { PreCheckBillResponse } from "@/types/Billing";
-import { printThermalReceipt } from "@/utils/thermalPrint";
+import { PreCheckBillItem, PreCheckBillResponse } from "@/types/Billing";
+import { buildReceiptDisplayItems, printThermalReceipt } from "@/utils/thermalPrint";
 
-import { buildComboDisplayMap } from "./order-item-list/order-item-list.combo";
 import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
 
 const money = (value: number) => formatCurrency(value);
@@ -60,48 +59,25 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
   const discountValue = propsDiscount ?? 0;
   const voucherCodeValue = propsVoucherCode;
 
-  const rawItems = activeOrderDetails?.orderItems || [];
-  const comboMap = buildComboDisplayMap(rawItems);
+  const receiptItems: PreCheckBillItem[] = (activeOrderDetails?.orderItems || []).map((item) => ({
+    itemName: item.itemNameSnapshot,
+    quantity: item.quantity,
+    unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
+    optionsSummary: item.itemOptions,
+    lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
+    isFreeItem: item.isFreeItem ?? false,
+  }));
 
-  const orderItems: Array<{
-    id: string;
-    name: string;
-    quantity: number;
-    unitPrice: string;
-    amount: string;
-    isChild: boolean;
-  }> = [];
-
-  rawItems.forEach((item) => {
-    // Only add top-level items directly
-    if (!comboMap.parentIdByChildId.has(item.orderItemId)) {
-      const children = comboMap.childrenByParentId.get(item.orderItemId) || [];
-      const parentAmount =
-        getRemoteItemTotal(item) * item.quantity +
-        children.reduce((sum, child) => sum + getRemoteItemTotal(child) * child.quantity, 0);
-
-      orderItems.push({
-        id: item.orderItemId,
-        name: item.itemNameSnapshot,
-        quantity: item.quantity,
-        unitPrice: money(item.unitPriceSnapshot),
-        amount: money(parentAmount),
-        isChild: false,
-      });
-
-      // Add children immediately after parent
-      children.forEach((child) => {
-        orderItems.push({
-          id: child.orderItemId,
-          name: child.itemNameSnapshot,
-          quantity: child.quantity,
-          unitPrice: "",
-          amount: "",
-          isChild: true,
-        });
-      });
-    }
-  });
+  const orderItems = buildReceiptDisplayItems(receiptItems).map((item, index) => ({
+    id: `${item.itemName}-${item.unitPrice}-${index}`,
+    name: item.isChild
+      ? item.itemName
+      : `${item.itemName}${item.isFreeItem ? ` (${UI_TEXT.VOUCHER.GIFT_LABEL})` : ""}`,
+    quantity: item.quantity,
+    unitPrice: item.isChild ? "" : money(item.unitPrice),
+    amount: item.isChild ? "" : money(item.lineTotal),
+    isChild: item.isChild,
+  }));
   const orderInfo = [
     {
       label: UI_TEXT.ORDER.PRINT_TEMP.TIME,
@@ -247,13 +223,7 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
                   : undefined,
                 employeeName: fulleNameEmployee || UI_TEXT.COMMON.NOT_APPLICABLE,
                 printedAt: new Date().toISOString(),
-                items: (activeOrderDetails?.orderItems || []).map((item) => ({
-                  itemName: item.itemNameSnapshot,
-                  quantity: item.quantity,
-                  unitPrice: item.unitPriceSnapshot,
-                  optionsSummary: item.itemOptions,
-                  lineTotal: getRemoteItemTotal(item) * item.quantity,
-                })),
+                items: receiptItems,
                 subTotal: subtotalValue,
                 discount: discountValue,
                 voucherCode: voucherCodeValue,
