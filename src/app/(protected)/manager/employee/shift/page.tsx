@@ -8,7 +8,6 @@ import ShiftActionBar from "@/components/features/Shift/ShiftActionBar";
 import ShiftDialog from "@/components/features/Shift/ShiftDialog";
 import ShiftTable from "@/components/features/Shift/ShiftTable";
 import PaginationTable from "@/components/shared/PaginationTable";
-import { Card, CardContent } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { shiftService } from "@/services/shiftService";
 import { Shift, ShiftStatus } from "@/types/Shift";
@@ -35,7 +34,6 @@ const ShiftPage = () => {
   });
 
   const shifts = data?.items || [];
-  const totalCount = data?.totalCount || 0;
   const totalPages = data?.totalPages || 1;
   const currentPage = data?.pageNumber || 1;
 
@@ -88,34 +86,25 @@ const ShiftPage = () => {
     document.body.removeChild(link);
   };
 
-  const startDisplay = (currentPage - 1) * DEFAULT_PAGE_SIZE + 1;
-  const endDisplay = Math.min(currentPage * DEFAULT_PAGE_SIZE, totalCount);
-  const displayInfo = `${UI_TEXT.COMMON.DISPLAY} ${startDisplay}-${endDisplay} / ${totalCount}`;
-
   return (
-    <div className="px-4 space-y-6 py-4 animate-in fade-in duration-500">
-      <Card className="p-0 rounded-lg overflow-hidden border-none ">
-        <CardContent className="p-0">
-          <ShiftActionBar
-            onSearch={(v) => console.log("Search:", v)}
-            onExport={handleExport}
-            rightActions={
-              <div className="flex items-center gap-2">
-                <ShiftDialog onSuccess={() => void refetch()} />
-                <ShiftDialog
-                  shift={editingShift}
-                  open={isEditDialogOpen}
-                  onOpenChange={setIsEditDialogOpen}
-                  onSuccess={() => {
-                    setIsEditDialogOpen(false);
-                    void refetch();
-                  }}
-                />
-              </div>
-            }
-          />
-        </CardContent>
-      </Card>
+    <div className="px-4 space-y-3 py-4 animate-in fade-in duration-500">
+      <ShiftActionBar
+        onExport={handleExport}
+        rightActions={
+          <div className="flex items-center gap-2">
+            <ShiftDialog onSuccess={() => void refetch()} />
+            <ShiftDialog
+              shift={editingShift}
+              open={isEditDialogOpen}
+              onOpenChange={setIsEditDialogOpen}
+              onSuccess={() => {
+                setIsEditDialogOpen(false);
+                void refetch();
+              }}
+            />
+          </div>
+        }
+      />
 
       <div className="w-full">
         <ShiftTable

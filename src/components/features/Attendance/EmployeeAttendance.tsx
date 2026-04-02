@@ -45,6 +45,36 @@ export const EmployeeAttendance = () => {
   const weekEnd = endOfWeek(currentWeekDate, { weekStartsOn: 1 });
   const todayStr = format(currentTime, "yyyy-MM-dd");
 
+  const normalizeTimeString = (value?: string | null) => {
+    if (!value) return null;
+    const [hours = "00", minutes = "00", seconds = "00"] = value.split(":");
+    return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`;
+  };
+
+  const parseDateTime = (value?: string | null, fallbackDate?: string) => {
+    if (!value) return null;
+
+    const parsedDate = new Date(value);
+    if (!Number.isNaN(parsedDate.getTime())) {
+      return parsedDate;
+    }
+
+    if (!fallbackDate) return null;
+
+    const normalizedTime = normalizeTimeString(value);
+    if (!normalizedTime) return null;
+
+    const fallbackDateTime = new Date(`${fallbackDate}T${normalizedTime}`);
+    return Number.isNaN(fallbackDateTime.getTime()) ? null : fallbackDateTime;
+  };
+
+  const formatDuration = (totalMinutes: number) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${String(hours).padStart(2, "0")} giờ ${String(minutes).padStart(2, "0")} phút`;
+  };
+
   // Fetch today's assignments
   const { data: assignmentsData, isLoading: isLoadingToday } = useQuery({
     queryKey: ["myAssignments", employeeId, todayStr],
@@ -78,24 +108,49 @@ export const EmployeeAttendance = () => {
     enabled: !!employeeId,
   });
 
-  const todayShift = assignmentsData?.[0]?.shift;
+  const todayAssignment = assignmentsData?.[0];
+  const todayShift = todayAssignment?.shift;
+
+  const getWorkedDuration = (checkOutTime?: string | null, shiftAssignmentId?: string) => {
+    const matchedAssignment =
+      assignmentsData?.find((assignment) => assignment.shiftAssignmentId === shiftAssignmentId) ||
+      todayAssignment;
+
+    if (!matchedAssignment?.assignedDate || !matchedAssignment.shift?.startTime) {
+      return UI_TEXT.COMMON.NOT_APPLICABLE;
+    }
+
+    const shiftStart = parseDateTime(
+      matchedAssignment.shift.startTime,
+      matchedAssignment.assignedDate
+    );
+    const checkedOutAt = parseDateTime(checkOutTime, matchedAssignment.assignedDate);
+
+    if (!shiftStart || !checkedOutAt) {
+      return UI_TEXT.COMMON.NOT_APPLICABLE;
+    }
+
+    const diffInMinutes = Math.floor((checkedOutAt.getTime() - shiftStart.getTime()) / 60000);
+    if (diffInMinutes < 0) {
+      return UI_TEXT.COMMON.NOT_APPLICABLE;
+    }
+
+    return formatDuration(diffInMinutes);
+  };
 
   // Check if late
   const isLate = () => {
     if (!todayShift) return false;
-    const [hours, minutes] = todayShift.startTime.split(":");
-    const shiftStart = new Date(currentTime);
-    shiftStart.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
-    return currentTime > shiftStart;
+    const [hours, minutes] = todayShift.endTime.split(":");
+    const shiftEnd = new Date(currentTime);
+    shiftEnd.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+    return currentTime > shiftEnd;
   };
 
   const handleCheckIn = async () => {
     try {
       if (isLate()) {
-        toast.warning(UI_TEXT.ATTENDANCE.PORTAL_LATE_CHECKIN, {
-          description: UI_TEXT.ATTENDANCE.PORTAL_WARNING_TITLE,
-          duration: 5000,
-        });
+        toast.warning(UI_TEXT.ATTENDANCE.PORTAL_LATE_CHECKIN);
       }
       const resp = await attendanceService.checkIn();
       if (resp.isSuccess) {
@@ -115,11 +170,13 @@ export const EmployeeAttendance = () => {
     try {
       const resp = await attendanceService.checkOut();
       if (resp.isSuccess) {
+        const checkOutTime = resp.data?.checkOutTime;
+
         setIsCheckedIn(false);
         setActionType("checkout");
         setActionInfo({
-          time: formatTime(resp.data?.checkOutTime || new Date()),
-          duration: "09 giờ 05 phút", // Mock duration
+          time: formatTime(checkOutTime || new Date()),
+          duration: getWorkedDuration(checkOutTime, resp.data?.shiftAssignmentId),
         });
         setShowSuccessModal(true);
       }
@@ -140,7 +197,7 @@ export const EmployeeAttendance = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto py-8">
+    <div className="flex flex-col items-center justify-center min-h-[75vh] w-full max-w-4xl mx-auto py-8">
       <Tabs defaultValue="attendance" className="w-full">
         <div className="flex justify-center w-full mb-8">
           <TabsList className="grid w-full max-w-md grid-cols-2 bg-slate-100/50 p-1 rounded-2xl h-14 border border-slate-100 shadow-sm">

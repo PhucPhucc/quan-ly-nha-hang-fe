@@ -33,7 +33,7 @@ export function AttendanceTab({
   return (
     <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 w-full max-w-md relative overflow-hidden">
       {/* Top Status */}
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#cc0000]" />
+      <div className="absolute top-0 left-0 right-0 h-1.5 bg-primary" />
 
       <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mt-2 mb-8">
         {dateString}

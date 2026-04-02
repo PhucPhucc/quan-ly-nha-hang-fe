@@ -1,10 +1,9 @@
-"use client";
-
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { CheckCircle2 } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
 
 interface SuccessDialogProps {
@@ -22,7 +21,13 @@ export function SuccessDialog({
 }: SuccessDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-[2rem] p-8 bg-white border-0 shadow-2xl">
+      <VisuallyHidden>
+        <DialogTitle />
+      </VisuallyHidden>
+      <DialogContent
+        className="sm:max-w-md rounded-[2rem] p-8 bg-white border-0 shadow-2xl"
+        aria-describedby={undefined}
+      >
         <div className="flex flex-col items-center justify-center text-center">
           <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-100">
             <CheckCircle2 className="w-8 h-8 text-white" />

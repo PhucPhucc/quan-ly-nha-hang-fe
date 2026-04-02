@@ -209,7 +209,7 @@ export async function apiFetch<T>(
           window.location.href = "/login";
         }
 
-        console.error("Token refresh failed:", err);
+        // console.error("Token refresh failed:", err);
         throw new Error("Session expired");
       }
     } else {
