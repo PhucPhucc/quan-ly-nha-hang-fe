@@ -26,6 +26,8 @@ const defaultMetadata: Metadata = {
     "The all-in-one solution for modern restaurant operations, inventory, and staff management.",
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await fetchBrandingSettingsServer();
 

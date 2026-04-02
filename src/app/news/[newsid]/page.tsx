@@ -1,13 +1,17 @@
 /* eslint-disable react/no-unescaped-entities, react/jsx-no-literals */
+import { headers } from "next/headers";
+
 import { Footer } from "@/components/features/Landing/components/Footer";
 import { Navbar } from "@/components/features/Landing/components/Navbar";
 
 export default async function NewsPage(props: { params: Promise<{ newsid: string }> }) {
   const params = await props.params;
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   if (params.newsid === "our-story") {
     return (
       <div className="flex min-h-screen flex-col overflow-x-hidden bg-black text-white antialiased">
         <style
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `
           @keyframes fade-in-up {
