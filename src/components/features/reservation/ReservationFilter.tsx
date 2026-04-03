@@ -64,7 +64,7 @@ export const ReservationFilter = ({
       <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-background p-3 rounded-2xl border">
         <div className="flex flex-1 flex-wrap items-center gap-3 w-full">
           {/* Search Box */}
-          <div className="flex-1">
+          <div className="flex-1 ">
             <div className="relative group">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground group-focus-within:text-primary transition-colors" />
               <Input
@@ -78,52 +78,46 @@ export const ReservationFilter = ({
 
           {/* Filters Group */}
           <div className="flex flex-wrap items-center gap-2">
-            <div>
-              <DatePicker
-                value={date ? new Date(date) : undefined}
-                onChange={(newDate) =>
-                  onDateChange(newDate ? newDate.toISOString().split("T")[0] : "")
-                }
-                placeholder={UI_TEXT.RESERVATION.FIELD_DATE}
-                className="w-48"
-              />
-            </div>
+            <DatePicker
+              value={date ? new Date(date) : undefined}
+              onChange={(newDate) =>
+                onDateChange(newDate ? newDate.toISOString().split("T")[0] : "")
+              }
+              placeholder={UI_TEXT.RESERVATION.FIELD_DATE}
+              className="w-48 mr-2"
+            />
 
-            <div>
-              <Select value={area} onValueChange={onAreaChange}>
-                <SelectTrigger className="bg-card border text-[13px] rounded-lg text-card-foreground shadow-sm transition-all focus:ring-primary/20">
-                  <div className="flex items-center gap-2">
-                    <SelectValue placeholder={UI_TEXT.RESERVATION.AREA_FILTER} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="rounded-lg border shadow-xl">
-                  <SelectItem value="all">{UI_TEXT.RESERVATION.ALL_AREAS}</SelectItem>
-                  {areas.map((a) => (
-                    <SelectItem key={a.areaId} value={a.areaId}>
-                      {a.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={area} onValueChange={onAreaChange}>
+              <SelectTrigger className="w-34 bg-card border text-[13px] rounded-lg text-card-foreground shadow-sm transition-all focus:ring-primary/20">
+                <div className="flex items-center gap-2">
+                  <SelectValue placeholder={UI_TEXT.RESERVATION.AREA_FILTER} />
+                </div>
+              </SelectTrigger>
+              <SelectContent className="rounded-lg border shadow-xl">
+                <SelectItem value="all">{UI_TEXT.RESERVATION.ALL_AREAS}</SelectItem>
+                {areas.map((a) => (
+                  <SelectItem key={a.areaId} value={a.areaId}>
+                    {a.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-            <div>
-              <Select value={status} onValueChange={onStatusChange}>
-                <SelectTrigger className="bg-card border text-[13px] rounded-lg text-card-foreground shadow-sm transition-all focus:ring-primary/20">
-                  <SelectValue placeholder={UI_TEXT.RESERVATION.STATUS_FILTER} />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg border shadow-xl">
-                  <SelectItem value="all">{UI_TEXT.RESERVATION.ALL_STATUSES}</SelectItem>
-                  <SelectItem value="booked">{UI_TEXT.RESERVATION.STATUS_FILTER_BOOKED}</SelectItem>
-                  <SelectItem value="checked_in">
-                    {UI_TEXT.RESERVATION.STATUS_FILTER_ARRIVED}
-                  </SelectItem>
-                  <SelectItem value="cancelled">
-                    {UI_TEXT.RESERVATION.STATUS_FILTER_CANCELLED}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={status} onValueChange={onStatusChange}>
+              <SelectTrigger className="bg-card border text-[13px] rounded-lg text-card-foreground shadow-sm transition-all focus:ring-primary/20">
+                <SelectValue placeholder={UI_TEXT.RESERVATION.STATUS_FILTER} />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg border shadow-xl">
+                <SelectItem value="all">{UI_TEXT.RESERVATION.ALL_STATUSES}</SelectItem>
+                <SelectItem value="booked">{UI_TEXT.RESERVATION.STATUS_FILTER_BOOKED}</SelectItem>
+                <SelectItem value="checked_in">
+                  {UI_TEXT.RESERVATION.STATUS_FILTER_ARRIVED}
+                </SelectItem>
+                <SelectItem value="cancelled">
+                  {UI_TEXT.RESERVATION.STATUS_FILTER_CANCELLED}
+                </SelectItem>
+              </SelectContent>
+            </Select>
 
             <Button
               onClick={onReset}

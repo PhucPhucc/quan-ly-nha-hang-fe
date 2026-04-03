@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
 export function HeroSection() {
   const { employee } = useAuthStore();
@@ -15,16 +16,32 @@ export function HeroSection() {
 
   const restaurantName = branding?.restaurantName || t.HERO_TITLE;
 
+  let urlDashboard = "/login";
+
+  switch (employee?.role) {
+    case EmployeeRole.MANAGER:
+      urlDashboard = "/manager/dashboard";
+      break;
+    case EmployeeRole.CASHIER:
+      urlDashboard = "/order";
+      break;
+    case EmployeeRole.CHEFBAR:
+      urlDashboard = "/kds/kitchen";
+      break;
+    default:
+      urlDashboard = "/login";
+  }
+
   return (
     <section className="relative flex flex-1 items-center justify-center pt-32 pb-20 md:pt-48 md:pb-32">
-      <div className="absolute top-0 -z-10 h-full w-full overflow-hidden">
-        <div className="absolute -top-[10%] -left-[10%] h-[500px] w-[500px] rounded-full bg-primary/20 blur-[120px] animate-float" />
+      <div className="pointer-events-none absolute top-0 z-10 h-full w-full overflow-hidden">
+        <div className="absolute -top-[10%] -left-[10%] size-125 rounded-full bg-primary/20 blur-[120px] animate-float" />
         <div
-          className="absolute top-[20%] -right-[5%] h-[400px] w-[400px] rounded-full bg-orange-300/20 blur-[100px] animate-float"
+          className="absolute top-[20%] -right-[5%] size-100 rounded-full bg-orange-300/20 blur-[100px] animate-float"
           style={{ animationDelay: "2s" }}
         />
         <div
-          className="absolute bottom-[10%] left-[20%] h-[300px] w-[300px] rounded-full bg-yellow-200/20 blur-[80px] animate-float"
+          className="absolute bottom-[10%] left-[20%] size-75 rounded-full bg-yellow-200/20 blur-[80px] animate-float"
           style={{ animationDelay: "4s" }}
         />
       </div>
@@ -56,23 +73,13 @@ export function HeroSection() {
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row animate-fade-in-up"
           style={{ animationDelay: "0.3s" }}
         >
-          {employee ? (
-            <Link
-              href="/dashboard"
-              className="group flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
-            >
-              {t.DASHBOARD}
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Link>
-          ) : (
-            <Link
-              href="/login"
-              className="group flex items-center gap-2 rounded-xl bg-primary px-10 py-4 text-lg font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
-            >
-              {t.ENTER_SYSTEM}
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Link>
-          )}
+          <Link
+            href={urlDashboard}
+            className="group flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
+          >
+            {urlDashboard === "/login" ? t.GET_STARTED : t.ENTER_SYSTEM}
+            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
 
         {/* KDS Preview */}

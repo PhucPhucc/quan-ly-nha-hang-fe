@@ -191,7 +191,7 @@ export function SalesAnalyticsSection({ className, id }: SalesAnalyticsSectionPr
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal glass sm:w-[240px]",
+                    "w-full justify-start text-left font-normal sm:w-[240px]",
                     !date && "text-muted-foreground"
                   )}
                 >
@@ -268,7 +268,7 @@ export function SalesAnalyticsSection({ className, id }: SalesAnalyticsSectionPr
             </>
           )}
 
-          <Button className="gap-2 shadow-glow sm:w-auto" onClick={handleExport}>
+          <Button className="gap-2 shadow-2xl sm:w-auto" onClick={handleExport}>
             <Download className="h-4 w-4" />
             <span>{UI_TEXT.SALES_ANALYTICS.EXPORT_REPORT}</span>
           </Button>
