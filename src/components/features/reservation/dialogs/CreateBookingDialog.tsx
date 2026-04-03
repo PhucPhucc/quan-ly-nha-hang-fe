@@ -149,9 +149,6 @@ export const CreateBookingDialog = ({
                     <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_AREA} />
                   </SelectTrigger>
                   <SelectContent>
-                    {!requiresVipArea && (
-                      <SelectItem value="all">{UI_TEXT.RESERVATION.AREA_ANY}</SelectItem>
-                    )}
                     {areas.map((a) => (
                       <SelectItem key={a.areaId} value={a.areaId}>
                         {a.name}

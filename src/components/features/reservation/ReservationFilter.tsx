@@ -81,7 +81,11 @@ export const ReservationFilter = ({
             <DatePicker
               value={date ? new Date(date) : undefined}
               onChange={(newDate) =>
-                onDateChange(newDate ? newDate.toISOString().split("T")[0] : "")
+                onDateChange(
+                  newDate
+                    ? `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, "0")}-${String(newDate.getDate()).padStart(2, "0")}`
+                    : ""
+                )
               }
               placeholder={UI_TEXT.RESERVATION.FIELD_DATE}
               className="w-48 mr-2"

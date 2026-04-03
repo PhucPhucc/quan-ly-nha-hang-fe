@@ -37,7 +37,7 @@ export function ReviewsSection() {
                   />
                 ))}
               </div>
-              <p className="font-serif italic text-slate-300 mb-8 leading-relaxed text-lg text-balance">
+              <p className="font-serif italic text-slate-300 mb-8 leading-relaxed line-clamp-3 text-lg text-balance">
                 <span className="text-primary italic mr-1">{QUOTE_MARK_MOCK}</span>
                 {rev.content}
                 <span className="text-primary italic ml-1">{QUOTE_MARK_MOCK}</span>
