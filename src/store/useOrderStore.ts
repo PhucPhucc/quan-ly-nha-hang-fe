@@ -95,11 +95,11 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         };
 
         if (activeTab === TAKEAWAY_TAB) {
-          // Takeaway tab: respect user's status filter
+          // Takeaway tab should show the full takeaway queue.
           params.orderType = OrderType.Takeaway;
-          if (selectedStatuses.length > 0) {
-            params.status = selectedStatuses[0] as OrderStatus;
-          }
+          params.pageSize = params.pageSize ?? 100;
+          params.search = undefined;
+          params.status = undefined;
         } else if (activeTab) {
           // Area/dine-in tab: ONLY fetch Serving orders for the board.
           // Paid/Cancelled orders are irrelevant for table occupancy display.
@@ -236,21 +236,23 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
     takeawayOrders: () => get().orders.filter((o) => o.orderType === OrderType.Takeaway),
 
     filteredTakeaways: () => {
-      const { activeTab, searchQuery, selectedStatuses } = get();
+      const { activeTab } = get();
       if (activeTab !== TAKEAWAY_TAB) return [];
 
       return get()
         .takeawayOrders()
-        .filter((o) => {
-          const statusString = o.status === OrderStatus.Serving ? "tk_serving" : "tk_ready";
-
-          const matchesStatus =
-            selectedStatuses.length === 0 || selectedStatuses.includes(statusString);
-
-          const matchesSearch =
-            !searchQuery || o.orderCode.toLowerCase().includes(searchQuery.toLowerCase());
-
-          return matchesStatus && matchesSearch;
+        .filter(
+          (o) =>
+            o.status !== OrderStatus.Paid &&
+            o.status !== OrderStatus.Completed &&
+            o.status !== OrderStatus.Cancelled &&
+            o.status !== OrderStatus.Closed &&
+            o.status !== OrderStatus.Merged
+        )
+        .toSorted((a, b) => {
+          const timeA = new Date(a.createdAt).getTime();
+          const timeB = new Date(b.createdAt).getTime();
+          return timeB - timeA;
         });
     },
 

@@ -41,6 +41,7 @@ export function TopDishes() {
                 src={dish.image}
                 alt={dish.name}
                 fill
+                sizes="48px"
                 className="object-cover transition-transform group-hover:scale-110"
               />
             </div>

@@ -12,6 +12,7 @@ import { useTableStore } from "@/store/useTableStore";
 import { PreCheckBillResponse } from "@/types/Billing";
 import { OrderStatus, PaymentMethod } from "@/types/enums";
 import { Order } from "@/types/Order";
+import { resolveOrderTableDisplay } from "@/utils/orderReceipt";
 import { printThermalReceipt } from "@/utils/thermalPrint";
 
 import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
@@ -40,6 +41,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
       fetchOrders: state.fetchOrders,
     })
   );
+  const activeOrderDetails = useOrderBoardStore((state) => state.activeOrderDetails);
 
   // const totalAmount = useOrderBoardStore(
   //   (state) => state.activeOrderDetails?.totalAmount ?? totalAmount
@@ -49,6 +51,8 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     selectedAreaId: state.selectedAreaId,
     fetchTablesByArea: state.fetchTablesByArea,
   }));
+
+  const remainingAmount = Math.max(totalAmount - (activeOrderDetails?.amountPaid ?? 0), 0);
 
   const getCookie = (name: string) => {
     if (typeof document === "undefined") return null;
@@ -84,7 +88,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
       return {
         orderId: order.orderId,
         orderCode: order.orderCode,
-        tableNumber: order.tableId ? Number.parseInt(order.tableId, 10) || undefined : undefined,
+        ...resolveOrderTableDisplay(order.tableId),
         employeeName:
           employeeNameFromStore || employeeNameFromCookie || UI_TEXT.COMMON.NOT_APPLICABLE,
         printedAt: new Date().toISOString(),
@@ -131,6 +135,12 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     },
     [buildReceiptFromOrder, branding]
   );
+
+  useEffect(() => {
+    if (isOpen && selectedMethod === PaymentMethod.Cash) {
+      setCustomerGiven(String(remainingAmount));
+    }
+  }, [isOpen, selectedMethod, remainingAmount]);
 
   useEffect(() => {
     let isMounted = true;
@@ -234,7 +244,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         return;
       }
       amountReceived = parseFloat(customerGiven.replace(/,/g, ""));
-      if (isNaN(amountReceived) || amountReceived < totalAmount) {
+      if (isNaN(amountReceived) || amountReceived < remainingAmount) {
         toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
         return;
       }
@@ -251,7 +261,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
 
       if (success) {
         try {
-          const invoiceAmount = amountReceived ?? totalAmount;
+          const invoiceAmount = amountReceived ?? remainingAmount;
           await printInvoiceAfterPayment(invoiceAmount);
         } catch (printError) {
           console.error("Failed to print thermal receipt:", printError);
@@ -302,7 +312,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     if (!customerGiven || selectedMethod !== PaymentMethod.Cash) return 0;
     const given = parseFloat(customerGiven.replace(/,/g, ""));
     if (isNaN(given)) return 0;
-    return Math.max(0, given - totalAmount);
+    return Math.max(0, given - remainingAmount);
   };
 
   const handleQuickAmount = (amount: number) => {

@@ -54,6 +54,7 @@ export function AboutSection() {
                 src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1000&auto=format&fit=crop"
                 alt={t.ABOUT_IMG_ALT}
                 fill
+                sizes="(min-width: 768px) 50vw, 100vw"
                 className="object-cover"
               />
             </div>

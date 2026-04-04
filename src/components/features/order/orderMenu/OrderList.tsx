@@ -122,6 +122,7 @@ function OrderMenuCard({
           src={!item.imageUrl ? "/placeholderMenu.webp" : item.imageUrl}
           alt={item.name}
           fill
+          sizes="(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
           className="object-cover"
         />
         {item.isOutOfStock && (
