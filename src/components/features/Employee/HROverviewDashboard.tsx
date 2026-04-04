@@ -55,7 +55,7 @@ export function HROverviewDashboard() {
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="rounded-xl text-xs">
-              <Link href="/manager/schedule">
+              <Link href="/manager/employee/schedule">
                 <CalendarDays className="mr-2 h-3.5 w-3.5" />
                 {d.BUTTONS.SCHEDULE}
               </Link>
