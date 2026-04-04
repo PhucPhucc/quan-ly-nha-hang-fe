@@ -22,8 +22,7 @@ const TAKEAWAY_TAB = "takeaway";
 const currencyFormatter = new Intl.NumberFormat("vi-VN");
 
 const OrderBoard = () => {
-  const { loading, activeTab, filteredTakeaways } = useOrderBoardStore();
-  // const fetchOrders = useOrderBoardStore((s) => s.fetchOrders);
+  const { loading, activeTab, filteredTakeaways, fetchOrders } = useOrderBoardStore();
   const setActiveTab = useOrderBoardStore((s) => s.setActiveTab);
   const setActiveView = useOrderBoardStore((s) => s.setActiveView);
   const setSelectedOrderId = useOrderBoardStore((s) => s.setSelectedOrderId);
@@ -37,6 +36,7 @@ const OrderBoard = () => {
       const res = await orderService.createTakeAwayOrder();
       if (res.isSuccess) {
         const newOrderId = res.data;
+        await fetchOrders({ pageSize: 100 });
         setSelectedOrderId(newOrderId);
         setActiveView("menu");
       } else {

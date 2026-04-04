@@ -188,7 +188,17 @@ export const generateThermalHtml = (
         
         <div style="font-size: 11px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div>${UI_TEXT.ORDER.PRINT_TEMP.PRINT_DATE} ${dateStr}</div>
-          <div class="text-right">${UI_TEXT.ORDER.PRINT_TEMP.TABLE_PREFIX} <span class="bold">${data.tableNumber ? `${data.tableNumber}` : UI_TEXT.ORDER.PRINT_TEMP.TAKEAWAY_LABEL}</span></div>
+          <div class="text-right">
+            ${
+              data.tableLabel
+                ? `${UI_TEXT.ORDER.BOARD.TABLE_ZONE}: <span class="bold">${data.tableLabel}</span>`
+                : `${UI_TEXT.ORDER.PRINT_TEMP.TABLE_PREFIX} <span class="bold">${
+                    data.tableNumber
+                      ? `Bàn ${data.tableNumber}`
+                      : UI_TEXT.ORDER.PRINT_TEMP.TAKEAWAY_LABEL
+                  }</span>`
+            }
+          </div>
           <div>${UI_TEXT.ORDER.PRINT_TEMP.CASHIER_LABEL} ${data.employeeName}</div>
         </div>
         

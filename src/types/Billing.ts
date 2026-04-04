@@ -13,6 +13,7 @@ export interface PreCheckBillResponse {
   orderId: string;
   orderCode: string;
   tableNumber?: number;
+  tableLabel?: string;
   reservationId?: string;
   employeeName: string;
   customerName?: string;

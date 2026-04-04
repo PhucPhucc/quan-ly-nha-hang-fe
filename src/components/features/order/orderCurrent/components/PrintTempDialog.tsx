@@ -26,6 +26,7 @@ import { formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { PreCheckBillItem, PreCheckBillResponse } from "@/types/Billing";
+import { resolveOrderTableDisplay } from "@/utils/orderReceipt";
 import { buildReceiptDisplayItems, printThermalReceipt } from "@/utils/thermalPrint";
 
 import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
@@ -218,9 +219,7 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
               const receipt: PreCheckBillResponse = {
                 orderId: selectedOrderId || "",
                 orderCode: activeOrderDetails?.orderCode || "",
-                tableNumber: activeOrderDetails?.tableId
-                  ? Number.parseInt(activeOrderDetails.tableId, 10) || undefined
-                  : undefined,
+                ...resolveOrderTableDisplay(activeOrderDetails?.tableId),
                 employeeName: fulleNameEmployee || UI_TEXT.COMMON.NOT_APPLICABLE,
                 printedAt: new Date().toISOString(),
                 items: receiptItems,

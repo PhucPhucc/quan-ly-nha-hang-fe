@@ -102,6 +102,7 @@ export function HeroSection() {
                 src="https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2000&auto=format&fit=crop"
                 alt="KDS Interface"
                 fill
+                sizes="(min-width: 1280px) 60vw, 100vw"
                 className="object-cover opacity-80 brightness-75 grayscale-[0.2]"
                 priority
               />
