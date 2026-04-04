@@ -147,6 +147,7 @@ export const SIDE_BAR = {
   TABLE_MANAGEMENT: "Table Management",
   TABLE: "Table Layout",
   ORDER: "Order Management",
+  ORDER_LIST: "Order List",
   EMPLOYEE: "Employees",
   AUDIT_LOG: "History",
   INVENTORY: "Inventory",

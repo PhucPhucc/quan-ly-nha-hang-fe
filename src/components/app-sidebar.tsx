@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ActivityIcon,
   Bell,
   Boxes,
   Building2,
@@ -265,6 +266,11 @@ const CASHIER_ROUTES: NavMainProps[] = [
     title: UI_TEXT.SIDE_BAR.ORDER,
     url: "/order",
     icon: ClipboardList,
+  },
+  {
+    title: UI_TEXT.SIDE_BAR.ORDER_LIST,
+    url: "/list",
+    icon: ActivityIcon,
   },
   {
     title: UI_TEXT.SIDE_BAR.TABLE_MANAGEMENT,

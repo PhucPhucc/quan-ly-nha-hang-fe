@@ -1,9 +1,8 @@
 "use client";
 
-import { Info } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { toast } from "sonner";
 
 import FieldPassword from "@/components/shared/FieldPassword";
 import { Button } from "@/components/ui/button";
@@ -16,8 +15,6 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { EmployeeRole, normalizeEmployeeRole } from "@/types/Employee";
 const LoginForm = () => {
   const router = useRouter();
-  const [error, setError] = useState("");
-
   const setEmployee = useAuthStore((state) => state.setEmployee);
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,7 +54,7 @@ const LoginForm = () => {
       }
     } catch (err) {
       console.error("Login handleLogin error:", err);
-      setError(UI_TEXT.AUTH.ERROR_INVALID_CREDENTIALS);
+      toast.error(UI_TEXT.AUTH.ERROR_INVALID_CREDENTIALS);
     }
   };
 
@@ -92,13 +89,6 @@ const LoginForm = () => {
           {UI_TEXT.AUTH.FORGOT_PASSWORD}
         </Link>
       </div>
-
-      {error && (
-        <div className="flex items-center gap-2 p-2 mb-2 bg-danger/10 rounded-lg text-danger">
-          <Info className="size-4" />
-          <span>{error}</span>
-        </div>
-      )}
 
       <Button type="submit" size="lg" className="w-full">
         {UI_TEXT.AUTH.LOGIN}

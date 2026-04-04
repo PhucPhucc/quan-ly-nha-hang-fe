@@ -1,7 +1,7 @@
 "use client";
 
 import { Banknote, TrendingDown, TrendingUp, Users, UtensilsCrossed } from "lucide-react";
-import React from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,11 +39,46 @@ interface StatCardProps {
   chartData?: { value: number }[];
 }
 
+function useElementSize<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const updateSize = () => {
+      const { width, height } = element.getBoundingClientRect();
+      setSize({
+        width: Math.max(0, Math.floor(width)),
+        height: Math.max(0, Math.floor(height)),
+      });
+    };
+
+    updateSize();
+
+    if (typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const observer = new ResizeObserver(() => {
+      updateSize();
+    });
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, size };
+}
+
 function StatCard({ title, value, trend, isUp, icon, chartColor, chartData }: StatCardProps) {
   const displayData = chartData || mockSparklineData;
+  const { ref, size } = useElementSize<HTMLDivElement>();
+  const canRenderChart = size.width > 0 && size.height > 0;
 
   return (
-    <Card className="border border-muted/60 shadow-none rounded-xl overflow-hidden bg-card hover:border-primary/20 transition-all group">
+    <Card className="min-w-0 border border-muted/60 shadow-none rounded-xl overflow-hidden bg-card hover:border-primary/20 transition-all group">
       <CardContent className="p-0">
         <div className="p-5 flex justify-between items-start">
           <div className="space-y-1">
@@ -67,31 +102,38 @@ function StatCard({ title, value, trend, isUp, icon, chartColor, chartData }: St
           </div>
         </div>
 
-        <div className="h-10 w-full opacity-80 group-hover:opacity-100 transition-opacity">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={displayData}>
-              <defs>
-                <linearGradient
-                  id={`gradient-${title.replace(/\s+/g, "-").toLowerCase()}`}
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop offset="0%" stopColor={chartColor} stopOpacity={0.6} />
-                  <stop offset="100%" stopColor={chartColor} stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke={chartColor}
-                strokeWidth={2.5}
-                fill={`url(#gradient-${title.replace(/\s+/g, "-").toLowerCase()})`}
-                isAnimationActive={true}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+        <div
+          ref={ref}
+          className="h-10 w-full min-w-0 opacity-80 group-hover:opacity-100 transition-opacity"
+        >
+          {canRenderChart ? (
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+              <AreaChart data={displayData}>
+                <defs>
+                  <linearGradient
+                    id={`gradient-${title.replace(/\s+/g, "-").toLowerCase()}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor={chartColor} stopOpacity={0.6} />
+                    <stop offset="100%" stopColor={chartColor} stopOpacity={0.1} />
+                  </linearGradient>
+                </defs>
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke={chartColor}
+                  strokeWidth={2.5}
+                  fill={`url(#gradient-${title.replace(/\s+/g, "-").toLowerCase()})`}
+                  isAnimationActive={true}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full w-full rounded-full bg-muted/20" />
+          )}
         </div>
       </CardContent>
     </Card>

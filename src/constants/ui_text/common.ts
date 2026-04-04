@@ -147,6 +147,7 @@ export const SIDE_BAR = {
   TABLE_MANAGEMENT: "Quản lí bàn",
   TABLE: "Sơ đồ bàn",
   ORDER: "Quản lý đơn hàng",
+  ORDER_LIST: "Danh sách đơn hàng",
   EMPLOYEE: "Nhân viên",
   AUDIT_LOG: "Lịch sử",
   INVENTORY: "Quản lý kho",

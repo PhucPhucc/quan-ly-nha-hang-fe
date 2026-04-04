@@ -39,6 +39,17 @@ function isMutationRequest(method?: string): boolean {
   return MUTATION_METHODS.has((method || "GET").toUpperCase());
 }
 
+function shouldSkipAuthRefresh(path: string): boolean {
+  return [
+    "/auth/login",
+    "/auth/logout",
+    "/auth/request-password-reset",
+    "/auth/reset-password",
+    "/auth/csrf-token",
+    "/auth/refresh-token",
+  ].includes(path);
+}
+
 async function ensureCsrfToken(): Promise<void> {
   if (typeof window === "undefined") {
     return;
@@ -183,7 +194,7 @@ export async function apiFetch<T>(
   let res = await performRequest(path, fetchOptions);
   const method = (options.method || "GET").toUpperCase();
   const isMutation = isMutationRequest(method);
-  const shouldAttemptRefresh = path !== "/auth/logout";
+  const shouldAttemptRefresh = !shouldSkipAuthRefresh(path);
 
   if (isMutation && (await isCsrfValidationError(res))) {
     clearCsrfToken();
