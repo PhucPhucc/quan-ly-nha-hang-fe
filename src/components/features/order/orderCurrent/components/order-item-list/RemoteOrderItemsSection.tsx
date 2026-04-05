@@ -1,5 +1,6 @@
 import React from "react";
 
+import { OrderItemStatus } from "@/types/enums";
 import { OrderItem } from "@/types/Order";
 
 import {
@@ -21,6 +22,7 @@ interface RemoteOrderItemsSectionProps {
   hoveredComboId: string | null;
   setHoveredComboId: React.Dispatch<React.SetStateAction<string | null>>;
   toggleComboChildren: (orderItemId: string) => void;
+  onCancel?: (itemId: string) => void;
 }
 
 export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = ({
@@ -31,6 +33,7 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
   hoveredComboId,
   setHoveredComboId,
   toggleComboChildren,
+  onCancel,
 }) => {
   const sortedTopLevelRemoteItems = React.useMemo(() => {
     return sortTopLevelRemoteItems(remoteItems, comboDisplayMap, itemIndexMap);
@@ -59,10 +62,39 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
           !itemHasComboNote &&
           (item.isFreeItem || item.unitPriceSnapshot === 0);
 
+        // Calculate effective combo status based on children
+        const getEffectiveComboStatus = (): OrderItemStatus => {
+          if (sortedComboChildren.length === 0) return item.status;
+
+          const childStatuses = sortedComboChildren.map((child) => child.status);
+          // If any child is cooking, show cooking
+          if (childStatuses.some((s) => s === OrderItemStatus.Cooking))
+            return OrderItemStatus.Cooking;
+          // If all children are completed, show completed
+          if (
+            childStatuses.every(
+              (s) =>
+                s === OrderItemStatus.Completed ||
+                s === OrderItemStatus.Cancelled ||
+                s === OrderItemStatus.Rejected
+            )
+          )
+            return OrderItemStatus.Completed;
+          // Otherwise, if any child is preparing (but not cooking), show preparing
+          if (childStatuses.some((s) => s === OrderItemStatus.Preparing))
+            return OrderItemStatus.Preparing;
+          // Default to parent status
+          return item.status;
+        };
+
+        const effectiveStatus = getEffectiveComboStatus();
+        // Create item with effective status for display
+        const itemWithEffectiveStatus = { ...item, status: effectiveStatus };
+
         return (
           <RemoteOrderItemCard
             key={item.orderItemId}
-            item={item}
+            item={itemWithEffectiveStatus}
             isFree={itemIsFree}
             isCombo={sortedComboChildren.length > 0}
             isClickable={sortedComboChildren.length > 0}
@@ -84,6 +116,7 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
                 ? () => toggleComboChildren(item.orderItemId)
                 : undefined
             }
+            onCancel={onCancel}
           >
             {sortedComboChildren.length > 0 && (
               <div

@@ -2,8 +2,11 @@
 
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { orderService } from "@/services/orderService";
 import { voucherService } from "@/services/voucherService";
 import { useCartStore } from "@/store/useCartStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
@@ -17,9 +20,16 @@ import OrderSummaryFooter from "./components/OrderSummaryFooter";
 
 const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
   const { items: cartData, updateQuantity, removeItem } = useCartStore();
-  const { selectedOrderId, activeOrderDetails, orderDetailsLoading } = useOrderBoardStore();
+  const {
+    selectedOrderId,
+    activeOrderDetails,
+    orderDetailsLoading,
+    fetchOrderDetails,
+    fetchOrders,
+  } = useOrderBoardStore();
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
   const [isVoucherLoading, setIsVoucherLoading] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   // const activeOrder = orders.find((o) => o.orderId === selectedOrderId);
   // const activeOrder = useOrderBoardStore((state) => state.activeOrderDetails);
@@ -30,7 +40,9 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
     : UI_TEXT.ORDER.BOARD.NOT_SELECTED_TABLE;
 
   const cartItems = selectedOrderId ? cartData[selectedOrderId] || [] : [];
-  const remoteItems = activeOrderDetails?.orderItems || [];
+  // Filter out cancelled items from display
+  const remoteItems =
+    activeOrderDetails?.orderItems?.filter((item) => item.status !== "Cancelled") || [];
 
   const subtotalCart = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
 
@@ -127,6 +139,35 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
 
   const total = Math.max(0, subtotal + tax - resolvedDiscount);
 
+  const handleCancelItem = async (itemId: string) => {
+    if (!selectedOrderId || !activeOrderDetails) return;
+
+    try {
+      setIsCancelling(true);
+      const res = await orderService.cancelOrderItem(
+        selectedOrderId,
+        itemId,
+        "Cancelled by cashier"
+      );
+
+      if (res.isSuccess) {
+        toast.success("Đã hủy món thành công");
+        // Fetch fresh data from server to ensure state is synchronized
+        await Promise.all([
+          fetchOrderDetails(selectedOrderId),
+          fetchOrders(), // Also refresh orders list to update totals on table view
+        ]);
+      } else {
+        toast.error(res.message || "Không thể hủy món");
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+      console.error("Cancel item failed:", error);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
   if (orderDetailsLoading && !activeOrderDetails) {
     return (
       <CardContainer className="h-full flex items-center justify-center">
@@ -150,6 +191,7 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
             selectedOrderId && updateQuantity(selectedOrderId, key, delta)
           }
           onRemoveItem={(key) => selectedOrderId && removeItem(selectedOrderId, key)}
+          onCancelItem={isCancelling ? undefined : handleCancelItem}
         />
         <OrderSummaryFooter
           subtotal={subtotal}

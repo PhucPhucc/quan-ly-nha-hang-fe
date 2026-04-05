@@ -133,7 +133,6 @@ export function OrderBillingFilters({
             <SelectItem value="ALL">{UI_TEXT.ORDER.BILLING.ALL_METHODS}</SelectItem>
             <SelectItem value="Cash">{UI_TEXT.ORDER.BILLING.CASH}</SelectItem>
             <SelectItem value="BankTransfer">{UI_TEXT.ORDER.BILLING.TRANSFER}</SelectItem>
-            <SelectItem value="CreditCard">{UI_TEXT.ORDER.BILLING.CARD}</SelectItem>
           </SelectContent>
         </Select>
 

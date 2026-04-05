@@ -1,9 +1,10 @@
-import { Ticket } from "lucide-react";
+import { Ticket, Trash2 } from "lucide-react";
 import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn, formatCurrency } from "@/lib/utils";
+import { OrderItemStatus } from "@/types/enums";
 import { OrderItem } from "@/types/Order";
 
 import { getRemoteItemTotal } from "./order-item-list.utils";
@@ -22,6 +23,7 @@ interface RemoteOrderItemCardProps {
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   onClick?: () => void;
+  onCancel?: (itemId: string) => void;
   children?: React.ReactNode;
 }
 
@@ -37,8 +39,11 @@ export const RemoteOrderItemCard: React.FC<RemoteOrderItemCardProps> = ({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  onCancel,
   children,
 }) => {
+  const canCancel = item.status === OrderItemStatus.Preparing;
+
   return (
     <div
       onMouseEnter={onMouseEnter}
@@ -97,8 +102,20 @@ export const RemoteOrderItemCard: React.FC<RemoteOrderItemCardProps> = ({
       </div>
 
       <div className="flex items-center justify-between mt-1">
-        <div className="animate-fade-in-right">
+        <div className="flex items-center gap-2">
           <OrderItemStatusBadge status={item.status} />
+          {canCancel && onCancel && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onCancel(item.orderItemId);
+              }}
+              className="p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              title="Xóa món"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
         <span className="text-[10px] text-muted-foreground font-mono">
           {new Date(item.createdAt).toLocaleTimeString([], {
