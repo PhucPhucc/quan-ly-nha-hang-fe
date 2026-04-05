@@ -259,9 +259,12 @@ export async function apiFetch<T>(
   }
 
   if (json && typeof json === "object" && "data" in json) {
+    const errorMessage = json.message || json.error || json.Error || json.title;
+
     return {
       isSuccess: true,
-      ...json,
+      data: json.data,
+      message: errorMessage,
     } as ApiResponse<T>;
   }
 
