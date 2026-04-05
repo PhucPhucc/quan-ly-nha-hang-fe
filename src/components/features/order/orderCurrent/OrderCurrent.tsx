@@ -97,8 +97,6 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
 
   const remoteTax = activeOrderDetails?.vatAmount ?? 0;
   const vatRate = activeOrderDetails?.vatRate ?? 10;
-  const cartTax = hasCartItems ? Math.round((subtotalCart * vatRate) / 100) : 0;
-  const tax = remoteTax + cartTax;
 
   const baseDiscount = activeOrderDetails?.discountAmount ?? 0;
 
@@ -115,6 +113,10 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
 
   const resolvedDiscount =
     hasCartItems && voucherCode && !isVoucherLoading ? dynamicDiscount : baseDiscount;
+
+  const cartSubtotalAfterDiscount = hasCartItems ? Math.max(0, subtotalCart - resolvedDiscount) : 0;
+  const cartTax = hasCartItems ? Math.round(cartSubtotalAfterDiscount * vatRate) : 0;
+  const tax = remoteTax + cartTax;
 
   const total = hasCartItems
     ? Math.max(0, subtotal + tax - resolvedDiscount)
