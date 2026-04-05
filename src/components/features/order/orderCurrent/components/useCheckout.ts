@@ -19,7 +19,9 @@ import { printThermalReceipt } from "@/utils/thermalPrint";
 import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
 
 export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: number) {
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(PaymentMethod.Cash);
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | "MixedCashQR">(
+    PaymentMethod.Cash
+  );
   const [customerGiven, setCustomerGiven] = useState<string>(String(totalAmount));
   const [isProcessing, setIsProcessing] = useState(false);
   const [payOSUrl, setPayOSUrl] = useState<string | null>(null);
@@ -176,10 +178,17 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
   }, [isOpen]);
 
   useEffect(() => {
-    if (isOpen && selectedMethod === PaymentMethod.Cash) {
+    if (isOpen && (selectedMethod === PaymentMethod.Cash || selectedMethod === "MixedCashQR")) {
       setCustomerGiven(String(remainingAmount));
     }
   }, [isOpen, selectedMethod, remainingAmount]);
+
+  useEffect(() => {
+    if (selectedMethod !== "MixedCashQR") {
+      setPayOSUrl(null);
+      setBankInfo(null);
+    }
+  }, [selectedMethod]);
 
   useEffect(() => {
     let isMounted = true;
@@ -231,10 +240,54 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     };
   }, [selectedMethod, isOpen, selectedOrderId]);
 
+  const generateMixedQR = async () => {
+    if (!selectedOrderId) return;
+    const cashAmount = parseFloat(customerGiven.replace(/,/g, "")) || 0;
+    const qrAmount = Math.max(0, remainingAmount - cashAmount);
+
+    if (qrAmount <= 0) {
+      toast.error("Số tiền QR phải lớn hơn 0");
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const response = await orderService.createPayOsQr(selectedOrderId, qrAmount);
+      if (response.isSuccess && response.data) {
+        const qrString =
+          typeof response.data === "string"
+            ? response.data
+            : response.data.qrCode || response.data.checkoutUrl || "";
+        setPayOSUrl(qrString);
+
+        if (typeof response.data === "object" && response.data !== null) {
+          setBankInfo({
+            accountName: response.data.accountName,
+            accountNumber: response.data.accountNumber,
+            bin: response.data.bin,
+            amount: response.data.amount,
+            description: response.data.description,
+          });
+        }
+      } else {
+        toast.error(UI_TEXT.ORDER.CURRENT.QR_CREATE_ERROR);
+      }
+    } catch (error) {
+      toast.error(UI_TEXT.ORDER.CURRENT.QR_FETCH_ERROR);
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
-    if (isOpen && selectedMethod === PaymentMethod.BankTransfer && payOSUrl) {
+    if (
+      isOpen &&
+      (selectedMethod === PaymentMethod.BankTransfer || selectedMethod === "MixedCashQR") &&
+      payOSUrl
+    ) {
       interval = setInterval(async () => {
         try {
           if (!selectedOrderId) return;
@@ -285,7 +338,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         }>
       | undefined;
 
-    if (selectedMethod === PaymentMethod.Cash) {
+    if (selectedMethod === PaymentMethod.Cash || selectedMethod === "MixedCashQR") {
       if (!customerGiven) {
         toast.error(UI_TEXT.ORDER.CURRENT.INPUT_AMOUNT_REQUIRED);
         return;
@@ -301,11 +354,18 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
           return;
         }
 
+        const cashAmount = amountReceived;
+        const qrAmount = remainingAmount - amountReceived;
+
         paymentLines = [
           {
             paymentMethodConfigId: paymentMethodIds.cash,
-            amount: amountReceived,
-            amountReceived,
+            amount: cashAmount,
+            amountReceived: cashAmount,
+          },
+          {
+            paymentMethodConfigId: paymentMethodIds.bankTransfer,
+            amount: qrAmount,
           },
         ];
       }
@@ -327,9 +387,10 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
 
       if (success) {
         try {
-          const invoiceAmount = isMixedPayment
-            ? remainingAmount
-            : (amountReceived ?? remainingAmount);
+          const invoiceAmount =
+            isMixedPayment || selectedMethod === "MixedCashQR"
+              ? remainingAmount
+              : (amountReceived ?? remainingAmount);
           await printInvoiceAfterPayment(invoiceAmount);
         } catch (printError) {
           console.error("Failed to print thermal receipt:", printError);
@@ -382,7 +443,11 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
   }, [selectedOrderId]);
 
   const calculateChange = () => {
-    if (!customerGiven || selectedMethod !== PaymentMethod.Cash) return 0;
+    if (
+      !customerGiven ||
+      (selectedMethod !== PaymentMethod.Cash && selectedMethod !== "MixedCashQR")
+    )
+      return 0;
     const given = parseFloat(customerGiven.replace(/,/g, ""));
     if (isNaN(given)) return 0;
     return Math.max(0, given - remainingAmount);
@@ -390,6 +455,12 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
 
   const handleQuickAmount = (amount: number) => {
     setCustomerGiven(amount.toString());
+  };
+
+  const getMixedPaymentAmounts = () => {
+    const cashAmount = parseFloat(customerGiven.replace(/,/g, "")) || 0;
+    const qrAmount = Math.max(0, remainingAmount - cashAmount);
+    return { cashAmount, qrAmount };
   };
 
   return {
@@ -407,5 +478,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     calculateChange,
     handleQuickAmount,
     handleSyncPayment,
+    getMixedPaymentAmounts,
+    generateMixedQR,
   };
 }
