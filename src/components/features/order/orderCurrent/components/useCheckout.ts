@@ -12,7 +12,7 @@ import { useTableStore } from "@/store/useTableStore";
 import { PreCheckBillResponse } from "@/types/Billing";
 import { OrderStatus, PaymentMethod } from "@/types/enums";
 import { Order } from "@/types/Order";
-import { resolveOrderTableDisplay } from "@/utils/orderReceipt";
+import { buildReceiptOptionItems, resolveOrderTableDisplay } from "@/utils/orderReceipt";
 import { printThermalReceipt } from "@/utils/thermalPrint";
 
 import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
@@ -92,21 +92,26 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         employeeName:
           employeeNameFromStore || employeeNameFromCookie || UI_TEXT.COMMON.NOT_APPLICABLE,
         printedAt: new Date().toISOString(),
-        items: order.orderItems.map((item) => ({
-          itemName: item.itemNameSnapshot,
-          quantity: item.quantity,
-          unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
-          optionsSummary: item.itemOptions,
-          lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
-          isFreeItem: item.isFreeItem ?? false,
-        })),
+        items: order.orderItems.map((item) => {
+          const optionItems = buildReceiptOptionItems(item.optionGroups, item.itemOptions);
+
+          return {
+            itemName: item.itemNameSnapshot,
+            quantity: item.quantity,
+            unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
+            optionItems,
+            optionsSummary: optionItems.map((opt) => opt.label).join("; "),
+            lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
+            isFreeItem: item.isFreeItem ?? false,
+          };
+        }),
         subTotal: subTotalVal,
         discount: discountVal,
         voucherCode: order.voucherCode ?? order.appliedVoucherCode,
         preTaxAmount: subTotalVal - discountVal,
         vatRate: 10, // Hiển thị 10% trên bill
         vat: computedVat,
-        totalAmount: invoiceAmount ?? finalTotal,
+        totalAmount: finalTotal,
         paymentMethod: order.paymentMethod,
         amountReceived: invoiceAmount ?? order.amountPaid ?? finalTotal,
         changeAmount:

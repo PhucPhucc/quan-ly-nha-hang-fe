@@ -165,9 +165,16 @@ export const generateThermalHtml = (
         .shop-name { font-size: 11px; font-weight: bold; letter-spacing: 0.5px; }
         .logo { max-height: 50px; max-width: 100px; object-fit: contain; margin: 0 auto 8px auto; display: block; }
         .divider { border-top: 1px dashed #000; margin: 10px 0; }
-        .item-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 10px; }
-        .item-table th { border-bottom: 1px solid #000; text-align: left; padding: 5px 0; }
-        .item-table td { padding: 6px 0; border-bottom: 1px dotted #ccc; }
+        .item-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 10px; table-layout: fixed; }
+        .item-table th { border-bottom: 1px solid #000; text-align: left; padding: 3px 0 4px 0; }
+        .item-table td { padding: 3px 0; border-bottom: 1px dotted #ccc; vertical-align: top; }
+        .item-line { display: flex; gap: 1px; align-items: flex-start; }
+        .item-marker { flex: none; white-space: nowrap; }
+        .item-name { flex: 1; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+        .option-row td { border-bottom: 1px dotted #eee; padding-top: 0; }
+        .option-line { display: flex; gap: 1px; align-items: flex-start; padding-left: 3px; }
+        .option-marker { flex: none; white-space: nowrap; }
+        .option-name { flex: 1; min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: #444; font-size: 9px; }
         .total-section { margin-top: 15px; border-top: 2px double #000; padding-top: 10px; }
         .total-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
         .footer { margin-top: 15px; border-top: 1px dashed #000; padding-top: 10px; font-size: 9px; padding-bottom: 15px; padding-left: 5px; padding-right: 5px; }
@@ -205,10 +212,10 @@ export const generateThermalHtml = (
         <table class="item-table">
           <thead>
             <tr>
-              <th style="width: 40%">${UI_TEXT.ORDER.PRINT_TEMP.ITEM_NAME_HEADER}</th>
-              <th style="width: 15%; text-align: center;">${UI_TEXT.ORDER.PRINT_TEMP.QUANTITY_HEADER}</th>
+              <th style="width: 46%">${UI_TEXT.ORDER.PRINT_TEMP.ITEM_NAME_HEADER}</th>
+              <th style="width: 12%; text-align: center;">${UI_TEXT.ORDER.PRINT_TEMP.QUANTITY_HEADER}</th>
               <th style="width: 20%; text-align: right;">${UI_TEXT.ORDER.PRINT_TEMP.UNIT_PRICE}</th>
-              <th style="width: 25%; text-align: right;">${UI_TEXT.ORDER.PRINT_TEMP.AMOUNT_HEADER}</th>
+              <th style="width: 22%; text-align: right;">${UI_TEXT.ORDER.PRINT_TEMP.AMOUNT_HEADER}</th>
             </tr>
           </thead>
           <tbody>
@@ -217,13 +224,39 @@ export const generateThermalHtml = (
                 (item) => `
               <tr>
                 <td style="${item.isChild ? "padding-left: 15px;" : ""}">
-                  <div class="${item.isChild ? "" : "bold"}">${item.isChild ? "- " + item.itemName : `${item.itemName}${item.isFreeItem ? ` (${giftLabel})` : ""}`}</div>
-                  ${item.optionsSummary ? `<div style="font-size: 10px; color: #444;">+ ${item.optionsSummary}</div>` : ""}
+                  <div class="item-line ${item.isChild ? "" : "bold"}">
+                    ${
+                      item.isChild
+                        ? `<span class="item-marker">-</span><span class="item-name">${item.itemName}</span>`
+                        : `<span class="item-name">${item.itemName}${item.isFreeItem ? ` (${giftLabel})` : ""}</span>`
+                    }
+                  </div>
                 </td>
                 <td class="text-center">${item.quantity}</td>
                 <td class="text-right">${item.isChild ? "" : formatCurrencyWithBranding(item.unitPrice, branding)}</td>
                 <td class="text-right">${item.isChild ? "" : formatCurrencyWithBranding(item.lineTotal, branding)}</td>
               </tr>
+              ${
+                item.optionItems?.length
+                  ? item.optionItems
+                      .map(
+                        (opt) => `
+              <tr class="option-row">
+                <td style="${item.isChild ? "padding-left: 16px;" : "padding-left: 6px;"}">
+                  <div class="option-line">
+                    <span class="option-marker">+</span>
+                    <span class="option-name">${opt.label}</span>
+                  </div>
+                </td>
+                <td class="text-center">${opt.quantity}</td>
+                <td class="text-right">${formatCurrencyWithBranding(opt.unitPrice, branding)}</td>
+                <td class="text-right">${formatCurrencyWithBranding(opt.lineTotal, branding)}</td>
+              </tr>
+            `
+                      )
+                      .join("")
+                  : ""
+              }
             `
               )
               .join("")}

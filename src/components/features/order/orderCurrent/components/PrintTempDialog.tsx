@@ -26,7 +26,7 @@ import { formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { PreCheckBillItem, PreCheckBillResponse } from "@/types/Billing";
-import { resolveOrderTableDisplay } from "@/utils/orderReceipt";
+import { buildReceiptOptionItems, resolveOrderTableDisplay } from "@/utils/orderReceipt";
 import { buildReceiptDisplayItems, printThermalReceipt } from "@/utils/thermalPrint";
 
 import { getRemoteItemTotal } from "./order-item-list/order-item-list.utils";
@@ -60,14 +60,19 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
   const discountValue = propsDiscount ?? 0;
   const voucherCodeValue = propsVoucherCode;
 
-  const receiptItems: PreCheckBillItem[] = (activeOrderDetails?.orderItems || []).map((item) => ({
-    itemName: item.itemNameSnapshot,
-    quantity: item.quantity,
-    unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
-    optionsSummary: item.itemOptions,
-    lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
-    isFreeItem: item.isFreeItem ?? false,
-  }));
+  const receiptItems: PreCheckBillItem[] = (activeOrderDetails?.orderItems || []).map((item) => {
+    const optionItems = buildReceiptOptionItems(item.optionGroups, item.itemOptions);
+
+    return {
+      itemName: item.itemNameSnapshot,
+      quantity: item.quantity,
+      unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
+      optionItems,
+      optionsSummary: optionItems.map((opt) => opt.label).join("; "),
+      lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
+      isFreeItem: item.isFreeItem ?? false,
+    };
+  });
 
   const orderItems = buildReceiptDisplayItems(receiptItems).map((item, index) => ({
     id: `${item.itemName}-${item.unitPrice}-${index}`,

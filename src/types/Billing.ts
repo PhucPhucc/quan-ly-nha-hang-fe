@@ -5,6 +5,13 @@ export interface PreCheckBillItem {
   quantity: number;
   unitPrice: number;
   optionsSummary?: string;
+  optionsSummaryLines?: string[];
+  optionItems?: {
+    label: string;
+    quantity: number;
+    unitPrice: number;
+    lineTotal: number;
+  }[];
   lineTotal: number;
   isFreeItem?: boolean;
 }

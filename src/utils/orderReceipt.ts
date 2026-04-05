@@ -1,4 +1,12 @@
 import { useTableStore } from "@/store/useTableStore";
+import { OrderItemOptionGroup } from "@/types/Order";
+
+export interface ReceiptOptionItem {
+  label: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+}
 
 export interface OrderTableDisplay {
   tableNumber?: number;
@@ -45,3 +53,41 @@ export const resolveOrderTableDisplay = (tableId?: string | null): OrderTableDis
 
 export const resolveOrderTableNumber = (tableId?: string | null): number | undefined =>
   resolveOrderTableDisplay(tableId).tableNumber;
+
+export const buildReceiptOptionItems = (
+  groups?: OrderItemOptionGroup[],
+  fallback?: string
+): ReceiptOptionItem[] => {
+  const optionItems =
+    groups?.flatMap((group) =>
+      group.optionValues.map((value) => {
+        const quantity = value.quantity || 1;
+        const unitPrice = Number(value.extraPriceSnapshot || 0);
+        return {
+          label: `${group.groupNameSnapshot}: ${value.labelSnapshot}`,
+          quantity,
+          unitPrice,
+          lineTotal: unitPrice * quantity,
+        };
+      })
+    ) ?? [];
+
+  if (optionItems.length > 0) {
+    return optionItems;
+  }
+
+  if (!fallback) {
+    return [];
+  }
+
+  return fallback
+    .split(/[;\n,]/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((label) => ({
+      label,
+      quantity: 1,
+      unitPrice: 0,
+      lineTotal: 0,
+    }));
+};
