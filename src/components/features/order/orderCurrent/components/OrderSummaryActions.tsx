@@ -1,3 +1,5 @@
+"use client";
+
 import { Loader2, Ticket } from "lucide-react";
 import React from "react";
 

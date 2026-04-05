@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 
 import { CardFooter } from "@/components/ui/card";
@@ -23,7 +25,10 @@ const OrderSummaryFooter: React.FC<OrderSummaryFooterProps> = ({
   const [isVoucherOpen, setIsVoucherOpen] = useState(false);
 
   const { items: cartData, clearCart } = useCartStore();
-  const { selectedOrderId, fetchOrders, fetchOrderDetails, orders } = useOrderBoardStore();
+  const selectedOrderId = useOrderBoardStore((state) => state.selectedOrderId);
+  const fetchOrders = useOrderBoardStore((state) => state.fetchOrders);
+  const fetchOrderDetails = useOrderBoardStore((state) => state.fetchOrderDetails);
+  const orders = useOrderBoardStore((state) => state.orders);
   const setActiveView = useOrderBoardStore((state) => state.setActiveView);
 
   const handleSendRequest = async () => {

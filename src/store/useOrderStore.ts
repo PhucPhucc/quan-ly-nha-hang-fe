@@ -2,7 +2,7 @@ import { DateRange } from "react-day-picker";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
-import { orderService, PaginationParams } from "@/services/orderService";
+import { orderService, PaginationParams, PaymentLineRequest } from "@/services/orderService";
 import { OrderStatus, OrderType } from "@/types/enums";
 import { Order } from "@/types/Order";
 
@@ -49,7 +49,8 @@ export interface OrderBoardState {
   checkoutOrder: (
     orderId: string,
     paymentMethod: string,
-    amountReceived?: number
+    amountReceived?: number,
+    paymentLines?: PaymentLineRequest[]
   ) => Promise<boolean>;
 
   // selectors (derived)
@@ -181,9 +182,19 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         orders: state.orders.map((o) => (o.orderId === order.orderId ? order : o)),
       })),
 
-    checkoutOrder: async (orderId: string, paymentMethod: string, amountReceived?: number) => {
+    checkoutOrder: async (
+      orderId: string,
+      paymentMethod: string,
+      amountReceived?: number,
+      paymentLines?: PaymentLineRequest[]
+    ) => {
       try {
-        const res = await orderService.checkoutOrder(orderId, paymentMethod, amountReceived);
+        const res = await orderService.checkoutOrder(
+          orderId,
+          paymentMethod,
+          amountReceived,
+          paymentLines
+        );
         if (res.isSuccess) {
           await get().fetchOrders();
           return true;

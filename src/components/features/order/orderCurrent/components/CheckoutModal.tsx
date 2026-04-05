@@ -35,6 +35,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     isProcessing,
     payOSUrl,
     bankInfo,
+    remainingAmount,
     handleCheckout,
     calculateChange,
     handleQuickAmount,
@@ -100,7 +101,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                {[totalAmount, 500000, 1000000].map((amount) => (
+                {[remainingAmount, 500000, 1000000].map((amount) => (
                   <Button
                     key={amount}
                     variant="secondary"

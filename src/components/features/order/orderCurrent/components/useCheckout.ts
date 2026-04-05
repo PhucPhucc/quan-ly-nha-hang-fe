@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import { useBrandingSettings } from "@/hooks/useBrandingSettings";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { orderService } from "@/services/orderService";
+import { paymentMethodService } from "@/services/paymentMethodService";
 import { AuthState, useAuthStore } from "@/store/useAuthStore";
-import { OrderBoardState, useOrderBoardStore } from "@/store/useOrderStore";
+import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
 import { PreCheckBillResponse } from "@/types/Billing";
 import { OrderStatus, PaymentMethod } from "@/types/enums";
@@ -29,30 +30,32 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     amount?: number;
     description?: string;
   } | null>(null);
+  const [paymentMethodIds, setPaymentMethodIds] = useState<{
+    cash?: string;
+    bankTransfer?: string;
+  }>({});
 
   const { data: branding } = useBrandingSettings();
   const fullNameEmployee = useAuthStore((state: AuthState) => state.employee?.fullName);
 
-  const { selectedOrderId, checkoutOrder, clearOrderDetails, fetchOrders } = useOrderBoardStore(
-    (state: OrderBoardState) => ({
-      selectedOrderId: state.selectedOrderId,
-      checkoutOrder: state.checkoutOrder,
-      clearOrderDetails: state.clearOrderDetails,
-      fetchOrders: state.fetchOrders,
-    })
-  );
+  const selectedOrderId = useOrderBoardStore((state) => state.selectedOrderId);
+  const checkoutOrder = useOrderBoardStore((state) => state.checkoutOrder);
+  const clearOrderDetails = useOrderBoardStore((state) => state.clearOrderDetails);
+  const fetchOrders = useOrderBoardStore((state) => state.fetchOrders);
   const activeOrderDetails = useOrderBoardStore((state) => state.activeOrderDetails);
 
   // const totalAmount = useOrderBoardStore(
   //   (state) => state.activeOrderDetails?.totalAmount ?? totalAmount
   // );
 
-  const { selectedAreaId, fetchTablesByArea } = useTableStore((state) => ({
-    selectedAreaId: state.selectedAreaId,
-    fetchTablesByArea: state.fetchTablesByArea,
-  }));
+  const selectedAreaId = useTableStore((state) => state.selectedAreaId);
+  const fetchTablesByArea = useTableStore((state) => state.fetchTablesByArea);
 
   const remainingAmount = Math.max(totalAmount - (activeOrderDetails?.amountPaid ?? 0), 0);
+  const isMixedPayment =
+    selectedMethod === PaymentMethod.Cash &&
+    customerGiven !== "" &&
+    Number.parseFloat(customerGiven.replace(/,/g, "")) < remainingAmount;
 
   const getCookie = (name: string) => {
     if (typeof document === "undefined") return null;
@@ -140,6 +143,37 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     },
     [buildReceiptFromOrder, branding]
   );
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!isOpen) return;
+
+    const loadPaymentMethods = async () => {
+      try {
+        const res = await paymentMethodService.getPaymentMethods();
+        if (!isMounted || !res.isSuccess || !res.data) return;
+
+        const cash = res.data.find((item) => item.isActive && item.type === PaymentMethod.Cash);
+        const bankTransfer = res.data.find(
+          (item) => item.isActive && item.type === PaymentMethod.BankTransfer
+        );
+
+        setPaymentMethodIds({
+          cash: cash?.paymentMethodConfigId,
+          bankTransfer: bankTransfer?.paymentMethodConfigId,
+        });
+      } catch (error) {
+        console.error("Failed to load payment methods:", error);
+      }
+    };
+
+    void loadPaymentMethods();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && selectedMethod === PaymentMethod.Cash) {
@@ -243,15 +277,37 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     if (!selectedOrderId) return;
 
     let amountReceived = undefined;
+    let paymentLines:
+      | Array<{
+          paymentMethodConfigId: string;
+          amount: number;
+          amountReceived?: number;
+        }>
+      | undefined;
+
     if (selectedMethod === PaymentMethod.Cash) {
       if (!customerGiven) {
         toast.error(UI_TEXT.ORDER.CURRENT.INPUT_AMOUNT_REQUIRED);
         return;
       }
       amountReceived = parseFloat(customerGiven.replace(/,/g, ""));
-      if (isNaN(amountReceived) || amountReceived < remainingAmount) {
+      if (isNaN(amountReceived)) {
         toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
         return;
+      }
+      if (amountReceived < remainingAmount) {
+        if (!paymentMethodIds.cash || !paymentMethodIds.bankTransfer) {
+          toast.error("Không tìm thấy cấu hình phương thức thanh toán phù hợp.");
+          return;
+        }
+
+        paymentLines = [
+          {
+            paymentMethodConfigId: paymentMethodIds.cash,
+            amount: amountReceived,
+            amountReceived,
+          },
+        ];
       }
     }
 
@@ -262,11 +318,18 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         return;
       }
 
-      const success = await checkoutOrder(selectedOrderId, selectedMethod, amountReceived);
+      const success = await checkoutOrder(
+        selectedOrderId,
+        selectedMethod,
+        amountReceived,
+        paymentLines
+      );
 
       if (success) {
         try {
-          const invoiceAmount = amountReceived ?? remainingAmount;
+          const invoiceAmount = isMixedPayment
+            ? remainingAmount
+            : (amountReceived ?? remainingAmount);
           await printInvoiceAfterPayment(invoiceAmount);
         } catch (printError) {
           console.error("Failed to print thermal receipt:", printError);
@@ -333,6 +396,8 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     payOSUrl,
     bankInfo,
     totalAmount,
+    remainingAmount,
+    paymentMethodIds,
     handleCheckout,
     calculateChange,
     handleQuickAmount,

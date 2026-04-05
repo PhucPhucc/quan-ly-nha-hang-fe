@@ -79,6 +79,12 @@ export interface SubmitOrderToKitchenRequest {
   }[];
 }
 
+export interface PaymentLineRequest {
+  paymentMethodConfigId: string;
+  amount: number;
+  amountReceived?: number;
+}
+
 export interface PaginationParams {
   pageNumber?: number;
   pageSize?: number;
@@ -246,11 +252,15 @@ export const orderService = {
   checkoutOrder: (
     orderId: string,
     paymentMethod: string,
-    amountReceived?: number
+    amountReceived?: number,
+    paymentLines?: PaymentLineRequest[]
   ): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/billing/orders/${orderId}/checkout`, {
       method: "POST",
-      body: { orderId, paymentMethod, amountReceived },
+      body:
+        paymentLines && paymentLines.length > 0
+          ? { paymentLines }
+          : { orderId, paymentMethod, amountReceived },
     }),
 
   createPayOsQr: (orderId: string): Promise<ApiResponse<PayOsQrResponse | string>> =>
