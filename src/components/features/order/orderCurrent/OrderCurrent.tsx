@@ -34,26 +34,15 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
 
   const subtotalCart = cartItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
 
-  const subtotalRemote = remoteItems.reduce((acc, item) => {
-    if (item.isFreeItem) return acc;
-    const base = item.unitPriceSnapshot * item.quantity;
-    const options = (item.optionGroups || []).reduce((gAcc, g) => {
-      return gAcc + g.optionValues.reduce((vAcc, v) => vAcc + v.extraPriceSnapshot * v.quantity, 0);
-    }, 0);
-    return acc + base + options;
-  }, 0);
+  // Rely on backend's subTotal for remote items if available
+  const subtotalRemote = activeOrderDetails?.subTotal ?? 0;
 
   const subtotal = subtotalCart + subtotalRemote;
 
-  const serverTotal = activeOrderDetails?.totalAmount;
   const hasCartItems = cartItems.length > 0;
 
   const voucherCode =
-    activeOrderDetails?.voucherCode ??
-    activeOrderDetails?.appliedVoucherCode ??
-    activeOrderDetails?.promotionCode ??
-    activeOrderDetails?.voucher?.voucherCode ??
-    undefined;
+    activeOrderDetails?.voucherCode ?? activeOrderDetails?.promotionCode ?? undefined;
 
   useEffect(() => {
     let isMounted = true;
@@ -94,23 +83,12 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
     };
   }, [voucherCode]);
 
-  const tax =
-    activeOrderDetails?.vatAmount && activeOrderDetails.vatAmount > 0
-      ? activeOrderDetails.vatAmount
-      : Math.round(subtotal * 0.1);
+  const remoteTax = activeOrderDetails?.vatAmount ?? 0;
+  const vatRate = activeOrderDetails?.vatRate ?? 10;
+  const cartTax = hasCartItems ? Math.round((subtotalCart * vatRate) / 100) : 0;
+  const tax = remoteTax + cartTax;
 
-  const baseDiscount =
-    activeOrderDetails?.discountAmount ??
-    activeOrderDetails?.discount ??
-    activeOrderDetails?.voucher?.discountAmount ??
-    0;
-
-  // If we have a voucher but the discount amount didn't come through,
-  // and we have a server total, we can infer the discount to keep the UI consistent.
-  const discount =
-    baseDiscount === 0 && voucherCode && serverTotal && !hasCartItems
-      ? Math.max(0, subtotal + tax - serverTotal)
-      : baseDiscount;
+  const baseDiscount = activeOrderDetails?.discountAmount ?? 0;
 
   const dynamicDiscount =
     appliedVoucher?.type === VoucherType.Percent
@@ -121,11 +99,14 @@ const OrderCurrent = ({ tableCode }: { tableCode: string }) => {
         )
       : appliedVoucher?.type === VoucherType.Fixed
         ? Math.min(subtotal, appliedVoucher.value)
-        : discount;
+        : baseDiscount;
 
-  const resolvedDiscount = voucherCode && !isVoucherLoading ? dynamicDiscount : discount;
+  const resolvedDiscount =
+    hasCartItems && voucherCode && !isVoucherLoading ? dynamicDiscount : baseDiscount;
 
-  const total = Math.max(0, subtotal + tax - resolvedDiscount);
+  const total = hasCartItems
+    ? Math.max(0, subtotal + tax - resolvedDiscount)
+    : (activeOrderDetails?.totalAmount ?? Math.max(0, subtotal + tax - resolvedDiscount));
 
   if (orderDetailsLoading && !activeOrderDetails) {
     return (
