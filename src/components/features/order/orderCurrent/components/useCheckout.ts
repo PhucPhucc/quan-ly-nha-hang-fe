@@ -341,10 +341,15 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         clearOrderDetails();
         useOrderBoardStore.getState().setSelectedOrderId(null);
       } else {
-        toast.error(UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED);
+        // Show the error message from the API response
+        const errorMessage = res.message || UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED;
+        toast.error(errorMessage);
       }
     } catch (error) {
-      toast.error(UI_TEXT.ORDER.CURRENT.PAYMENT_ERROR);
+      // API throws error on non-2xx status, extract message from thrown error
+      const errorMessage =
+        error instanceof Error ? error.message : UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED;
+      toast.error(errorMessage);
       console.error(error);
     } finally {
       setIsProcessing(false);

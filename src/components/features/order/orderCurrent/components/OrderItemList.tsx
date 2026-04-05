@@ -17,6 +17,7 @@ interface OrderItemListProps {
   remoteItems?: OrderItem[];
   onUpdateQuantity: (cartItemKey: string, delta: number) => void;
   onRemoveItem: (cartItemKey: string) => void;
+  onCancelItem?: (itemId: string) => void;
 }
 
 const OrderItemList: React.FC<OrderItemListProps> = ({
@@ -24,6 +25,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
   remoteItems = [],
   onUpdateQuantity,
   onRemoveItem,
+  onCancelItem,
 }) => {
   const comboDisplayMap = React.useMemo(() => buildComboDisplayMap(remoteItems), [remoteItems]);
   const itemIndexMap = React.useMemo(() => createOrderItemIndexMap(remoteItems), [remoteItems]);
@@ -64,6 +66,7 @@ const OrderItemList: React.FC<OrderItemListProps> = ({
               hoveredComboId={hoveredComboId}
               setHoveredComboId={setHoveredComboId}
               toggleComboChildren={toggleComboChildren}
+              onCancel={onCancelItem}
             />
           </>
         )}
