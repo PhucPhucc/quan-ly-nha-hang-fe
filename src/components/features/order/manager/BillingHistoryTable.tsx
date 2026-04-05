@@ -39,7 +39,6 @@ const statusClass = (status: string) => {
 const paymentClass = (method?: string) => {
   if (method === "Cash") return "table-pill-success";
   if (method === "BankTransfer") return "table-pill-info";
-  if (method === "CreditCard") return "table-pill-primary";
   return "table-pill-neutral";
 };
 
