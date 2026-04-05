@@ -386,7 +386,6 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
       );
 
       if (success) {
-        await checkoutOrder(selectedOrderId, selectedMethod, amountReceived); // Refresh orders via store
         try {
           const invoiceAmount =
             isMixedPayment || selectedMethod === "MixedCashQR"
@@ -403,9 +402,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         clearOrderDetails();
         useOrderBoardStore.getState().setSelectedOrderId(null);
       } else {
-        // Show the error message from the API response
-        const errorMessage = success || UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED;
-        toast.error(errorMessage);
+        toast.error(UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED);
       }
     } catch (error) {
       // API throws error on non-2xx status, extract message from thrown error
