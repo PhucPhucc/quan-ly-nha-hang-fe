@@ -1,16 +1,22 @@
 import { useAuthStore } from "@/store/useAuthStore";
+import { useLanguageStore } from "@/store/useLanguageStore";
 import { ApiResponse } from "@/types/Api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 const NETWORK_ERROR_MESSAGE =
   "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng hoặc đảm bảo backend đang chạy.";
 const CSRF_HEADER_NAME = "X-XSRF-TOKEN";
+const ACCEPT_LANGUAGE_HEADER = "Accept-Language";
 const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 let isRefreshing = false;
 let refreshQueue: (() => void)[] = [];
 let csrfToken: string | null = null;
 let csrfTokenPromise: Promise<void> | null = null;
+
+function getRequestLocale(): string {
+  return useLanguageStore.getState().locale || "vi";
+}
 
 export function clearCsrfToken() {
   csrfToken = null;
@@ -65,10 +71,13 @@ async function ensureCsrfToken(): Promise<void> {
   }
 
   csrfTokenPromise = (async () => {
-    const res = await fetch(BASE_URL + "/api/v1/auth/csrf-token", {
-      method: "GET",
-      credentials: "include",
-    });
+    const res = await fetch(
+      BASE_URL + "/api/v1/auth/csrf-token",
+      await buildRequestOptions({
+        method: "GET",
+        credentials: "include",
+      })
+    );
 
     if (!res.ok) {
       throw new Error("Unable to initialize CSRF token");
@@ -92,6 +101,7 @@ async function ensureCsrfToken(): Promise<void> {
 async function buildRequestOptions(options: RequestInit): Promise<RequestInit> {
   const method = (options.method || "GET").toUpperCase();
   const headers = new Headers(options.headers);
+  headers.set(ACCEPT_LANGUAGE_HEADER, getRequestLocale());
 
   if (isMutationRequest(method)) {
     await ensureCsrfToken();

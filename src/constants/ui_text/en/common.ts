@@ -37,6 +37,7 @@ export const COMMON = {
   PAREN_RIGHT: ")",
   HASH: "#",
   BULLET: "•",
+  MULTIPLY: "×",
   ASTERISK: "*",
   SLASH: "/",
   DASH: "–",
