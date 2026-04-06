@@ -167,7 +167,8 @@ export const generateThermalHtml = (
         .divider { border-top: 1px dashed #000; margin: 10px 0; }
         .item-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 10px; table-layout: fixed; }
         .item-table th { border-bottom: 1px solid #000; text-align: left; padding: 3px 0 4px 0; }
-        .item-table td { padding: 3px 0; border-bottom: 1px dotted #ccc; vertical-align: top; }
+        .item-table td { padding: 3px 0; border-bottom: 1px dotted #ccc; vertical-align: top; overflow: hidden; }
+        .item-table td:nth-child(3), .item-table td:nth-child(4) { max-width: 0; word-break: break-all; }
         .item-line { display: flex; gap: 1px; align-items: flex-start; }
         .item-marker { flex: none; white-space: nowrap; }
         .item-name { flex: 1; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
@@ -177,6 +178,7 @@ export const generateThermalHtml = (
         .option-name { flex: 1; min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: #444; font-size: 9px; }
         .total-section { margin-top: 15px; border-top: 2px double #000; padding-top: 10px; }
         .total-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
+        .total-row > div:last-child { max-width: 50%; word-break: break-all; text-align: right; }
         .footer { margin-top: 15px; border-top: 1px dashed #000; padding-top: 10px; font-size: 9px; padding-bottom: 15px; padding-left: 5px; padding-right: 5px; }
 
       </style>

@@ -101,6 +101,8 @@ export const ORDER = {
       SPLIT_ITEM_QTY_LABEL: "Số lượng hiện tại:",
       SPLIT_ITEM_NOTE_LABEL: "Ghi chú:",
       SPLIT_ITEM_COMPLETED_ERROR: "Món đã hoàn tất, không thể tách.",
+      SPLIT_ITEM_COMBO_LABEL: "Combo",
+      SPLIT_COMBO_HINT: "Phải tách toàn bộ combo cùng lúc",
       SPLIT_SUCCESS: "Tách đơn thành công",
       SPLIT_ERROR: "Tách đơn thất bại",
       SPLIT_ACTION_NEW: "Tạo đơn tách",

@@ -17,6 +17,10 @@ export function KDSQueueSidebar() {
   const startCooking = useKdsStore((s) => s.startCooking);
   const [openStates, setOpenStates] = useState<Record<string, boolean>>({});
 
+  const getQueuePosition = (item: (typeof orders)[0]["orderItems"][0]): number | undefined => {
+    return (item as unknown as { queuePosition?: number }).queuePosition;
+  };
+
   const toggleOpen = (id: string) => {
     setOpenStates((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -109,34 +113,42 @@ export function KDSQueueSidebar() {
 
                   <CollapsibleContent className="border-t bg-slate-50/30 p-2 pt-0 transition-all">
                     <div className="mt-2 space-y-1">
-                      {order.orderItems.map((item) => (
-                        <div
-                          key={item.orderItemId}
-                          className="flex items-center justify-between gap-2 rounded-lg border border-border/50 bg-background/50 p-2 transition-colors hover:bg-background"
-                        >
-                          <div className="flex min-w-0 flex-1 flex-col">
-                            <span className="truncate text-xs font-bold text-foreground">
-                              {item.itemNameSnapshot}
-                            </span>
-                            <span className="text-[10px] text-muted-foreground">
-                              {UI_TEXT.KDS.ITEM.QTY_PREFIX}
-                              {item.quantity}
-                            </span>
-                          </div>
-                          <Button
-                            size="icon"
-                            variant="default"
-                            className="h-7 w-7 rounded-lg shadow-sm"
-                            title={UI_TEXT.KDS.AUDIT.ACTION_START}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              startCooking(item.orderItemId);
-                            }}
+                      {order.orderItems.map((item) => {
+                        const queuePos = getQueuePosition(item);
+                        return (
+                          <div
+                            key={item.orderItemId}
+                            className="flex items-center justify-between gap-2 rounded-lg border border-border/50 bg-background/50 p-2 transition-colors hover:bg-background"
                           >
-                            <Play className="h-3.5 w-3.5 fill-current" />
-                          </Button>
-                        </div>
-                      ))}
+                            {queuePos !== undefined && (
+                              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
+                                {queuePos}
+                              </div>
+                            )}
+                            <div className="flex min-w-0 flex-1 flex-col">
+                              <span className="truncate text-xs font-bold text-foreground">
+                                {item.itemNameSnapshot}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                {UI_TEXT.KDS.ITEM.QTY_PREFIX}
+                                {item.quantity}
+                              </span>
+                            </div>
+                            <Button
+                              size="icon"
+                              variant="default"
+                              className="h-7 w-7 rounded-lg shadow-sm"
+                              title={UI_TEXT.KDS.AUDIT.ACTION_START}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                startCooking(item.orderItemId);
+                              }}
+                            >
+                              <Play className="h-3.5 w-3.5 fill-current" />
+                            </Button>
+                          </div>
+                        );
+                      })}
                     </div>
                   </CollapsibleContent>
                 </Collapsible>

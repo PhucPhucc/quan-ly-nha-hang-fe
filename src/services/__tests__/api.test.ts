@@ -4,10 +4,22 @@ const { mockLogout } = vi.hoisted(() => ({
   mockLogout: vi.fn(),
 }));
 
+const { mockLocale } = vi.hoisted(() => ({
+  mockLocale: vi.fn(() => "vi"),
+}));
+
 vi.mock("@/store/useAuthStore", () => ({
   useAuthStore: {
     getState: () => ({
       logout: mockLogout,
+    }),
+  },
+}));
+
+vi.mock("@/store/useLanguageStore", () => ({
+  useLanguageStore: {
+    getState: () => ({
+      locale: mockLocale(),
     }),
   },
 }));
@@ -75,6 +87,10 @@ describe("apiFetch", () => {
         method: "POST",
       })
     );
+    const csrfHeaders = vi.mocked(fetch).mock.calls[0][1]?.headers as Headers;
+    const mutationHeaders = vi.mocked(fetch).mock.calls[1][1]?.headers as Headers;
+    expect(csrfHeaders.get("Accept-Language")).toBe("vi");
+    expect(mutationHeaders.get("Accept-Language")).toBe("vi");
   });
 
   it("returns the retried backend error instead of forcing session expired", async () => {

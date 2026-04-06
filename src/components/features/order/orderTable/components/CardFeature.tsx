@@ -22,6 +22,7 @@ import { orderService } from "@/services/orderService";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
 import { OrderItemStatus, OrderStatus } from "@/types/enums";
+import { OrderItem } from "@/types/Order";
 import { TableStatus } from "@/types/Table-Layout";
 
 import { Table } from "../TableItem";
@@ -36,6 +37,8 @@ type SplitItem = {
   quantity: number;
   status: OrderItemStatus;
   note?: string;
+  isCombo: boolean;
+  children: OrderItem[];
 };
 
 type SplitDestinationMode = "same-order" | "existing-order" | "new-table";
@@ -83,6 +86,18 @@ export default function CardFeature({
   const splitSelectedLines = splitItems.filter((item) => item.quantity > 0).length;
   const splitSelectedQuantity = splitItems.reduce((total, item) => total + item.quantity, 0);
 
+  const buildChildrenByParentId = (orderItems: OrderItem[]) => {
+    const childrenByParentId = new Map<string, OrderItem[]>();
+    orderItems.forEach((item) => {
+      if (item.comboParentOrderItemId) {
+        const existingChildren = childrenByParentId.get(item.comboParentOrderItemId) ?? [];
+        existingChildren.push(item);
+        childrenByParentId.set(item.comboParentOrderItemId, existingChildren);
+      }
+    });
+    return childrenByParentId;
+  };
+
   useEffect(() => {
     const loadOrderItems = async () => {
       if (feature !== Feature.SPLIT || !table.orderId) return;
@@ -91,15 +106,22 @@ export default function CardFeature({
       try {
         const res = await orderService.getOrderById(table.orderId);
         if (res.isSuccess && res.data) {
-          const items = res.data.orderItems.map((item) => ({
-            orderItemId: item.orderItemId,
-            name: item.itemNameSnapshot,
-            maxQuantity: item.quantity,
-            quantity: 0,
-            status: item.status,
-            note: item.itemNote,
-          }));
-          setSplitItems(items);
+          const orderItems = res.data.orderItems;
+          const childrenByParentId = buildChildrenByParentId(orderItems);
+
+          const parentItems = orderItems
+            .filter((item) => !item.comboParentOrderItemId)
+            .map((item) => ({
+              orderItemId: item.orderItemId,
+              name: item.itemNameSnapshot,
+              maxQuantity: item.quantity,
+              quantity: 0,
+              status: item.status,
+              note: item.itemNote,
+              isCombo: childrenByParentId.has(item.orderItemId),
+              children: childrenByParentId.get(item.orderItemId) ?? [],
+            }));
+          setSplitItems(parentItems);
         }
       } catch (error) {
         toast.error(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_FETCH_ITEMS_ERROR);
@@ -495,11 +517,26 @@ export default function CardFeature({
                           <Badge variant={getSplitItemBadgeVariant(item.status)}>
                             {getSplitItemStatusLabel(item.status)}
                           </Badge>
+                          {item.isCombo && (
+                            <Badge variant="outline" className="text-xs">
+                              {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ITEM_COMBO_LABEL}
+                            </Badge>
+                          )}
                         </div>
                         <p className="mt-1 text-xs text-muted-foreground">
                           {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ITEM_QTY_LABEL}{" "}
                           {item.maxQuantity}
                         </p>
+                        {item.isCombo && item.children.length > 0 && (
+                          <div className="mt-1.5 ml-1 border-l-2 border-muted pl-2">
+                            {item.children.map((child) => (
+                              <p key={child.orderItemId} className="text-xs text-muted-foreground">
+                                {UI_TEXT.COMMON.BULLET} {child.itemNameSnapshot}{" "}
+                                {UI_TEXT.COMMON.MULTIPLY} {child.quantity}
+                              </p>
+                            ))}
+                          </div>
+                        )}
                         {item.note && (
                           <p className="mt-1 truncate text-xs text-muted-foreground">
                             {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ITEM_NOTE_LABEL} {item.note}
@@ -508,6 +545,11 @@ export default function CardFeature({
                         {!movable && (
                           <p className="mt-1 text-xs text-destructive">
                             {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_ITEM_COMPLETED_ERROR}
+                          </p>
+                        )}
+                        {item.isCombo && (
+                          <p className="mt-1 text-xs text-muted-foreground italic">
+                            {UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.SPLIT_COMBO_HINT}
                           </p>
                         )}
                       </div>

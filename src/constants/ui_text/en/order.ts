@@ -101,6 +101,8 @@ export const ORDER = {
       SPLIT_ITEM_QTY_LABEL: "Current quantity:",
       SPLIT_ITEM_NOTE_LABEL: "Note:",
       SPLIT_ITEM_COMPLETED_ERROR: "Item is completed, cannot be split.",
+      SPLIT_ITEM_COMBO_LABEL: "Combo",
+      SPLIT_COMBO_HINT: "Must split entire combo at once",
       SPLIT_SUCCESS: "Order split successfully",
       SPLIT_ERROR: "Failed to split order",
       SPLIT_ACTION_NEW: "Create split order",
