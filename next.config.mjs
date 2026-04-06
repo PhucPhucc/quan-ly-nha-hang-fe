@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   poweredByHeader: false,
+  removePoweredByHeader: true,
+  compress: true,
   images: {
     remotePatterns: [
       {

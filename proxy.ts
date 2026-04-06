@@ -5,6 +5,7 @@ function buildContentSecurityPolicy(nonce: string, isDev: boolean, apiOrigin: st
 
   return [
     "default-src 'self'",
+    "upgrade-insecure-requests",
     "base-uri 'self'",
     "frame-ancestors 'none'",
     "object-src 'none'",
