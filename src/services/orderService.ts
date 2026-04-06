@@ -263,9 +263,13 @@ export const orderService = {
           : { orderId, paymentMethod, amountReceived },
     }),
 
-  createPayOsQr: (orderId: string): Promise<ApiResponse<PayOsQrResponse | string>> =>
+  createPayOsQr: (
+    orderId: string,
+    amount?: number
+  ): Promise<ApiResponse<PayOsQrResponse | string>> =>
     apiFetch<PayOsQrResponse | string>(`/billing/orders/${orderId}/payos-qr`, {
       method: "POST",
+      body: amount ? { amount } : {},
     }),
   changeTable: (orderId: string, newTableId: string): Promise<ApiResponse<string>> =>
     apiFetch<string>(`/tableoperations/${orderId}/change-table`, {

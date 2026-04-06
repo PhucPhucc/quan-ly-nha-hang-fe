@@ -7,12 +7,15 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
 import { OrderDetailsTabs } from "./components/OrderDetailsTabs";
 import { useOrderDetailPage } from "./useOrderDetailPage";
 
 export default function OrderDetailPage({ orderId }: { orderId: string }) {
   const { detail, preCheckBill, loading } = useOrderDetailPage(orderId);
+  const employeeRole = useAuthStore((state) => state.employee?.role);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-4 p-4">
@@ -24,7 +27,7 @@ export default function OrderDetailPage({ orderId }: { orderId: string }) {
             asChild
             className="h-10 w-10 rounded-lg bg-white border border-slate-200 shadow-sm hover:bg-slate-50 transition-all"
           >
-            <Link href="/manager/order">
+            <Link href={employeeRole === EmployeeRole.CASHIER ? "/list" : "/manager/order"}>
               <LucideArrowLeft className="h-5 w-5 text-slate-500" />
             </Link>
           </Button>

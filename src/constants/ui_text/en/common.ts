@@ -222,6 +222,10 @@ export const BUTTON = {
   NEXT_PAGE: "Next",
   PREV_PAGE: "Prev",
   TOGGLE_THEME: "Toggle theme",
+  TOGGLE_THEME_DESC: "Switch light / dark mode",
+  LANGUAGE: "Language",
+  LANGUAGE_DESC_VI: "Tiếng Việt",
+  LANGUAGE_DESC_EN: "English",
 };
 
 export const API = {

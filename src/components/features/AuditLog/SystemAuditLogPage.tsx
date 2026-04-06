@@ -1,5 +1,6 @@
 "use client";
 
+import { endOfDay, startOfDay } from "date-fns";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { INVENTORY_PAGE_CLASS } from "@/components/features/inventory/components/inventoryStyles";
@@ -11,7 +12,6 @@ import { AuditLogDetailSheet } from "./AuditLogDetailSheet";
 import { AuditLogHeader } from "./AuditLogHeader";
 import { AuditLogTable } from "./AuditLogTable";
 import { AuditLogToolbar } from "./AuditLogToolbar";
-import { toIsoDateEnd, toIsoDateStart } from "./AuditUtils";
 import { AuditLogFilterState } from "./types";
 
 const PAGE_SIZE = 15;
@@ -37,8 +37,8 @@ const DEFAULT_FILTERS: AuditLogFilterState = {
   actionFilter: "all",
   entityNameFilter: "all",
   entityIdFilter: "",
-  fromDate: "",
-  toDate: "",
+  fromDate: startOfDay(new Date()),
+  toDate: endOfDay(new Date()),
 };
 
 export default function SystemAuditLogPage() {
@@ -60,8 +60,8 @@ export default function SystemAuditLogPage() {
       actionFilter: filters.actionFilter === "all" ? undefined : filters.actionFilter,
       entityNameFilter: filters.entityNameFilter === "all" ? undefined : filters.entityNameFilter,
       entityIdFilter: filters.entityIdFilter || undefined,
-      fromDate: toIsoDateStart(filters.fromDate),
-      toDate: toIsoDateEnd(filters.toDate),
+      fromDate: filters.fromDate,
+      toDate: filters.toDate,
     }),
     [filters, page]
   );
@@ -108,7 +108,6 @@ export default function SystemAuditLogPage() {
   return (
     <div className={INVENTORY_PAGE_CLASS}>
       <AuditLogHeader totalCount={totalCount} currentPage={page} pageSize={PAGE_SIZE} />
-
       <AuditLogToolbar
         draftFilters={draftFilters}
         applyFilters={applyFilters}
@@ -116,7 +115,6 @@ export default function SystemAuditLogPage() {
         entityOptions={ENTITY_OPTIONS}
         actionOptions={ACTION_OPTIONS}
       />
-
       <div>
         <AuditLogTable
           logs={logs}
@@ -127,7 +125,6 @@ export default function SystemAuditLogPage() {
         />
         <PaginationTable currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
-
       <AuditLogDetailSheet log={selectedLog} isOpen={isSheetOpen} onOpenChange={setIsSheetOpen} />
     </div>
   );

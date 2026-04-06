@@ -16,12 +16,13 @@ import {
   TableRow,
   TableShell,
 } from "@/components/ui/table";
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 import { SystemAuditLog } from "@/services/auditService";
 
 import {
-  formatDateTime,
   getActionLabel,
   getActionVariant,
   getActorLabel,
@@ -45,6 +46,8 @@ export function AuditLogTable({
   onOpenDetails,
   noSurface = false,
 }: AuditLogTableProps) {
+  const { data: branding } = useBrandingSettings();
+
   return (
     <div className={cn(!noSurface && INVENTORY_TABLE_SURFACE_CLASS, "flex flex-col min-h-0")}>
       {loading ? (
@@ -104,7 +107,7 @@ export function AuditLogTable({
                   >
                     <TableCell>
                       <span className="font-bold text-foreground text-sm tracking-tight">
-                        {formatDateTime(log.createdAt)}
+                        {formatDateTimeWithBranding(log.createdAt, branding, true)}
                       </span>
                     </TableCell>
                     <TableCell>

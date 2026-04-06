@@ -10,11 +10,12 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useBrandingSettings } from "@/hooks/useBrandingSettings";
+import { formatDateTimeWithBranding } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { SystemAuditLog } from "@/services/auditService";
 
 import {
-  formatDateTime,
   formatScalarValue,
   getActionLabel,
   getActionVariant,
@@ -33,6 +34,8 @@ interface AuditLogDetailSheetProps {
 }
 
 export function AuditLogDetailSheet({ log, isOpen, onOpenChange }: AuditLogDetailSheetProps) {
+  const { data: branding } = useBrandingSettings();
+
   if (!log) return null;
 
   const selectedChanges = getChangeItems(log);
@@ -68,7 +71,7 @@ export function AuditLogDetailSheet({ log, isOpen, onOpenChange }: AuditLogDetai
               <SheetDescription className="flex items-center flex-wrap gap-x-2 gap-y-1 text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 <span className="inline-flex items-center gap-1">
                   <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />
-                  {formatDateTime(log.createdAt)}
+                  {formatDateTimeWithBranding(log.createdAt, branding, true)}
                 </span>
                 <span className="text-muted-foreground/20">{UI_TEXT.COMMON.PIPE}</span>
                 <span className="inline-flex items-center gap-1">

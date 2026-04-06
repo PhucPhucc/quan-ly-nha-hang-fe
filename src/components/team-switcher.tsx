@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import * as React from "react";
 
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
@@ -26,7 +27,10 @@ export function TeamSwitcher({
             size="lg"
             className="data-[state=open]:bg-sidebar-accent data-[state=closed]:gap-0 data-[state=open]:text-sidebar-accent-foreground"
           >
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+            <Link
+              href="/"
+              className=" flex aspect-square size-8 items-center justify-center rounded-lg"
+            >
               {team.logoUrl ? (
                 <Image
                   src={team.logoUrl}
@@ -38,8 +42,8 @@ export function TeamSwitcher({
               ) : (
                 <Logo className="size-4" />
               )}
-            </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
+            </Link>
+            <div className="grid flex-1 text-left text-sm leading-tight bg-sidebar-primary text-sidebar-primary-foreground">
               <span className="truncate font-medium">{team.name}</span>
               <span className="truncate text-xs">{team.plan}</span>
             </div>

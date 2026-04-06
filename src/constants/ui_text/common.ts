@@ -222,6 +222,10 @@ export const BUTTON = {
   NEXT_PAGE: "Tiếp",
   PREV_PAGE: "Trước",
   TOGGLE_THEME: "Đổi giao diện",
+  TOGGLE_THEME_DESC: "Bật / Tắt chế độ tối",
+  LANGUAGE: "Ngôn ngữ",
+  LANGUAGE_DESC_VI: "Tiếng Việt",
+  LANGUAGE_DESC_EN: "English",
 };
 
 export const API = {

@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarIcon, RefreshCcw, Search } from "lucide-react";
+import { endOfDay, startOfDay } from "date-fns";
+import { RefreshCcw, Search } from "lucide-react";
 import React from "react";
 
 import {
@@ -8,6 +9,7 @@ import {
   INVENTORY_SELECT_TRIGGER_CLASS,
 } from "@/components/features/inventory/components/inventoryStyles";
 import { InventoryToolbar } from "@/components/features/inventory/components/InventoryToolbar";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +40,8 @@ export function AuditLogToolbar({
   entityOptions,
   actionOptions,
 }: AuditLogToolbarProps) {
+  const { formatDate } = useBrandingFormatter();
+
   return (
     <InventoryToolbar
       actions={
@@ -100,29 +105,23 @@ export function AuditLogToolbar({
         />
       </div>
 
-      <div className="relative min-w-45">
-        <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-        <Input
-          type="date"
-          className={cn(INVENTORY_INPUT_CLASS, "pl-10")}
+      <div className="flex">
+        <DatePicker
+          placeholder={formatDate(new Date())}
           value={draftFilters.fromDate}
-          onChange={(event) => {
-            applyFilters({ ...draftFilters, fromDate: event.target.value });
+          onChange={(event: Date | undefined) => {
+            applyFilters({ ...draftFilters, fromDate: event ? startOfDay(event) : event });
           }}
         />
       </div>
 
-      <div className="relative min-w-45">
-        <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-        <Input
-          type="date"
-          className={cn(INVENTORY_INPUT_CLASS, "pl-10")}
-          value={draftFilters.toDate}
-          onChange={(event) => {
-            applyFilters({ ...draftFilters, toDate: event.target.value });
-          }}
-        />
-      </div>
+      <DatePicker
+        placeholder={formatDate(new Date())}
+        value={draftFilters.toDate}
+        onChange={(event: Date | undefined) => {
+          applyFilters({ ...draftFilters, toDate: event ? endOfDay(event) : event });
+        }}
+      />
     </InventoryToolbar>
   );
 }

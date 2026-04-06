@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, Loader2 } from "lucide-react";
+import { DollarSign, Loader2, QrCode } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { formatCurrency } from "@/lib/utils";
 import { PaymentMethod } from "@/types/enums";
@@ -40,7 +41,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
     calculateChange,
     handleQuickAmount,
     handleSyncPayment,
+    getMixedPaymentAmounts,
+    generateMixedQR,
   } = useCheckout(isOpen, onClose, totalAmount);
+
+  const mixedAmounts = getMixedPaymentAmounts();
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
@@ -76,6 +81,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                 className="w-full text-xs font-bold"
               >
                 {UI_TEXT.ORDER.CURRENT.TRANSFER}
+              </Button>
+              <Button
+                variant={selectedMethod === "MixedCashQR" ? "default" : "outline"}
+                onClick={() => setSelectedMethod("MixedCashQR" as PaymentMethod)}
+                className="w-full text-xs font-bold flex flex-col items-center gap-0.5 py-2"
+              >
+                <div className="flex items-center gap-1">
+                  <DollarSign className="w-3 h-3" />
+                  <QrCode className="w-3 h-3" />
+                </div>
+                <span className="text-[10px] leading-tight">
+                  {UI_TEXT.ORDER.CURRENT.MIXED_CASH_QR}
+                </span>
               </Button>
             </div>
           </div>
@@ -121,6 +139,79 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
           {selectedMethod === PaymentMethod.BankTransfer && payOSUrl && (
             <BankTransferView payOSUrl={payOSUrl} bankInfo={bankInfo} totalAmount={totalAmount} />
           )}
+
+          {selectedMethod === "MixedCashQR" && (
+            <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
+              <div className="space-y-1">
+                <Label className="font-semibold text-sm">
+                  {UI_TEXT.ORDER.CURRENT.CUSTOMER_GAVE}
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Nhập số tiền mặt khách đưa..."
+                  value={customerGiven}
+                  onChange={(e) => setCustomerGiven(e.target.value)}
+                  className="font-bold text-lg"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {[remainingAmount, 500000, 1000000].map((amount) => (
+                  <Button
+                    key={amount}
+                    variant="secondary"
+                    size="sm"
+                    className="text-xs font-bold"
+                    onClick={() => handleQuickAmount(amount)}
+                  >
+                    {formatCurrency(amount)}
+                  </Button>
+                ))}
+              </div>
+
+              <div className="flex justify-between items-center px-3 py-2 rounded-lg bg-muted border border-muted">
+                <span className="font-semibold text-sm text-muted-foreground">
+                  {UI_TEXT.ORDER.CURRENT.CHANGE}
+                </span>
+                <span className="font-black text-lg text-primary/90">
+                  {formatCurrency(calculateChange())}
+                </span>
+              </div>
+
+              {mixedAmounts.qrAmount > 0 && (
+                <div className="mt-2">
+                  {!payOSUrl ? (
+                    <Button onClick={generateMixedQR} disabled={isProcessing} className="w-full">
+                      {isProcessing ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          {UI_TEXT.ORDER.CURRENT.CREATING_QR}
+                        </>
+                      ) : (
+                        <>
+                          <QrCode className="w-4 h-4 mr-2" />
+                          {UI_TEXT.ORDER.CURRENT.CREATE_QR_WITH_AMOUNT(
+                            formatCurrency(mixedAmounts.qrAmount)
+                          )}
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="text-sm font-medium text-blue-800 mb-2">
+                        {UI_TEXT.ORDER.CURRENT.QR_AMOUNT}: {formatCurrency(mixedAmounts.qrAmount)}
+                      </div>
+                      <BankTransferView
+                        payOSUrl={payOSUrl}
+                        bankInfo={bankInfo}
+                        totalAmount={mixedAmounts.qrAmount}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <DialogFooter className="sm:justify-end">
           <Button
@@ -143,6 +234,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   {UI_TEXT.ORDER.CURRENT.PROCESSING}
                 </>
+              ) : selectedMethod === "MixedCashQR" ? (
+                UI_TEXT.ORDER.CURRENT.CONFIRM_PAYMENT
               ) : (
                 UI_TEXT.ORDER.CURRENT.CONFIRM_PAYMENT
               )}

@@ -1,6 +1,7 @@
 export const AUTH = {
   LOGIN: "Login",
   LOGOUT: "Logout",
+  LOGOUT_DESC: "End current session",
   REGISTER: "Register",
   EMAIL: "Email",
   PASSWORD: "Password",

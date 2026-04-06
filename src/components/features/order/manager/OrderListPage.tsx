@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import OrderBoardFilters from "@/components/features/order/orderBoard/OrderBoardFilters";
@@ -13,6 +13,7 @@ import { Order } from "@/types/Order";
 
 export default function OrderListPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -90,7 +91,7 @@ export default function OrderListPage() {
         totalPages={totalPages}
         onPageChange={setPageNumber}
         onRetry={fetchOrders}
-        onRowSelect={(order) => router.push(`/manager/order/${order.orderId}`)}
+        onRowSelect={(order) => router.push(`${pathname}/${order.orderId}`)}
       />
     </div>
   );

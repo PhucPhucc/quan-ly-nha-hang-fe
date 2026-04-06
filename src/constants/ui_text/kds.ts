@@ -95,8 +95,8 @@ export const KDS = {
     STATUS_NORMAL: "BÌNH THƯỜNG",
     SYSTEM_ONLINE: "HỆ THỐNG TRỰC TUYẾN",
   },
-  FETCH_ERROR: "Khong the tai du lieu KDS",
-  START_COOKING_SUCCESS: "Da bat dau nau!",
-  COMPLETE_COOKING_SUCCESS: "Mon da hoan thanh!",
-  REJECT_ITEM_SUCCESS: "Da tu choi mon!",
+  FETCH_ERROR: "Không thể tải dữ liệu KDS",
+  START_COOKING_SUCCESS: "Đã bắt đầu nấu!",
+  COMPLETE_COOKING_SUCCESS: "Món đã hoàn thành!",
+  REJECT_ITEM_SUCCESS: "Đã từ chối món!",
 };

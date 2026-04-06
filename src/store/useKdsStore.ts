@@ -206,7 +206,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         toast.success(UI_TEXT.KDS.START_COOKING_SUCCESS);
         get().fetchKdsData();
       } catch (error: unknown) {
-        toast.error(error instanceof Error ? error.message : "Loi khi bat dau nau");
+        toast.error(error instanceof Error ? error.message : "Có lỗi khi bắt đầu nấu");
       }
     },
 
@@ -216,7 +216,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         toast.success(UI_TEXT.KDS.COMPLETE_COOKING_SUCCESS);
         get().fetchKdsData();
       } catch (e: unknown) {
-        toast.error(e instanceof Error ? e.message : "Loi khi hoan thanh mon");
+        toast.error(e instanceof Error ? e.message : "Có lỗi khi hoàn thành món");
       }
     },
 
@@ -226,7 +226,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         toast.success(UI_TEXT.KDS.REJECT_ITEM_SUCCESS);
         get().fetchKdsData();
       } catch (e: unknown) {
-        toast.error(e instanceof Error ? e.message : "Loi khi tu choi mon");
+        toast.error(e instanceof Error ? e.message : "Có lỗi khi từ chối món");
       }
     },
   }),

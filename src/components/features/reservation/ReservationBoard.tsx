@@ -12,7 +12,7 @@ const TableBookingBoard = () => {
     useReservationBoard();
 
   return (
-    <div className="p-6 rounded-xl h-full flex flex-col">
+    <div className="p-6 rounded-xl bg-background h-full flex flex-col">
       <ReservationStatus
         total={stats.total}
         booked={stats.booked}

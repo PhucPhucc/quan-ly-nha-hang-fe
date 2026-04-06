@@ -16,8 +16,8 @@ export interface SystemAuditLog {
 export interface SystemAuditLogParams {
   pageNumber?: number;
   pageSize?: number;
-  fromDate?: string;
-  toDate?: string;
+  fromDate?: Date;
+  toDate?: Date;
   actionFilter?: string;
   entityNameFilter?: string;
   entityIdFilter?: string;
@@ -47,11 +47,12 @@ export async function getSystemAuditLogs(
   params: SystemAuditLogParams = {}
 ): Promise<ApiResponse<PaginationResult<SystemAuditLog>>> {
   const query = new URLSearchParams();
+  const toIsoString = (value: Date) => value.toISOString();
 
   if (params.pageNumber) query.set("pageNumber", String(params.pageNumber));
   if (params.pageSize) query.set("pageSize", String(params.pageSize));
-  if (params.fromDate) query.set("fromDate", params.fromDate);
-  if (params.toDate) query.set("toDate", params.toDate);
+  if (params.fromDate) query.set("fromDate", toIsoString(params.fromDate));
+  if (params.toDate) query.set("toDate", toIsoString(params.toDate));
   if (params.actionFilter) query.set("actionFilter", params.actionFilter);
   if (params.entityNameFilter) query.set("entityNameFilter", params.entityNameFilter);
   if (params.entityIdFilter) query.set("entityIdFilter", params.entityIdFilter);

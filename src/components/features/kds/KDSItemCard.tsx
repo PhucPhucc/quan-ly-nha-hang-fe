@@ -114,6 +114,7 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
       </div>
 
       <KDSRejectModal
+        key={isRejectModalOpen ? "open" : "close"}
         isOpen={isRejectModalOpen}
         onClose={() => setIsRejectModalOpen(false)}
         onConfirm={handleReturnConfirm}

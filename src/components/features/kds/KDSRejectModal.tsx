@@ -25,17 +25,15 @@ interface KDSRejectModalProps {
 
 const QUICK_REASONS = UI_TEXT.KDS.AUDIT.REJECT_MODAL.REASONS;
 const MAX_CHARS = 200;
+const DEFAULT_REASON = "Tạm thời không có nguyên liệu";
 
 export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSRejectModalProps) {
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState(DEFAULT_REASON);
   const [error, setError] = useState<string | null>(null);
 
   const handleConfirm = () => {
-    if (!reason.trim()) {
-      setError(UI_TEXT.KDS.AUDIT.REJECT_MODAL.REQUIRED);
-      return;
-    }
-    onConfirm(reason.trim());
+    const finalReason = reason.trim() || DEFAULT_REASON;
+    onConfirm(finalReason);
     setReason("");
     setError(null);
     onClose();
@@ -47,7 +45,7 @@ export function KDSRejectModal({ isOpen, onClose, onConfirm, itemName }: KDSReje
   };
 
   const handleCancel = () => {
-    setReason("");
+    setReason(DEFAULT_REASON);
     setError(null);
     onClose();
   };

@@ -1,6 +1,7 @@
 export const AUTH = {
   LOGIN: "Đăng nhập",
   LOGOUT: "Đăng xuất",
+  LOGOUT_DESC: "Kết thúc phiên làm việc",
   REGISTER: "Đăng ký",
   EMAIL: "Email",
   PASSWORD: "Mật khẩu",
