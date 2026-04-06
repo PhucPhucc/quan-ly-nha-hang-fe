@@ -78,6 +78,11 @@ export const AUDIT_LOG = {
     ALL: "Tất cả đối tượng",
     RESERVATION: "Đặt bàn",
     TABLE: "Bàn ăn",
+    ORDER: "Đơn hàng",
+    EMPLOYEE: "Nhân viên",
+    MENU: "Thực đơn",
+    AREA: "Khu vực",
+    PROMOTION: "Khuyến mãi",
     UNKNOWN: "Đối tượng khác",
   },
   ACTIONS_LIST: {

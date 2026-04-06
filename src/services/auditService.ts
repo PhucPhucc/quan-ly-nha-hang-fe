@@ -20,7 +20,6 @@ export interface SystemAuditLogParams {
   toDate?: Date;
   actionFilter?: string;
   entityNameFilter?: string;
-  entityIdFilter?: string;
 }
 
 export async function getAuditLogs(
@@ -55,7 +54,6 @@ export async function getSystemAuditLogs(
   if (params.toDate) query.set("toDate", toIsoString(params.toDate));
   if (params.actionFilter) query.set("actionFilter", params.actionFilter);
   if (params.entityNameFilter) query.set("entityNameFilter", params.entityNameFilter);
-  if (params.entityIdFilter) query.set("entityIdFilter", params.entityIdFilter);
 
   return apiFetch<PaginationResult<SystemAuditLog>>(
     `/auditlogs${query.toString() ? `?${query.toString()}` : ""}`,

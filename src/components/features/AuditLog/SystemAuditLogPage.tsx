@@ -20,6 +20,11 @@ const ENTITY_OPTIONS = [
   { value: "all", label: UI_TEXT.AUDIT_LOG.ENTITIES.ALL },
   { value: "Reservation", label: UI_TEXT.AUDIT_LOG.ENTITIES.RESERVATION },
   { value: "Table", label: UI_TEXT.AUDIT_LOG.ENTITIES.TABLE },
+  { value: "Order", label: UI_TEXT.AUDIT_LOG.ENTITIES.ORDER },
+  { value: "Employee", label: UI_TEXT.AUDIT_LOG.ENTITIES.EMPLOYEE },
+  { value: "Menu", label: UI_TEXT.AUDIT_LOG.ENTITIES.MENU },
+  { value: "Area", label: UI_TEXT.AUDIT_LOG.ENTITIES.AREA },
+  { value: "Promotion", label: UI_TEXT.AUDIT_LOG.ENTITIES.PROMOTION },
 ];
 
 const ACTION_OPTIONS = [
@@ -36,7 +41,6 @@ const ACTION_OPTIONS = [
 const DEFAULT_FILTERS: AuditLogFilterState = {
   actionFilter: "all",
   entityNameFilter: "all",
-  entityIdFilter: "",
   fromDate: startOfDay(new Date()),
   toDate: endOfDay(new Date()),
 };
@@ -59,7 +63,6 @@ export default function SystemAuditLogPage() {
       pageSize: PAGE_SIZE,
       actionFilter: filters.actionFilter === "all" ? undefined : filters.actionFilter,
       entityNameFilter: filters.entityNameFilter === "all" ? undefined : filters.entityNameFilter,
-      entityIdFilter: filters.entityIdFilter || undefined,
       fromDate: filters.fromDate,
       toDate: filters.toDate,
     }),

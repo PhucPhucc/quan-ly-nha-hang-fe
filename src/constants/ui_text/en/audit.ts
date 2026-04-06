@@ -77,6 +77,11 @@ export const AUDIT_LOG = {
     ALL: "All entities",
     RESERVATION: "Reservation",
     TABLE: "Table",
+    ORDER: "Order",
+    EMPLOYEE: "Employee",
+    MENU: "Menu",
+    AREA: "Area",
+    PROMOTION: "Promotion",
     UNKNOWN: "Other entity",
   },
   ACTIONS_LIST: {

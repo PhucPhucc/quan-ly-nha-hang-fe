@@ -154,6 +154,16 @@ export function getEntityLabel(entityName: string) {
       return UI_TEXT.AUDIT_LOG.ENTITIES.RESERVATION;
     case "Table":
       return UI_TEXT.AUDIT_LOG.ENTITIES.TABLE;
+    case "Order":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.ORDER;
+    case "Employee":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.EMPLOYEE;
+    case "Menu":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.MENU;
+    case "Area":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.AREA;
+    case "Promotion":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.PROMOTION;
     default:
       return entityName;
   }

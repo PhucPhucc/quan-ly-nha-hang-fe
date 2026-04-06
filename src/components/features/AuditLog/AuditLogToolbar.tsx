@@ -1,17 +1,13 @@
 "use client";
 
 import { endOfDay, startOfDay } from "date-fns";
-import { RefreshCcw, Search } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import React from "react";
 
-import {
-  INVENTORY_INPUT_CLASS,
-  INVENTORY_SELECT_TRIGGER_CLASS,
-} from "@/components/features/inventory/components/inventoryStyles";
+import { INVENTORY_SELECT_TRIGGER_CLASS } from "@/components/features/inventory/components/inventoryStyles";
 import { InventoryToolbar } from "@/components/features/inventory/components/InventoryToolbar";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -92,18 +88,6 @@ export function AuditLogToolbar({
           ))}
         </SelectContent>
       </Select>
-
-      <div className="relative min-w-0 flex-1">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-        <Input
-          className={cn(INVENTORY_INPUT_CLASS, "pl-9")}
-          value={draftFilters.entityIdFilter}
-          onChange={(event) => {
-            applyFilters({ ...draftFilters, entityIdFilter: event.target.value });
-          }}
-          placeholder={UI_TEXT.AUDIT_LOG.ENTITY_ID}
-        />
-      </div>
 
       <div className="flex">
         <DatePicker
