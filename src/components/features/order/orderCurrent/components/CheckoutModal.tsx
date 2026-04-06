@@ -67,7 +67,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
 
           <div className="space-y-2">
             <span className="font-semibold text-sm">{UI_TEXT.ORDER.CURRENT.PAYMENT_METHOD}</span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 variant={selectedMethod === PaymentMethod.Cash ? "default" : "outline"}
                 onClick={() => setSelectedMethod(PaymentMethod.Cash)}

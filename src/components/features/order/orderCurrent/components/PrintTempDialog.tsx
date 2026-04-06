@@ -200,9 +200,9 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
                   <span className="text-foreground">{UI_TEXT.ORDER.PRINT_TEMP.TAX_LABEL}</span>
                   <span className="font-medium">{money(taxValue)}</span>
                 </div>
-                <div className="flex items-end justify-between gap-4 border-t mt-4 pt-1 text-[19px] font-bold">
+                <div className="flex justify-between gap-4 border-t mt-4 pt-1 text-[19px] font-bold">
                   <span>{UI_TEXT.ORDER.PRINT_TEMP.TOTAL_AMOUNT}</span>
-                  <span>{money(totalValue)}</span>
+                  <span className="text-right break-all">{money(totalValue)}</span>
                 </div>
               </div>
             </div>

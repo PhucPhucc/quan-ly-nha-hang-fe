@@ -39,7 +39,10 @@ export const normalizeOrderItemStatus = (status: unknown): OrderItemStatus => {
   }
 };
 
-const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Order[] => {
+const formatItemsToOrders = (
+  items: (KdsItemResponse | KdsQueueResponse)[],
+  preserveQueuePosition = false
+): Order[] => {
   if (!items || !Array.isArray(items)) return [];
 
   const groups = new Map<string, Order>();
@@ -60,7 +63,7 @@ const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Ord
     }
 
     const order = groups.get(item.orderId)!;
-    order.orderItems.push({
+    const orderItem: OrderItem & { queuePosition?: number } = {
       orderItemId: item.orderItemId,
       orderId: item.orderId,
       itemNameSnapshot: item.itemNameSnapshot || "Unknown Item",
@@ -72,12 +75,44 @@ const formatItemsToOrders = (items: (KdsItemResponse | KdsQueueResponse)[]): Ord
       updatedAt: item.createdAt || new Date().toISOString(),
       itemCodeSnapshot: (item.itemNameSnapshot || "UNK").substring(0, 3).toUpperCase(),
       unitPriceSnapshot: 0,
-    } as unknown as OrderItem);
+    } as unknown as OrderItem & { queuePosition?: number };
+
+    if (preserveQueuePosition && "queuePosition" in item && item.queuePosition) {
+      orderItem.queuePosition = item.queuePosition;
+    }
+
+    order.orderItems.push(orderItem);
   });
 
-  return Array.from(groups.values()).sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  );
+  const result = Array.from(groups.values());
+
+  if (preserveQueuePosition) {
+    result.sort((a, b) => {
+      const aMinPos = Math.min(
+        ...a.orderItems.map(
+          (i) => (i as unknown as { queuePosition?: number }).queuePosition ?? 999
+        )
+      );
+      const bMinPos = Math.min(
+        ...b.orderItems.map(
+          (i) => (i as unknown as { queuePosition?: number }).queuePosition ?? 999
+        )
+      );
+      return aMinPos - bMinPos;
+    });
+
+    result.forEach((order) => {
+      order.orderItems.sort((a, b) => {
+        const aPos = (a as unknown as { queuePosition?: number }).queuePosition ?? 999;
+        const bPos = (b as unknown as { queuePosition?: number }).queuePosition ?? 999;
+        return aPos - bPos;
+      });
+    });
+  } else {
+    result.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  }
+
+  return result;
 };
 
 interface KdsState {
@@ -128,7 +163,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
           queueItems: newQueueItems,
           settings: newSettings,
           activeOrders: formatItemsToOrders(newActiveItems),
-          queueOrders: formatItemsToOrders(newQueueItems),
+          queueOrders: formatItemsToOrders(newQueueItems, true),
         });
       } catch (error) {
         console.error("Failed to fetch KDS data:", error);
@@ -159,7 +194,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
           activeItems: newActive,
           queueItems: newQueue,
           activeOrders: formatItemsToOrders(newActive),
-          queueOrders: formatItemsToOrders(newQueue),
+          queueOrders: formatItemsToOrders(newQueue, true),
         });
       } else if (isPreparing) {
         // Update Queue Items
@@ -181,7 +216,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
           activeItems: newActive,
           queueItems: newQueue,
           activeOrders: formatItemsToOrders(newActive),
-          queueOrders: formatItemsToOrders(newQueue),
+          queueOrders: formatItemsToOrders(newQueue, true),
         });
       } else {
         // Completed/Rejected/Cancelled - Remove from both
@@ -196,7 +231,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         activeItems: newActive,
         queueItems: newQueue,
         activeOrders: formatItemsToOrders(newActive),
-        queueOrders: formatItemsToOrders(newQueue),
+        queueOrders: formatItemsToOrders(newQueue, true),
       });
     },
 
