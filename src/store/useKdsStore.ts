@@ -53,8 +53,8 @@ const formatItemsToOrders = (
       groups.set(item.orderId, {
         orderId: item.orderId,
         orderCode: item.orderCode || "N/A",
-        orderType: 0,
-        status: 1,
+        orderType: item.orderType,
+        status: item.status,
         totalAmount: 0,
         isPriority: Boolean(item.isPriority || item.isOrderPriority),
         createdAt: item.createdAt || new Date().toISOString(),
@@ -150,7 +150,6 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
           kdsService.getKdsQueue(currentStation),
           kdsService.getKdsSettings(),
         ]);
-
         const newActiveItems =
           itemsRes.isSuccess && itemsRes.data ? itemsRes.data : get().activeItems;
         const newQueueItems =

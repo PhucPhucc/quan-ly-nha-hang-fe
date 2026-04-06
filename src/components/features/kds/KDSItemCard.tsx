@@ -30,8 +30,9 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
   const handleReturnConfirm = (reason: string) => rejectItem(item.orderItemId, reason);
 
   const orderTypeLabel =
-    String(orderType) === "0" || String(orderType) === "DineIn" ? "Dine-In" : "Takeaway";
+    String(orderType) === "DineIn" || String(orderType) === "Dine-In" ? "Dine-In" : "Takeaway";
 
+  console.log(orderType);
   return (
     <div className="flex w-full flex-col gap-2.5 bg-card p-7">
       <div className="flex flex-wrap items-center justify-between gap-2.5">
