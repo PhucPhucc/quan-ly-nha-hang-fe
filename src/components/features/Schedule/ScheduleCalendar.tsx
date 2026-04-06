@@ -1,6 +1,7 @@
 import { addDays, format, startOfWeek } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, Users } from "lucide-react";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -300,12 +301,16 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
             >
               <div className="p-5 border-r flex items-center gap-4">
                 <div className="size-12 rounded-lg overflow-hidden shadow-sm shrink-0">
-                  <img
+                  <Image
                     src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                       emp.fullName
                     )}&background=random&size=128`}
                     alt={emp.fullName}
                     className="w-full h-full object-cover"
+                    width={48}
+                    height={48}
+                    loading="eager"
+                    unoptimized
                   />
                 </div>
                 <div className="min-w-0">
