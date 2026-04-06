@@ -22,9 +22,14 @@ const ENTITY_OPTIONS = [
   { value: "Table", label: UI_TEXT.AUDIT_LOG.ENTITIES.TABLE },
   { value: "Order", label: UI_TEXT.AUDIT_LOG.ENTITIES.ORDER },
   { value: "Employee", label: UI_TEXT.AUDIT_LOG.ENTITIES.EMPLOYEE },
+  { value: "User", label: UI_TEXT.AUDIT_LOG.ENTITIES.USER },
   { value: "Menu", label: UI_TEXT.AUDIT_LOG.ENTITIES.MENU },
+  { value: "MenuItem", label: UI_TEXT.AUDIT_LOG.ENTITIES.MENU_ITEM },
   { value: "Area", label: UI_TEXT.AUDIT_LOG.ENTITIES.AREA },
   { value: "Promotion", label: UI_TEXT.AUDIT_LOG.ENTITIES.PROMOTION },
+  { value: "Shift", label: UI_TEXT.AUDIT_LOG.ENTITIES.SHIFT },
+  { value: "Inventory", label: UI_TEXT.AUDIT_LOG.ENTITIES.INVENTORY },
+  { value: "Session", label: UI_TEXT.AUDIT_LOG.ENTITIES.SESSION },
 ];
 
 const ACTION_OPTIONS = [
@@ -36,6 +41,15 @@ const ACTION_OPTIONS = [
   { value: "Cancel", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.CANCEL },
   { value: "CheckIn", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.CHECK_IN },
   { value: "NoShow", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.NO_SHOW },
+  { value: "Activate", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.ACTIVATE },
+  { value: "Deactivate", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.DEACTIVATE },
+  { value: "Login", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.LOGIN },
+  { value: "Logout", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.LOGOUT },
+  { value: "ResetPassword", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.RESET_PASSWORD },
+  { value: "ChangeRole", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.CHANGE_ROLE },
+  { value: "Submit", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.SUBMIT },
+  { value: "Complete", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.COMPLETE },
+  { value: "Checkout", label: UI_TEXT.AUDIT_LOG.ACTIONS_LIST.CHECKOUT },
 ];
 
 const DEFAULT_FILTERS: AuditLogFilterState = {

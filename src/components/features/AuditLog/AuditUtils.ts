@@ -158,12 +158,24 @@ export function getEntityLabel(entityName: string) {
       return UI_TEXT.AUDIT_LOG.ENTITIES.ORDER;
     case "Employee":
       return UI_TEXT.AUDIT_LOG.ENTITIES.EMPLOYEE;
+    case "User":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.USER;
     case "Menu":
       return UI_TEXT.AUDIT_LOG.ENTITIES.MENU;
+    case "MenuItem":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.MENU_ITEM;
     case "Area":
       return UI_TEXT.AUDIT_LOG.ENTITIES.AREA;
     case "Promotion":
       return UI_TEXT.AUDIT_LOG.ENTITIES.PROMOTION;
+    case "Shift":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.SHIFT;
+    case "Inventory":
+    case "InventoryTransaction":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.INVENTORY;
+    case "Session":
+    case "RefreshToken":
+      return UI_TEXT.AUDIT_LOG.ENTITIES.SESSION;
     default:
       return entityName;
   }
@@ -185,6 +197,28 @@ export function getActionLabel(action: string) {
       return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.CHECK_IN;
     case "noshow":
       return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.NO_SHOW;
+    case "activate":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.ACTIVATE;
+    case "deactivate":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.DEACTIVATE;
+    case "login":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.LOGIN;
+    case "logout":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.LOGOUT;
+    case "loginfailed":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.LOGIN_FAILED;
+    case "resetpassword":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.RESET_PASSWORD;
+    case "changerole":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.CHANGE_ROLE;
+    case "export":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.EXPORT;
+    case "submit":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.SUBMIT;
+    case "complete":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.COMPLETE;
+    case "checkout":
+      return UI_TEXT.AUDIT_LOG.ACTIONS_LIST.CHECKOUT;
     default:
       return action;
   }
@@ -194,15 +228,27 @@ export function getActionVariant(action: string): VariantProps<typeof badgeVaria
   switch (action.toLowerCase()) {
     case "create":
     case "checkin":
+    case "activate":
+    case "complete":
+    case "submit":
+    case "checkout":
       return "success";
     case "cancel":
     case "delete":
+    case "deactivate":
       return "destructive";
     case "statuschange":
     case "update":
       return "secondary";
     case "noshow":
+    case "loginfailed":
       return "warning";
+    case "login":
+    case "logout":
+    case "resetpassword":
+    case "changerole":
+    case "export":
+      return "outline";
     default:
       return "outline";
   }
