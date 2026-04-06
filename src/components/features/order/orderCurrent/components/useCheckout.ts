@@ -378,14 +378,14 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         return;
       }
 
-      const success = await checkoutOrder(
+      const result = await checkoutOrder(
         selectedOrderId,
         selectedMethod,
         amountReceived,
         paymentLines
       );
 
-      if (success) {
+      if (result.isSuccess) {
         try {
           const invoiceAmount =
             isMixedPayment || selectedMethod === "MixedCashQR"
@@ -402,7 +402,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         clearOrderDetails();
         useOrderBoardStore.getState().setSelectedOrderId(null);
       } else {
-        toast.error(UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED);
+        toast.error(result.message || UI_TEXT.ORDER.CURRENT.PAYMENT_FAILED);
       }
     } catch (error) {
       // API throws error on non-2xx status, extract message from thrown error

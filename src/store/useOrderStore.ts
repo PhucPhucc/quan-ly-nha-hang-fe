@@ -12,6 +12,11 @@ const TAKEAWAY_TAB = "takeaway";
 
 export type OrderActiveView = "order" | "menu";
 
+export interface CheckoutOrderResult {
+  isSuccess: boolean;
+  message?: string;
+}
+
 export interface OrderBoardState {
   orders: Order[];
   activeOrderDetails: Order | null;
@@ -51,7 +56,7 @@ export interface OrderBoardState {
     paymentMethod: string,
     amountReceived?: number,
     paymentLines?: PaymentLineRequest[]
-  ) => Promise<boolean>;
+  ) => Promise<CheckoutOrderResult>;
 
   // selectors (derived)
   isTakeawayTab: () => boolean;
@@ -187,7 +192,7 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
       paymentMethod: string,
       amountReceived?: number,
       paymentLines?: PaymentLineRequest[]
-    ) => {
+    ): Promise<CheckoutOrderResult> => {
       try {
         const res = await orderService.checkoutOrder(
           orderId,
@@ -197,12 +202,21 @@ export const useOrderBoardStore = createWithEqualityFn<OrderBoardState>(
         );
         if (res.isSuccess) {
           await get().fetchOrders();
-          return true;
+          return {
+            isSuccess: true,
+            message: res.message,
+          };
         }
-        return false;
+        return {
+          isSuccess: false,
+          message: res.message || res.error,
+        };
       } catch (error) {
         console.error("Checkout failed:", error);
-        return false;
+        return {
+          isSuccess: false,
+          message: error instanceof Error ? error.message : undefined,
+        };
       }
     },
 
