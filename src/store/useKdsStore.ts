@@ -129,6 +129,7 @@ interface KdsState {
   startCooking: (orderItemId: string) => Promise<void>;
   completeItemCooking: (orderItemId: string) => Promise<void>;
   rejectItem: (orderItemId: string, reason: string) => Promise<void>;
+  returnItem: (orderItemId: string) => Promise<void>;
 }
 
 export const useKdsStore = createWithEqualityFn<KdsState>(
@@ -172,6 +173,7 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
     upsertItem: (item) => {
       const isPreparing = normalizeOrderItemStatus(item.status) === OrderItemStatus.Preparing;
       const isCooking = normalizeOrderItemStatus(item.status) === OrderItemStatus.Cooking;
+      const isRejected = normalizeOrderItemStatus(item.status) === OrderItemStatus.Rejected;
 
       if (isCooking) {
         // Update Active Items
@@ -217,8 +219,24 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
           activeOrders: formatItemsToOrders(newActive),
           queueOrders: formatItemsToOrders(newQueue, true),
         });
+      } else if (isRejected) {
+        // Keep rejected items visible on the board so they can be returned back to queue.
+        const currentActive = get().activeItems;
+        const exists = currentActive.some((i) => i.orderItemId === item.orderItemId);
+        const newActive = exists
+          ? currentActive.map((i) =>
+              i.orderItemId === item.orderItemId ? (item as KdsItemResponse) : i
+            )
+          : [...currentActive, item as KdsItemResponse];
+
+        set({
+          activeItems: newActive,
+          activeOrders: formatItemsToOrders(newActive),
+          queueItems: get().queueItems,
+          queueOrders: formatItemsToOrders(get().queueItems, true),
+        });
       } else {
-        // Completed/Rejected/Cancelled - Remove from both
+        // Completed/Cancelled - Remove from both
         get().removeListItem(item.orderItemId);
       }
     },
@@ -261,6 +279,16 @@ export const useKdsStore = createWithEqualityFn<KdsState>(
         get().fetchKdsData();
       } catch (e: unknown) {
         toast.error(e instanceof Error ? e.message : "Có lỗi khi từ chối món");
+      }
+    },
+
+    returnItem: async (orderItemId) => {
+      try {
+        await kdsService.returnItem(orderItemId);
+        toast.success("Đã trả món về hàng đợi!");
+        get().fetchKdsData();
+      } catch (e: unknown) {
+        toast.error(e instanceof Error ? e.message : "Có lỗi khi trả món về hàng đợi");
       }
     },
   }),

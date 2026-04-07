@@ -16,18 +16,24 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
   const [isRejectModalOpen, setIsRejectModalOpen] = React.useState(false);
   const completeItemCooking = useKdsStore((s) => s.completeItemCooking);
   const rejectItem = useKdsStore((s) => s.rejectItem);
+  const returnItem = useKdsStore((s) => s.returnItem);
 
   const isPreparing = item.status === OrderItemStatus.Preparing;
   const isCooking = item.status === OrderItemStatus.Cooking;
   const isCompleted = item.status === OrderItemStatus.Completed;
+  const isRejected = item.status === OrderItemStatus.Rejected;
+  const statusBadgeVariant = isCompleted ? "default" : isRejected ? "destructive" : "secondary";
   const statusLabel = isCompleted
     ? UI_TEXT.KDS.ITEM.DONE
     : isCooking
       ? UI_TEXT.KDS.ITEM.STATUS_COOKING
-      : UI_TEXT.KDS.ITEM.STATUS_PREPARING;
+      : isRejected
+        ? UI_TEXT.ORDER.CURRENT.STATUS_REJECTED
+        : UI_TEXT.KDS.ITEM.STATUS_PREPARING;
 
   const handleDone = () => completeItemCooking(item.orderItemId);
   const handleReturnConfirm = (reason: string) => rejectItem(item.orderItemId, reason);
+  const handleReturnToQueue = () => returnItem(item.orderItemId);
 
   const orderTypeLabel =
     String(orderType) === "DineIn" || String(orderType) === "Dine-In" ? "Dine-In" : "Takeaway";
@@ -50,7 +56,7 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Badge variant={isCompleted ? "default" : "secondary"} className="text-[11px] font-bold">
+          <Badge variant={statusBadgeVariant} className="text-[11px] font-bold">
             {statusLabel}
           </Badge>
           {item.updatedAt && (
@@ -103,14 +109,21 @@ export function KDSItemCard({ item, orderCode, orderType }: KDSItemCardProps) {
               {UI_TEXT.KDS.ITEM.STATUS_PREPARING}
             </Badge>
           )}
-          <Button
-            variant="outline"
-            onClick={() => setIsRejectModalOpen(true)}
-            className="w-full gap-2"
-          >
-            <RotateCcw className="size-4" />
-            {UI_TEXT.KDS.ITEM.RETURN}
-          </Button>
+          {isRejected ? (
+            <Button variant="outline" onClick={handleReturnToQueue} className="w-full gap-2">
+              <RotateCcw className="size-4" />
+              {UI_TEXT.KDS.ITEM.RETURN}
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => setIsRejectModalOpen(true)}
+              className="w-full gap-2"
+            >
+              <RotateCcw className="size-4" />
+              {UI_TEXT.KDS.ITEM.RETURN}
+            </Button>
+          )}
         </div>
       </div>
 

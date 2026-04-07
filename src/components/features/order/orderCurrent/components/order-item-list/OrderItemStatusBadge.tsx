@@ -28,6 +28,12 @@ export const OrderItemStatusBadge: React.FC<OrderItemStatusBadgeProps> = ({ stat
           {UI_TEXT.ORDER.CURRENT.STATUS_DONE}
         </Badge>
       );
+    case OrderItemStatus.Rejected:
+      return (
+        <Badge className="table-pill table-pill-rejected text-[10px] py-0">
+          {UI_TEXT.ORDER.CURRENT.STATUS_REJECTED}
+        </Badge>
+      );
     default:
       return null;
   }

@@ -70,7 +70,13 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
           // If any child is cooking, show cooking
           if (childStatuses.some((s) => s === OrderItemStatus.Cooking))
             return OrderItemStatus.Cooking;
-          // If all children are completed, show completed
+          // Otherwise, if any child is preparing (but not cooking), show preparing
+          if (childStatuses.some((s) => s === OrderItemStatus.Preparing))
+            return OrderItemStatus.Preparing;
+          // If any child is rejected, keep the combo rejected instead of marking it completed.
+          if (childStatuses.some((s) => s === OrderItemStatus.Rejected))
+            return OrderItemStatus.Rejected;
+          // If all children are completed/cancelled, show completed.
           if (
             childStatuses.every(
               (s) =>
@@ -80,9 +86,6 @@ export const RemoteOrderItemsSection: React.FC<RemoteOrderItemsSectionProps> = (
             )
           )
             return OrderItemStatus.Completed;
-          // Otherwise, if any child is preparing (but not cooking), show preparing
-          if (childStatuses.some((s) => s === OrderItemStatus.Preparing))
-            return OrderItemStatus.Preparing;
           // Default to parent status
           return item.status;
         };

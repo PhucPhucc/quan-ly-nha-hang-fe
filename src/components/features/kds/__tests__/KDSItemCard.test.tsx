@@ -12,12 +12,14 @@ vi.mock("@/store/useKdsStore");
 
 const mockCompleteItemCooking = vi.fn();
 const mockRejectItem = vi.fn();
+const mockReturnItem = vi.fn();
 
 function setupStoreMock() {
   vi.mocked(useKdsStore).mockImplementation((selector: unknown) => {
     const state = {
       completeItemCooking: mockCompleteItemCooking,
       rejectItem: mockRejectItem,
+      returnItem: mockReturnItem,
     };
     return typeof selector === "function"
       ? (selector as (s: typeof state) => unknown)(state)
@@ -98,5 +100,17 @@ describe("KDSItemCard", () => {
     const doneBtn = screen.queryByRole("button", { name: new RegExp(UI_TEXT.KDS.ITEM.DONE, "i") });
     expect(doneBtn).not.toBeInTheDocument();
     expect(screen.getAllByText(UI_TEXT.KDS.ITEM.STATUS_PREPARING).length).toBeGreaterThan(0);
+  });
+
+  it("calls returnItem when a rejected item is returned to queue", () => {
+    const rejectedItem = { ...mockItem, status: OrderItemStatus.Rejected };
+    render(<KDSItemCard {...defaultProps} item={rejectedItem} />);
+
+    const returnBtn = screen.getByRole("button", {
+      name: new RegExp(UI_TEXT.KDS.ITEM.RETURN, "i"),
+    });
+    fireEvent.click(returnBtn);
+
+    expect(mockReturnItem).toHaveBeenCalledWith("oi1");
   });
 });

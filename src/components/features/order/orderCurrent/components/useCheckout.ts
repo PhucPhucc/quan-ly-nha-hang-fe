@@ -11,7 +11,7 @@ import { AuthState, useAuthStore } from "@/store/useAuthStore";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
 import { PreCheckBillResponse } from "@/types/Billing";
-import { OrderStatus, PaymentMethod } from "@/types/enums";
+import { OrderItemStatus, OrderStatus, PaymentMethod } from "@/types/enums";
 import { Order } from "@/types/Order";
 import { buildReceiptOptionItems, resolveOrderTableDisplay } from "@/utils/orderReceipt";
 import { printThermalReceipt } from "@/utils/thermalPrint";
@@ -97,19 +97,24 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         employeeName:
           employeeNameFromStore || employeeNameFromCookie || UI_TEXT.COMMON.NOT_APPLICABLE,
         printedAt: new Date().toISOString(),
-        items: order.orderItems.map((item) => {
-          const optionItems = buildReceiptOptionItems(item.optionGroups, item.itemOptions);
+        items: order.orderItems
+          .filter(
+            (item) =>
+              item.status !== OrderItemStatus.Rejected && item.status !== OrderItemStatus.Cancelled
+          )
+          .map((item) => {
+            const optionItems = buildReceiptOptionItems(item.optionGroups, item.itemOptions);
 
-          return {
-            itemName: item.itemNameSnapshot,
-            quantity: item.quantity,
-            unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
-            optionItems,
-            optionsSummary: optionItems.map((opt) => opt.label).join("; "),
-            lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
-            isFreeItem: item.isFreeItem ?? false,
-          };
-        }),
+            return {
+              itemName: item.itemNameSnapshot,
+              quantity: item.quantity,
+              unitPrice: item.isFreeItem ? 0 : item.unitPriceSnapshot,
+              optionItems,
+              optionsSummary: optionItems.map((opt) => opt.label).join("; "),
+              lineTotal: item.isFreeItem ? 0 : getRemoteItemTotal(item) * item.quantity,
+              isFreeItem: item.isFreeItem ?? false,
+            };
+          }),
         subTotal: subTotalVal,
         discount: discountVal,
         voucherCode: order.voucherCode ?? order.appliedVoucherCode,
