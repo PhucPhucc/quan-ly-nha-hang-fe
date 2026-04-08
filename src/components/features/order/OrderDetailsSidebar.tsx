@@ -3,6 +3,7 @@
 import { Armchair } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useOrderRealtime } from "@/hooks/useOrderRealtime";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useOrderBoardStore } from "@/store/useOrderStore";
 import { useTableStore } from "@/store/useTableStore";
@@ -12,6 +13,7 @@ import OrderCurrent from "./orderCurrent/OrderCurrent";
 import OrderHistory from "./orderCurrent/OrderHistory";
 
 const OrderDetailsSidebar = () => {
+  useOrderRealtime();
   const order = useOrderBoardStore((state) => state.activeOrderDetails);
   const tables = useTableStore((state) => state.tables.find((t) => t.tableId === order?.tableId));
   const tableName = order
