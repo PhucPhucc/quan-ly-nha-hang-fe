@@ -12,7 +12,9 @@ export const TABLE = {
   PEOPLE: "Khách",
   SELECTED_AREA_PLEASE: "Vui lòng chọn khu vực",
   NO_TABLES_FOUND: "Không tìm thấy bàn nào phù hợp.",
-  CAPACITY_LIMIT: "Số ghế không hợp lệ.",
+  CAPACITY_LIMIT(num: number) {
+    return `Số ghế phải là số nguyên dương và không vượt quá ${num}`;
+  },
   TABLE_NUMBER(num: number) {
     return `Bàn ${num}`;
   },

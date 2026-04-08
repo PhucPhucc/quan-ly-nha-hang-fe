@@ -14,7 +14,7 @@ const PaginationTable = ({
   onPageChange: (page: number) => void;
 }) => {
   return (
-    <div className="px-6 pt-4 flex items-center justify-between bg-muted/20 shrink-0">
+    <div className="px-6 py-2 flex items-center justify-between bg-muted/20 shrink-0">
       <div className="flex items-center">
         <span className="font-medium text-foreground">
           {UI_TEXT.BUTTON.PAGE}

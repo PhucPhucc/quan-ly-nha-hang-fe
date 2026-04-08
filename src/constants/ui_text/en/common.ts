@@ -31,6 +31,7 @@ export const COMMON = {
   ERROR_UNKNOWN: "An error occurred, please try again.",
   CURRENCY: "đ",
   OUT_OF_STOCK: "Out of stock",
+  NO_DATA_AVAILABLE: "No data available",
   PLUS: "+",
   MINUS: "-",
   PAREN_LEFT: "(",

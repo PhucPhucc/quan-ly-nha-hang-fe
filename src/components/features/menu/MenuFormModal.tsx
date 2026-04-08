@@ -166,7 +166,6 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
               <TabsContent value="details" forceMount className="mt-0 data-[state=inactive]:hidden">
                 <MenuDetailsTab form={form} categories={categories} />
               </TabsContent>
-
               <TabsContent value="media" forceMount className="mt-0 data-[state=inactive]:hidden">
                 <MenuMediaTab form={form} />
               </TabsContent>

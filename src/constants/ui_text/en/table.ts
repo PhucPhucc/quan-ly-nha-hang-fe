@@ -12,11 +12,12 @@ export const TABLE = {
   PEOPLE: "Guests",
   SELECTED_AREA_PLEASE: "Please select an area",
   NO_TABLES_FOUND: "No tables found.",
-  CAPACITY_LIMIT: "Invalid seat count.",
+  CAPACITY_LIMIT(num: number) {
+    return `Seat count must be a positive integer and not exceed ${num}`;
+  },
   TABLE_NUMBER(num: number) {
     return `Table ${num}`;
   },
-
   TABLES: "tables",
   SEATS: "seats",
   AVAILABLE_COUNT: "active",

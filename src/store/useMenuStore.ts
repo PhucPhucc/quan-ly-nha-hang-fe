@@ -60,7 +60,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   currentPage: 1,
   totalItems: 0,
   totalPages: 1,
-  pageSize: 8,
+  pageSize: 20,
 
   setFilter: (filter) =>
     set((state) => ({ filter: { ...state.filter, ...filter }, currentPage: 1 })),

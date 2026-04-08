@@ -71,7 +71,7 @@ export default function BillingHistoryPage() {
         totalPages={totalPages}
         onPageChange={setPageNumber}
         onRetry={fetchBilling}
-        onRowSelect={(record) => router.push(`/manager/order/${record.orderId}`)}
+        onRowSelect={(record) => router.push(`/manager/order/list/${record.orderId}`)}
       />
     </div>
   );

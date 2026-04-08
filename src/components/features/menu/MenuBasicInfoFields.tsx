@@ -50,7 +50,6 @@ export const MenuBasicInfoFields: React.FC<MenuBasicInfoFieldsProps> = ({ form, 
             id="description"
             data-field-path="description"
             aria-invalid={!!formState.errors.description}
-            maxLength={50}
             placeholder={UI_TEXT.MENU.PLACEHOLDER_DESC}
             className="min-h-25"
             {...register("description")}

@@ -31,6 +31,7 @@ export const COMMON = {
   ERROR_UNKNOWN: "Có lỗi xảy ra, vui lòng thử lại.",
   CURRENCY: "đ",
   OUT_OF_STOCK: "Hết hàng",
+  NO_DATA_AVAILABLE: "Không có dữ liệu",
   PLUS: "+",
   MINUS: "-",
   PAREN_LEFT: "(",

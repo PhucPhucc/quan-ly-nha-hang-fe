@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { CategoryDistribution } from "@/types/salesAnalytics.types";
 
@@ -19,10 +20,17 @@ export function CategoryDistributionCard({ data, loading }: CategoryDistribution
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="py-10 text-center text-muted-foreground">{UI_TEXT.COMMON.LOADING}</div>
+          <Skeleton className="py-10 text-center text-muted-foreground">
+            {UI_TEXT.COMMON.LOADING}
+          </Skeleton>
         ) : (
           <div className="space-y-6">
-            <div className="flex h-4 w-full rounded-full overflow-hidden bg-muted">
+            <div className="flex w-full rounded-lg overflow-hidden bg-muted">
+              {data.length === 0 && (
+                <span className="w-full h-full text-center py-12 text-muted-foreground">
+                  {UI_TEXT.COMMON.NO_DATA_AVAILABLE}
+                </span>
+              )}
               {data.map((item, idx) => (
                 <div
                   key={idx}

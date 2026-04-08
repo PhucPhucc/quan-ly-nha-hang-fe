@@ -118,6 +118,7 @@ export const MENU = {
   LABEL_IMAGE_VIEW: "Xem hình ảnh",
   LABEL_COMBO_ITEMS: "Các món trong Combo",
   SELECT_ITEM_PLACEHOLDER: "Chọn món",
+  COMBO_SEARCH_PLACEHOLDER: "Tìm kiếm món ăn...",
   PLACEHOLDER_NAME: "VD: Phở Bò Chín",
   PLACEHOLDER_DESC: "Mô tả chi tiết về món ăn...",
   PLACEHOLDER_STATION: "Chọn khu vực",

@@ -115,6 +115,7 @@ export const MENU = {
   LABEL_IMAGE_VIEW: "View image",
   LABEL_COMBO_ITEMS: "Combo items",
   SELECT_ITEM_PLACEHOLDER: "Select item",
+  COMBO_SEARCH_PLACEHOLDER: "Search for an item...",
   PLACEHOLDER_NAME: "e.g. Pho Bo",
   PLACEHOLDER_DESC: "Detailed description of the dish...",
   PLACEHOLDER_STATION: "Select area",

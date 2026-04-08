@@ -30,7 +30,7 @@ const SelectCapacityTable = ({
     }
 
     if (maxCapacity !== undefined && newCapacity > maxCapacity) {
-      toast.error(UI_TEXT.TABLE.CAPACITY_LIMIT);
+      toast.error(UI_TEXT.TABLE.CAPACITY_LIMIT(maxCapacity));
       setCapacity(maxCapacity);
       return;
     }

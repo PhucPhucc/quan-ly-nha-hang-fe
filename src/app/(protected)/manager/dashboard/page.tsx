@@ -119,45 +119,47 @@ export default function DashboardPage() {
             </div>
             <div className="lg:col-span-1 h-full">
               <div className="h-full bg-card rounded-2xl shadow-sm p-6 border flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-6">
-                  <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground opacity-70">
-                    {t.ANALYTICS.BEST_SELLERS_ANALYSIS}
-                  </h4>
-                  <div className="bg-amber-50 p-2 rounded-xl border border-amber-100">
-                    <Trophy className="size-4 text-amber-500" />
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground opacity-70">
+                      {t.ANALYTICS.BEST_SELLERS_ANALYSIS}
+                    </h4>
+                    <div className="bg-amber-50 p-2 rounded-xl border border-amber-100">
+                      <Trophy className="size-4 text-amber-500" />
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-4">
-                  {analyticsData?.bestSellers.slice(0, 3).map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3 group">
-                      <div className="size-8 rounded-lg bg-muted/40 flex items-center justify-center text-[10px] font-black text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors border border-muted/20">
-                        {idx + 1}
+                  <div className="space-y-4">
+                    {analyticsData?.bestSellers.slice(0, 3).map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-3 group">
+                        <div className="size-8 rounded-lg bg-muted/40 flex items-center justify-center text-[10px] font-black text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors border border-muted/20">
+                          {idx + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-black text-foreground truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-[9px] font-bold text-muted-foreground/60 uppercase">
+                            {item.category}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[11px] font-black text-primary">{item.quantitySold}</p>
+                          <p className="text-[8px] font-bold text-muted-foreground/50 uppercase">
+                            {UI_TEXT.SALES_ANALYTICS.QUANTITY}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[11px] font-black text-foreground truncate">
-                          {item.name}
-                        </p>
-                        <p className="text-[9px] font-bold text-muted-foreground/60 uppercase">
-                          {item.category}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[11px] font-black text-primary">{item.quantitySold}</p>
-                        <p className="text-[8px] font-bold text-muted-foreground/50 uppercase">
-                          {UI_TEXT.SALES_ANALYTICS.QUANTITY}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
 
-                  {!analyticsData && (
-                    <div className="space-y-3 opacity-20">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-10 bg-muted rounded-xl animate-pulse" />
-                      ))}
-                    </div>
-                  )}
+                    {!analyticsData && (
+                      <div className="space-y-3 opacity-20">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="h-10 bg-muted rounded-xl animate-pulse" />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <Link
