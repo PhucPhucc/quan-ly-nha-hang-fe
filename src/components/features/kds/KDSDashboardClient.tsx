@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
+import { Toaster } from "sonner";
 
 import { KDSOrderGrid } from "@/components/features/kds/KDSOrderGrid";
 import { KDSQueueSidebar } from "@/components/features/kds/KDSQueueSidebar";
@@ -47,6 +48,7 @@ export function KDSDashboardClient() {
 
   return (
     <div className="flex h-full overflow-x-hidden flex-1 min-w-0">
+      <Toaster id="kds-toaster" visibleToasts={1} position="top-center" richColors />
       <KDSQueueSidebar />
       <KDSOrderGrid />
     </div>

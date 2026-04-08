@@ -45,7 +45,9 @@ export const useKdsSignalR = () => {
           console.log("SignalR: KDS Item Updated", data);
           useKdsStore.getState().upsertItem(data);
           if (normalizeOrderItemStatus(data.status) === OrderItemStatus.Preparing) {
-            toast.info(`Món mới: ${data.itemNameSnapshot} x${data.quantity}`);
+            toast.info(`Món mới: ${data.itemNameSnapshot} x${data.quantity}`, {
+              toasterId: "kds-toaster",
+            });
           }
         });
 
