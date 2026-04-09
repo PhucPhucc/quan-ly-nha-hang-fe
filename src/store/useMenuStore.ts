@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 
 import { menuService } from "@/services/menuService";
+import { ApiResponse } from "@/types/Api";
 import { MenuFilter, MenuItem, SetMenu } from "@/types/Menu";
 
 interface PaginationState {
@@ -55,7 +56,7 @@ interface MenuState {
   toggleMenuItemStock: (id: string, isOutOfStock: boolean) => Promise<void>;
 
   addSetMenu: (item: Partial<SetMenu>) => Promise<void>;
-  updateSetMenu: (id: string, item: Partial<SetMenu>) => Promise<void>;
+  updateSetMenu: (id: string, item: Partial<SetMenu>) => Promise<ApiResponse<SetMenu>>;
   deleteSetMenu: (id: string) => Promise<void>;
   toggleSetMenuStock: (id: string, isOutOfStock: boolean) => Promise<void>;
 }
@@ -243,14 +244,13 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     set({ isLoadingCombos: true });
     try {
       const response = await menuService.updateSetMenu(id, item);
-      if (response.isSuccess && response.data) {
-        const updatedItem = response.data;
-        set((state) => ({
-          setMenus: state.setMenus.map((m) => (m.setMenuId === id ? { ...m, ...updatedItem } : m)),
-        }));
+      if (response.isSuccess) {
+        await get().fetchSetMenus();
       }
+      return response;
     } catch (error) {
       console.error("Failed to update set menu:", error);
+      throw error;
     } finally {
       set({ isLoadingCombos: false });
     }

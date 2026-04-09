@@ -445,7 +445,11 @@ export const useMenuForm = (categories: Category[]) => {
         };
 
         if (isEditing && isSetMenu) {
-          await updateSetMenu(itemId!, setMenuData);
+          const response = await updateSetMenu(itemId!, setMenuData);
+          if (!response.isSuccess) {
+            toast.error(response.error || "Cập nhật combo thất bại");
+            return;
+          }
         } else {
           await addSetMenu(setMenuData);
         }
