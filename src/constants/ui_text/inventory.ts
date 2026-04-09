@@ -237,7 +237,7 @@ export const INVENTORY = {
     COST_METHOD_DESC: "Phương pháp mặc định hệ thống đang áp dụng để tính giá trị kho.",
     MAX_RECALC_DAYS: "Số ngày tối đa cho phép tính lại giá vốn",
     MAX_RECALC_DAYS_DESC: "Khoảng thời gian tối đa để thực hiện tính toán lại giá vốn định kỳ.",
-    OPENING_STOCK_IMPORT_COOLDOWN: "Thời gian giữ 2 lần tồn kho",
+    OPENING_STOCK_IMPORT_COOLDOWN: "Thời gian giữa 2 lần tồn kho",
     OPENING_STOCK_IMPORT_COOLDOWN_DESC:
       "Thiết lập số giờ tối thiểu cần chờ trước khi hệ thống cho phép thực hiện lần nhập số dư đầu kỳ tiếp theo.",
     OPENING_STOCK_IMPORT_COOLDOWN_HELP:

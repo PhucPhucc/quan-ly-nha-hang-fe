@@ -140,9 +140,7 @@ export const ReservationTable = ({
                         <span className="font-semibold text-muted-foreground text-sm">
                           {formatDate(row.date)}
                         </span>
-                        <span className="text-[11px] text-muted-foreground/70">
-                          {formatTime(row.time)}
-                        </span>
+                        <span className="text-[11px] text-muted-foreground/70">{row.time}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm font-semibold">
