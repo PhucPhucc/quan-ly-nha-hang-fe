@@ -218,6 +218,7 @@ export const ORDER = {
     DISCOUNT_LABEL: "Giảm giá",
     TAX_LABEL_PREFIX: "Thuế",
     TOTAL_LABEL: "TỔNG CỘNG:",
+    ITEM_PREFIX: "+",
     FOOTER_THANK_YOU: "CẢM ƠN QUÝ KHÁCH - HẸN GẶP LẠI",
     FOOTER_CHECK_BEFORE_LEAVE: "Vui lòng kiểm tra kỹ hóa đơn trước khi rời quầy",
   },

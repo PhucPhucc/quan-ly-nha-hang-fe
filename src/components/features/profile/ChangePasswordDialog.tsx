@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FieldGroup } from "@/components/ui/field";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { validateNewPassword } from "@/lib/utils";
 import { changePassword } from "@/services/profileService";
@@ -62,7 +63,7 @@ export default function ChangePasswordDialog() {
 
       setOpen(false);
     } catch (err: unknown) {
-      setServerError(String(err));
+      setServerError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

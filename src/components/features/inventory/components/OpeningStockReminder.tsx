@@ -7,7 +7,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { UI_TEXT } from "@/lib/UI_Text";
 
-const COMPLETED_OPENING_STOCK_STATUS = 2;
 const OPENING_STOCK_REMINDER_TEXT = {
   title: UI_TEXT.INVENTORY.OPENING_STOCK_REMINDER_TITLE,
   description: UI_TEXT.INVENTORY.OPENING_STOCK_REMINDER_DESC,
@@ -15,21 +14,34 @@ const OPENING_STOCK_REMINDER_TEXT = {
 } as const;
 
 export function shouldShowOpeningStockReminder(
-  settings?: { openingStockStatus?: number | string; lockedAt?: string | null } | null
+  settings?: {
+    openingStockStatus?: number | string;
+    lockedAt?: string | null;
+    nextOpeningStockImportAllowedAt?: string | null;
+  } | null
 ) {
   if (!settings) {
     return true;
   }
 
-  return (
-    !settings.lockedAt &&
-    settings.openingStockStatus !== COMPLETED_OPENING_STOCK_STATUS &&
-    settings.openingStockStatus !== "Completed"
-  );
+  if (!settings.nextOpeningStockImportAllowedAt) {
+    return !settings.lockedAt;
+  }
+
+  const nextAllowedAt = new Date(settings.nextOpeningStockImportAllowedAt);
+  if (Number.isNaN(nextAllowedAt.getTime())) {
+    return !settings.lockedAt;
+  }
+
+  return nextAllowedAt.getTime() <= Date.now();
 }
 
 interface OpeningStockReminderProps {
-  settings?: { openingStockStatus?: number | string; lockedAt?: string | null } | null;
+  settings?: {
+    openingStockStatus?: number | string;
+    lockedAt?: string | null;
+    nextOpeningStockImportAllowedAt?: string | null;
+  } | null;
 }
 
 export function OpeningStockReminder({ settings }: OpeningStockReminderProps) {

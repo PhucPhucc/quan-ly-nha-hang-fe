@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { reservationService } from "@/services/reservationService";
 import { ReservationDto } from "@/services/reservationService";
@@ -67,8 +68,7 @@ export const StartServingDialog = ({
         toast.error(res.message || UI_TEXT.RESERVATION.ERROR_SAVE_FAILED);
       }
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : UI_TEXT.RESERVATION.ERROR_CONNECTION;
+      const errorMessage = getErrorMessage(error) || UI_TEXT.RESERVATION.ERROR_CONNECTION;
       // Catch Conflict error to show "Switch Area" option
       if (errorMessage?.includes("hết bàn trống") || errorMessage?.includes("Conflict")) {
         setIsSwitchMode(true);

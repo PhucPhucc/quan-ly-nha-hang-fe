@@ -2,6 +2,7 @@
 
 import { Plus, Search } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -83,10 +84,17 @@ export const AddIngredientModal: React.FC<AddIngredientModalProps> = ({
   const handleConfirmAdd = () => {
     ingredients.forEach((ing) => {
       const quantity = quantities[ing.ingredientId] || 0;
-      if (quantity > 0) {
+      if (quantity > 0 && ing.currentStock > 0) {
         onAdd(ing, quantity);
       }
     });
+
+    if (
+      ingredients.some((ing) => (quantities[ing.ingredientId] || 0) > 0 && ing.currentStock <= 0)
+    ) {
+      toast.error(UI_TEXT.MENU.RECIPE.OUT_OF_STOCK_CANNOT_ADD);
+    }
+
     setQuantities({}); // Reset quantities after adding
     onClose();
   };

@@ -91,6 +91,7 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
     unitPrice: item.isChild ? "" : money(item.unitPrice),
     amount: item.isChild ? "" : money(item.lineTotal),
     isChild: item.isChild,
+    optionItems: item.optionItems,
   }));
   const orderInfo = [
     {
@@ -166,24 +167,54 @@ const PrintTempDialog: React.FC<PrintTempDialogProps> = ({
                 </TableHeader>
                 <TableBody>
                   {orderItems.map((item) => (
-                    <TableRow key={item.id} className="border-border hover:bg-transparent">
-                      <TableCell
-                        className={`px-0 py-2 text-[15px] text-foreground ${
-                          item.isChild ? "pl-4 text-[14px] font-light italic" : ""
-                        }`}
-                      >
-                        {item.isChild ? `- ${item.name}` : item.name}
-                      </TableCell>
-                      <TableCell className="px-0 py-2 text-center text-[15px] text-foreground">
-                        {item.quantity}
-                      </TableCell>
-                      <TableCell className="px-0 py-2 text-center text-[15px] text-foreground">
-                        {item.unitPrice}
-                      </TableCell>
-                      <TableCell className="px-0 py-2 text-right text-[15px] text-foreground">
-                        {item.amount}
-                      </TableCell>
-                    </TableRow>
+                    <React.Fragment key={item.id}>
+                      <TableRow className="border-border hover:bg-transparent">
+                        <TableCell
+                          className={`px-0 py-2 text-[15px] text-foreground ${
+                            item.isChild ? "pl-4 text-[14px] font-light italic" : ""
+                          }`}
+                        >
+                          {item.isChild ? `- ${item.name}` : item.name}
+                        </TableCell>
+                        <TableCell className="px-0 py-2 text-center text-[15px] text-foreground">
+                          {item.quantity}
+                        </TableCell>
+                        <TableCell className="px-0 py-2 text-center text-[15px] text-foreground">
+                          {item.unitPrice}
+                        </TableCell>
+                        <TableCell className="px-0 py-2 text-right text-[15px] text-foreground">
+                          {item.amount}
+                        </TableCell>
+                      </TableRow>
+                      {item.optionItems?.map((opt) => (
+                        <TableRow
+                          key={`${item.id}-${opt.label}-${opt.quantity}-${opt.unitPrice}`}
+                          className="border-border hover:bg-transparent"
+                        >
+                          <TableCell
+                            className={`px-0 py-1 text-[14px] text-muted-foreground ${
+                              item.isChild ? "pl-8" : "pl-4"
+                            }`}
+                          >
+                            <span className="inline-flex items-center gap-1">
+                              <span className="text-primary/70">
+                                {UI_TEXT.ORDER.PRINT_TEMP.ITEM_PREFIX}
+                              </span>
+                              <span>{opt.label}</span>
+                            </span>
+                          </TableCell>
+                          <TableCell className="px-0 py-1 text-center text-[14px] text-muted-foreground">
+                            {opt.quantity}
+                          </TableCell>
+                          <TableCell className="px-0 py-1 text-center text-[14px] text-muted-foreground">
+                            {formatCurrency(opt.unitPrice)}
+                          </TableCell>
+                          <TableCell className="px-0 py-1 text-right text-[14px] text-muted-foreground">
+                            {formatCurrency(opt.lineTotal)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </React.Fragment>
                   ))}
                 </TableBody>
               </Table>

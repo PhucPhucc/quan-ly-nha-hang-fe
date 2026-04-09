@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { RESERVATION_RULES } from "@/constants/reservation";
+import { getErrorMessage } from "@/lib/error";
 import {
   createReservationTimeSlots,
   DEFAULT_RESERVATION_SETTINGS,
@@ -180,8 +181,7 @@ export function useCreateBooking(
       }
     } catch (error: unknown) {
       console.error("[CreateReservation] Connection Error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : UI_TEXT.RESERVATION.ERROR_CONNECTION;
+      const errorMessage = getErrorMessage(error) || UI_TEXT.RESERVATION.ERROR_CONNECTION;
       toast.error(errorMessage);
     } finally {
       setLoading(false);

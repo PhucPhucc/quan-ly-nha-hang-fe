@@ -11,6 +11,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { brandingService } from "@/services/brandingService";
 import { useLanguageStore } from "@/store/useLanguageStore";
@@ -228,8 +229,8 @@ export function GeneralSettingsContainer() {
             logoUrl: response.data.logoUrl ?? current.logoUrl,
           }));
         }
-      } catch {
-        toast.error(UI_TEXT.API.NETWORK_ERROR);
+      } catch (error) {
+        toast.error(getErrorMessage(error) || UI_TEXT.API.NETWORK_ERROR);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -284,8 +285,8 @@ export function GeneralSettingsContainer() {
       }
 
       toast.success(SETTINGS.SUCCESS_GENERAL);
-    } catch {
-      toast.error(UI_TEXT.API.NETWORK_ERROR);
+    } catch (error) {
+      toast.error(getErrorMessage(error) || UI_TEXT.API.NETWORK_ERROR);
     } finally {
       setSaving(false);
     }

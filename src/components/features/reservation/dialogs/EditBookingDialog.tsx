@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RESERVATION_RULES } from "@/constants/reservation";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { ReservationDto, reservationService } from "@/services/reservationService";
 import { tableService } from "@/services/tableService";
@@ -112,7 +113,7 @@ export const EditBookingDialog = ({
       }
     } catch (error: unknown) {
       console.error("[EditBooking] Connection Error:", error);
-      toast.error((error as Error).message || UI_TEXT.RESERVATION.ERROR_CONNECTION);
+      toast.error(getErrorMessage(error) || UI_TEXT.RESERVATION.ERROR_CONNECTION);
     } finally {
       setLoading(false);
     }

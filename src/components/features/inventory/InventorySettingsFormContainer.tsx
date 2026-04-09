@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Spinner } from "@/components/ui/spinner";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import type { InventorySettingsInput } from "@/lib/zod-schemas/inventory";
 import { inventoryService } from "@/services/inventory.service";
@@ -82,8 +83,8 @@ export function InventorySettingsFormContainer({
       }
 
       toast.error(response.message || UI_TEXT.API.NETWORK_ERROR);
-    } catch {
-      toast.error(UI_TEXT.API.NETWORK_ERROR);
+    } catch (error) {
+      toast.error(getErrorMessage(error) || UI_TEXT.API.NETWORK_ERROR);
     } finally {
       setSaving(false);
     }

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { reservationService } from "@/services/reservationService";
 import { ReservationDto } from "@/services/reservationService";
@@ -36,7 +37,7 @@ export const CancelBookingDialog = ({
         toast.error(res.message || UI_TEXT.RESERVATION.ERROR_SAVE_FAILED);
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : UI_TEXT.RESERVATION.ERROR_CONNECTION;
+      const message = getErrorMessage(error) || UI_TEXT.RESERVATION.ERROR_CONNECTION;
       toast.error(message);
     } finally {
       setLoading(false);

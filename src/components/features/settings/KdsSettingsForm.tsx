@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Flame, GlassWater, Hash, Save, Snowflake } from "lucide-react";
 import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -123,14 +123,13 @@ export function KdsSettingsForm({
     register,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm<KdsSettingsInput>({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
   });
 
-  const sortMode = watch("sortMode");
+  const sortMode = useWatch({ name: "sortMode" });
 
   React.useEffect(() => {
     reset(initialValues);

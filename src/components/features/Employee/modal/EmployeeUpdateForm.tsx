@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { SheetClose } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { updateEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
@@ -49,7 +50,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
       toast.success(UI_TEXT.EMPLOYEE.UPDATE_SUSCESS);
     } catch (err) {
       setLoading(false);
-      toast.error("Update employee failed. " + (err as Error).message);
+      toast.error(getErrorMessage(err) || UI_TEXT.COMMON.UPDATE_ERROR);
       return;
     }
     setLoading(false);

@@ -15,18 +15,22 @@ import {
 
 const { OPENING_STOCK } = UI_TEXT.INVENTORY;
 const EMPTY_INGREDIENTS: Ingredient[] = [];
-const COMPLETED_OPENING_STOCK_STATUS = 2;
 
 function isOpeningStockLocked(settings?: InventorySettings | null) {
   if (!settings) {
     return false;
   }
 
-  return (
-    !!settings.lockedAt ||
-    settings.openingStockStatus === COMPLETED_OPENING_STOCK_STATUS ||
-    settings.openingStockStatus === "Completed"
-  );
+  if (!settings.nextOpeningStockImportAllowedAt) {
+    return false;
+  }
+
+  const nextAllowedAt = new Date(settings.nextOpeningStockImportAllowedAt);
+  if (Number.isNaN(nextAllowedAt.getTime())) {
+    return false;
+  }
+
+  return nextAllowedAt.getTime() > Date.now();
 }
 
 function formatDateTimeValue(value?: string | null) {

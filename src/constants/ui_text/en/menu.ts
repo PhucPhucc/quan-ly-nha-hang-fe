@@ -197,6 +197,8 @@ export const MENU = {
     INGREDIENT_NAME: "Ingredient name",
     UNIT: "Unit",
     STOCK_COLUMN: "Stock",
+    OUT_OF_STOCK_BADGE: "Out of stock",
+    OUT_OF_STOCK_CANNOT_ADD: "This ingredient is out of stock and cannot be added to the recipe.",
     QUANTITY_COLUMN: "Quantity",
     NO_INGREDIENTS_FOUND: "No ingredients found.",
     CONFIRM_ADD_BUTTON: "Confirm added",

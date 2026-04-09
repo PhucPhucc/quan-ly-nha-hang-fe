@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { tableService } from "@/services/tableService";
 import { Area, AreaType } from "@/types/Table-Layout";
@@ -55,7 +56,7 @@ export default function EditAreaDialog({ open, onClose, area, onSuccess }: Props
       }
     } catch (error) {
       console.error("Failed to update area:", error);
-      toast.error(UI_TEXT.COMMON.UPDATE_ERROR);
+      toast.error(getErrorMessage(error) || UI_TEXT.COMMON.UPDATE_ERROR);
     }
   };
 

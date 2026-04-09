@@ -11,6 +11,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cloudinaryService } from "@/services/cloudinaryService";
 
@@ -37,8 +38,8 @@ export function BranchInfoSection({ register, errors, logoUrl, setValue }: Props
         setValue("logoUrl", response.data.imageUrl, { shouldDirty: true });
         toast.success(SETTINGS.LOGO_UPLOAD_SUCCESS);
       }
-    } catch {
-      toast.error(SETTINGS.LOGO_UPLOAD_ERROR);
+    } catch (error) {
+      toast.error(getErrorMessage(error) || SETTINGS.LOGO_UPLOAD_ERROR);
     } finally {
       if (event.target) event.target.value = "";
     }

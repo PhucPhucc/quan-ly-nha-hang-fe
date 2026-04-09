@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { getErrorMessage } from "@/lib/error";
 import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { inventoryService } from "@/services/inventory.service";
@@ -44,7 +45,7 @@ export function useCreateStockOut(
           setIngredients(response.data.items.filter((item) => item.isActive));
         }
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : UI_TEXT.API.NETWORK_ERROR);
+        toast.error(getErrorMessage(error) || UI_TEXT.API.NETWORK_ERROR);
       }
     };
 
@@ -135,7 +136,7 @@ export function useCreateStockOut(
       }
     } catch (error) {
       console.error("Failed to create stock out receipt", error);
-      toast.error(error instanceof Error ? error.message : UI_TEXT.API.NETWORK_ERROR);
+      toast.error(getErrorMessage(error) || UI_TEXT.API.NETWORK_ERROR);
     } finally {
       setSubmitting(false);
     }

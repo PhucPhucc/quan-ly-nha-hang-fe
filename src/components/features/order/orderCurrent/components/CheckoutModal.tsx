@@ -104,9 +104,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                 <span className="font-semibold text-sm">{UI_TEXT.ORDER.CURRENT.CUSTOMER_GAVE}</span>
                 <Input
                   type="text"
+                  inputMode="decimal"
+                  pattern="[0-9,]*"
                   placeholder="Nhập số tiền khách đưa..."
                   value={customerGiven}
                   onChange={(e) => setCustomerGiven(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "+" || e.key === "e" || e.key === "E") {
+                      e.preventDefault();
+                    }
+                  }}
                   className="font-bold text-lg"
                 />
               </div>
@@ -148,9 +155,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, t
                 </Label>
                 <Input
                   type="text"
+                  inputMode="decimal"
+                  pattern="[0-9,]*"
                   placeholder="Nhập số tiền mặt khách đưa..."
                   value={customerGiven}
                   onChange={(e) => setCustomerGiven(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "+" || e.key === "e" || e.key === "E") {
+                      e.preventDefault();
+                    }
+                  }}
                   className="font-bold text-lg"
                 />
               </div>

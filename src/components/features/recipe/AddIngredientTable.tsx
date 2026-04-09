@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,14 @@ export const AddIngredientTable: React.FC<AddIngredientTableProps> = ({
               >
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
-                    <span>{ing.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span>{ing.name}</span>
+                      {ing.currentStock <= 0 && (
+                        <Badge variant="destructive" className="text-[10px]">
+                          {UI_TEXT.MENU.RECIPE.OUT_OF_STOCK_BADGE}
+                        </Badge>
+                      )}
+                    </div>
                     <span className="text-xs text-muted-foreground font-normal">{ing.code}</span>
                   </div>
                 </TableCell>
@@ -104,8 +112,15 @@ export const AddIngredientTable: React.FC<AddIngredientTableProps> = ({
                     size="sm"
                     variant="ghost"
                     className="text-primary hover:text-primary hover:bg-primary/10 transition-all rounded-full p-2"
-                    onClick={() => onAdd(ing, quantities[ing.ingredientId] || 0)}
-                    disabled={(quantities[ing.ingredientId] || 0) <= 0}
+                    onClick={() => {
+                      if (ing.currentStock <= 0) {
+                        toast.error(UI_TEXT.MENU.RECIPE.OUT_OF_STOCK_CANNOT_ADD);
+                        return;
+                      }
+
+                      onAdd(ing, quantities[ing.ingredientId] || 0);
+                    }}
+                    disabled={(quantities[ing.ingredientId] || 0) <= 0 || ing.currentStock <= 0}
                   >
                     <Plus className="w-5 h-5" />
                   </Button>

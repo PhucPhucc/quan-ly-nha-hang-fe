@@ -199,6 +199,8 @@ export const MENU = {
     INGREDIENT_NAME: "Tên nguyên liệu",
     UNIT: "Đơn vị",
     STOCK_COLUMN: "Tồn kho",
+    OUT_OF_STOCK_BADGE: "Hết hàng",
+    OUT_OF_STOCK_CANNOT_ADD: "Nguyên liệu đã hết hàng, không thể thêm vào công thức.",
     QUANTITY_COLUMN: "Số lượng",
     NO_INGREDIENTS_FOUND: "Không tìm thấy nguyên liệu nào.",
     CONFIRM_ADD_BUTTON: "Xác nhận đã thêm",

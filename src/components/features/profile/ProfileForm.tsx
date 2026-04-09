@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { getMyProfile, updateMyProfile } from "@/services/profileService";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -70,7 +71,7 @@ const ProfileForm = () => {
       setIsDirty(false);
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast.error(UI_TEXT.COMMON.UPDATE_ERROR);
+      toast.error(getErrorMessage(error) || UI_TEXT.COMMON.UPDATE_ERROR);
     }
     setLoading(false);
   };

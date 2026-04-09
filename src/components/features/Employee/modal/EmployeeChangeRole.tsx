@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { changeEmployeeRole } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
@@ -71,7 +72,7 @@ const EmployeeChangeRole = ({
       fetchEmployees();
       onToggle(false);
     } catch (error) {
-      toast.error(UI_TEXT.EMPLOYEE.CHANGE_FAILED);
+      toast.error(getErrorMessage(error) || UI_TEXT.EMPLOYEE.CHANGE_FAILED);
     }
   };
 

@@ -37,6 +37,11 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
     bankTransfer?: string;
   }>({});
 
+  const parseCurrencyInput = (value: string) => {
+    const parsed = Number.parseFloat(value.replace(/,/g, ""));
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
   const { data: branding } = useBrandingSettings();
   const fullNameEmployee = useAuthStore((state: AuthState) => state.employee?.fullName);
 
@@ -54,10 +59,12 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
   const fetchTablesByArea = useTableStore((state) => state.fetchTablesByArea);
 
   const remainingAmount = Math.max(totalAmount - (activeOrderDetails?.amountPaid ?? 0), 0);
+  const customerGivenAmount = parseCurrencyInput(customerGiven);
   const isMixedPayment =
     selectedMethod === PaymentMethod.Cash &&
-    customerGiven !== "" &&
-    Number.parseFloat(customerGiven.replace(/,/g, "")) < remainingAmount;
+    customerGivenAmount !== null &&
+    customerGivenAmount > 0 &&
+    customerGivenAmount < remainingAmount;
 
   const getCookie = (name: string) => {
     if (typeof document === "undefined") return null;
@@ -247,8 +254,14 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
 
   const generateMixedQR = async () => {
     if (!selectedOrderId) return;
-    const cashAmount = parseFloat(customerGiven.replace(/,/g, "")) || 0;
-    const qrAmount = Math.max(0, remainingAmount - cashAmount);
+    const cashAmount = customerGivenAmount;
+
+    if (cashAmount === null || cashAmount <= 0) {
+      toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
+      return;
+    }
+
+    const qrAmount = remainingAmount - cashAmount;
 
     if (qrAmount <= 0) {
       toast.error("Số tiền QR phải lớn hơn 0");
@@ -334,7 +347,7 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
   const handleCheckout = async () => {
     if (!selectedOrderId) return;
 
-    let amountReceived = undefined;
+    let amountReceived: number | undefined = undefined;
     let paymentLines:
       | Array<{
           paymentMethodConfigId: string;
@@ -348,11 +361,21 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
         toast.error(UI_TEXT.ORDER.CURRENT.INPUT_AMOUNT_REQUIRED);
         return;
       }
-      amountReceived = parseFloat(customerGiven.replace(/,/g, ""));
-      if (isNaN(amountReceived)) {
+      amountReceived = customerGivenAmount ?? NaN;
+      if (!Number.isFinite(amountReceived) || amountReceived <= 0) {
         toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
         return;
       }
+      if (selectedMethod === PaymentMethod.Cash && amountReceived < remainingAmount) {
+        toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
+        return;
+      }
+
+      if (selectedMethod === "MixedCashQR" && amountReceived >= remainingAmount) {
+        toast.error(UI_TEXT.ORDER.CURRENT.INVALID_AMOUNT);
+        return;
+      }
+
       if (amountReceived < remainingAmount) {
         if (!paymentMethodIds.cash || !paymentMethodIds.bankTransfer) {
           toast.error("Không tìm thấy cấu hình phương thức thanh toán phù hợp.");
@@ -451,8 +474,8 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
       (selectedMethod !== PaymentMethod.Cash && selectedMethod !== "MixedCashQR")
     )
       return 0;
-    const given = parseFloat(customerGiven.replace(/,/g, ""));
-    if (isNaN(given)) return 0;
+    if (customerGivenAmount === null || customerGivenAmount <= 0) return 0;
+    const given = customerGivenAmount;
     return Math.max(0, given - remainingAmount);
   };
 
@@ -461,7 +484,11 @@ export function useCheckout(isOpen: boolean, onClose: () => void, totalAmount: n
   };
 
   const getMixedPaymentAmounts = () => {
-    const cashAmount = parseFloat(customerGiven.replace(/,/g, "")) || 0;
+    if (customerGivenAmount === null || customerGivenAmount <= 0) {
+      return { cashAmount: 0, qrAmount: 0 };
+    }
+
+    const cashAmount = customerGivenAmount;
     const qrAmount = Math.max(0, remainingAmount - cashAmount);
     return { cashAmount, qrAmount };
   };

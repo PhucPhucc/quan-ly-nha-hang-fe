@@ -218,6 +218,7 @@ export const ORDER = {
     DISCOUNT_LABEL: "Discount",
     TAX_LABEL_PREFIX: "Tax",
     TOTAL_LABEL: "TOTAL:",
+    ITEM_PREFIX: "+",
     FOOTER_THANK_YOU: "THANK YOU - SEE YOU AGAIN",
     FOOTER_CHECK_BEFORE_LEAVE: "Please check your bill carefully before leaving",
   },
