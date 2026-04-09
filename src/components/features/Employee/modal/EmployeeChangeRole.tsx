@@ -38,7 +38,7 @@ const EmployeeChangeRole = ({
   employeeCode: string | undefined;
   onToggle: (v: boolean) => void;
 }) => {
-  const increment = useEmployeeStore((state) => state.increment);
+  const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,7 +68,7 @@ const EmployeeChangeRole = ({
     try {
       await changeEmployeeRole(employeeCode, role as string, newRole as string, reason);
       toast.success(UI_TEXT.EMPLOYEE.CHANGE_SUCCESS);
-      increment();
+      fetchEmployees();
       onToggle(false);
     } catch (error) {
       toast.error(UI_TEXT.EMPLOYEE.CHANGE_FAILED);

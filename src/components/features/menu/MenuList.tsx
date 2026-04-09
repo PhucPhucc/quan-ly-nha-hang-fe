@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 import TableSkeleton from "@/components/shared/TableSkeleton";
 import {
@@ -79,9 +79,18 @@ const MenuSection = ({
 );
 
 const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
-  const { menuItems, setMenus, isLoading, searchQuery, categoryId, pageSize } = useMenuStore();
-  const [itemPage, setItemPage] = useState(1);
-  const [comboPage, setComboPage] = useState(1);
+  const {
+    menuItems,
+    setMenus,
+    isLoadingItems,
+    isLoadingCombos,
+    searchQuery,
+    categoryId,
+    itemPagination,
+    comboPagination,
+    setItemPage,
+    setComboPage,
+  } = useMenuStore();
 
   const selectedCategory = categories.find((category) => category.categoryId === categoryId);
   const isAllFilter = categoryId === MENU_FILTER_ALL;
@@ -89,6 +98,7 @@ const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
   const isComboFilter = categoryId === MENU_FILTER_COMBO;
   const isSpecificMenuItemCategory = Boolean(selectedCategory && selectedCategory.type !== 2);
 
+  // Client-side search filtering on already-paginated server data
   const filteredMenuItems = useMemo(() => {
     return menuItems.filter((item) => {
       const matchSearch = matchesSearch(item, searchQuery);
@@ -106,18 +116,8 @@ const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
     [setMenus, searchQuery]
   );
 
-  const paginatedSetMenus = useMemo(() => {
-    const startIndex = (comboPage - 1) * pageSize;
-    return filteredSetMenus.slice(startIndex, startIndex + pageSize);
-  }, [filteredSetMenus, comboPage, pageSize]);
+  const isLoading = isLoadingItems || isLoadingCombos;
 
-  const paginatedMenuItems = useMemo(() => {
-    const startIndex = (itemPage - 1) * pageSize;
-    return filteredMenuItems.slice(startIndex, startIndex + pageSize);
-  }, [filteredMenuItems, itemPage, pageSize]);
-
-  const itemTotalPages = Math.max(1, Math.ceil(filteredMenuItems.length / pageSize));
-  const comboTotalPages = Math.max(1, Math.ceil(filteredSetMenus.length / pageSize));
   const visibleItemCount = isComboFilter
     ? filteredSetMenus.length
     : isAllFilter
@@ -145,10 +145,14 @@ const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
   if (isComboFilter) {
     return (
       <div className="space-y-4">
-        <MenuSection title="Combo" items={paginatedSetMenus} totalCount={filteredSetMenus.length} />
+        <MenuSection
+          title="Combo"
+          items={filteredSetMenus}
+          totalCount={comboPagination.totalCount}
+        />
         <MenuPagination
-          currentPage={comboPage}
-          totalPages={comboTotalPages}
+          currentPage={comboPagination.currentPage}
+          totalPages={comboPagination.totalPages}
           onPageChange={setComboPage}
         />
       </div>
@@ -160,12 +164,12 @@ const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
       <div className="space-y-4">
         <MenuSection
           title={selectedCategory?.name || "Món lẻ"}
-          items={paginatedMenuItems}
-          totalCount={filteredMenuItems.length}
+          items={filteredMenuItems}
+          totalCount={itemPagination.totalCount}
         />
         <MenuPagination
-          currentPage={itemPage}
-          totalPages={itemTotalPages}
+          currentPage={itemPagination.currentPage}
+          totalPages={itemPagination.totalPages}
           onPageChange={setItemPage}
         />
       </div>
@@ -177,30 +181,31 @@ const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
       <div className="space-y-4">
         <MenuSection
           title="Món lẻ"
-          items={paginatedMenuItems}
-          totalCount={filteredMenuItems.length}
+          items={filteredMenuItems}
+          totalCount={itemPagination.totalCount}
         />
         <MenuPagination
-          currentPage={itemPage}
-          totalPages={itemTotalPages}
+          currentPage={itemPagination.currentPage}
+          totalPages={itemPagination.totalPages}
           onPageChange={setItemPage}
         />
       </div>
     );
   }
 
+  // Filter "all": show both sections with independent pagination
   return (
     <div className="space-y-6">
       {filteredMenuItems.length > 0 && (
         <div className="space-y-4">
           <MenuSection
             title="Món lẻ"
-            items={paginatedMenuItems}
-            totalCount={filteredMenuItems.length}
+            items={filteredMenuItems}
+            totalCount={itemPagination.totalCount}
           />
           <MenuPagination
-            currentPage={itemPage}
-            totalPages={itemTotalPages}
+            currentPage={itemPagination.currentPage}
+            totalPages={itemPagination.totalPages}
             onPageChange={setItemPage}
           />
         </div>
@@ -210,12 +215,12 @@ const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
         <div className="space-y-4">
           <MenuSection
             title="Combo"
-            items={paginatedSetMenus}
-            totalCount={filteredSetMenus.length}
+            items={filteredSetMenus}
+            totalCount={comboPagination.totalCount}
           />
           <MenuPagination
-            currentPage={comboPage}
-            totalPages={comboTotalPages}
+            currentPage={comboPagination.currentPage}
+            totalPages={comboPagination.totalPages}
             onPageChange={setComboPage}
           />
         </div>
@@ -225,7 +230,5 @@ const MenuListContent: React.FC<MenuListProps> = ({ categories }) => {
 };
 
 export const MenuList: React.FC<MenuListProps> = ({ categories }) => {
-  const { searchQuery, categoryId } = useMenuStore();
-
-  return <MenuListContent key={`${categoryId}-${searchQuery}`} categories={categories} />;
+  return <MenuListContent categories={categories} />;
 };

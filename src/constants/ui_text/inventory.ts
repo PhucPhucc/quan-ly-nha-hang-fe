@@ -137,6 +137,7 @@ export const INVENTORY = {
     GROUP: "Nhóm nguyên liệu",
     GROUP_NONE: "Không dùng nhóm",
     GROUP_DESC: "Gắn nguyên liệu vào một nhóm để kế thừa rule chung của nhóm.",
+    GROUP_ERROR: "Vui lòng chọn nhóm hợp lệ",
     ERROR_ADD: "Lỗi khi thêm nguyên liệu",
     ERROR_CONN: "Đã xảy ra lỗi kết nối",
     SUCCESS_ADD: "Thêm nguyên liệu thành công",
@@ -149,6 +150,8 @@ export const INVENTORY = {
     CURRENT_DEFAULT_THRESHOLD: "Ngưỡng mặc định của kho hiện là",
     USING_DEFAULT_THRESHOLD: " Nguyên liệu này đang dùng ngưỡng mặc định.",
     CUSTOM_THRESHOLD_HELP: " Bạn có thể nhập ngưỡng riêng cho nguyên liệu này.",
+    LOW_STOCK_THRESHOLD_ERROR:
+      "Vui lòng nhập ngưỡng cảnh báo hợp lệ (số nguyên lớn hơn hoặc bằng 0).",
   },
   TOOLBAR: {
     SEARCH_PLACEHOLDER: "Tìm mã hoặc tên NVL...",

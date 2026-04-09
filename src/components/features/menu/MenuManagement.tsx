@@ -13,10 +13,9 @@ import { MenuList } from "./MenuList";
 const MENU_FILTER_ALL = "all";
 const MENU_FILTER_ITEM = "item";
 const MENU_FILTER_COMBO = "combo";
-const MENU_MANAGEMENT_FETCH_SIZE = 100;
 
 export const MenuManagement: React.FC = () => {
-  const { fetchMenuItems, fetchSetMenus, categoryId } = useMenuStore();
+  const { fetchMenuItems, fetchSetMenus, categoryId, pageSize } = useMenuStore();
 
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -28,16 +27,16 @@ export const MenuManagement: React.FC = () => {
     const isSpecificMenuItemCategory = Boolean(selectedCategory && selectedCategory.type !== 2);
 
     if (isComboFilter) {
-      fetchSetMenus(1, MENU_MANAGEMENT_FETCH_SIZE);
+      fetchSetMenus(1, pageSize);
       return;
     }
 
-    fetchMenuItems(1, MENU_MANAGEMENT_FETCH_SIZE);
+    fetchMenuItems(1, pageSize);
 
     if (isAllFilter || (!isItemFilter && !isSpecificMenuItemCategory)) {
-      fetchSetMenus(1, MENU_MANAGEMENT_FETCH_SIZE);
+      fetchSetMenus(1, pageSize);
     }
-  }, [fetchMenuItems, fetchSetMenus, categoryId, categories]);
+  }, [fetchMenuItems, fetchSetMenus, categoryId, categories, pageSize]);
 
   useEffect(() => {
     const fetchCategories = async () => {

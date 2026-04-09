@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import PaginationTable from "@/components/shared/PaginationTable";
+import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -15,47 +16,20 @@ import { Category, MenuItem } from "@/types/Menu";
 import { MenuOptionSelectionDialog } from "./MenuOptionSelectionDialog";
 import OrderList from "./OrderList";
 
-const MENU_ITEMS_PER_PAGE = 10;
-const SET_MENUS_PER_PAGE = 5;
-const TOTAL_PER_PAGE = MENU_ITEMS_PER_PAGE + SET_MENUS_PER_PAGE;
-
-/**
- * Tính số lượng lấy từ mỗi nguồn (MenuItem / SetMenu) cho 1 trang.
- * Mục tiêu: 10 MenuItem + 5 SetMenu = 15.
- * Nếu bên nào hết trước thì bù từ bên còn lại.
- */
-function computePageTakes(menuAvailable: number, setAvailable: number) {
-  let menuTake = Math.min(MENU_ITEMS_PER_PAGE, menuAvailable);
-  let setTake = Math.min(SET_MENUS_PER_PAGE, setAvailable);
-
-  const menuUnfilled = MENU_ITEMS_PER_PAGE - menuTake;
-  const setUnfilled = SET_MENUS_PER_PAGE - setTake;
-
-  // MenuItem không đủ 10 → lấy thêm từ SetMenu
-  if (menuUnfilled > 0) {
-    const extraFromSet = Math.min(menuUnfilled, setAvailable - setTake);
-    setTake += extraFromSet;
-  }
-
-  // SetMenu không đủ 5 → lấy thêm từ MenuItem
-  if (setUnfilled > 0) {
-    const extraFromMenu = Math.min(setUnfilled, menuAvailable - menuTake);
-    menuTake += extraFromMenu;
-  }
-
-  return { menuTake, setTake };
-}
-
 const CardMenu = () => {
   const menuItems = useMenuStore((state) => state.menuItems);
   const setMenus = useMenuStore((state) => state.setMenus);
-  const isLoading = useMenuStore((state) => state.isLoading);
+  const isLoading = useMenuStore((state) => state.isLoadingItems || state.isLoadingCombos);
   const fetchMenuItems = useMenuStore((state) => state.fetchMenuItems);
   const fetchSetMenus = useMenuStore((state) => state.fetchSetMenus);
 
+  const itemPagination = useMenuStore((state) => state.itemPagination);
+  const comboPagination = useMenuStore((state) => state.comboPagination);
+  const setItemPage = useMenuStore((state) => state.setItemPage);
+  const setComboPage = useMenuStore((state) => state.setComboPage);
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeTab, setActiveTab] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
   const [isOptionDialogOpen, setIsOptionDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
@@ -86,7 +60,6 @@ const CardMenu = () => {
 
   const handleTabChange = useCallback((tab: string) => {
     setActiveTab(tab);
-    setCurrentPage(1);
   }, []);
 
   const comboCategory = useMemo(() => {
@@ -128,34 +101,8 @@ const CardMenu = () => {
     return mappedSetMenus.filter((item) => item.categoryId === activeTab);
   }, [mappedSetMenus, activeTab]);
 
-  const totalItems = filteredMenuItems.length + filteredSetMenus.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / TOTAL_PER_PAGE));
-
-  const paginatedItems = useMemo(() => {
-    let menuOffset = 0;
-    let setOffset = 0;
-
-    // Tính offset bằng cách lặp qua các trang trước
-    for (let p = 1; p < currentPage; p++) {
-      const { menuTake, setTake } = computePageTakes(
-        filteredMenuItems.length - menuOffset,
-        filteredSetMenus.length - setOffset
-      );
-      menuOffset += menuTake;
-      setOffset += setTake;
-    }
-
-    // Tính items cho trang hiện tại
-    const { menuTake, setTake } = computePageTakes(
-      filteredMenuItems.length - menuOffset,
-      filteredSetMenus.length - setOffset
-    );
-
-    return [
-      ...filteredMenuItems.slice(menuOffset, menuOffset + menuTake),
-      ...filteredSetMenus.slice(setOffset, setOffset + setTake),
-    ];
-  }, [filteredMenuItems, filteredSetMenus, currentPage]);
+  const isComboTab = comboCategory && activeTab === comboCategory.categoryId;
+  const isItemTab = activeTab !== "all" && !isComboTab;
 
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);
@@ -194,26 +141,65 @@ const CardMenu = () => {
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar">
-          <TabsContent value={activeTab} className="m-0 h-full p-0 outline-none">
-            {totalItems > 0 ? (
-              <OrderList menuList={paginatedItems} onItemClick={handleItemClick} />
-            ) : (
+          <TabsContent
+            value={activeTab}
+            className="m-0 min-h-full p-0 outline-none flex flex-col gap-6 pb-6"
+          >
+            {filteredMenuItems.length === 0 && filteredSetMenus.length === 0 && (
               <EmptyState
                 title="Trống"
                 description="Danh mục này hiện chưa có món nào"
                 icon={UtensilsCrossed}
               />
             )}
+
+            {(activeTab === "all" || isItemTab) && filteredMenuItems.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-border/50">
+                  <h3 className="text-sm font-bold text-muted-foreground uppercase">
+                    {UI_TEXT.MENU.COL_ITEM_NAME}
+                  </h3>
+                  <Badge variant="secondary" className="rounded-full">
+                    {UI_TEXT.MENU.MENUCOUNT(filteredMenuItems.length)}
+                  </Badge>
+                </div>
+                <OrderList menuList={filteredMenuItems} onItemClick={handleItemClick} />
+                {itemPagination.totalPages > 1 && (
+                  <div className="pt-2">
+                    <PaginationTable
+                      currentPage={itemPagination.currentPage}
+                      totalPages={itemPagination.totalPages}
+                      onPageChange={setItemPage}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {(activeTab === "all" || isComboTab) && filteredSetMenus.length > 0 && (
+              <div className="space-y-4 pt-2">
+                <div className="flex items-center justify-between pb-2 border-b border-border/50">
+                  <h3 className="text-sm font-bold text-muted-foreground uppercase">
+                    {UI_TEXT.MENU.COL_CATEGORY || "Combo"}
+                  </h3>
+                  <Badge variant="secondary" className="rounded-full">
+                    {UI_TEXT.MENU.COMBOCOUNT(filteredSetMenus.length)}
+                  </Badge>
+                </div>
+                <OrderList menuList={filteredSetMenus} onItemClick={handleItemClick} />
+                {comboPagination.totalPages > 1 && (
+                  <div className="pt-2">
+                    <PaginationTable
+                      currentPage={comboPagination.currentPage}
+                      totalPages={comboPagination.totalPages}
+                      onPageChange={setComboPage}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </TabsContent>
         </div>
-
-        {totalPages > 1 && (
-          <PaginationTable
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        )}
       </Tabs>
 
       <MenuOptionSelectionDialog

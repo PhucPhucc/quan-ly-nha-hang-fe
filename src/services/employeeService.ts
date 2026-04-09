@@ -6,12 +6,14 @@ import { apiFetch } from "./api";
 export async function getEmployees(params?: {
   search?: string;
   filters?: string;
+  pageNumber?: number;
   pageSize?: number;
 }): Promise<ApiResponse<PaginationResult<Employee>>> {
   let url = "/employees";
   const queryParams = new URLSearchParams();
   if (params?.search) queryParams.append("search", params.search);
   if (params?.filters) queryParams.append("filters", params.filters);
+  if (params?.pageNumber) queryParams.append("pageNumber", params.pageNumber.toString());
   if (params?.pageSize) queryParams.append("pageSize", params.pageSize.toString());
 
   const queryString = queryParams.toString();

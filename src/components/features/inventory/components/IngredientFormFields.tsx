@@ -143,7 +143,7 @@ export function IngredientFormFields({
         </select>
         <p className="text-xs text-muted-foreground">{UI_TEXT.INVENTORY.FORM.GROUP_DESC}</p>
         {errors.inventoryGroupId?.message && (
-          <span className="text-xs text-destructive">{errors.inventoryGroupId.message}</span>
+          <span className="text-xs text-destructive">{UI_TEXT.INVENTORY.FORM.GROUP_ERROR}</span>
         )}
       </div>
 
@@ -187,7 +187,9 @@ export function IngredientFormFields({
           </p>
         )}
         {errors.lowStockThreshold?.message && (
-          <span className="text-xs text-destructive">{errors.lowStockThreshold.message}</span>
+          <span className="text-xs text-destructive">
+            {UI_TEXT.INVENTORY.FORM.LOW_STOCK_THRESHOLD_ERROR}
+          </span>
         )}
       </div>
 

@@ -13,43 +13,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { getEmployees } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 
 const EmployeeActionBar = () => {
-  const setEmployees = useEmployeeStore((state) => state.setEmployees);
+  const setFilter = useEmployeeStore((state) => state.setFilter);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("all");
-
-  const fetchData = React.useCallback(
-    async (currentSearch: string, currentRole: string) => {
-      const filters = currentRole !== "all" ? `role:${currentRole}` : undefined;
-      const res = await getEmployees({ search: currentSearch, filters });
-      if (res.isSuccess && res.data) {
-        setEmployees(res.data.items || []);
-      }
-    },
-    [setEmployees]
-  );
 
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchData(search, role);
+      setFilter({ search });
     }, 400);
     return () => clearTimeout(timer);
-  }, [search, role, fetchData]);
+  }, [search, setFilter]);
 
   const handleRoleChange = (value: string) => {
     setRole(value);
-    fetchData(search, value);
+    setFilter({ role: value });
   };
 
   const handleReset = () => {
     if (!search && role === "all") return;
     setSearch("");
     setRole("all");
-    fetchData("", "all");
+    setFilter({ search: "", role: "all" });
   };
 
   return (

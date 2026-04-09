@@ -17,7 +17,7 @@ export const ROLEMAP: Record<string, string> = {
   chefbar: "chefbar",
 };
 
-export const normalizeEmployeeRole = (role?: string): EmployeeRole | null => {
+export const normalizeEmployeeRole = (role: EmployeeRole | null): EmployeeRole | null => {
   const value = role?.toLowerCase();
 
   switch (value) {
@@ -42,8 +42,8 @@ export interface Employee {
   email: string;
   address?: string;
   dateOfBirth?: string;
-  role: string;
-  status: string;
+  role: EmployeeRole;
+  status: EmployeeStatus;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

@@ -25,7 +25,7 @@ export function StatsCards() {
       try {
         setLoading(true);
         const [ordersRes, employeesRes] = await Promise.all([
-          orderService.getOrders({ pageSize: 1000 }), // Get many to calculate revenue. Better if BE provides this.
+          orderService.getOrders({ pageSize: 100 }), // Get many to calculate revenue. Better if BE provides this.
           employeeService.getEmployees(),
         ]);
 

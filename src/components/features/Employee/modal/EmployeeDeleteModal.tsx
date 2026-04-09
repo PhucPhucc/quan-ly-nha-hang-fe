@@ -27,7 +27,7 @@ const EmployeeDeleteModal = ({
   employeeId: string;
   onToggle: (v: boolean) => void;
 }) => {
-  const increment = useEmployeeStore((state) => state.increment);
+  const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,7 +42,7 @@ const EmployeeDeleteModal = ({
 
     try {
       await deleteEmployee(employeeId);
-      increment();
+      fetchEmployees();
       toast.success(UI_TEXT.EMPLOYEE.DELETE_SUSCESS);
     } catch (err) {
       toast.error((err as Error).message);

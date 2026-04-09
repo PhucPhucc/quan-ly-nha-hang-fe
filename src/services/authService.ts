@@ -1,4 +1,5 @@
 import { ApiResponse } from "@/types/Api";
+import { EmployeeRole } from "@/types/Employee";
 
 import { apiFetch, clearCsrfToken, refreshCsrfToken } from "./api";
 
@@ -7,7 +8,7 @@ export interface AuthResponse {
   employeeCode: string;
   fullName?: string;
   username?: string;
-  role: string;
+  role: EmployeeRole;
   email: string;
 }
 

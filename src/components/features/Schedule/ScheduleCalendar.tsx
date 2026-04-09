@@ -1,9 +1,9 @@
 import { addDays, format, startOfWeek } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, Users } from "lucide-react";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,9 +14,9 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { getEmployees } from "@/services/employeeService";
 import { shiftAssignmentService } from "@/services/shiftAssignmentService";
 import { shiftService } from "@/services/shiftService";
+import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { Employee } from "@/types/Employee";
 import { Shift } from "@/types/Shift";
 import { ShiftAssignment } from "@/types/ShiftAssignment";
@@ -30,7 +30,13 @@ interface ScheduleCalendarProps {
 
 const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) => {
   const { formatDate, formatDayMonth } = useBrandingFormatter();
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const employees = useEmployeeStore((state) => state.employees);
+  const pagination = useEmployeeStore((state) => state.pagination);
+  const setPage = useEmployeeStore((state) => state.setPage);
+  const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
+  const storeLoading = useEmployeeStore((state) => state.loading);
+  const setPageSize = useEmployeeStore((state) => state.setPageSize);
+
   const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
   const [shiftsMap, setShiftsMap] = useState<Record<string, Shift>>({});
   const [loading, setLoading] = useState(true);
@@ -40,12 +46,9 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedAssignment, setSelectedAssignment] = useState<ShiftAssignment | null>(null);
 
-  const startDate = React.useMemo(
-    () => startOfWeek(currentDate, { weekStartsOn: 1 }),
-    [currentDate]
-  );
+  const startDate = useMemo(() => startOfWeek(currentDate, { weekStartsOn: 1 }), [currentDate]);
 
-  const days = React.useMemo(
+  const days = useMemo(
     () =>
       Array.from({ length: 7 }, (_, i) => {
         const date = addDays(startDate, i);
@@ -59,11 +62,10 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
     [startDate]
   );
 
-  const fetchData = React.useCallback(async () => {
+  const fetchScheduleData = React.useCallback(async () => {
     setLoading(true);
     try {
-      const [empRes, assignRes, shiftRes] = await Promise.all([
-        getEmployees({ pageSize: 100 }),
+      const [assignRes, shiftRes] = await Promise.all([
         shiftAssignmentService.getAssignments({
           pageSize: 1000,
           filters: [
@@ -74,9 +76,6 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
         shiftService.getShifts({ pageSize: 100 }),
       ]);
 
-      if (empRes.isSuccess && empRes.data) {
-        setEmployees(empRes.data.items);
-      }
       if (assignRes.isSuccess && assignRes.data) {
         setAssignments(assignRes.data.items);
       }
@@ -95,8 +94,10 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
   }, [startDate]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    setPageSize(4);
+    fetchEmployees();
+    fetchScheduleData();
+  }, [fetchEmployees, fetchScheduleData, setPageSize]);
 
   const nextWeek = () => onDateChange(addDays(currentDate, 7));
   const getNow = () => onDateChange(new Date());
@@ -131,7 +132,7 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
     setIsDialogOpen(true);
   };
 
-  if (loading) {
+  if (loading || storeLoading) {
     return (
       <div className="h-64 flex items-center justify-center">
         <Spinner className="size-8 text-primary" />
@@ -300,25 +301,12 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
               className="grid grid-cols-[220px_repeat(7,1fr)] min-h-26 hover:bg-card-foreground/5 transition-colors  duration-100 group"
             >
               <div className="p-5 border-r flex items-center gap-4">
-                <div className="size-12 rounded-lg overflow-hidden shadow-sm shrink-0">
-                  <Image
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      emp.fullName
-                    )}&background=random&size=128`}
-                    alt={emp.fullName}
-                    className="w-full h-full object-cover"
-                    width={48}
-                    height={48}
-                    loading="eager"
-                    unoptimized
-                  />
-                </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex flex-col">
                   <h4 className="text-sm font-bold text-card-foreground truncate tracking-tight">
                     {emp.fullName}
                   </h4>
                   <p className="text-[10px] font-bold text-card-foreground/70 uppercase tracking-tight truncate mt-0.5">
-                    {emp.role}
+                    {UI_TEXT.EMPLOYEE.ROLE} {UI_TEXT.COMMON.COLON} {emp.role}
                   </p>
                 </div>
               </div>
@@ -387,13 +375,21 @@ const ScheduleCalendar = ({ currentDate, onDateChange }: ScheduleCalendarProps) 
         </div>
       </div>
 
+      {pagination.totalPages > 1 && (
+        <PaginationTable
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+        />
+      )}
+
       <AssignmentDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         employee={selectedEmployee}
         date={selectedDate}
         assignment={selectedAssignment}
-        onSuccess={fetchData}
+        onSuccess={fetchScheduleData}
       />
     </>
   );

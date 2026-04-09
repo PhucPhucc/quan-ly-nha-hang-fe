@@ -50,7 +50,7 @@ export const menuService = {
   // Lấy danh sách combo
   getAllSetMenu: (
     pageNumber: number = 1,
-    pageSize: number = 100
+    pageSize: number = 10
   ): Promise<ApiResponse<PaginationResult<SetMenu>>> => {
     return apiFetch<PaginationResult<SetMenu>>(
       `/setmenus?pageNumber=${pageNumber}&pageSize=${pageSize}`

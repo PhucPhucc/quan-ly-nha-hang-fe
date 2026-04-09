@@ -5,10 +5,25 @@ import { create } from "zustand";
 import { menuService } from "@/services/menuService";
 import { MenuFilter, MenuItem, SetMenu } from "@/types/Menu";
 
+interface PaginationState {
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+}
+
+const DEFAULT_PAGINATION: PaginationState = {
+  currentPage: 1,
+  totalPages: 1,
+  totalCount: 0,
+};
+
+const PAGE_SIZE = 10;
+
 interface MenuState {
   menuItems: MenuItem[];
   setMenus: SetMenu[];
-  isLoading: boolean;
+  isLoadingItems: boolean;
+  isLoadingCombos: boolean;
   filter: MenuFilter;
 
   // UI States
@@ -18,10 +33,9 @@ interface MenuState {
   isModalOpen: boolean;
   editingItem: MenuItem | SetMenu | null;
 
-  // Pagination UI States
-  currentPage: number;
-  totalItems: number;
-  totalPages: number;
+  // Pagination States (separate for items and combos)
+  itemPagination: PaginationState;
+  comboPagination: PaginationState;
   pageSize: number;
 
   // Actions
@@ -31,7 +45,8 @@ interface MenuState {
   setShowOutOfStock: (show: boolean) => void;
   setModalOpen: (isOpen: boolean) => void;
   setEditingItem: (item: MenuItem | SetMenu | null) => void;
-  setCurrentPage: (page: number) => void;
+  setItemPage: (page: number) => void;
+  setComboPage: (page: number) => void;
   fetchMenuItems: (page?: number, pageSize?: number) => Promise<void>;
   fetchSetMenus: (page?: number, pageSize?: number) => Promise<void>;
   addMenuItem: (item: Partial<MenuItem>) => Promise<MenuItem | undefined>;
@@ -48,7 +63,8 @@ interface MenuState {
 export const useMenuStore = create<MenuState>((set, get) => ({
   menuItems: [],
   setMenus: [],
-  isLoading: false,
+  isLoadingItems: false,
+  isLoadingCombos: false,
   filter: {},
 
   searchQuery: "",
@@ -57,58 +73,91 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   isModalOpen: false,
   editingItem: null,
 
-  currentPage: 1,
-  totalItems: 0,
-  totalPages: 1,
-  pageSize: 20,
+  itemPagination: { ...DEFAULT_PAGINATION },
+  comboPagination: { ...DEFAULT_PAGINATION },
+  pageSize: PAGE_SIZE,
 
   setFilter: (filter) =>
-    set((state) => ({ filter: { ...state.filter, ...filter }, currentPage: 1 })),
-  setSearchQuery: (searchQuery) => set({ searchQuery, currentPage: 1 }),
-  setCategoryId: (categoryId) => set({ categoryId, currentPage: 1 }),
-  setShowOutOfStock: (showOutOfStock) => set({ showOutOfStock, currentPage: 1 }),
+    set((state) => ({
+      filter: { ...state.filter, ...filter },
+      itemPagination: { ...DEFAULT_PAGINATION },
+      comboPagination: { ...DEFAULT_PAGINATION },
+    })),
+  setSearchQuery: (searchQuery) =>
+    set({
+      searchQuery,
+      itemPagination: { ...DEFAULT_PAGINATION },
+      comboPagination: { ...DEFAULT_PAGINATION },
+    }),
+  setCategoryId: (categoryId) =>
+    set({
+      categoryId,
+      itemPagination: { ...DEFAULT_PAGINATION },
+      comboPagination: { ...DEFAULT_PAGINATION },
+    }),
+  setShowOutOfStock: (showOutOfStock) =>
+    set({
+      showOutOfStock,
+      itemPagination: { ...DEFAULT_PAGINATION },
+      comboPagination: { ...DEFAULT_PAGINATION },
+    }),
   setModalOpen: (isModalOpen) => set({ isModalOpen }),
   setEditingItem: (editingItem) => set({ editingItem }),
-  setCurrentPage: (currentPage) => set({ currentPage }),
+
+  setItemPage: (page: number) => {
+    get().fetchMenuItems(page);
+  },
+
+  setComboPage: (page: number) => {
+    get().fetchSetMenus(page);
+  },
 
   fetchMenuItems: async (currentPage = 1, pageSize = get().pageSize) => {
-    set({ isLoading: true });
+    set({ isLoadingItems: true });
     try {
       const response = await menuService.getAll(currentPage, pageSize);
       if (response.isSuccess && response.data) {
         set({
           menuItems: response.data.items,
-          totalItems: response.data.totalCount,
-          totalPages:
-            response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
-          currentPage: response.data.pageNumber || currentPage,
+          itemPagination: {
+            currentPage: response.data.pageNumber || currentPage,
+            totalPages:
+              response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
+            totalCount: response.data.totalCount,
+          },
         });
       }
     } catch (error) {
       console.error("Failed to fetch menu items:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingItems: false });
     }
   },
 
   fetchSetMenus: async (pageNumber = 1, pageSize = get().pageSize) => {
-    set({ isLoading: true });
+    set({ isLoadingCombos: true });
     try {
       const response = await menuService.getAllSetMenu(pageNumber, pageSize);
       if (response.isSuccess && response.data) {
         set({
           setMenus: response.data.items,
+          comboPagination: {
+            currentPage: response.data.pageNumber || pageNumber,
+            totalPages:
+              response.data.totalPages || Math.ceil(response.data.totalCount / pageSize) || 1,
+            totalCount: response.data.totalCount,
+          },
         });
       }
     } catch (error) {
       console.error("Failed to fetch set menus:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingCombos: false });
     }
   },
 
   addMenuItem: async (item) => {
-    set({ isLoading: true });
+    set({ isLoadingItems: true });
     try {
       const response = await menuService.create(item);
       if (response.isSuccess && response.data) {
@@ -121,12 +170,12 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       toast.error(error instanceof Error ? error.message : "Failed to add menu item");
       console.error("Failed to add menu item:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingItems: false });
     }
   },
 
   updateMenuItem: async (id, item) => {
-    set({ isLoading: true });
+    set({ isLoadingItems: true });
     try {
       const response = await menuService.update(id, item);
       if (response.isSuccess && response.data) {
@@ -142,12 +191,12 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       toast.error(error instanceof Error ? error.message : "Failed to update menu item");
       console.error("Failed to update menu item:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingItems: false });
     }
   },
 
   deleteMenuItem: async (id) => {
-    set({ isLoading: true });
+    set({ isLoadingItems: true });
     try {
       const response = await menuService.delete(id);
       if (response.isSuccess) {
@@ -158,7 +207,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     } catch (error) {
       console.error("Failed to delete menu item:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingItems: false });
     }
   },
 
@@ -176,7 +225,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   },
 
   addSetMenu: async (item) => {
-    set({ isLoading: true });
+    set({ isLoadingCombos: true });
     try {
       const response = await menuService.createSetMenu(item);
       if (response.isSuccess && response.data) {
@@ -186,12 +235,12 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     } catch (error) {
       console.error("Failed to add set menu:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingCombos: false });
     }
   },
 
   updateSetMenu: async (id, item) => {
-    set({ isLoading: true });
+    set({ isLoadingCombos: true });
     try {
       const response = await menuService.updateSetMenu(id, item);
       if (response.isSuccess && response.data) {
@@ -203,12 +252,12 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     } catch (error) {
       console.error("Failed to update set menu:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingCombos: false });
     }
   },
 
   deleteSetMenu: async (id) => {
-    set({ isLoading: true });
+    set({ isLoadingCombos: true });
     try {
       const response = await menuService.deleteSetMenu(id);
       if (response.isSuccess) {
@@ -219,7 +268,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
     } catch (error) {
       console.error("Failed to delete set menu:", error);
     } finally {
-      set({ isLoading: false });
+      set({ isLoadingCombos: false });
     }
   },
 

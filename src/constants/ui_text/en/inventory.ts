@@ -138,6 +138,7 @@ export const INVENTORY = {
     GROUP: "Ingredient group",
     GROUP_NONE: "No group",
     GROUP_DESC: "Assign ingredient to a group to inherit group rules.",
+    GROUP_ERROR: "Please select a valid group",
     ERROR_ADD: "Error adding ingredient",
     ERROR_CONN: "Connection error occurred",
     SUCCESS_ADD: "Ingredient added successfully",
@@ -150,6 +151,8 @@ export const INVENTORY = {
     CURRENT_DEFAULT_THRESHOLD: "Current default threshold is",
     USING_DEFAULT_THRESHOLD: " This ingredient is using the default threshold.",
     CUSTOM_THRESHOLD_HELP: " You can set a custom threshold for this ingredient.",
+    LOW_STOCK_THRESHOLD_ERROR:
+      "Please enter a valid alert threshold (integer greater than or equal to 0).",
   },
   TOOLBAR: {
     SEARCH_PLACEHOLDER: "Search code or name...",

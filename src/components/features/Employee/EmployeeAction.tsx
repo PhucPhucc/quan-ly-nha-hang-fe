@@ -1,6 +1,6 @@
 "use client";
 
-import { List, LockKeyhole, Skull, Trash2, UserPen } from "lucide-react";
+import { List, LockKeyhole, ShieldCheck, Trash2, UserPen } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
               handleEdit("changeRole");
             }}
           >
-            <Skull className="size-4 " />
+            <ShieldCheck className="size-4 " />
             <div className="flex flex-col">
               <span>{UI_TEXT.EMPLOYEE.CHANGE_ROLE}</span>
               <span className="text-xs">{UI_TEXT.EMPLOYEE.CHANGE_ROLE_DESC}</span>

@@ -12,12 +12,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { updateEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
-import { Employee } from "@/types/Employee";
+import { Employee, EmployeeRole, EmployeeStatus } from "@/types/Employee";
 
 import SwitchActive from "./SwitchActive";
 
 const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
-  const incrementRefreshCount = useEmployeeStore((state) => state.increment);
+  const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,8 +28,10 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string;
     const dateOfBirth = formData.get("dateOfBirth") as string;
-    const status = (formData.get("status") as string) === "on" ? "active" : "inactive";
-    const role = formData.get("role") as string;
+    const status = (
+      (formData.get("status") as string) === "on" ? "active" : "inactive"
+    ) as EmployeeStatus;
+    const role = formData.get("role") as EmployeeRole;
     const address = formData.get("address") as string;
 
     const employeeUpdate = {
@@ -51,7 +53,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
       return;
     }
     setLoading(false);
-    incrementRefreshCount();
+    fetchEmployees();
   };
 
   return (

@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { login } from "@/services/authService";
 import { useAuthStore } from "@/store/useAuthStore";
-import { EmployeeRole, normalizeEmployeeRole } from "@/types/Employee";
+import { EmployeeRole } from "@/types/Employee";
 const LoginForm = () => {
   const router = useRouter();
   const setEmployee = useAuthStore((state) => state.setEmployee);
@@ -28,17 +28,16 @@ const LoginForm = () => {
 
       if (res.data) {
         const { employeeCode, role, email, fullName, username } = res.data;
-        const normalizedRole = normalizeEmployeeRole(role);
 
         setEmployee({
           employeeId: res.data.employeeId,
           email: email || "",
           username: username || employeeCode,
           fullName: fullName || "",
-          role: normalizedRole || role,
+          role: role,
         });
 
-        switch (normalizedRole) {
+        switch (role) {
           case EmployeeRole.MANAGER:
             router.push("/manager/dashboard");
             break;

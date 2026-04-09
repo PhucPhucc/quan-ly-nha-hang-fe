@@ -11,11 +11,12 @@ import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { addEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
+import { EmployeeRole } from "@/types/Employee";
 
 import EmployeeSelectRole from "./EmployeeSelectRole";
 
 const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const incrementRefreshCount = useEmployeeStore((state) => state.increment);
+  const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,7 +26,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     const formData = new FormData(e.currentTarget);
     const fullName = formData.get("fullName") as string;
     const email = formData.get("email") as string;
-    const role = formData.get("role") as string;
+    const role = formData.get("role") as EmployeeRole;
     const employeeCode = formData.get("employeeCode") as string;
 
     const employee = {
@@ -44,7 +45,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
       return;
     }
     setLoading(false);
-    incrementRefreshCount();
+    fetchEmployees();
     onSuccess();
     toast.success(UI_TEXT.EMPLOYEE.ADD_SUSCESS);
   };

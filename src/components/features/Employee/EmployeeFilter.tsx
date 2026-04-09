@@ -9,24 +9,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { filterEmployee, getEmployees } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 
 const EmployeeFilter = () => {
-  const setEmployees = useEmployeeStore((state) => state.setEmployees);
+  const setFilter = useEmployeeStore((state) => state.setFilter);
 
-  const handleSelectedRole = async (value: string) => {
-    if (value === "all") {
-      const res = await getEmployees();
-      if (res.data) {
-        setEmployees(res.data.items || []);
-      }
-      return;
-    }
-    const res = await filterEmployee(value);
-    if (res.data) {
-      setEmployees(res.data.items || []);
-    }
+  const handleSelectedRole = (value: string) => {
+    setFilter({ role: value });
   };
 
   return (

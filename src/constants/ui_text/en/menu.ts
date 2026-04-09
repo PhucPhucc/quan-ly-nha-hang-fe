@@ -15,6 +15,7 @@ export const MENU = {
   DELETE_DEFAULT_ERROR:
     "This item has been included in invoices and cannot be deleted. Please disable the sale status instead!",
   MENUCOUNT: (count: number) => `${count} items`,
+  COMBOCOUNT: (count: number) => `${count} combos`,
   NAV: {
     OVERVIEW: "Overview",
     MENU_LIST: "Menu List",
