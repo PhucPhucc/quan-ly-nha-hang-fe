@@ -3,9 +3,6 @@ export enum InventoryUnit {
   GRAM = "g",
   LITER = "l",
   ML = "ml",
-  PIECE = "pcs",
-  PACK = "pack",
-  BOX = "box",
 }
 
 export enum InventoryCostMethod {
