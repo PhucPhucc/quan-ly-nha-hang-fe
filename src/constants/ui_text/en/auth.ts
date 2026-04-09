@@ -7,7 +7,7 @@ export const AUTH = {
   PASSWORD: "Password",
   LOGIN_TITLE: "Welcome back",
   EMPLOYEE_CODE: "Employee code",
-  EMPLOYEE_CODE_PLACEHOLDER: "e.g. M000001",
+  EMPLOYEE_CODE_PLACEHOLDER: "Enter your employee code",
   REMEMBER_ME: "Remember me",
   FORGOT_PASSWORD: "Forgot password?",
   FORGOT_PASSWORD_TITLE: "Forgot password?",

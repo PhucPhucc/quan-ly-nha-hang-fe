@@ -7,7 +7,7 @@ export const AUTH = {
   PASSWORD: "Mật khẩu",
   LOGIN_TITLE: "Chào mừng quay lại",
   EMPLOYEE_CODE: "Mã nhân viên",
-  EMPLOYEE_CODE_PLACEHOLDER: "VD: M000001",
+  EMPLOYEE_CODE_PLACEHOLDER: "Nhập mã nhân viên của bạn",
   REMEMBER_ME: "Ghi nhớ đăng nhập",
   FORGOT_PASSWORD: "Quên mật khẩu?",
   FORGOT_PASSWORD_TITLE: "Quên mật khẩu?",

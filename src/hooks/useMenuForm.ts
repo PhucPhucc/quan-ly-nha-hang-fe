@@ -63,7 +63,7 @@ const createMenuFormSchema = (categories: Category[]) =>
         if (values.comboItems.length === 0) {
           ctx.addIssue({
             code: "custom",
-            message: UI_TEXT.FORM.REQUIRED,
+            message: UI_TEXT.FORM.COMBO_EMPTY,
             path: ["comboItems"],
           });
           return;
@@ -73,8 +73,15 @@ const createMenuFormSchema = (categories: Category[]) =>
           if (!item.menuItemId) {
             ctx.addIssue({
               code: "custom",
-              message: UI_TEXT.FORM.REQUIRED,
+              message: UI_TEXT.FORM.COMBO_ITEM_REQUIRED,
               path: ["comboItems", index, "menuItemId"],
+            });
+          }
+          if (item.menuItemId && (!item.quantity || Number(item.quantity) < 1)) {
+            ctx.addIssue({
+              code: "custom",
+              message: UI_TEXT.FORM.COMBO_QUANTITY_MIN,
+              path: ["comboItems", index, "quantity"],
             });
           }
         });
