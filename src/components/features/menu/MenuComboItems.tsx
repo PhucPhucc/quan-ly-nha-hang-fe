@@ -130,7 +130,7 @@ const ComboItemSearchField: React.FC<ComboItemSearchFieldProps> = ({
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverAnchor asChild>
-        <div className="relative">
+        <div className="relative min-w-0">
           <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2" />
           <Input
             ref={inputRef}
@@ -142,7 +142,7 @@ const ComboItemSearchField: React.FC<ComboItemSearchFieldProps> = ({
             onFocus={handleInputFocus}
             onKeyDown={handleKeyDown}
             className={cn(
-              "pl-8",
+              "pl-8 min-w-0 truncate",
               selectedItem && !open && "text-foreground",
               !selectedItem && !open && "text-muted-foreground"
             )}
@@ -181,7 +181,7 @@ const ComboItemSearchField: React.FC<ComboItemSearchFieldProps> = ({
                     aria-selected={isSelected}
                     data-combo-option
                     className={cn(
-                      "hover:bg-accent flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors",
+                      "hover:bg-accent flex min-w-0 w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors",
                       isSelected && "font-medium",
                       isHighlighted && "bg-accent",
                       isSelected && !isHighlighted && "bg-accent/50"
