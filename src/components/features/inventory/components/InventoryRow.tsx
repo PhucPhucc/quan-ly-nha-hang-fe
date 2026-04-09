@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { AlertThresholdStatus, Ingredient } from "@/types/Inventory";
 
@@ -36,9 +37,8 @@ export function InventoryRow({ item, onEdit, onDelete }: Props) {
         </span>
       </TableCell>
       <TableCell className="text-sm">
-        <span className="mr-0.5">{UI_TEXT.INVENTORY.TABLE.CURRENCY}</span>
         <span className="font-semibold text-card-foreground" aria-label="Average cost (read only)">
-          {(item.costPrice ?? 0).toFixed(2)}
+          {formatCurrency(item.costPrice ?? 0)}
         </span>
       </TableCell>
       <TableCell className="w-35">
