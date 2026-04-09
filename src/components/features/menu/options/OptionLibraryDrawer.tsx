@@ -74,7 +74,7 @@ export const OptionLibraryDrawer: React.FC<OptionLibraryDrawerProps> = ({
         </div>
       </div>
 
-      <ScrollArea className="flex-1 px-6">
+      <ScrollArea className="flex-1 px-6 min-h-0 overflow-y-auto">
         <div className="py-4 space-y-3">
           {loading ? (
             <div className="py-10 text-center text-muted-foreground">{UI_TEXT.COMMON.LOADING}</div>

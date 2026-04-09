@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Calendar, Search } from "lucide-react";
 import React, { useState } from "react";
 
+import PaginationTable from "@/components/shared/PaginationTable";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableShell,
 } from "@/components/ui/table";
 import { useBrandingFormatter } from "@/lib/branding-formatting";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -35,15 +37,15 @@ export function InventoryLotsTable() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("ingredientName");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [_page] = useState(1);
+  const [page, setPage] = useState(1);
   const { formatDate } = useBrandingFormatter();
 
   const { data: lotsData, isLoading } = useQuery({
-    queryKey: ["inventory-lots", _page, searchTerm, statusFilter, sortBy, sortOrder],
+    queryKey: ["inventory-lots", page, searchTerm, statusFilter, sortBy, sortOrder],
     queryFn: () =>
       inventoryService.getInventoryLots({
-        pageNumber: _page,
-        pageSize: 10,
+        pageNumber: page,
+        pageSize: 9,
         search: searchTerm,
         status: statusFilter === "all" ? undefined : statusFilter,
         orderBy: sortBy,
@@ -99,11 +101,20 @@ export function InventoryLotsTable() {
                 placeholder={UI_TEXT.INVENTORY.LOTS.SEARCH_PLACEHOLDER}
                 className="h-11 rounded-lg pl-10"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1);
+                }}
               />
             </div>
 
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => {
+                setStatusFilter(v);
+                setPage(1);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={UI_TEXT.INVENTORY.TOOLBAR.FILTER_STATUS} />
               </SelectTrigger>
@@ -127,7 +138,13 @@ export function InventoryLotsTable() {
               </SelectContent>
             </Select>
 
-            <Select value={sortBy} onValueChange={setSortBy}>
+            <Select
+              value={sortBy}
+              onValueChange={(v) => {
+                setSortBy(v);
+                setPage(1);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={UI_TEXT.INVENTORY.TABLE.COL_SORT} />
               </SelectTrigger>
@@ -138,7 +155,13 @@ export function InventoryLotsTable() {
               </SelectContent>
             </Select>
 
-            <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "asc" | "desc")}>
+            <Select
+              value={sortOrder}
+              onValueChange={(v) => {
+                setSortOrder(v as "asc" | "desc");
+                setPage(1);
+              }}
+            >
               <SelectTrigger className="h-11 w-full md:w-[180px]">
                 <SelectValue />
               </SelectTrigger>
@@ -149,7 +172,7 @@ export function InventoryLotsTable() {
             </Select>
           </div>
 
-          <div className="overflow-hidden rounded-lg border">
+          <TableShell className="overflow-hidden">
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>
@@ -242,7 +265,15 @@ export function InventoryLotsTable() {
                 )}
               </TableBody>
             </Table>
-          </div>
+          </TableShell>
+
+          {lotsData?.data && lotsData.data.totalPages > 1 && (
+            <PaginationTable
+              currentPage={page}
+              totalPages={lotsData.data.totalPages}
+              onPageChange={setPage}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

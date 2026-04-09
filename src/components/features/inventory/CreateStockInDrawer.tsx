@@ -118,9 +118,6 @@ export const CreateStockInDrawer = ({
               <span className="text-2xl font-black text-primary tracking-tighter">
                 {formatCurrency(calculateTotal())}
               </span>
-              <span className="text-sm font-bold text-primary ml-1 uppercase">
-                {UI_TEXT.COMMON.CURRENCY}
-              </span>
             </div>
           </div>
 
