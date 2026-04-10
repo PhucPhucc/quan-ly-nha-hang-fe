@@ -281,7 +281,8 @@ export const useMenuForm = (categories: Category[]) => {
     defaultValues,
     shouldFocusError: false,
   });
-  const { control, formState, getValues, handleSubmit, reset, setFocus, watch } = formMethods;
+  const { control, formState, getValues, handleSubmit, reset, setFocus, setValue, watch } =
+    formMethods;
   const { append, fields, remove } = useFieldArray({
     control,
     name: "comboItems",
@@ -580,6 +581,10 @@ export const useMenuForm = (categories: Category[]) => {
 
   const submitForm = handleSubmit(handleValidSubmit, handleInvalidSubmit);
 
+  const updateCost = (newCost: number) => {
+    setValue("cost", String(newCost));
+  };
+
   return {
     isModalOpen,
     isEditing,
@@ -617,6 +622,7 @@ export const useMenuForm = (categories: Category[]) => {
     submitForm,
     handleClose,
     focusField,
+    updateCost,
   };
 };
 

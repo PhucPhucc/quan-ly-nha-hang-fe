@@ -226,6 +226,8 @@ export const MENU = {
     INSTRUCTION: "Cooking instructions",
     CURRENCY: "$",
     TOTAL_COST_DESC: "Based on the latest import price of ingredients in the recipe.",
+    EXCEED_STOCK: "Exceeds available stock",
+    EXCEED_STOCK_ERROR: "Ingredients exceeding stock",
   },
   OVERVIEW: {
     HERO_DESC:

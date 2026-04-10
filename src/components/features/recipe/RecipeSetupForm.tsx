@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { inventoryService } from "@/services/inventory.service";
 import { recipeService } from "@/services/recipeService";
 import { Ingredient } from "@/types/Inventory";
 import { Recipe } from "@/types/Recipe";
@@ -21,6 +22,7 @@ interface RecipeSetupFormProps {
   initialData?: Recipe | null;
   onSuccess?: () => void;
   onCancel?: () => void;
+  onCostUpdate?: (newCost: number) => void;
 }
 
 export const RecipeSetupForm: React.FC<RecipeSetupFormProps> = ({
@@ -28,6 +30,7 @@ export const RecipeSetupForm: React.FC<RecipeSetupFormProps> = ({
   initialData: propInitialData,
   onSuccess,
   onCancel,
+  onCostUpdate,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipeData, setRecipeData] = useState<Recipe | null>(propInitialData || null);
@@ -43,9 +46,26 @@ export const RecipeSetupForm: React.FC<RecipeSetupFormProps> = ({
 
       setIsLoading(true);
       try {
-        const response = await recipeService.getByMenuItemId(menuItemId);
-        if (response.isSuccess) {
-          setRecipeData(response.data);
+        const [recipeRes, ingredientsRes] = await Promise.all([
+          recipeService.getByMenuItemId(menuItemId),
+          inventoryService.getIngredients(1, 100),
+        ]);
+
+        if (recipeRes.isSuccess) {
+          const stockMap: Record<string, number> = {};
+          if (ingredientsRes.isSuccess && ingredientsRes.data?.items) {
+            ingredientsRes.data.items.forEach((ing: Ingredient) => {
+              stockMap[ing.ingredientId] = ing.currentStock;
+            });
+          }
+
+          if (recipeRes.data) {
+            recipeRes.data.ingredients = recipeRes.data.ingredients.map((ing) => ({
+              ...ing,
+              currentStock: stockMap[ing.ingredientId] ?? 0,
+            }));
+          }
+          setRecipeData(recipeRes.data);
         }
       } catch (error) {
         console.error("Failed to fetch recipe:", error);
@@ -72,6 +92,7 @@ export const RecipeSetupForm: React.FC<RecipeSetupFormProps> = ({
     menuItemId,
     initialData: recipeData,
     onSuccess,
+    onCostUpdate,
   });
 
   const handleModalAdd = (ingredient: Ingredient, quantity: number) => {

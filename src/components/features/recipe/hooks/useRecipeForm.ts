@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import * as z from "zod";
 
+import { normalizeInventoryQuantity } from "@/lib/inventory-number";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { recipeService } from "@/services/recipeService";
 import { Ingredient } from "@/types/Inventory";
@@ -26,6 +27,7 @@ const recipeSchema = z.object({
       costPerUnit: z.coerce.number(),
       totalCost: z.coerce.number(),
       isOptional: z.boolean().optional(),
+      currentStock: z.coerce.number().optional(),
     })
   ),
   instructions: z.string().optional(),
@@ -38,9 +40,15 @@ interface UseRecipeFormProps {
   menuItemId: string;
   initialData: Recipe | null;
   onSuccess?: () => void;
+  onCostUpdate?: (newCost: number) => void;
 }
 
-export const useRecipeForm = ({ menuItemId, initialData, onSuccess }: UseRecipeFormProps) => {
+export const useRecipeForm = ({
+  menuItemId,
+  initialData,
+  onSuccess,
+  onCostUpdate,
+}: UseRecipeFormProps) => {
   const form = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeSchema) as Resolver<RecipeFormValues>,
     defaultValues: {
@@ -95,10 +103,23 @@ export const useRecipeForm = ({ menuItemId, initialData, onSuccess }: UseRecipeF
       costPerUnit: ingredient.costPrice,
       totalCost: ingredient.costPrice * quantity,
       isOptional: false,
+      currentStock: ingredient.currentStock,
     });
   };
 
   const onSubmit: SubmitHandler<RecipeFormValues> = async (data) => {
+    const exceedingIngredients = data.ingredients.filter((ing) => {
+      const currentStock = normalizeInventoryQuantity(ing.currentStock ?? 0);
+      const quantity = normalizeInventoryQuantity(ing.quantity);
+      return currentStock > 0 && quantity > currentStock;
+    });
+
+    if (exceedingIngredients.length > 0) {
+      const names = exceedingIngredients.map((i) => i.ingredientName).join(", ");
+      toast.error(`${UI_TEXT.MENU.RECIPE.EXCEED_STOCK_ERROR}: ${names}`);
+      return;
+    }
+
     const toastId = toast.loading(UI_TEXT.MENU.RECIPE.SAVING);
     try {
       const payload = data.ingredients.map((item) => ({
@@ -115,6 +136,7 @@ export const useRecipeForm = ({ menuItemId, initialData, onSuccess }: UseRecipeF
       );
       if (response.isSuccess) {
         toast.success(UI_TEXT.MENU.RECIPE.SAVE_SUCCESS, { id: toastId });
+        onCostUpdate?.(totalCost);
         onSuccess?.();
       } else {
         toast.error(response.message || UI_TEXT.MENU.RECIPE.SAVE_ERROR, { id: toastId });

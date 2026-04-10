@@ -192,9 +192,12 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = ({ categories }) => {
                   menuItemId={form.itemId as string}
                   onSuccess={() => {
                     form.fetchMenuItems();
-                    form.setActiveTab("details");
                   }}
                   onCancel={form.handleClose}
+                  onCostUpdate={(newCost) => {
+                    form.updateCost(newCost);
+                    form.setActiveTab("details");
+                  }}
                 />
               </TabsContent>
             )}

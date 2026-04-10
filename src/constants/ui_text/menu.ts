@@ -228,6 +228,8 @@ export const MENU = {
     INSTRUCTION: "Hướng dẫn chế biến",
     CURRENCY: "$",
     TOTAL_COST_DESC: "Dựa trên giá nhập gần nhất của các nguyên liệu trong định lượng.",
+    EXCEED_STOCK: "Vượt quá tồn kho",
+    EXCEED_STOCK_ERROR: "Các nguyên liệu vượt quá tồn kho",
   },
   OVERVIEW: {
     HERO_DESC:

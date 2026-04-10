@@ -6,6 +6,7 @@ export interface RecipeIngredient {
   costPerUnit: number;
   totalCost: number;
   isOptional?: boolean;
+  currentStock?: number;
 }
 
 export interface Recipe {
