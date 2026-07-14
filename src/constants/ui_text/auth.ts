@@ -98,7 +98,7 @@ export const PROFILE = {
     RULE_EMAIL_FORMAT: "Đúng định dạng thư điện tử (ví dụ: a@b.c)",
     RULE_PHONE_PREFIX: "Bắt đầu bằng 0 hoặc +84",
     RULE_PHONE_LENGTH: "Có đủ 10 chữ số (cho đầu số 0)",
-    RULE_DOB_15: "Đủ 15 tuổi",
+    RULE_DOB_18: "Đủ 18 tuổi",
     ADDRESS_REQUIRED: "Vui lòng nhập địa chỉ",
     RULE_NOT_EMPTY: "Không được để trống",
   },
