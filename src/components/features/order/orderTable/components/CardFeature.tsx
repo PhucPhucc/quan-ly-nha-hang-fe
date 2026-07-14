@@ -287,6 +287,10 @@ export default function CardFeature({
       try {
         await orderService.cancelOrder(orderId, "Nhân viên hủy đơn trống");
         toast.success(UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL_SUCCESS);
+
+        if (useOrderBoardStore.getState().selectedOrderId === orderId) {
+          useOrderBoardStore.getState().setSelectedOrderId(null);
+        }
       } catch (error: unknown) {
         let errorMessage = UI_TEXT.ORDER.BOARD.DROPDOWN_FEATURE.CANCEL_ERROR;
         if (error instanceof Error) {

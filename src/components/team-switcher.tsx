@@ -1,11 +1,17 @@
 "use client";
 
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 export function TeamSwitcher({
@@ -21,6 +27,7 @@ export function TeamSwitcher({
   const Logo = team.logo;
 
   const router = useRouter();
+  const { toggleSidebar, state } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -32,23 +39,38 @@ export function TeamSwitcher({
             onClick={() => router.push("/")}
           >
             <div
-              // href="/"
-              className={cn(
-                " flex aspect-square size-8 items-center justify-center rounded-lg",
-                team.logoUrl ? "p-0" : "bg-sidebar-primary text-sidebar-primary-foreground"
-              )}
+              className="relative group/toggle flex aspect-square size-8 items-center justify-center rounded-lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleSidebar();
+              }}
             >
-              {team.logoUrl ? (
-                <Image
-                  src={team.logoUrl}
-                  alt={team.name}
-                  className="h-full w-full object-contain p-1"
-                  width="32"
-                  height="32"
-                />
-              ) : (
-                <Logo className="size-4" />
-              )}
+              <div
+                className={cn(
+                  "absolute inset-0 flex items-center justify-center rounded-lg transition-opacity duration-200",
+                  team.logoUrl ? "p-0" : "bg-sidebar-primary text-sidebar-primary-foreground",
+                  "opacity-100 group-hover/toggle:opacity-0"
+                )}
+              >
+                {team.logoUrl ? (
+                  <Image
+                    src={team.logoUrl}
+                    alt={team.name}
+                    className="h-full w-full object-contain p-1"
+                    width="32"
+                    height="32"
+                  />
+                ) : (
+                  <Logo className="size-4" />
+                )}
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground opacity-0 group-hover/toggle:opacity-100 transition-opacity duration-200 shadow-md">
+                {state === "expanded" ? (
+                  <PanelLeftClose className="size-4" />
+                ) : (
+                  <PanelLeftOpen className="size-4" />
+                )}
+              </div>
             </div>
             <div className="grid flex-1 text-card-foreground text-left text-sm leading-tight">
               <span className="truncate font-medium">{team.name}</span>

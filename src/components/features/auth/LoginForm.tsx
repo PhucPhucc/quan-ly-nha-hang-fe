@@ -52,7 +52,7 @@ const LoginForm = () => {
         }
       }
     } catch (err) {
-      console.error("Login handleLogin error:", err);
+      console.warn("Login handleLogin error:", err);
       toast.error(UI_TEXT.AUTH.ERROR_INVALID_CREDENTIALS);
     }
   };

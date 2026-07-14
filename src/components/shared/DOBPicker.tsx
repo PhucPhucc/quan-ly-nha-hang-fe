@@ -10,7 +10,13 @@ import { Button } from "../ui/button";
 import { Field, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 
-const DOBPicker = ({ dob }: { dob: string | undefined }) => {
+const DOBPicker = ({
+  dob,
+  onChange,
+}: {
+  dob: string | undefined;
+  onChange?: (date: string) => void;
+}) => {
   const { formatDate } = useBrandingFormatter();
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
@@ -31,7 +37,16 @@ const DOBPicker = ({ dob }: { dob: string | undefined }) => {
   const handleSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     setOpen(false);
+    if (onChange) {
+      const formatted = selectedDate
+        ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`
+        : "";
+      onChange(formatted);
+    }
   };
+
+  const maxDate = new Date();
+  maxDate.setFullYear(maxDate.getFullYear() - 18);
 
   const formattedDate = date
     ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
@@ -54,10 +69,11 @@ const DOBPicker = ({ dob }: { dob: string | undefined }) => {
           <Calendar
             mode="single"
             selected={date}
-            defaultMonth={date}
+            defaultMonth={date || maxDate}
             captionLayout="dropdown"
             fromYear={1900}
-            toYear={new Date().getFullYear()}
+            toYear={maxDate.getFullYear()}
+            disabled={(d) => d > maxDate}
             onSelect={handleSelect}
           />
         </PopoverContent>

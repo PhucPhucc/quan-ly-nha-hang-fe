@@ -43,6 +43,8 @@ export const CHANGE_PASSWORD = {
   NEW_PASSWORD: "New password",
   CONFIRM_PASSWORD: "Confirm password",
   CONFIRM_NOT_MATCH: "Confirmation password does not match",
+  CONFIRM_MATCH: "Passwords match",
+  NEW_PASSWORD_DIFFERENT: "New password must be different from current password",
   REQUIRED: "Please fill in all fields",
   UPPERCASE_REQUIRED: "New password must contain at least one uppercase letter",
   LOWERCASE_REQUIRED: "New password must contain at least one lowercase letter",
@@ -87,6 +89,19 @@ export const PROFILE = {
   ACCOUNT_INFO: "Account information",
   PERSONAL_INFO: "Personal information",
   ADMIN_USER: "Admin User",
+  VALIDATION: {
+    FULL_NAME_REQUIRED: "Please enter your full name",
+    EMAIL_REQUIRED: "Please enter your email",
+    EMAIL_INVALID: "Invalid email",
+    PHONE_INVALID: "Invalid phone number",
+    RULE_FULL_NAME_MIN: "At least 2 characters",
+    RULE_EMAIL_FORMAT: "Correct email format (e.g. a@b.c)",
+    RULE_PHONE_PREFIX: "Starts with 0 or +84",
+    RULE_PHONE_LENGTH: "Has 10 digits (for prefix 0)",
+    RULE_DOB_18: "At least 18 years old",
+    ADDRESS_REQUIRED: "Please enter your address",
+    RULE_NOT_EMPTY: "Cannot be empty",
+  },
 };
 
 export const UNAUTHORIZED = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyRound, Lock } from "lucide-react";
+import { CheckCircle2, Circle, KeyRound, Lock } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
 import FieldPassword from "@/components/shared/FieldPassword";
@@ -17,8 +17,32 @@ import {
 import { FieldGroup } from "@/components/ui/field";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { validateNewPassword } from "@/lib/utils";
 import { changePassword } from "@/services/profileService";
+
+const ValidationRules = ({
+  value,
+  rules,
+}: {
+  value: string;
+  rules: { text: string; test: (v: string) => boolean }[];
+}) => {
+  return (
+    <div className="mt-2 space-y-1">
+      {rules.map((rule, idx) => {
+        const isMet = rule.test(value || "");
+        return (
+          <div
+            key={idx}
+            className={`flex items-center gap-2 text-xs ${isMet ? "text-green-600" : "text-muted-foreground"}`}
+          >
+            {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+            <span>{rule.text}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default function ChangePasswordDialog() {
   const [passwords, setPasswords] = useState({
@@ -41,15 +65,26 @@ export default function ChangePasswordDialog() {
   );
 
   // ===== validation =====
-  const passwordError = useMemo(() => {
-    return validateNewPassword(passwords.new, passwords.confirm);
-  }, [passwords.new, passwords.confirm]);
+  const isNewPasswordValid = useMemo(() => {
+    const v = passwords.new;
+    return (
+      v.length >= 8 &&
+      /[A-Z]/.test(v) &&
+      /[a-z]/.test(v) &&
+      /[0-9]/.test(v) &&
+      /[^A-Za-z0-9]/.test(v) &&
+      v !== passwords.current
+    );
+  }, [passwords.new, passwords.current]);
 
-  const canSubmit = !loading && !passwordError && passwords.current;
+  const isConfirmValid = passwords.confirm.length > 0 && passwords.confirm === passwords.new;
+
+  const canSubmit =
+    !loading && passwords.current.length > 0 && isNewPasswordValid && isConfirmValid;
 
   // ===== submit =====
   const handleSubmit = useCallback(async () => {
-    if (passwordError) return;
+    if (!canSubmit) return;
 
     try {
       setLoading(true);
@@ -67,7 +102,7 @@ export default function ChangePasswordDialog() {
     } finally {
       setLoading(false);
     }
-  }, [passwordError, passwords]);
+  }, [canSubmit, passwords]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -103,23 +138,51 @@ export default function ChangePasswordDialog() {
             onChange={handleChange("current")}
           />
 
-          <FieldPassword
-            name="newPassword"
-            label={UI_TEXT.CHANGE_PASSWORD.NEW_PASSWORD}
-            value={passwords.new}
-            onChange={handleChange("new")}
-          />
+          <div>
+            <FieldPassword
+              name="newPassword"
+              label={UI_TEXT.CHANGE_PASSWORD.NEW_PASSWORD}
+              value={passwords.new}
+              onChange={handleChange("new")}
+            />
+            <ValidationRules
+              value={passwords.new}
+              rules={[
+                { text: UI_TEXT.CHANGE_PASSWORD.MIN_LENGTH, test: (v) => v.length >= 8 },
+                { text: UI_TEXT.CHANGE_PASSWORD.UPPERCASE_REQUIRED, test: (v) => /[A-Z]/.test(v) },
+                { text: UI_TEXT.CHANGE_PASSWORD.LOWERCASE_REQUIRED, test: (v) => /[a-z]/.test(v) },
+                { text: UI_TEXT.CHANGE_PASSWORD.NUMBER_REQUIRED, test: (v) => /[0-9]/.test(v) },
+                {
+                  text: UI_TEXT.CHANGE_PASSWORD.SPECIAL_CHAR_REQUIRED,
+                  test: (v) => /[^A-Za-z0-9]/.test(v),
+                },
+                {
+                  text: UI_TEXT.CHANGE_PASSWORD.NEW_PASSWORD_DIFFERENT,
+                  test: (v) => v.length > 0 && v !== passwords.current,
+                },
+              ]}
+            />
+          </div>
 
-          <FieldPassword
-            name="confirmPassword"
-            label={UI_TEXT.CHANGE_PASSWORD.CONFIRM_PASSWORD}
-            value={passwords.confirm}
-            onChange={handleChange("confirm")}
-          />
+          <div>
+            <FieldPassword
+              name="confirmPassword"
+              label={UI_TEXT.CHANGE_PASSWORD.CONFIRM_PASSWORD}
+              value={passwords.confirm}
+              onChange={handleChange("confirm")}
+            />
+            <ValidationRules
+              value={passwords.confirm}
+              rules={[
+                {
+                  text: UI_TEXT.CHANGE_PASSWORD.CONFIRM_MATCH,
+                  test: (v) => v.length > 0 && v === passwords.new,
+                },
+              ]}
+            />
+          </div>
 
-          {(passwordError || serverError) && (
-            <p className="text-sm text-destructive text-center">{passwordError || serverError}</p>
-          )}
+          {serverError && <p className="text-sm text-destructive text-center">{serverError}</p>}
         </FieldGroup>
 
         <DialogFooter className="flex justify-between gap-2">

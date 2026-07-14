@@ -44,6 +44,8 @@ export const CHANGE_PASSWORD = {
   CONFIRM_PASSWORD: "Xác nhận mật khẩu",
 
   CONFIRM_NOT_MATCH: "Mật khẩu xác nhận không khớp",
+  CONFIRM_MATCH: "Hai mật khẩu khớp nhau",
+  NEW_PASSWORD_DIFFERENT: "Mật khẩu mới phải khác mật khẩu hiện tại",
   REQUIRED: "Vui lòng điền vào tất cả các trường",
   UPPERCASE_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ cái viết hoa",
   LOWERCASE_REQUIRED: "Mật khẩu mới phải chứa ít nhất một chữ cái viết thường",
@@ -87,6 +89,19 @@ export const PROFILE = {
   ACCOUNT_INFO: "Thông tin tài khoản",
   PERSONAL_INFO: "Thông tin cá nhân",
   ADMIN_USER: "Admin User",
+  VALIDATION: {
+    FULL_NAME_REQUIRED: "Vui lòng nhập họ và tên",
+    EMAIL_REQUIRED: "Vui lòng nhập email",
+    EMAIL_INVALID: "Email không hợp lệ",
+    PHONE_INVALID: "Số điện thoại không hợp lệ",
+    RULE_FULL_NAME_MIN: "Ít nhất 2 ký tự",
+    RULE_EMAIL_FORMAT: "Đúng định dạng thư điện tử (ví dụ: a@b.c)",
+    RULE_PHONE_PREFIX: "Bắt đầu bằng 0 hoặc +84",
+    RULE_PHONE_LENGTH: "Có đủ 10 chữ số (cho đầu số 0)",
+    RULE_DOB_15: "Đủ 15 tuổi",
+    ADDRESS_REQUIRED: "Vui lòng nhập địa chỉ",
+    RULE_NOT_EMPTY: "Không được để trống",
+  },
 };
 
 export const UNAUTHORIZED = {
