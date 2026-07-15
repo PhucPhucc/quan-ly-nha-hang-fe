@@ -313,6 +313,7 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
                     id="startDate"
                     type="date"
                     value={formData.startDate ?? ""}
+                    max={formData.endDate || undefined}
                     onChange={(e) => handleChange("startDate", e.target.value)}
                   />
                 </div>
@@ -324,6 +325,7 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
                     id="endDate"
                     type="date"
                     value={formData.endDate ?? ""}
+                    min={formData.startDate || undefined}
                     onChange={(e) => handleChange("endDate", e.target.value)}
                   />
                 </div>
@@ -344,6 +346,13 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
                     id="endTime"
                     type="time"
                     value={formData.endTime ?? ""}
+                    min={
+                      formData.startDate &&
+                      formData.endDate &&
+                      formData.startDate === formData.endDate
+                        ? formData.startTime || undefined
+                        : undefined
+                    }
                     onChange={(e) => handleChange("endTime", e.target.value || undefined)}
                   />
                 </div>

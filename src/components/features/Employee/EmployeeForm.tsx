@@ -1,88 +1,196 @@
 "use client";
 
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle2, Circle, Mail, User } from "lucide-react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
+import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { addEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { EmployeeRole } from "@/types/Employee";
 
-import EmployeeSelectRole from "./EmployeeSelectRole";
+// ─── Zod schema ────────────────────────────────────────────────────────────────
+const employeeSchema = z.object({
+  fullName: z
+    .string()
+    .min(1, { message: UI_TEXT.PROFILE.VALIDATION.FULL_NAME_REQUIRED })
+    .min(2, { message: UI_TEXT.PROFILE.VALIDATION.RULE_FULL_NAME_MIN }),
+  email: z
+    .string()
+    .min(1, { message: UI_TEXT.PROFILE.VALIDATION.EMAIL_REQUIRED })
+    .email({ message: UI_TEXT.PROFILE.VALIDATION.EMAIL_INVALID }),
+  role: z.string().min(1, { message: "Vui lòng chọn vai trò" }),
+});
 
+type EmployeeFormValues = z.infer<typeof employeeSchema>;
+
+// ─── ValidationRules (same pattern as ProfileForm) ─────────────────────────────
+const ValidationRules = ({
+  value,
+  rules,
+}: {
+  value: string;
+  rules: { text: string; test: (v: string) => boolean }[];
+}) => (
+  <div className="mt-2 space-y-1">
+    {rules.map((rule, idx) => {
+      const isMet = rule.test(value || "");
+      return (
+        <div
+          key={idx}
+          className={`flex items-center gap-2 text-xs ${isMet ? "text-green-600" : "text-muted-foreground"}`}
+        >
+          {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+          <span>{rule.text}</span>
+        </div>
+      );
+    })}
+  </div>
+);
+
+// ─── Component ─────────────────────────────────────────────────────────────────
 const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    const fullName = formData.get("fullName") as string;
-    const email = formData.get("email") as string;
-    const role = formData.get("role") as EmployeeRole;
-    const employeeCode = formData.get("employeeCode") as string;
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { isSubmitting, isValid },
+  } = useForm<EmployeeFormValues>({
+    mode: "onChange",
+    resolver: zodResolver(employeeSchema),
+    defaultValues: { fullName: "", email: "", role: "" },
+  });
 
-    const employee = {
-      employeeCode,
-      fullName,
-      email,
-      role: role,
-    };
+  const fullNameValue = useWatch({ control, name: "fullName" }) ?? "";
+  const emailValue = useWatch({ control, name: "email" }) ?? "";
+  const roleValue = useWatch({ control, name: "role" }) ?? "";
 
+  const onSubmit = async (data: EmployeeFormValues) => {
     try {
-      setError("");
-      await addEmployee(employee);
+      await addEmployee({
+        fullName: data.fullName,
+        email: data.email,
+        role: data.role as EmployeeRole,
+      });
+      fetchEmployees();
+      onSuccess();
+      toast.success(UI_TEXT.EMPLOYEE.ADD_SUSCESS);
     } catch (err) {
-      setError((err as Error).message);
-      setLoading(false);
-      return;
+      toast.error((err as Error).message || UI_TEXT.EMPLOYEE.ADD_FAILED);
     }
-    setLoading(false);
-    fetchEmployees();
-    onSuccess();
-    toast.success(UI_TEXT.EMPLOYEE.ADD_SUSCESS);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup className="grid grid-cols-1 gap-4">
+        {/* Full Name */}
         <Field>
           <FieldLabel htmlFor="fullName">{UI_TEXT.EMPLOYEE.FULLNAME}</FieldLabel>
-          <Input
-            id="fullName"
-            name="fullName"
-            type="text"
-            required
-            placeholder={`Enter ${UI_TEXT.EMPLOYEE.FULLNAME}`}
+          <div className="group relative">
+            <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-slate-900" />
+            <Input
+              id="fullName"
+              type="text"
+              placeholder={UI_TEXT.EMPLOYEE.FULLNAME_PLACEHOLDER}
+              className="rounded-lg pl-10"
+              {...register("fullName")}
+            />
+          </div>
+          <ValidationRules
+            value={fullNameValue}
+            rules={[
+              {
+                text: UI_TEXT.PROFILE.VALIDATION.RULE_NOT_EMPTY,
+                test: (v) => v.trim().length > 0,
+              },
+              {
+                text: UI_TEXT.PROFILE.VALIDATION.RULE_FULL_NAME_MIN,
+                test: (v) => v.trim().length >= 2,
+              },
+            ]}
           />
         </Field>
 
+        {/* Email */}
         <Field>
           <FieldLabel htmlFor="email">{UI_TEXT.EMPLOYEE.EMAIL}</FieldLabel>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            required
-            placeholder={`Enter ${UI_TEXT.EMPLOYEE.EMAIL}`}
+          <div className="group relative">
+            <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-slate-900" />
+            <Input
+              id="email"
+              type="email"
+              placeholder={`Nhập ${UI_TEXT.EMPLOYEE.EMAIL}`}
+              className="rounded-lg pl-10"
+              {...register("email")}
+            />
+          </div>
+          <ValidationRules
+            value={emailValue}
+            rules={[
+              {
+                text: UI_TEXT.PROFILE.VALIDATION.RULE_NOT_EMPTY,
+                test: (v) => v.trim().length > 0,
+              },
+              {
+                text: UI_TEXT.PROFILE.VALIDATION.RULE_EMAIL_FORMAT,
+                test: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+              },
+            ]}
           />
         </Field>
 
-        <EmployeeSelectRole />
+        {/* Role */}
+        <Field>
+          <FieldLabel>{UI_TEXT.ROLE.TITLE}</FieldLabel>
+          <Controller
+            name="role"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn vai trò" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem className="hover:bg-secondary-foreground/20" value="manager">
+                    {UI_TEXT.ROLE.MANAGER}
+                  </SelectItem>
+                  <SelectItem className="hover:bg-secondary-foreground/20" value="cashier">
+                    {UI_TEXT.ROLE.CASHIER}
+                  </SelectItem>
+                  <SelectItem className="hover:bg-secondary-foreground/20" value="chefbar">
+                    {UI_TEXT.ROLE.CHEF}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+          <ValidationRules
+            value={roleValue}
+            rules={[
+              {
+                text: "Đã chọn vai trò",
+                test: (v) => v.trim().length > 0,
+              },
+            ]}
+          />
+        </Field>
       </FieldGroup>
-
-      {error && (
-        <div className="text-center bg-primary/30 text-primary font-bold my-2 py-2 rounded-md">
-          {error}
-        </div>
-      )}
 
       <div className="flex gap-4 justify-end mt-4">
         <DialogClose asChild>
@@ -91,8 +199,8 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
           </Button>
         </DialogClose>
 
-        <Button type="submit" disabled={loading}>
-          {UI_TEXT.BUTTON.SUBMIT} {loading && <Spinner />}
+        <Button type="submit" disabled={isSubmitting || !isValid}>
+          {UI_TEXT.BUTTON.SUBMIT} {isSubmitting && <Spinner />}
         </Button>
       </div>
     </form>

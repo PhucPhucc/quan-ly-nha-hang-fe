@@ -1,6 +1,6 @@
-import { Building2, ImagePlus } from "lucide-react";
+import { Building2, CheckCircle2, Circle, ImagePlus } from "lucide-react";
 import React from "react";
-import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -25,9 +25,38 @@ type Props = {
   errors: FieldErrors<GeneralSettingsInput>;
   logoUrl?: string;
   setValue: UseFormSetValue<GeneralSettingsInput>;
+  watch: UseFormWatch<GeneralSettingsInput>;
 };
 
-export function BranchInfoSection({ register, errors, logoUrl, setValue }: Props) {
+// ─── ValidationRules ───────────────────────────────────────────────────────────
+const ValidationRules = ({
+  value,
+  rules,
+}: {
+  value: string;
+  rules: { text: string; test: (v: string) => boolean }[];
+}) => (
+  <div className="mt-2 space-y-1">
+    {rules.map((rule, idx) => {
+      const isMet = rule.test(value || "");
+      return (
+        <div
+          key={idx}
+          className={`flex items-center gap-2 text-xs ${
+            isMet ? "text-green-600" : "text-muted-foreground"
+          }`}
+        >
+          {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+          <span>{rule.text}</span>
+        </div>
+      );
+    })}
+  </div>
+);
+
+export function BranchInfoSection({ register, errors, logoUrl, setValue, watch }: Props) {
+  const restaurantNameValue = watch("restaurantName") || "";
+  const phoneValue = watch("phone") || "";
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -111,6 +140,15 @@ export function BranchInfoSection({ register, errors, logoUrl, setValue }: Props
               />
               <FieldError errors={[errors.restaurantName]} />
             </FieldContent>
+            <ValidationRules
+              value={restaurantNameValue}
+              rules={[
+                {
+                  text: UI_TEXT.PROFILE.VALIDATION.RULE_NOT_EMPTY,
+                  test: (v) => v.trim().length > 0,
+                },
+              ]}
+            />
           </Field>
 
           <Field>
@@ -118,6 +156,19 @@ export function BranchInfoSection({ register, errors, logoUrl, setValue }: Props
             <FieldContent>
               <Input placeholder={SETTINGS.FIELD_PHONE_PLACEHOLDER} {...register("phone")} />
             </FieldContent>
+            <ValidationRules
+              value={phoneValue}
+              rules={[
+                {
+                  text: UI_TEXT.PROFILE.VALIDATION.RULE_PHONE_PREFIX,
+                  test: (v) => v === "" || /^(0|\+84)/.test(v),
+                },
+                {
+                  text: UI_TEXT.PROFILE.VALIDATION.RULE_PHONE_LENGTH,
+                  test: (v) => v === "" || /^(0|\+84)[3|5|7|8|9][0-9]{8}$/.test(v),
+                },
+              ]}
+            />
           </Field>
 
           <Field className="sm:col-span-2">

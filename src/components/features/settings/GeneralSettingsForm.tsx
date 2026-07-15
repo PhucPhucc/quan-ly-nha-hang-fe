@@ -123,8 +123,10 @@ export function GeneralSettingsForm({ initialValues, saving = false, onSubmit }:
     setValue,
     control,
     reset,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid },
   } = useForm<GeneralSettingsInput>({
+    mode: "onChange",
     resolver: zodResolver(schema),
     defaultValues: defaults,
   });
@@ -161,6 +163,7 @@ export function GeneralSettingsForm({ initialValues, saving = false, onSubmit }:
                 errors={errors}
                 logoUrl={logoUrl}
                 setValue={setValue}
+                watch={watch}
               />
             </section>
 
@@ -183,7 +186,7 @@ export function GeneralSettingsForm({ initialValues, saving = false, onSubmit }:
               </div>
               <Button
                 type="submit"
-                disabled={saving}
+                disabled={saving || !isValid}
                 className="h-11 min-w-50 bg-primary text-base font-semibold shadow-md transition-all hover:bg-primary/90 hover:shadow-lg active:scale-[0.98]"
               >
                 {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-5 w-5" />}

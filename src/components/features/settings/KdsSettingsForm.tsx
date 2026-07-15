@@ -123,13 +123,14 @@ export function KdsSettingsForm({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<KdsSettingsInput>({
+    mode: "onChange",
     resolver: zodResolver(schema),
     defaultValues: initialValues,
   });
 
-  const sortMode = useWatch({ name: "sortMode" });
+  const sortMode = useWatch({ control, name: "sortMode" });
 
   React.useEffect(() => {
     reset(initialValues);
@@ -330,7 +331,7 @@ export function KdsSettingsForm({
             <div className="flex justify-end pt-2">
               <Button
                 type="submit"
-                disabled={saving}
+                disabled={saving || !isValid}
                 className="min-w-36 bg-primary hover:bg-primary-hover"
               >
                 {saving ? <Spinner className="mr-2" /> : <Save className="mr-2 h-4 w-4" />}
