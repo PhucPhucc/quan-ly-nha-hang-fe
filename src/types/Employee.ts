@@ -4,6 +4,7 @@ export enum EmployeeRole {
   MANAGER = "Manager",
   CASHIER = "Cashier",
   CHEFBAR = "ChefBar",
+  ADMIN = "Admin",
 }
 
 export enum EmployeeStatus {
@@ -15,6 +16,7 @@ export const ROLEMAP: Record<string, string> = {
   manager: "manager",
   cashier: "cashier",
   chefbar: "chefbar",
+  admin: "admin",
 };
 
 export const normalizeEmployeeRole = (role: EmployeeRole | null): EmployeeRole | null => {
@@ -28,6 +30,8 @@ export const normalizeEmployeeRole = (role: EmployeeRole | null): EmployeeRole |
     case "chefbar":
     case "chef":
       return EmployeeRole.CHEFBAR;
+    case "admin":
+      return EmployeeRole.ADMIN;
     default:
       return null;
   }

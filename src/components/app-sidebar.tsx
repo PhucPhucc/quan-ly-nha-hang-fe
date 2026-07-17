@@ -49,7 +49,7 @@ const data = {
   },
 };
 
-const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
+const ADMIN_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
   {
     title: UI_TEXT.SIDE_BAR.DASHBOARD,
     url: "/manager/dashboard",
@@ -261,6 +261,114 @@ const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
   },
 ];
 
+const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
+  {
+    title: UI_TEXT.SIDE_BAR.ORDER,
+    url: "/manager/order",
+    icon: UtensilsCrossed,
+    items: [
+      {
+        title: "Tổng quan",
+        url: "/manager/order",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Danh sách đơn",
+        url: "/manager/order/list",
+        icon: ClipboardList,
+      },
+      {
+        title: UI_TEXT.VOUCHER.TITLE,
+        url: "/manager/order/voucher",
+        icon: Tag,
+      },
+      {
+        title: "Lịch sử thanh toán",
+        url: "/manager/order/billing-history",
+        icon: CreditCard,
+      },
+    ],
+  },
+  {
+    title: UI_TEXT.SIDE_BAR.TABLE_MANAGEMENT,
+    url: "/manager/table",
+    icon: Table,
+    items: [
+      {
+        title: "Tổng quan",
+        url: "/manager/table",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Sơ đồ bàn",
+        url: "/manager/table/layout",
+        icon: Map,
+      },
+      {
+        title: UI_TEXT.SIDE_BAR.RESERVATION,
+        url: "/manager/table/reservation",
+        icon: CalendarDays,
+      },
+    ],
+  },
+  {
+    title: UI_TEXT.SIDE_BAR.SHIFT,
+    url: "/manager/employee/shift",
+    icon: Clock,
+    items: [
+      {
+        title: UI_TEXT.SIDE_BAR.SHIFT,
+        url: "/manager/employee/shift",
+        icon: Clock,
+      },
+      {
+        title: UI_TEXT.SIDE_BAR.SCHEDULE,
+        url: "/manager/employee/schedule",
+        icon: CalendarDays,
+      },
+      {
+        title: UI_TEXT.SIDE_BAR.ATTENDANCE,
+        url: "/manager/employee/attendance",
+        icon: CheckCircle2,
+      },
+    ],
+  },
+  {
+    title: UI_TEXT.SIDE_BAR.INVENTORY,
+    url: "/manager/inventory",
+    icon: Package,
+    badge: alertsCount && alertsCount > 0 ? alertsCount : undefined,
+    items: [
+      {
+        title: "Tổng quan",
+        url: "/manager/inventory",
+        icon: LayoutDashboard,
+      },
+      {
+        title: UI_TEXT.INVENTORY.NAV.INGREDIENTS,
+        url: "/manager/inventory/ingredients",
+        icon: Package,
+      },
+      {
+        title: UI_TEXT.INVENTORY.NAV.GROUPS,
+        url: "/manager/inventory/groups",
+        icon: Layers,
+      },
+      {
+        title: UI_TEXT.INVENTORY.NAV.STOCK_IO,
+        url: "/manager/inventory/stock-in",
+        icon: PackagePlus,
+      },
+      {
+        title: UI_TEXT.INVENTORY.ALERTS_BTN,
+        url: "/manager/inventory/alerts",
+        icon: Bell,
+        badge: alertsCount && alertsCount > 0 ? alertsCount : undefined,
+      },
+    ],
+  },
+];
+
 const CASHIER_ROUTES: NavMainProps[] = [
   {
     title: UI_TEXT.SIDE_BAR.ORDER,
@@ -322,6 +430,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const routes = useMemo(() => {
     if (!userRole) return [];
     switch (userRole) {
+      case EmployeeRole.ADMIN:
+        return ADMIN_ROUTES(alertsCount);
       case EmployeeRole.MANAGER:
         return MANAGER_ROUTES(alertsCount);
       case EmployeeRole.CASHIER:

@@ -41,7 +41,7 @@ export function Navbar() {
           {employee ? (
             <>
               <Link
-                href={`/${employee.role === EmployeeRole.MANAGER ? "manager/dashboard" : employee.role === EmployeeRole.CHEFBAR ? "kds/station" : "order"}`}
+                href={`/${employee.role === EmployeeRole.ADMIN ? "manager/dashboard" : employee.role === EmployeeRole.MANAGER ? "manager/order" : employee.role === EmployeeRole.CHEFBAR ? "kds/station" : "order"}`}
                 className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:scale-105 active:scale-95"
               >
                 {t.DASHBOARD}

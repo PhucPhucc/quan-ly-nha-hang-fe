@@ -66,7 +66,8 @@ const AssignmentDialog = ({
   });
 
   const currentUser = useAuthStore((state) => state.employee);
-  const isManager = currentUser?.role === EmployeeRole.MANAGER;
+  const isManager =
+    currentUser?.role === EmployeeRole.MANAGER || currentUser?.role === EmployeeRole.ADMIN;
 
   useEffect(() => {
     if (open && isManager) {

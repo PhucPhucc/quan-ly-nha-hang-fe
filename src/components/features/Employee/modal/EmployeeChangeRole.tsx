@@ -160,6 +160,7 @@ const EmployeeChangeRole = ({
                       <SelectValue placeholder="Chọn vai trò mới" />
                     </SelectTrigger>
                     <SelectContent position="popper">
+                      <SelectItem value="admin">{UI_TEXT.ROLE.ADMIN}</SelectItem>
                       <SelectItem value="manager">{UI_TEXT.ROLE.MANAGER}</SelectItem>
                       <SelectItem value="cashier">{UI_TEXT.ROLE.CASHIER}</SelectItem>
                       <SelectItem value="chefbar">{UI_TEXT.ROLE.CHEF}</SelectItem>

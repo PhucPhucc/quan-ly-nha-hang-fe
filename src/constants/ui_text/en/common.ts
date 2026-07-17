@@ -201,6 +201,7 @@ export const ROLE = {
   TITLE: "Employee role",
   CURRENT_ROLE: "Current role",
   NEW_ROLE: "New role",
+  ADMIN: "Admin",
   MANAGER: "Manager",
   CASHIER: "Cashier",
   CHEF: "Chef",

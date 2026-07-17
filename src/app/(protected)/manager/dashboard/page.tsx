@@ -58,6 +58,7 @@ export default function DashboardPage() {
 
   const getRoleName = () => {
     const role = employee?.role;
+    if (role === EmployeeRole.ADMIN) return "Admin";
     if (role === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
     if (role === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
     if (role === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;

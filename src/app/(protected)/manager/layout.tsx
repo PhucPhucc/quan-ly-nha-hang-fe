@@ -6,7 +6,7 @@ import { EmployeeRole } from "@/types/Employee";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <RoleGuard allowedRoles={[EmployeeRole.MANAGER]}>
+    <RoleGuard allowedRoles={[EmployeeRole.MANAGER, EmployeeRole.ADMIN]}>
       <div className="flex flex-col overflow-hidden">
         <HeaderBar />
         <main className="min-h-0 flex-1 overflow-auto pb-3">{children}</main>

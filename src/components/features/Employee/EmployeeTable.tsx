@@ -35,6 +35,7 @@ const EmployeeTable = () => {
   }, [fetchEmployees, setPageSize]);
 
   const getRoleLabel = (role: EmployeeRole) => {
+    if (role === EmployeeRole.ADMIN) return "Admin";
     if (role === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
     if (role === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;
     if (role === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
@@ -42,7 +43,9 @@ const EmployeeTable = () => {
   };
 
   const isRoleActive = (role: EmployeeRole) => {
-    return role === EmployeeRole.MANAGER || role === EmployeeRole.CHEFBAR;
+    return (
+      role === EmployeeRole.ADMIN || role === EmployeeRole.MANAGER || role === EmployeeRole.CHEFBAR
+    );
   };
 
   const getStatusLabel = (status: EmployeeStatus) => {

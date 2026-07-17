@@ -6,7 +6,7 @@ import { EmployeeRole } from "@/types/Employee";
 
 export function useInventoryAlerts() {
   const userRole = useAuthStore((state) => state.employee?.role);
-  const isManager = userRole === EmployeeRole.MANAGER;
+  const isManager = userRole === EmployeeRole.MANAGER || userRole === EmployeeRole.ADMIN;
 
   return useQuery({
     queryKey: ["inventory-alerts"],

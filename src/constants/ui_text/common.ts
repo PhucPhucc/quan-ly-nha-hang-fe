@@ -201,6 +201,7 @@ export const ROLE = {
   TITLE: "Vai trò nhân viên",
   CURRENT_ROLE: "Vai trò hiện tại",
   NEW_ROLE: "Vai trò mới",
+  ADMIN: "Admin",
   MANAGER: "Quản lý",
   CASHIER: "Thu ngân",
   CHEF: "Đầu bếp",

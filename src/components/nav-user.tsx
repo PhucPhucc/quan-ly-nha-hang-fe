@@ -74,11 +74,13 @@ export function NavUser() {
               <div className="grid flex-1 text-left text-sm leading-tight ml-1">
                 <span className="truncate font-semibold text-foreground">{name}</span>
                 <span className="truncate text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                  {employee?.role === EmployeeRole.MANAGER
-                    ? UI_TEXT.ROLE.MANAGER
-                    : employee?.role === EmployeeRole.CASHIER
-                      ? UI_TEXT.ROLE.CASHIER
-                      : UI_TEXT.ROLE.CHEF}
+                  {employee?.role === EmployeeRole.ADMIN
+                    ? "Admin"
+                    : employee?.role === EmployeeRole.MANAGER
+                      ? UI_TEXT.ROLE.MANAGER
+                      : employee?.role === EmployeeRole.CASHIER
+                        ? UI_TEXT.ROLE.CASHIER
+                        : UI_TEXT.ROLE.CHEF}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4 opacity-50" />

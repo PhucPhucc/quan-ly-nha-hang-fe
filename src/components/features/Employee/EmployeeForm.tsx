@@ -167,6 +167,9 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   <SelectValue placeholder="Chọn vai trò" />
                 </SelectTrigger>
                 <SelectContent position="popper">
+                  <SelectItem className="hover:bg-secondary-foreground/20" value="admin">
+                    {UI_TEXT.ROLE.ADMIN}
+                  </SelectItem>
                   <SelectItem className="hover:bg-secondary-foreground/20" value="manager">
                     {UI_TEXT.ROLE.MANAGER}
                   </SelectItem>
