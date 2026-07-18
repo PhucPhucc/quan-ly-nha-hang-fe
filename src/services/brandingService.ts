@@ -16,6 +16,10 @@ export interface BrandingSettingsDto {
   kdsTitle: string;
   appTitle: string;
   logoUrl: string;
+  operatingDays?: string;
+  operatingHours?: string;
+  description?: string;
+  email?: string;
 }
 
 export type UpdateBrandingSettingsRequest = BrandingSettingsDto;

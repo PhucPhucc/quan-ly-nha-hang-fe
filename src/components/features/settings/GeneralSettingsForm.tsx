@@ -23,8 +23,8 @@ import { LocalizationSection } from "./sections/LocalizationSection";
 type SchemaType = z.ZodObject<{
   restaurantName: z.ZodString;
   branchName: z.ZodOptional<z.ZodString>;
-  address: z.ZodOptional<z.ZodString>;
-  phone: z.ZodOptional<z.ZodString>;
+  address: z.ZodString;
+  phone: z.ZodString;
   currency: z.ZodString;
   dateFormat: z.ZodString;
   timezone: z.ZodString;
@@ -37,15 +37,22 @@ type SchemaType = z.ZodObject<{
   notifyEmail: z.ZodBoolean;
   notifyPush: z.ZodBoolean;
   notifySms: z.ZodBoolean;
+  operatingDays: z.ZodString;
+  operatingHours: z.ZodString;
+  description: z.ZodString;
+  email: z.ZodString;
 }>;
 
 function getSchema(): SchemaType {
-  const { FORM } = UI_TEXT;
+  const { FORM, PROFILE } = UI_TEXT;
   return z.object({
     restaurantName: z.string().min(1, FORM.REQUIRED),
     branchName: z.string().optional(),
-    address: z.string().optional(),
-    phone: z.string().optional(),
+    address: z.string().min(1, FORM.REQUIRED),
+    phone: z
+      .string()
+      .min(1, FORM.REQUIRED)
+      .regex(/^(0|\+84)[3|5|7|8|9][0-9]{8}$/, PROFILE.VALIDATION.PHONE_INVALID),
     currency: z.string().min(1),
     dateFormat: z.string().min(1),
     timezone: z.string().min(1),
@@ -58,14 +65,22 @@ function getSchema(): SchemaType {
     notifyEmail: z.boolean(),
     notifyPush: z.boolean(),
     notifySms: z.boolean(),
+    operatingDays: z.string().min(1, FORM.REQUIRED).max(100, "Tối đa 100 ký tự"),
+    operatingHours: z.string().min(1, FORM.REQUIRED).max(100, "Tối đa 100 ký tự"),
+    description: z.string().min(1, FORM.REQUIRED).max(2000, "Tối đa 2000 ký tự"),
+    email: z
+      .string()
+      .min(1, FORM.REQUIRED)
+      .email(PROFILE.VALIDATION.EMAIL_INVALID)
+      .max(100, "Tối đa 100 ký tự"),
   }) as SchemaType;
 }
 
 export type GeneralSettingsInput = {
   restaurantName: string;
   branchName?: string;
-  address?: string;
-  phone?: string;
+  address: string;
+  phone: string;
   currency: string;
   dateFormat: string;
   timezone: string;
@@ -78,6 +93,10 @@ export type GeneralSettingsInput = {
   notifyEmail: boolean;
   notifyPush: boolean;
   notifySms: boolean;
+  operatingDays: string;
+  operatingHours: string;
+  description: string;
+  email: string;
 };
 
 function getDefaultValues(): GeneralSettingsInput {
@@ -102,6 +121,10 @@ function getDefaultValues(): GeneralSettingsInput {
     notifyEmail: true,
     notifyPush: true,
     notifySms: false,
+    operatingDays: "Thứ 2 - Chủ Nhật",
+    operatingHours: "08:00 - 22:00",
+    description: "Nhà hàng cung cấp những món ăn tuyệt vời nhất với không gian ấm cúng.",
+    email: "contact@restaurant.com",
   };
 }
 
@@ -230,6 +253,10 @@ export function GeneralSettingsContainer() {
             kdsTitle: response.data.kdsTitle ?? current.kdsTitle,
             appTitle: response.data.appTitle ?? current.appTitle,
             logoUrl: response.data.logoUrl ?? current.logoUrl,
+            operatingDays: response.data.operatingDays ?? current.operatingDays,
+            operatingHours: response.data.operatingHours ?? current.operatingHours,
+            description: response.data.description ?? current.description,
+            email: response.data.email ?? current.email,
           }));
         }
       } catch (error) {
@@ -265,6 +292,10 @@ export function GeneralSettingsContainer() {
         kdsTitle: data.kdsTitle ?? initialValues.kdsTitle ?? "",
         appTitle: data.appTitle ?? initialValues.appTitle ?? "",
         logoUrl: data.logoUrl ?? "",
+        operatingDays: data.operatingDays ?? "",
+        operatingHours: data.operatingHours ?? "",
+        description: data.description ?? "",
+        email: data.email ?? "",
       });
 
       if (response.isSuccess && response.data) {
@@ -283,6 +314,10 @@ export function GeneralSettingsContainer() {
           kdsTitle: response.data.kdsTitle,
           appTitle: response.data.appTitle,
           logoUrl: response.data.logoUrl,
+          operatingDays: response.data.operatingDays ?? "",
+          operatingHours: response.data.operatingHours ?? "",
+          description: response.data.description ?? "",
+          email: response.data.email ?? "",
         }));
         await queryClient.invalidateQueries({ queryKey: ["branding-settings"] });
       }

@@ -1,8 +1,9 @@
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Check, ChevronLeft, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -86,6 +87,13 @@ export const StartServingDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] rounded-3xl p-8 outline-none border-none shadow-[0_4px_24px_rgba(0,0,0,0.05)] overflow-hidden">
+        <VisuallyHidden>
+          <DialogTitle>
+            {isSwitchMode
+              ? UI_TEXT.RESERVATION.SWITCH_AREA_TITLE
+              : UI_TEXT.RESERVATION.CONFIRM_ARRIVAL_TITLE}
+          </DialogTitle>
+        </VisuallyHidden>
         {!isSwitchMode ? (
           /* --- MODE 1: NORMAL CONFIRMATION --- */
           <div className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-300">

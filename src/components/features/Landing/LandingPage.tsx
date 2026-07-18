@@ -2,10 +2,10 @@
 
 import { AboutSection } from "./components/AboutSection";
 import { BlogSection } from "./components/BlogSection";
+import { ContactSection } from "./components/ContactSection";
 import { Footer } from "./components/Footer";
 import { HeroSection } from "./components/HeroSection";
 import { Navbar } from "./components/Navbar";
-import { ReservationSectionWrapper } from "./components/ReservationSectionWrapper";
 import { ReviewsSection } from "./components/ReviewsSection";
 import { SolutionsSection } from "./components/SolutionsSection";
 
@@ -16,7 +16,7 @@ export function LandingPage() {
       <HeroSection />
       <AboutSection />
       <SolutionsSection />
-      <ReservationSectionWrapper />
+      <ContactSection />
       <ReviewsSection />
       <BlogSection />
       <Footer />

@@ -1,8 +1,9 @@
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { reservationService } from "@/services/reservationService";
@@ -49,6 +50,9 @@ export const CancelBookingDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] rounded-3xl p-8 outline-none border-none shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
+        <VisuallyHidden>
+          <DialogTitle>{UI_TEXT.RESERVATION.CANCEL_BOOKING_TITLE}</DialogTitle>
+        </VisuallyHidden>
         <div className="flex flex-col items-center text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
             <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-md shadow-red-500/30">
