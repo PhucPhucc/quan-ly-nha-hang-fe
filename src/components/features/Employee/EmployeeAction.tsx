@@ -12,7 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UI_TEXT } from "@/lib/UI_Text";
-import { Employee } from "@/types/Employee";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Employee, EmployeeRole } from "@/types/Employee";
 
 import EmployeeChangePassword from "./modal/EmployeeChangePassWord";
 import EmployeeChangeRole from "./modal/EmployeeChangeRole";
@@ -30,7 +31,11 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
     modal: null,
   });
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const role = useAuthStore((state) => state.employee?.role);
+  const isAdmin = role === EmployeeRole.ADMIN;
+
   const handleEdit = (newModal: EmployeeActionState["modal"]) => {
+    if (!isAdmin) return;
     setSelectedEmployee(employee);
     setOpen((prev) => ({
       isEditOpen: prev.isEditOpen ? false : true,
@@ -46,12 +51,13 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             size="icon"
             variant="ghost"
             className="h-8 w-8 rounded-lg hover:bg-slate-200/50 text-slate-400 hover:text-slate-600 transition-colors"
+            disabled={!isAdmin}
           >
             <List className="size-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 shadow-2xl text-foreground" align="end" sideOffset={8}>
-          <DropdownMenuItem onClick={() => handleEdit("edit")}>
+          <DropdownMenuItem onClick={() => handleEdit("edit")} disabled={!isAdmin}>
             <UserPen className="size-4 " />
             <div className="flex flex-col">
               <span>{UI_TEXT.EMPLOYEE.UPDATE_PROFILE}</span>
@@ -64,6 +70,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
               e.currentTarget.blur();
               handleEdit("changeRole");
             }}
+            disabled={!isAdmin}
           >
             <ShieldCheck className="size-4 " />
             <div className="flex flex-col">
@@ -72,7 +79,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
             </div>
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => handleEdit("changePassword")}>
+          <DropdownMenuItem onClick={() => handleEdit("changePassword")} disabled={!isAdmin}>
             <LockKeyhole className="size-4 " />
             <div className="flex flex-col">
               <span className="text-sm">{UI_TEXT.EMPLOYEE.CHANGE_PASSWORD}</span>
@@ -82,7 +89,7 @@ export default function EmployeeAction({ employee }: { employee: Employee }) {
 
           <DropdownMenuSeparator className="my-1.5 mx-2" />
 
-          <DropdownMenuItem onClick={() => handleEdit("delete")}>
+          <DropdownMenuItem onClick={() => handleEdit("delete")} disabled={!isAdmin}>
             <Trash2 className="size-4" />
             <div className="flex flex-col">
               <span className=" text-sm">{UI_TEXT.EMPLOYEE.DELETE}</span>

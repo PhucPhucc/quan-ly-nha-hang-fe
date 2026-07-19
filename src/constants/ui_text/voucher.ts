@@ -83,6 +83,8 @@ export const VOUCHER = {
   VALIDATE_CODE_REQUIRED: "Vui lòng nhập mã voucher",
   VALIDATE_DATE_REQUIRED: "Vui lòng chọn ngày bắt đầu và kết thúc",
   VALIDATE_DATE_ORDER: "Ngày kết thúc phải sau ngày bắt đầu",
+  VALIDATE_PERCENT_MAX: "Giá trị giảm không được vượt quá 100%",
+  VALIDATE_START_DATE_PAST: "Ngày bắt đầu không được trước ngày hiện tại",
 
   CREATE_DESC: "Thiết lập chương trình khuyến mãi mới.",
   EDIT_DESC: "Cập nhật thông tin voucher khuyến mãi.",

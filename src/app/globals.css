@@ -502,6 +502,13 @@ Retrieved 2026-03-22, License - CC BY-SA 4.0
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Radix Select locks body scrolling while its menu is open. Keep the
+     scrollbar and remove its compensating margin so the page stays still. */
+  html body[data-scroll-locked] {
+    overflow-y: scroll !important;
+    margin-right: 0 !important;
+  }
 }
 
 /* ==========================================

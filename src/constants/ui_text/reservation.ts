@@ -106,6 +106,7 @@ export const RESERVATION = {
   VALIDATION_REQUIRED_NAME_PHONE: "Vui lòng nhập tên và số điện thoại khách hàng",
   VALIDATION_REQUIRED_DATE_TIME: "Vui lòng chọn ngày và giờ đặt bàn",
   VALIDATION_VIP_REQUIRED: "Đoàn khách trên 12 người vui lòng đặt phòng VIP.",
+  VALIDATION_CHECKIN_TOO_EARLY: "Không thể check-in trước ngày đặt bàn.",
   ERROR_CREATE_FAILED: "Tạo đơn đặt bàn thất bại",
   ERROR_SAVE_FAILED: "Lưu thông tin thất bại",
   ERROR_CONNECTION: "Không thể kết nối đến máy chủ",

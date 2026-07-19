@@ -19,6 +19,9 @@ export function HeroSection() {
   let urlDashboard = "/login";
 
   switch (employee?.role) {
+    case EmployeeRole.ADMIN:
+      urlDashboard = "/manager/dashboard";
+      break;
     case EmployeeRole.MANAGER:
       urlDashboard = "/manager/dashboard";
       break;

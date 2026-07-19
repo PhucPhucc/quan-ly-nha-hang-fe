@@ -18,9 +18,18 @@ import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { updateEmployee } from "@/services/employeeService";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
-import { Employee, EmployeeStatus } from "@/types/Employee";
+import { Employee, EmployeeRole, EmployeeStatus, normalizeEmployeeRole } from "@/types/Employee";
 
 import SwitchActive from "./SwitchActive";
+
+const getRoleLabel = (raw: string | undefined) => {
+  if (!raw) return "";
+  const normalized = normalizeEmployeeRole(raw as EmployeeRole);
+  if (normalized === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
+  if (normalized === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;
+  if (normalized === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
+  return raw;
+};
 
 // ─── Schema ────────────────────────────────────────────────────────────────────
 const updateSchema = z.object({
@@ -205,7 +214,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
         {/* Role — readonly */}
         <Field>
           <Label>{UI_TEXT.EMPLOYEE.ROLE}</Label>
-          <Input disabled defaultValue={employee?.role || ""} />
+          <Input disabled defaultValue={getRoleLabel(employee?.role)} />
         </Field>
 
         {/* Created At */}

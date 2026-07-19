@@ -49,7 +49,7 @@ const data = {
   },
 };
 
-const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
+const BASE_ROUTES = (alertsCount: number | undefined, isAdmin: boolean): NavMainProps[] => [
   {
     title: UI_TEXT.SIDE_BAR.DASHBOARD,
     url: "/manager/dashboard",
@@ -227,38 +227,42 @@ const MANAGER_ROUTES = (alertsCount: number | undefined): NavMainProps[] => [
       },
     ],
   },
-  {
-    title: UI_TEXT.SIDE_BAR.SETTINGS,
-    url: "/manager/settings",
-    icon: Settings2,
-    items: [
-      {
-        title: UI_TEXT.SETTINGS.NAV_GENERAL,
-        url: "/manager/settings",
-        icon: Building2,
-      },
-      {
-        title: UI_TEXT.SETTINGS.NAV_WAREHOUSE,
-        url: "/manager/settings/warehouse",
-        icon: Warehouse,
-      },
-      {
-        title: UI_TEXT.SETTINGS.NAV_RESERVATION,
-        url: "/manager/settings/reservation",
-        icon: CalendarDays,
-      },
-      {
-        title: UI_TEXT.SETTINGS.NAV_SETTING,
-        url: "/manager/settings/kds",
-        icon: ChefHat,
-      },
-    ],
-  },
-  {
-    title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
-    url: "/manager/audit-log",
-    icon: ChartColumn,
-  },
+  ...(isAdmin
+    ? [
+        {
+          title: UI_TEXT.SIDE_BAR.SETTINGS,
+          url: "/manager/settings",
+          icon: Settings2,
+          items: [
+            {
+              title: UI_TEXT.SETTINGS.NAV_GENERAL,
+              url: "/manager/settings",
+              icon: Building2,
+            },
+            {
+              title: UI_TEXT.SETTINGS.NAV_WAREHOUSE,
+              url: "/manager/settings/warehouse",
+              icon: Warehouse,
+            },
+            {
+              title: UI_TEXT.SETTINGS.NAV_RESERVATION,
+              url: "/manager/settings/reservation",
+              icon: CalendarDays,
+            },
+            {
+              title: UI_TEXT.SETTINGS.NAV_SETTING,
+              url: "/manager/settings/kds",
+              icon: ChefHat,
+            },
+          ],
+        },
+        {
+          title: UI_TEXT.SIDE_BAR.AUDIT_LOG,
+          url: "/manager/audit-log",
+          icon: ChartColumn,
+        },
+      ]
+    : []),
 ];
 
 const CASHIER_ROUTES: NavMainProps[] = [
@@ -318,12 +322,14 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const userRole = useAuthStore((state) => state.employee?.role);
   const { data: alertsCount } = useInventoryAlertsCount();
   const { data: branding } = useBrandingSettings();
+  const isAdmin = userRole === EmployeeRole.ADMIN;
 
   const routes = useMemo(() => {
     if (!userRole) return [];
     switch (userRole) {
+      case EmployeeRole.ADMIN:
       case EmployeeRole.MANAGER:
-        return MANAGER_ROUTES(alertsCount);
+        return BASE_ROUTES(alertsCount, isAdmin);
       case EmployeeRole.CASHIER:
         return CASHIER_ROUTES;
       case EmployeeRole.CHEFBAR:
@@ -331,7 +337,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
       default:
         return [];
     }
-  }, [userRole, alertsCount]);
+  }, [userRole, alertsCount, isAdmin]);
 
   if (!userRole) return null;
 

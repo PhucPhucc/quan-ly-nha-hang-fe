@@ -1,0 +1,18 @@
+export const ADMIN = {
+  ACCOUNT_MANAGEMENT: "Account Management",
+  CREATE_ACCOUNT: "Create Account",
+  EDIT_ACCOUNT: "Edit Account",
+  BRAND_CONFIGURATION: "Branding Configuration",
+  KDS_CONFIGURATION: "KDS Configuration",
+  REPORTS_ANALYTICS: "Reports & Analytics",
+  SYSTEM_LOG: "System Log",
+  ACCOUNT_NOT_FOUND: "Account not found",
+  LOADING: "Loading...",
+  CREATE_NEW_ACCOUNT: "Create New Account",
+  ROLE_SELECTED: "Role selected",
+  SELECT_ROLE: "Select role",
+  ENTER_FULL_NAME: "Enter full name",
+  ENTER_EMAIL: "Enter email",
+  FULL_NAME: "Full Name",
+  EMAIL_ADDRESS: "Email",
+};

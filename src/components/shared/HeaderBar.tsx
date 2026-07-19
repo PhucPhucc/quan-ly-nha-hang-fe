@@ -16,6 +16,7 @@ import React, { useMemo } from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 
+import { AdminSettingsNavigation } from "../features/Admin/Settings/AdminSettingsNavigation";
 import { EmployeeNavigation } from "../features/Employee/components/EmployeeNavigation";
 import { InventoryNavigation } from "../features/inventory/components/InventoryNavigation";
 import { MenuNavigation } from "../features/menu/components/MenuNavigation";
@@ -65,7 +66,16 @@ const HeaderBar = () => {
         </div>
 
         <div className="ml-2 hidden flex-1 items-center overflow-hidden md:flex">
-          {pathname.startsWith("/manager/order") ? (
+          {pathname.startsWith("/admin/settings") ? (
+            <AdminSettingsNavigation />
+          ) : pathname.startsWith("/admin") ? (
+            <div
+              className="flex items-center gap-1.5 font-semibold text-secondary-foreground"
+              aria-current="page"
+            >
+              <span>{t.ADMIN_PANEL}</span>
+            </div>
+          ) : pathname.startsWith("/manager/order") ? (
             <OrderNavigation />
           ) : pathname.startsWith("/manager/menu") ? (
             <MenuNavigation />

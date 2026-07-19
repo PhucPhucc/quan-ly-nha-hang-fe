@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { RESERVATION_RULES } from "@/constants/reservation";
 import { getErrorMessage } from "@/lib/error";
 import {
   createReservationTimeSlots,
@@ -14,9 +13,7 @@ import {
 import { UI_TEXT } from "@/lib/UI_Text";
 import { reservationService } from "@/services/reservationService";
 import { tableService } from "@/services/tableService";
-import { Area, AreaStatus, AreaType } from "@/types/Table-Layout";
-
-const VIP_GUEST_THRESHOLD = RESERVATION_RULES.VIP_MIN_GUEST_COUNT;
+import { Area, AreaStatus } from "@/types/Table-Layout";
 
 const formatReservationTime = (value: string) => {
   const segments = value.split(":");
@@ -188,27 +185,11 @@ export function useCreateBooking(
     }
   };
 
-  const guestCountValue = Number(formData.guestCount) || 0;
-  const requiresVipArea = guestCountValue > VIP_GUEST_THRESHOLD;
-
-  useEffect(() => {
-    if (requiresVipArea && formData.areaId !== "all") {
-      const selectedArea = areas.find((a) => a.areaId === formData.areaId);
-      if (selectedArea && selectedArea.type !== AreaType.VIP) {
-        setFormData((prev) => ({ ...prev, areaId: "all" }));
-        toast.info(UI_TEXT.RESERVATION.VALIDATION_VIP_REQUIRED);
-      }
-    }
-  }, [requiresVipArea, formData.areaId, areas]);
-
-  const filteredAreas = requiresVipArea ? areas.filter((a) => a.type === AreaType.VIP) : areas;
-
   return {
     loading,
     formData,
-    areas: filteredAreas,
+    areas,
     timeSlots,
-    requiresVipArea,
     handleChange,
     handleSubmit,
   };

@@ -201,6 +201,7 @@ export const ROLE = {
   TITLE: "Vai trò nhân viên",
   CURRENT_ROLE: "Vai trò hiện tại",
   NEW_ROLE: "Vai trò mới",
+  ADMIN: "Admin",
   MANAGER: "Quản lý",
   CASHIER: "Thu ngân",
   CHEF: "Đầu bếp",
@@ -253,4 +254,5 @@ export const NAVIGATION = {
   ORDER_LIST: "Danh sách đơn hàng",
   ORDER_DETAIL: "Chi tiết đơn hàng",
   SETTINGS: "Cài đặt hệ thống",
+  ADMIN_PANEL: "Bảng điều khiển Admin",
 };

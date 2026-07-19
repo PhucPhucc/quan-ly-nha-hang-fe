@@ -201,6 +201,7 @@ export const ROLE = {
   TITLE: "Employee role",
   CURRENT_ROLE: "Current role",
   NEW_ROLE: "New role",
+  ADMIN: "Admin",
   MANAGER: "Manager",
   CASHIER: "Cashier",
   CHEF: "Chef",
@@ -254,4 +255,5 @@ export const NAVIGATION = {
   ORDER_LIST: "Order List",
   ORDER_DETAIL: "Order Detail",
   SETTINGS: "System Settings",
+  ADMIN_PANEL: "Admin Panel",
 };

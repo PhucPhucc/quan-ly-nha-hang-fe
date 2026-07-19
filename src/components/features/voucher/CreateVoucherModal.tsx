@@ -119,6 +119,13 @@ const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
       if (new Date(formData.endDate) < new Date(formData.startDate)) {
         throw new Error(V.VALIDATE_DATE_ORDER);
       }
+      if (formData.type === VoucherType.Percent && formData.value > 100) {
+        throw new Error(V.VALIDATE_PERCENT_MAX);
+      }
+      const today = new Date().toISOString().split("T")[0];
+      if (formData.startDate < today) {
+        throw new Error(V.VALIDATE_START_DATE_PAST);
+      }
 
       const payload = {
         ...formData,

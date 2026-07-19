@@ -12,16 +12,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
 import EmployeeForm from "./EmployeeForm";
 
 const EmployeeDialog = () => {
   const [open, setOpen] = useState(false);
+  const role = useAuthStore((state) => state.employee?.role);
+  const isAdmin = role === EmployeeRole.ADMIN;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isAdmin && open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={!isAdmin}>
           <Plus className="size-4" strokeWidth={2.5} />
           <span>{UI_TEXT.EMPLOYEE.ADD}</span>
         </Button>
