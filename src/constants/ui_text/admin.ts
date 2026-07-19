@@ -1,0 +1,18 @@
+export const ADMIN = {
+  ACCOUNT_MANAGEMENT: "Quản lý tài khoản",
+  CREATE_ACCOUNT: "Tạo tài khoản",
+  EDIT_ACCOUNT: "Chỉnh sửa tài khoản",
+  BRAND_CONFIGURATION: "Cấu hình thương hiệu",
+  KDS_CONFIGURATION: "Cấu hình KDS",
+  REPORTS_ANALYTICS: "Báo cáo & Phân tích",
+  SYSTEM_LOG: "Nhật ký hệ thống",
+  ACCOUNT_NOT_FOUND: "Không tìm thấy tài khoản",
+  LOADING: "Đang tải...",
+  CREATE_NEW_ACCOUNT: "Tạo tài khoản mới",
+  ROLE_SELECTED: "Đã chọn vai trò",
+  SELECT_ROLE: "Chọn vai trò",
+  ENTER_FULL_NAME: "Nhập họ và tên",
+  ENTER_EMAIL: "Nhập email",
+  FULL_NAME: "Họ và tên",
+  EMAIL_ADDRESS: "Email",
+};

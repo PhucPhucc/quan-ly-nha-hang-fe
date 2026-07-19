@@ -1,3 +1,4 @@
+import { ADMIN } from "./admin";
 import { ATTENDANCE } from "./attendance";
 import { AUDIT_LOG } from "./audit";
 import { AUTH, CHANGE_PASSWORD, PROFILE, UNAUTHORIZED } from "./auth";
@@ -19,6 +20,7 @@ import { TABLE } from "./table";
 import { VOUCHER } from "./voucher";
 
 export const viTexts = {
+  ADMIN,
   ATTENDANCE,
   COMMON,
   SIDE_BAR,

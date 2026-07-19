@@ -38,11 +38,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { changeEmployeeRole } from "@/services/employeeService";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { EmployeeRole, normalizeEmployeeRole } from "@/types/Employee";
 
 const getRoleLabel = (raw: string) => {
   const normalized = normalizeEmployeeRole(raw as EmployeeRole);
+  if (normalized === EmployeeRole.ADMIN) return UI_TEXT.ROLE.ADMIN;
   if (normalized === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
   if (normalized === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;
   if (normalized === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
@@ -101,6 +103,8 @@ const EmployeeChangeRole = ({
   const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
   const normalizedRole = normalizeEmployeeRole(role as EmployeeRole);
   const isManager = normalizedRole === EmployeeRole.MANAGER;
+  const currentUserRole = useAuthStore((state) => state.employee?.role);
+  const isCurrentUserAdmin = currentUserRole === EmployeeRole.ADMIN;
 
   const {
     register,
@@ -119,7 +123,9 @@ const EmployeeChangeRole = ({
   const confirmedValue = useWatch({ control, name: "confirmed" }) ?? false;
 
   const onSubmit = async (data: ChangeRoleFormValues) => {
-    if (isManager) {
+    const isTargetManagerOrAdmin =
+      normalizedRole === EmployeeRole.MANAGER || normalizedRole === EmployeeRole.ADMIN;
+    if (isTargetManagerOrAdmin && !isCurrentUserAdmin) {
       toast.error(UI_TEXT.EMPLOYEE.CANNOT_CHANGE_SELF_ROLE);
       return;
     }
@@ -175,6 +181,9 @@ const EmployeeChangeRole = ({
                       <SelectValue placeholder="Chọn vai trò mới" />
                     </SelectTrigger>
                     <SelectContent position="popper">
+                      {isCurrentUserAdmin && (
+                        <SelectItem value="manager">{UI_TEXT.ROLE.MANAGER}</SelectItem>
+                      )}
                       <SelectItem value="cashier">{UI_TEXT.ROLE.CASHIER}</SelectItem>
                       <SelectItem value="chefbar">{UI_TEXT.ROLE.CHEF}</SelectItem>
                     </SelectContent>

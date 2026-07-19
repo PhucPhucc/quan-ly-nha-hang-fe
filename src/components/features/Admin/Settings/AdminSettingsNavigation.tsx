@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, CheckCircle2, Clock, LayoutDashboard, Users } from "lucide-react";
+import { Building2, ChefHat } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -15,50 +15,31 @@ interface NavItem {
   exact?: boolean;
 }
 
-export function EmployeeNavigation() {
+export function AdminSettingsNavigation() {
   const pathname = usePathname();
+  const { ADMIN } = UI_TEXT;
 
-  const NAV_ITEMS: NavItem[] = React.useMemo(
-    () => [
-      {
-        label: UI_TEXT.SIDE_BAR.OVERVIEW,
-        href: "/manager/employee",
-        icon: LayoutDashboard,
-        exact: true,
-      },
-      {
-        label: UI_TEXT.SIDE_BAR.EMPLOYEE,
-        href: "/manager/employee/list",
-        icon: Users,
-      },
-      {
-        label: UI_TEXT.SIDE_BAR.SHIFT,
-        href: "/manager/employee/shift",
-        icon: Clock,
-      },
-      {
-        label: UI_TEXT.SIDE_BAR.SCHEDULE,
-        href: "/manager/employee/schedule",
-        icon: CalendarDays,
-      },
-      {
-        label: UI_TEXT.SIDE_BAR.ATTENDANCE,
-        href: "/manager/employee/attendance",
-        icon: CheckCircle2,
-      },
-    ],
-    []
-  );
+  const NAV_ITEMS: NavItem[] = [
+    {
+      label: ADMIN.BRAND_CONFIGURATION,
+      href: "/admin/settings",
+      icon: Building2,
+      exact: true,
+    },
+    {
+      label: ADMIN.KDS_CONFIGURATION,
+      href: "/admin/settings/kds",
+      icon: ChefHat,
+    },
+  ];
 
-  const isActive = (item: NavItem) => {
-    if (item.exact) return pathname === item.href;
-    return pathname.startsWith(item.href);
-  };
+  const isActive = (item: NavItem) =>
+    item.exact ? pathname === item.href : pathname.startsWith(item.href);
 
   return (
     <nav
-      className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1"
-      aria-label={UI_TEXT.SIDE_BAR.HR_MANAGEMENT}
+      className="flex items-center gap-1 overflow-x-auto no-scrollbar"
+      aria-label={UI_TEXT.SIDE_BAR.SETTINGS}
     >
       {NAV_ITEMS.map((item) => {
         const active = isActive(item);

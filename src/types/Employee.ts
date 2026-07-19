@@ -1,6 +1,7 @@
 // types/employee.ts
 
 export enum EmployeeRole {
+  ADMIN = "Admin",
   MANAGER = "Manager",
   CASHIER = "Cashier",
   CHEFBAR = "ChefBar",
@@ -12,6 +13,7 @@ export enum EmployeeStatus {
 }
 
 export const ROLEMAP: Record<string, string> = {
+  admin: "admin",
   manager: "manager",
   cashier: "cashier",
   chefbar: "chefbar",
@@ -21,6 +23,8 @@ export const normalizeEmployeeRole = (role: EmployeeRole | null): EmployeeRole |
   const value = role?.toLowerCase();
 
   switch (value) {
+    case "admin":
+      return EmployeeRole.ADMIN;
     case "manager":
       return EmployeeRole.MANAGER;
     case "cashier":

@@ -7,6 +7,8 @@ import React from "react";
 
 import { UI_TEXT } from "@/lib/UI_Text";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
+import { EmployeeRole } from "@/types/Employee";
 
 interface NavItem {
   label: string;
@@ -18,15 +20,21 @@ interface NavItem {
 export function SettingsNavigation() {
   const pathname = usePathname();
   const { SETTINGS } = UI_TEXT;
+  const role = useAuthStore((state) => state.employee?.role);
+  const isAdmin = role === EmployeeRole.ADMIN;
 
   const NAV_ITEMS: NavItem[] = React.useMemo(
     () => [
-      {
-        label: SETTINGS.NAV_GENERAL,
-        href: "/manager/settings",
-        icon: Building2,
-        exact: true,
-      },
+      ...(isAdmin
+        ? [
+            {
+              label: SETTINGS.NAV_GENERAL,
+              href: "/manager/settings",
+              icon: Building2,
+              exact: true,
+            },
+          ]
+        : []),
       {
         label: SETTINGS.NAV_WAREHOUSE,
         href: "/manager/settings/warehouse",
@@ -37,13 +45,17 @@ export function SettingsNavigation() {
         href: "/manager/settings/reservation",
         icon: CalendarDays,
       },
-      {
-        label: SETTINGS.NAV_SETTING,
-        href: "/manager/settings/kds",
-        icon: ChefHat,
-      },
+      ...(isAdmin
+        ? [
+            {
+              label: SETTINGS.NAV_SETTING,
+              href: "/manager/settings/kds",
+              icon: ChefHat,
+            },
+          ]
+        : []),
     ],
-    [SETTINGS]
+    [SETTINGS, isAdmin]
   );
 
   const isActive = (item: NavItem) =>

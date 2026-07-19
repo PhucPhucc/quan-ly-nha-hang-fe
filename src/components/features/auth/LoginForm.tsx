@@ -38,6 +38,9 @@ const LoginForm = () => {
         });
 
         switch (role) {
+          case EmployeeRole.ADMIN:
+            router.push("/manager/dashboard");
+            break;
           case EmployeeRole.MANAGER:
             router.push("/manager/dashboard");
             break;

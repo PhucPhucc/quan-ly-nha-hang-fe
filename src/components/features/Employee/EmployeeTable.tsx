@@ -15,6 +15,7 @@ import {
   TableShell,
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
 import { EmployeeRole, EmployeeStatus, normalizeEmployeeRole } from "@/types/Employee";
 
@@ -28,6 +29,8 @@ const EmployeeTable = () => {
   const setPage = useEmployeeStore((state) => state.setPage);
   const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
   const setPageSize = useEmployeeStore((state) => state.setPageSize);
+  const userRole = useAuthStore((state) => state.employee?.role);
+  const isAdmin = userRole === EmployeeRole.ADMIN;
 
   useEffect(() => {
     setPageSize(8);
@@ -56,6 +59,10 @@ const EmployeeTable = () => {
     const s = status.toLowerCase();
     return s === EmployeeStatus.ACTIVE;
   };
+
+  const filteredEmployees = isAdmin
+    ? employees
+    : employees.filter((e) => normalizeEmployeeRole(e.role) !== EmployeeRole.ADMIN);
 
   if (loading) {
     return <TableSkeleton />;
@@ -95,7 +102,7 @@ const EmployeeTable = () => {
               </TableRow>
             )}
 
-            {!error && employees.length === 0 && (
+            {!error && filteredEmployees.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7}>
                   <div className="table-feedback">
@@ -108,7 +115,7 @@ const EmployeeTable = () => {
             )}
 
             {!error &&
-              employees.map((employee) => (
+              filteredEmployees.map((employee) => (
                 <TableRow key={employee.employeeId} className="group">
                   <TableCell className="table-cell-muted text-center text-xs font-medium">
                     {employee.employeeCode}

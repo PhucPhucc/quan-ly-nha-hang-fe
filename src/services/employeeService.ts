@@ -23,6 +23,10 @@ export async function getEmployees(params?: {
   return res;
 }
 
+export async function getAllEmployees(): Promise<ApiResponse<PaginationResult<Employee>>> {
+  return getEmployees({ pageSize: 100 });
+}
+
 export async function addEmployee(employee: Partial<Employee>): Promise<ApiResponse<Employee>> {
   return apiFetch<Employee>("/employees", {
     method: "POST",
@@ -31,10 +35,20 @@ export async function addEmployee(employee: Partial<Employee>): Promise<ApiRespo
   });
 }
 
-export async function updateEmployee(employee: Partial<Employee>): Promise<ApiResponse<Employee>> {
-  return apiFetch<Employee>(`/employees/${employee.employeeId}`, {
+export async function updateEmployee(
+  employeeOrId: Partial<Employee> | string,
+  data?: Partial<Employee>
+): Promise<ApiResponse<Employee>> {
+  if (typeof employeeOrId === "string") {
+    return apiFetch<Employee>(`/employees/${employeeOrId}`, {
+      method: "PUT",
+      body: data,
+      cache: "no-store",
+    });
+  }
+  return apiFetch<Employee>(`/employees/${employeeOrId.employeeId}`, {
     method: "PUT",
-    body: employee,
+    body: employeeOrId,
     cache: "no-store",
   });
 }
@@ -86,3 +100,11 @@ export async function getEmployeeById(employeeId: string): Promise<ApiResponse<E
     cache: "no-store",
   });
 }
+
+export const employeeService = {
+  getAll: getAllEmployees,
+  getById: getEmployeeById,
+  add: addEmployee,
+  update: updateEmployee,
+  delete: deleteEmployee,
+};
