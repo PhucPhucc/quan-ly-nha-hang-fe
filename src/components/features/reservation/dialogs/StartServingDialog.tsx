@@ -57,6 +57,12 @@ export const StartServingDialog = ({
   const handleConfirm = async (newAreaId?: string) => {
     if (!bookingData?.id) return;
 
+    const today = new Date().toISOString().split("T")[0];
+    if (bookingData.date > today) {
+      toast.error(UI_TEXT.RESERVATION.VALIDATION_CHECKIN_TOO_EARLY);
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await reservationService.checkInReservation(bookingData.id, newAreaId);

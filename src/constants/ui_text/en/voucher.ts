@@ -83,6 +83,8 @@ export const VOUCHER = {
   VALIDATE_CODE_REQUIRED: "Please enter a voucher code",
   VALIDATE_DATE_REQUIRED: "Please select start and end dates",
   VALIDATE_DATE_ORDER: "End date must be after start date",
+  VALIDATE_PERCENT_MAX: "Discount percentage cannot exceed 100%",
+  VALIDATE_START_DATE_PAST: "Start date cannot be before today",
 
   CREATE_DESC: "Set up a new promotion program.",
   EDIT_DESC: "Update promotion voucher information.",

@@ -61,6 +61,7 @@ export const EMPLOYEE = {
   CONFIRM_REQUIRED: "Vui lòng xác nhận thay đổi vai trò",
   REASON_REQUIRED: "Vui lòng nhập lý do thay đổi vai trò",
   ROLE_MISMATCH: "Vai trò mới phải khác vai trò hiện tại",
+  CANNOT_CHANGE_SELF_ROLE: "Không thể thay đổi vai trò của quản lý",
   INVALID_CODE: "Mã nhân viên không hợp lệ hoặc không tồn tại",
   CHANGE_SUCCESS: "Thay đổi vai trò thành công",
   CHANGE_FAILED: "Thay đổi vai trò thất bại",

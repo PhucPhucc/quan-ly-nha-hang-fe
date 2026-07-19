@@ -96,6 +96,7 @@ export const RESERVATION = {
   VALIDATION_REQUIRED_NAME_PHONE: "Please enter customer name and phone number",
   VALIDATION_REQUIRED_DATE_TIME: "Please select reservation date and time",
   VALIDATION_VIP_REQUIRED: "Groups over 12 guests require a VIP room reservation.",
+  VALIDATION_CHECKIN_TOO_EARLY: "Cannot check-in before the reservation date.",
   ERROR_CREATE_FAILED: "Failed to create reservation",
   ERROR_SAVE_FAILED: "Failed to save information",
   ERROR_CONNECTION: "Could not connect to server",

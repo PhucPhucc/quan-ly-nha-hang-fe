@@ -63,6 +63,11 @@ const StatusBadge = ({ status }: { status: string }) => {
 import PaginationTable from "@/components/shared/PaginationTable";
 import { ReservationDto } from "@/services/reservationService";
 
+const isFutureDate = (dateStr: string): boolean => {
+  const today = new Date().toISOString().split("T")[0];
+  return dateStr > today;
+};
+
 interface ReservationTableProps {
   data: ReservationDto[];
   totalItems: number;
@@ -141,7 +146,7 @@ export const ReservationTable = ({
                           {formatDate(row.date)}
                         </span>
                         <span className="text-[11px] text-muted-foreground/70">
-                          {formatTime(row.time)}
+                          {formatTime(`${row.date}T${row.time}`)}
                         </span>
                       </div>
                     </TableCell>
@@ -164,6 +169,12 @@ export const ReservationTable = ({
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-success hover:bg-success/10 bg-success/15 rounded-full"
+                              disabled={isFutureDate(row.date)}
+                              title={
+                                isFutureDate(row.date)
+                                  ? UI_TEXT.RESERVATION.VALIDATION_CHECKIN_TOO_EARLY
+                                  : undefined
+                              }
                               onClick={() => handleStartServing(row)}
                             >
                               <CheckCircle2 className="h-4 w-4" />

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { useEmployeeStore } from "@/store/useEmployeeStore";
-import { EmployeeRole, EmployeeStatus } from "@/types/Employee";
+import { EmployeeRole, EmployeeStatus, normalizeEmployeeRole } from "@/types/Employee";
 
 import EmployeeAction from "./EmployeeAction";
 
@@ -35,14 +35,16 @@ const EmployeeTable = () => {
   }, [fetchEmployees, setPageSize]);
 
   const getRoleLabel = (role: EmployeeRole) => {
-    if (role === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
-    if (role === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;
-    if (role === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
+    const normalized = normalizeEmployeeRole(role);
+    if (normalized === EmployeeRole.MANAGER) return UI_TEXT.ROLE.MANAGER;
+    if (normalized === EmployeeRole.CASHIER) return UI_TEXT.ROLE.CASHIER;
+    if (normalized === EmployeeRole.CHEFBAR) return UI_TEXT.ROLE.CHEF;
     return role || UI_TEXT.COMMON.NULL;
   };
 
   const isRoleActive = (role: EmployeeRole) => {
-    return role === EmployeeRole.MANAGER || role === EmployeeRole.CHEFBAR;
+    const normalized = normalizeEmployeeRole(role);
+    return normalized === EmployeeRole.MANAGER || normalized === EmployeeRole.CHEFBAR;
   };
 
   const getStatusLabel = (status: EmployeeStatus) => {

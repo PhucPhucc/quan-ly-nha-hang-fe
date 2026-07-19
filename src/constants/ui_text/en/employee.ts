@@ -62,6 +62,7 @@ export const EMPLOYEE = {
   CONFIRM_REQUIRED: "Please confirm the role change",
   REASON_REQUIRED: "Please enter a reason for the role change",
   ROLE_MISMATCH: "New role must differ from the current role",
+  CANNOT_CHANGE_SELF_ROLE: "Cannot change the role of a manager",
   INVALID_CODE: "Employee code is invalid or does not exist",
   CHANGE_SUCCESS: "Role changed successfully",
   CHANGE_FAILED: "Role change failed",

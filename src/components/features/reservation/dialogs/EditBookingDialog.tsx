@@ -1,4 +1,3 @@
-import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -20,12 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RESERVATION_RULES } from "@/constants/reservation";
 import { getErrorMessage } from "@/lib/error";
 import { UI_TEXT } from "@/lib/UI_Text";
 import { ReservationDto, reservationService } from "@/services/reservationService";
 import { tableService } from "@/services/tableService";
-import { Area, AreaStatus, AreaType } from "@/types/Table-Layout";
+import { Area, AreaStatus } from "@/types/Table-Layout";
 
 interface EditBookingDialogProps {
   open: boolean;
@@ -33,8 +31,6 @@ interface EditBookingDialogProps {
   bookingData?: ReservationDto | null;
   onSuccess?: () => void;
 }
-
-const VIP_GUEST_THRESHOLD = RESERVATION_RULES.VIP_MIN_GUEST_COUNT;
 
 export const EditBookingDialog = ({
   open,
@@ -52,8 +48,6 @@ export const EditBookingDialog = ({
     areaId: "all",
   });
   const [areas, setAreas] = useState<Area[]>([]);
-  const guestCountValue = Number(formData.guestCount) || 0;
-  const requiresVipArea = guestCountValue > VIP_GUEST_THRESHOLD;
 
   useEffect(() => {
     const fetchAreas = async () => {
@@ -119,17 +113,7 @@ export const EditBookingDialog = ({
     }
   };
 
-  useEffect(() => {
-    if (requiresVipArea && formData.areaId !== "all") {
-      const selectedArea = areas.find((a) => a.areaId === formData.areaId);
-      if (selectedArea && selectedArea.type !== AreaType.VIP) {
-        setFormData((prev) => ({ ...prev, areaId: "all" }));
-        toast.info(UI_TEXT.RESERVATION.VALIDATION_VIP_REQUIRED);
-      }
-    }
-  }, [requiresVipArea, formData.areaId, areas]);
-
-  const filteredAreas = requiresVipArea ? areas.filter((a) => a.type === AreaType.VIP) : areas;
+  const filteredAreas = areas;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -139,11 +123,6 @@ export const EditBookingDialog = ({
             <DialogTitle>{UI_TEXT.RESERVATION.EDIT_DIALOG_TITLE}</DialogTitle>
             <DialogDescription>
               {UI_TEXT.RESERVATION.EDIT_DIALOG_DESC || "Chỉnh sửa thông tin đơn đặt bàn hiện tại."}
-              {requiresVipArea && (
-                <div className="mt-2 text-amber-600 font-medium text-sm flex items-center gap-1">
-                  <Info /> {UI_TEXT.RESERVATION.VALIDATION_VIP_REQUIRED}
-                </div>
-              )}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -233,9 +212,7 @@ export const EditBookingDialog = ({
                     <SelectValue placeholder={UI_TEXT.RESERVATION.PLACEHOLDER_AREA} />
                   </SelectTrigger>
                   <SelectContent>
-                    {!requiresVipArea && (
-                      <SelectItem value="all">{UI_TEXT.RESERVATION.AREA_ANY}</SelectItem>
-                    )}
+                    <SelectItem value="all">{UI_TEXT.RESERVATION.AREA_ANY}</SelectItem>
                     {filteredAreas.map((a) => (
                       <SelectItem key={a.areaId} value={a.areaId}>
                         {a.name}

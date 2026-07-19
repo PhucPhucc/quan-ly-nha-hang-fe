@@ -35,8 +35,11 @@ export const CreateBookingDialog = ({
   onOpenChange,
   onSuccess,
 }: CreateBookingDialogProps) => {
-  const { loading, formData, areas, timeSlots, requiresVipArea, handleChange, handleSubmit } =
-    useCreateBooking(open, onOpenChange, onSuccess);
+  const { loading, formData, areas, timeSlots, handleChange, handleSubmit } = useCreateBooking(
+    open,
+    onOpenChange,
+    onSuccess
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -44,14 +47,7 @@ export const CreateBookingDialog = ({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{UI_TEXT.RESERVATION.CREATE_DIALOG_TITLE}</DialogTitle>
-            <DialogDescription>
-              {UI_TEXT.RESERVATION.CREATE_DIALOG_DESC}
-              {requiresVipArea && (
-                <div className="mt-2 text-amber-600 font-medium text-sm flex items-center gap-1">
-                  {UI_TEXT.RESERVATION.VALIDATION_VIP_REQUIRED}
-                </div>
-              )}
-            </DialogDescription>
+            <DialogDescription>{UI_TEXT.RESERVATION.CREATE_DIALOG_DESC}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
