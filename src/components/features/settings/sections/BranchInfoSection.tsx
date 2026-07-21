@@ -1,8 +1,9 @@
-import { Building2, CheckCircle2, Circle, ImagePlus } from "lucide-react";
+﻿import { Building2, ImagePlus } from "lucide-react";
 import React from "react";
 import { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { toast } from "sonner";
 
+import { ValidationRules } from "@/components/shared/ValidationRules";
 import {
   Field,
   FieldContent,
@@ -27,32 +28,6 @@ type Props = {
   setValue: UseFormSetValue<GeneralSettingsInput>;
   watch: UseFormWatch<GeneralSettingsInput>;
 };
-
-// ─── ValidationRules ───────────────────────────────────────────────────────────
-const ValidationRules = ({
-  value,
-  rules,
-}: {
-  value: string;
-  rules: { text: string; test: (v: string) => boolean }[];
-}) => (
-  <div className="mt-2 space-y-1">
-    {rules.map((rule, idx) => {
-      const isMet = rule.test(value || "");
-      return (
-        <div
-          key={idx}
-          className={`flex items-center gap-2 text-xs ${
-            isMet ? "text-green-600" : "text-muted-foreground"
-          }`}
-        >
-          {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-          <span>{rule.text}</span>
-        </div>
-      );
-    })}
-  </div>
-);
 
 export function BranchInfoSection({ register, errors, logoUrl, setValue, watch }: Props) {
   const restaurantNameValue = watch("restaurantName") || "";
@@ -161,11 +136,11 @@ export function BranchInfoSection({ register, errors, logoUrl, setValue, watch }
               rules={[
                 {
                   text: UI_TEXT.PROFILE.VALIDATION.RULE_PHONE_PREFIX,
-                  test: (v) => v === "" || /^(0|\+84)/.test(v),
+                  test: (v) => v.length > 0 && /^(0|\+84)/.test(v),
                 },
                 {
                   text: UI_TEXT.PROFILE.VALIDATION.RULE_PHONE_LENGTH,
-                  test: (v) => v === "" || /^(0|\+84)[3|5|7|8|9][0-9]{8}$/.test(v),
+                  test: (v) => v.length > 0 && /^(0|\+84)[3|5|7|8|9][0-9]{8}$/.test(v),
                 },
               ]}
             />

@@ -66,11 +66,69 @@ export const SETTINGS = {
   LOGO_UPLOAD_SUCCESS: "Đã tải logo lên thành công",
   LOGO_UPLOAD_ERROR: "Tải logo thất bại",
 
-  // Printing
-  PRINT_SECTION: "Cấu hình In ấn",
-  PRINT_SECTION_DESC: "Thiết lập thông tin hiển thị trên hóa đơn và phiếu chế biến",
+  // Business Info
+  BUSINESS_INFO_SECTION: "Thông tin doanh nghiệp",
+  BUSINESS_INFO_SECTION_DESC: "Thông tin pháp lý và kinh doanh của nhà hàng",
+  FIELD_LEGAL_BUSINESS_NAME: "Tên pháp lý doanh nghiệp",
+  FIELD_BRAND_NAME: "Tên thương hiệu",
+  FIELD_TAX_CODE: "Mã số thuế (MST)",
+  FIELD_BUSINESS_REG_NUMBER: "Số ĐKKD",
+  FIELD_BRANCH_CODE: "Mã chi nhánh",
+  FIELD_RESTAURANT_CODE: "Mã nhà hàng (Unique)",
+
+  // Contact Info
+  CONTACT_INFO_SECTION: "Thông tin liên hệ",
+  CONTACT_INFO_SECTION_DESC: "Thông tin liên hệ chính thức của nhà hàng",
+  FIELD_HOTLINE: "Hotline",
+  FIELD_EMAIL: "Email",
+  FIELD_WEBSITE: "Website",
+  FIELD_FACEBOOK: "Facebook",
+  FIELD_ZALO_OA: "Zalo OA",
+  FIELD_INSTAGRAM: "Instagram",
+
+  // Address
+  ADDRESS_SECTION: "Địa chỉ chi tiết",
+  ADDRESS_SECTION_DESC: "Địa chỉ cụ thể của nhà hàng",
+  FIELD_COUNTRY: "Quốc gia",
+  FIELD_PROVINCE_CITY: "Tỉnh / Thành phố",
+  FIELD_DISTRICT: "Quận / Huyện",
+  FIELD_WARD: "Phường / Xã",
+  FIELD_STREET_ADDRESS: "Tên đường, số nhà",
+  FIELD_POSTAL_CODE: "Mã bưu chính",
+  FIELD_GOOGLE_MAP_URL: "Google Map URL",
+
+  // Images
+  IMAGES_SECTION: "Hình ảnh thương hiệu",
+  IMAGES_SECTION_DESC: "Ảnh bìa, mã QR thanh toán, Favicon",
+  FIELD_COVER_IMAGE: "Ảnh bìa",
+  FIELD_QR_PAYMENT_IMAGE: "Mã QR thanh toán",
+  FIELD_FAVICON: "Favicon",
+
+  // Invoice Settings
+  INVOICE_SECTION: "Cấu hình In ấn & Hóa đơn",
+  INVOICE_SECTION_DESC: "Thiết lập hóa đơn và thuế",
+  FIELD_VAT_PERCENTAGE: "Phần trăm VAT (%)",
   FIELD_BILL_TITLE: "Tiêu đề hóa đơn",
   FIELD_BILL_FOOTER: "Chân trang hóa đơn",
+
+  // Operating Info
+  OPERATING_INFO_SECTION: "Thông tin hoạt động",
+  OPERATING_INFO_SECTION_DESC: "Khung giờ và ngày làm việc của nhà hàng",
+  FIELD_TIME_FORMAT: "Định dạng thời gian",
+  FIELD_TIME_FORMAT_24H: "24 Giờ (Ví dụ: 14:00)",
+  FIELD_TIME_FORMAT_12H: "12 Giờ (Ví dụ: 02:00 PM)",
+  FIELD_OPENING_TIME: "Giờ mở cửa",
+  FIELD_CLOSING_TIME: "Giờ đóng cửa",
+  ERR_CLOSING_TIME_MUST_BE_AFTER_OPENING: "Giờ đóng cửa phải sau giờ mở cửa",
+  FIELD_WORKING_DAYS: "Các ngày làm việc",
+
+  // System Config
+  SYSTEM_CONFIG_SECTION: "Cấu hình chức năng hệ thống",
+  SYSTEM_CONFIG_SECTION_DESC: "Bật/Tắt các chức năng chính trên hệ thống",
+  FIELD_ENABLE_ORDERING: "Cho phép gọi món tại bàn",
+  FIELD_ENABLE_DELIVERY: "Cho phép giao hàng",
+  FIELD_ENABLE_TAKE_AWAY: "Cho phép mang đi",
+  FIELD_ENABLE_RESERVATION: "Cho phép đặt bàn",
   FIELD_LANGUAGE: "Ngôn ngữ hệ thống",
   LANGUAGE_VI: "Tiếng Việt",
   LANGUAGE_EN: "English",

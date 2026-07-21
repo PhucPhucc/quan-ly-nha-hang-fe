@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2, Circle } from "lucide-react";
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
+import { ValidationRules } from "@/components/shared/ValidationRules";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { UI_TEXT } from "@/lib/UI_Text";
@@ -34,32 +34,6 @@ const changePasswordSchema = z.object({
 });
 
 type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
-
-// ─── ValidationRules ───────────────────────────────────────────────────────────
-const ValidationRules = ({
-  value,
-  rules,
-}: {
-  value: string;
-  rules: { text: string; test: (v: string) => boolean }[];
-}) => (
-  <div className="mt-2 space-y-1">
-    {rules.map((rule, idx) => {
-      const isMet = rule.test(value || "");
-      return (
-        <div
-          key={idx}
-          className={`flex items-center gap-2 text-xs ${
-            isMet ? "text-green-600" : "text-muted-foreground"
-          }`}
-        >
-          {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-          <span>{rule.text}</span>
-        </div>
-      );
-    })}
-  </div>
-);
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 const EmployeeChangePassword = ({
@@ -79,7 +53,7 @@ const EmployeeChangePassword = ({
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting, isValid, errors },
   } = useForm<ChangePasswordFormValues>({
     mode: "onChange",
     resolver: zodResolver(changePasswordSchema),
@@ -124,6 +98,7 @@ const EmployeeChangePassword = ({
                 placeholder="Nhập lý do thay đổi mật khẩu..."
                 {...register("reason")}
               />
+              <FieldError errors={[errors.reason]} />
               <ValidationRules
                 value={reasonValue}
                 rules={[

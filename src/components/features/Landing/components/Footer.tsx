@@ -27,37 +27,72 @@ export function Footer() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
             <div className="flex flex-col gap-4">
-              <span className="font-bold text-foreground">{t.PRODUCT}</span>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.FEATURES}
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.PRICING}
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.INTEGRATIONS}
-              </Link>
+              <span className="font-bold text-foreground">{t.CONTACT_INFO}</span>
+              {branding?.hotline && (
+                <a
+                  href={`tel:${branding.hotline}`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t.HOTLINE_LBL} {branding.hotline}
+                </a>
+              )}
+              {branding?.email && (
+                <a
+                  href={`mailto:${branding.email}`}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t.EMAIL_LBL} {branding.email}
+                </a>
+              )}
+              {branding?.website && (
+                <a
+                  href={branding.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t.WEBSITE_LBL}
+                </a>
+              )}
             </div>
             <div className="flex flex-col gap-4">
-              <span className="font-bold text-foreground">{t.COMPANY}</span>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.ABOUT}
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.CAREERS}
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.BLOG}
-              </Link>
+              <span className="font-bold text-foreground">{t.SOCIAL_MEDIA}</span>
+              {branding?.facebook && (
+                <a
+                  href={branding.facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t.FACEBOOK_LBL}
+                </a>
+              )}
+              {branding?.instagram && (
+                <a
+                  href={branding.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t.INSTAGRAM_LBL}
+                </a>
+              )}
+              {branding?.zaloOa && (
+                <a
+                  href={branding.zaloOa}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t.ZALOOA_LBL}
+                </a>
+              )}
             </div>
             <div className="flex flex-col gap-4">
-              <span className="font-bold text-foreground">{t.SUPPORT}</span>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.HELP_CENTER}
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                {t.STATUS}
-              </Link>
+              <span className="font-bold text-foreground">{t.ADDRESS_LBL}</span>
+              <p className="text-muted-foreground transition-colors leading-relaxed">
+                {branding?.address || "Đang cập nhật..."}
+              </p>
             </div>
           </div>
         </div>

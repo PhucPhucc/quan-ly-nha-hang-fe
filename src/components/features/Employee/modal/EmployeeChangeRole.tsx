@@ -7,6 +7,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
+import { ValidationRules } from "@/components/shared/ValidationRules";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -22,6 +23,7 @@ import {
   Field,
   FieldContent,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
@@ -62,32 +64,6 @@ const changeRoleSchema = z.object({
 
 type ChangeRoleFormValues = z.infer<typeof changeRoleSchema>;
 
-// ─── ValidationRules ───────────────────────────────────────────────────────────
-const ValidationRules = ({
-  value,
-  rules,
-}: {
-  value: string;
-  rules: { text: string; test: (v: string) => boolean }[];
-}) => (
-  <div className="mt-2 space-y-1">
-    {rules.map((rule, idx) => {
-      const isMet = rule.test(value || "");
-      return (
-        <div
-          key={idx}
-          className={`flex items-center gap-2 text-xs ${
-            isMet ? "text-green-600" : "text-muted-foreground"
-          }`}
-        >
-          {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-          <span>{rule.text}</span>
-        </div>
-      );
-    })}
-  </div>
-);
-
 // ─── Component ─────────────────────────────────────────────────────────────────
 const EmployeeChangeRole = ({
   open,
@@ -102,7 +78,6 @@ const EmployeeChangeRole = ({
 }) => {
   const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
   const normalizedRole = normalizeEmployeeRole(role as EmployeeRole);
-  const isManager = normalizedRole === EmployeeRole.MANAGER;
   const currentUserRole = useAuthStore((state) => state.employee?.role);
   const isCurrentUserAdmin = currentUserRole === EmployeeRole.ADMIN;
 
@@ -111,7 +86,7 @@ const EmployeeChangeRole = ({
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting, isValid, errors },
   } = useForm<ChangeRoleFormValues>({
     mode: "onChange",
     resolver: zodResolver(changeRoleSchema),
@@ -190,6 +165,7 @@ const EmployeeChangeRole = ({
                   </Select>
                 )}
               />
+              <FieldError errors={[errors.newRole]} />
               <ValidationRules
                 value={newRoleValue}
                 rules={[
@@ -215,6 +191,7 @@ const EmployeeChangeRole = ({
                   {...register("reason")}
                 />
               </FieldContent>
+              <FieldError errors={[errors.reason]} />
               <ValidationRules
                 value={reasonValue}
                 rules={[

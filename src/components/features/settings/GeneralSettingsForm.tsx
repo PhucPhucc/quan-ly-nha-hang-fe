@@ -16,8 +16,12 @@ import { UI_TEXT } from "@/lib/UI_Text";
 import { brandingService } from "@/services/brandingService";
 import { useLanguageStore } from "@/store/useLanguageStore";
 
+import { AddressSection } from "./sections/AddressSection";
 import { BranchInfoSection } from "./sections/BranchInfoSection";
+import { BusinessInfoSection } from "./sections/BusinessInfoSection";
+import { ContactInfoSection } from "./sections/ContactInfoSection";
 import { LocalizationSection } from "./sections/LocalizationSection";
+import { OperatingInfoSection } from "./sections/OperatingInfoSection";
 
 // ── Schema (lazy — avoids module-level UI_TEXT access during SSR) ────────────
 type SchemaType = z.ZodObject<{
@@ -37,48 +41,162 @@ type SchemaType = z.ZodObject<{
   notifyEmail: z.ZodBoolean;
   notifyPush: z.ZodBoolean;
   notifySms: z.ZodBoolean;
+
+  // 1. Business Info
+  legalBusinessName: z.ZodString;
+  brandName: z.ZodString;
+  taxCode: z.ZodString;
+  businessRegistrationNumber: z.ZodString;
+  branchCode: z.ZodString;
+  restaurantCode: z.ZodString;
+
+  // 2. Contact Info
+  hotline: z.ZodString;
+  email: z.ZodString;
+  website: z.ZodString;
+  facebook: z.ZodString;
+  zaloOa: z.ZodString;
+  instagram: z.ZodString;
+
+  // 3. Address
+  country: z.ZodString;
+  provinceCity: z.ZodString;
+  district: z.ZodString;
+  ward: z.ZodString;
+  streetAddress: z.ZodString;
+  postalCode: z.ZodString;
+  googleMapUrl: z.ZodString;
+
+  // 4. Images
+  coverImageUrl: z.ZodString;
+  qrPaymentImageUrl: z.ZodString;
+  faviconUrl: z.ZodString;
+
+  // 5. Invoice Settings
+  vatPercentage: z.ZodNumber;
+
+  // 6. Time Settings
+  timeFormat: z.ZodString;
+
+  // 7. Operating Info
+  openingTime: z.ZodString;
+  closingTime: z.ZodString;
+  workingDays: z.ZodString;
+
+  // 8. System Config
+  enableOrdering: z.ZodBoolean;
+  enableDelivery: z.ZodBoolean;
+  enableTakeAway: z.ZodBoolean;
+  enableReservation: z.ZodBoolean;
 }>;
 
 function getSchema(): SchemaType {
   const { FORM } = UI_TEXT;
-  return z.object({
-    restaurantName: z.string().min(1, FORM.REQUIRED),
-    branchName: z.string().optional(),
-    address: z.string().optional(),
-    phone: z.string().optional(),
-    currency: z.string().min(1),
-    dateFormat: z.string().min(1),
-    timezone: z.string().min(1),
-    language: z.string().min(1),
-    billTitle: z.string().min(1, FORM.REQUIRED),
-    billFooter: z.string().min(1, FORM.REQUIRED),
-    kdsTitle: z.string().optional(),
-    appTitle: z.string().optional(),
-    logoUrl: z.string().optional(),
-    notifyEmail: z.boolean(),
-    notifyPush: z.boolean(),
-    notifySms: z.boolean(),
-  }) as SchemaType;
+  return z
+    .object({
+      restaurantName: z.string().min(1, FORM.REQUIRED),
+      branchName: z.string().optional().default(""),
+      address: z.string().optional().default(""),
+      phone: z.string().optional().default(""),
+      currency: z.string().min(1),
+      dateFormat: z.string().min(1),
+      timezone: z.string().min(1),
+      language: z.string().min(1),
+      billTitle: z.string().min(1, FORM.REQUIRED),
+      billFooter: z.string().min(1, FORM.REQUIRED),
+      kdsTitle: z.string().optional().default(""),
+      appTitle: z.string().optional().default(""),
+      logoUrl: z.string().optional().default(""),
+      notifyEmail: z.boolean().default(false),
+      notifyPush: z.boolean().default(false),
+      notifySms: z.boolean().default(false),
+
+      legalBusinessName: z.string().optional().default(""),
+      brandName: z.string().optional().default(""),
+      taxCode: z
+        .string()
+        .optional()
+        .default("")
+        .refine((val) => val === "" || /^\d{10}(\d{3})?$/.test(val), {
+          message: "Tax Code must be 10 or 13 digits",
+        }),
+      businessRegistrationNumber: z.string().optional().default(""),
+      branchCode: z.string().optional().default(""),
+      restaurantCode: z
+        .string()
+        .min(1, FORM.REQUIRED)
+        .max(50, "Max length is 50")
+        .regex(
+          /^[a-zA-Z0-9_]+$/,
+          "Restaurant Code can only contain letters, numbers, and underscores"
+        ),
+
+      hotline: z
+        .string()
+        .optional()
+        .default("")
+        .refine((val) => val === "" || /^(0|84|\+84)(3|5|7|8|9)([0-9]{8})$/.test(val), {
+          message: "Invalid phone number format",
+        }),
+      email: z.string().email("Invalid email format").optional().or(z.literal("")).default(""),
+      website: z.string().url("Invalid website URL").optional().or(z.literal("")).default(""),
+      facebook: z.string().url("Invalid Facebook URL").optional().or(z.literal("")).default(""),
+      zaloOa: z.string().url("Invalid Zalo OA URL").optional().or(z.literal("")).default(""),
+      instagram: z.string().url("Invalid Instagram URL").optional().or(z.literal("")).default(""),
+
+      country: z.string().min(1, FORM.REQUIRED),
+      provinceCity: z.string().optional().default(""),
+      district: z.string().optional().default(""),
+      ward: z.string().optional().default(""),
+      streetAddress: z.string().optional().default(""),
+      postalCode: z
+        .string()
+        .optional()
+        .default("")
+        .refine((val) => val === "" || /^\d+$/.test(val), {
+          message: "Postal Code must contain only numbers",
+        }),
+      googleMapUrl: z
+        .string()
+        .url("Invalid Google Map URL")
+        .optional()
+        .or(z.literal(""))
+        .default(""),
+
+      coverImageUrl: z.string().optional().default(""),
+      qrPaymentImageUrl: z.string().optional().default(""),
+      faviconUrl: z.string().optional().default(""),
+
+      vatPercentage: z.coerce
+        .number()
+        .min(0, "VAT must be between 0 and 100")
+        .max(100, "VAT must be between 0 and 100")
+        .default(0),
+
+      timeFormat: z.string().optional().default("HH:mm"),
+      openingTime: z.string().optional().default("08:00"),
+      closingTime: z.string().optional().default("22:00"),
+      workingDays: z.string().optional().default(""),
+
+      enableOrdering: z.boolean().default(true),
+      enableDelivery: z.boolean().default(true),
+      enableTakeAway: z.boolean().default(true),
+      enableReservation: z.boolean().default(true),
+    })
+    .superRefine((data, ctx) => {
+      if (data.openingTime && data.closingTime) {
+        if (data.closingTime <= data.openingTime) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Closing Time must be after Opening Time",
+            path: ["closingTime"],
+          });
+        }
+      }
+    }) as unknown as SchemaType;
 }
 
-export type GeneralSettingsInput = {
-  restaurantName: string;
-  branchName?: string;
-  address?: string;
-  phone?: string;
-  currency: string;
-  dateFormat: string;
-  timezone: string;
-  language: string;
-  billTitle: string;
-  billFooter: string;
-  kdsTitle?: string;
-  appTitle?: string;
-  logoUrl?: string;
-  notifyEmail: boolean;
-  notifyPush: boolean;
-  notifySms: boolean;
-};
+export type GeneralSettingsInput = z.infer<ReturnType<typeof getSchema>>;
 
 function getDefaultValues(): GeneralSettingsInput {
   const { SETTINGS, ORDER, KDS } = UI_TEXT;
@@ -102,6 +220,38 @@ function getDefaultValues(): GeneralSettingsInput {
     notifyEmail: true,
     notifyPush: true,
     notifySms: false,
+
+    legalBusinessName: "",
+    brandName: "",
+    taxCode: "",
+    businessRegistrationNumber: "",
+    branchCode: "",
+    restaurantCode: "",
+    hotline: "",
+    email: "",
+    website: "",
+    facebook: "",
+    zaloOa: "",
+    instagram: "",
+    country: "Vietnam",
+    provinceCity: "",
+    district: "",
+    ward: "",
+    streetAddress: "",
+    postalCode: "",
+    googleMapUrl: "",
+    coverImageUrl: "",
+    qrPaymentImageUrl: "",
+    faviconUrl: "",
+    vatPercentage: 0,
+    timeFormat: "HH:mm",
+    openingTime: "08:00",
+    closingTime: "22:00",
+    workingDays: "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+    enableOrdering: true,
+    enableDelivery: false,
+    enableTakeAway: false,
+    enableReservation: false,
   };
 }
 
@@ -156,7 +306,7 @@ export function GeneralSettingsForm({ initialValues, saving = false, onSubmit }:
 
         <CardContent className="px-6 py-8 sm:px-10">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-            {/* 1. Store Information */}
+            {/* 1. Store Information (Legacy) */}
             <section>
               <BranchInfoSection
                 register={register}
@@ -166,7 +316,35 @@ export function GeneralSettingsForm({ initialValues, saving = false, onSubmit }:
                 watch={watch}
               />
             </section>
+            <div className="h-px bg-border/60" />
 
+            {/* 2. Business Info */}
+            <section>
+              <BusinessInfoSection register={register} errors={errors} watch={watch} />
+            </section>
+            <div className="h-px bg-border/60" />
+
+            {/* 3. Contact Info */}
+            <section>
+              <ContactInfoSection register={register} errors={errors} watch={watch} />
+            </section>
+            <div className="h-px bg-border/60" />
+
+            {/* 4. Address */}
+            <section>
+              <AddressSection register={register} errors={errors} watch={watch} />
+            </section>
+            <div className="h-px bg-border/60" />
+
+            {/* 7. Operating Info */}
+            <section>
+              <OperatingInfoSection
+                register={register}
+                errors={errors}
+                watch={watch}
+                setValue={setValue}
+              />
+            </section>
             <div className="h-px bg-border/60" />
 
             {/* 3. Localization Settings */}
@@ -217,19 +395,7 @@ export function GeneralSettingsContainer() {
         if (response.isSuccess && response.data && isMounted) {
           setInitialValues((current) => ({
             ...current,
-            restaurantName: response.data.restaurantName ?? current.restaurantName,
-            branchName: response.data.branchName ?? current.branchName,
-            address: response.data.address ?? current.address,
-            phone: response.data.phone ?? current.phone,
-            currency: response.data.currency ?? current.currency,
-            dateFormat: response.data.dateFormat ?? current.dateFormat,
-            timezone: response.data.timezone ?? current.timezone,
-            language: response.data.language ?? current.language,
-            billTitle: response.data.billTitle ?? current.billTitle,
-            billFooter: response.data.billFooter ?? current.billFooter,
-            kdsTitle: response.data.kdsTitle ?? current.kdsTitle,
-            appTitle: response.data.appTitle ?? current.appTitle,
-            logoUrl: response.data.logoUrl ?? current.logoUrl,
+            ...response.data,
           }));
         }
       } catch (error) {
@@ -251,38 +417,24 @@ export function GeneralSettingsContainer() {
   const handleSubmit = async (data: GeneralSettingsInput) => {
     setSaving(true);
     try {
+      const fullAddress = [data.streetAddress, data.ward, data.district, data.provinceCity]
+        .filter((part) => part && part.trim() !== "")
+        .join(", ");
+
       const response = await brandingService.updateBrandingSettings({
-        restaurantName: data.restaurantName,
-        branchName: data.branchName ?? initialValues.branchName ?? "",
-        address: data.address ?? "",
+        ...data,
+        branchName: data.branchName ?? "",
+        address: fullAddress || (data.address ?? ""),
         phone: data.phone ?? "",
-        currency: data.currency,
-        dateFormat: data.dateFormat,
-        timezone: data.timezone,
-        language: data.language,
-        billTitle: data.billTitle,
-        billFooter: data.billFooter,
-        kdsTitle: data.kdsTitle ?? initialValues.kdsTitle ?? "",
-        appTitle: data.appTitle ?? initialValues.appTitle ?? "",
+        kdsTitle: data.kdsTitle ?? "",
+        appTitle: data.appTitle ?? "",
         logoUrl: data.logoUrl ?? "",
       });
 
       if (response.isSuccess && response.data) {
         setInitialValues((current) => ({
           ...current,
-          restaurantName: response.data.restaurantName,
-          branchName: response.data.branchName,
-          address: response.data.address,
-          phone: response.data.phone,
-          currency: response.data.currency,
-          dateFormat: response.data.dateFormat,
-          timezone: response.data.timezone,
-          language: response.data.language,
-          billTitle: response.data.billTitle,
-          billFooter: response.data.billFooter,
-          kdsTitle: response.data.kdsTitle,
-          appTitle: response.data.appTitle,
-          logoUrl: response.data.logoUrl,
+          ...response.data,
         }));
         await queryClient.invalidateQueries({ queryKey: ["branding-settings"] });
       }

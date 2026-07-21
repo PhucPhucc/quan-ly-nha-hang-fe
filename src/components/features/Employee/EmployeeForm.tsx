@@ -1,14 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2, Circle, Mail, User } from "lucide-react";
+import { Mail, User } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
+import { ValidationRules } from "@/components/shared/ValidationRules";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -38,30 +39,6 @@ const employeeSchema = z.object({
 
 type EmployeeFormValues = z.infer<typeof employeeSchema>;
 
-// ─── ValidationRules (same pattern as ProfileForm) ─────────────────────────────
-const ValidationRules = ({
-  value,
-  rules,
-}: {
-  value: string;
-  rules: { text: string; test: (v: string) => boolean }[];
-}) => (
-  <div className="mt-2 space-y-1">
-    {rules.map((rule, idx) => {
-      const isMet = rule.test(value || "");
-      return (
-        <div
-          key={idx}
-          className={`flex items-center gap-2 text-xs ${isMet ? "text-green-600" : "text-muted-foreground"}`}
-        >
-          {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-          <span>{rule.text}</span>
-        </div>
-      );
-    })}
-  </div>
-);
-
 // ─── Component ─────────────────────────────────────────────────────────────────
 const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
@@ -70,7 +47,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
     register,
     handleSubmit,
     control,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting, isValid, errors },
   } = useForm<EmployeeFormValues>({
     mode: "onChange",
     resolver: zodResolver(employeeSchema),
@@ -112,6 +89,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
               {...register("fullName")}
             />
           </div>
+          <FieldError errors={[errors.fullName]} />
           <ValidationRules
             value={fullNameValue}
             rules={[
@@ -140,6 +118,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
               {...register("email")}
             />
           </div>
+          <FieldError errors={[errors.email]} />
           <ValidationRules
             value={emailValue}
             rules={[
@@ -180,6 +159,7 @@ const EmployeeForm = ({ onSuccess }: { onSuccess: () => void }) => {
               </Select>
             )}
           />
+          <FieldError errors={[errors.role]} />
           <ValidationRules
             value={roleValue}
             rules={[

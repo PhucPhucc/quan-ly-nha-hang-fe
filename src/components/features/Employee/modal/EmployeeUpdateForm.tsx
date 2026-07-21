@@ -1,14 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2, Circle, Mail, MapPin, Phone, User } from "lucide-react";
+import { Mail, MapPin, Phone, User } from "lucide-react";
+import React, { useEffect } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
 import DOBPicker from "@/components/shared/DOBPicker";
+import { ValidationRules } from "@/components/shared/ValidationRules";
 import { Button } from "@/components/ui/button";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SheetClose } from "@/components/ui/sheet";
@@ -53,32 +55,6 @@ const updateSchema = z.object({
 
 type UpdateFormValues = z.infer<typeof updateSchema>;
 
-// ─── ValidationRules ───────────────────────────────────────────────────────────
-const ValidationRules = ({
-  value,
-  rules,
-}: {
-  value: string;
-  rules: { text: string; test: (v: string) => boolean }[];
-}) => (
-  <div className="mt-2 space-y-1">
-    {rules.map((rule, idx) => {
-      const isMet = rule.test(value || "");
-      return (
-        <div
-          key={idx}
-          className={`flex items-center gap-2 text-xs ${
-            isMet ? "text-green-600" : "text-muted-foreground"
-          }`}
-        >
-          {isMet ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-          <span>{rule.text}</span>
-        </div>
-      );
-    })}
-  </div>
-);
-
 // ─── Component ─────────────────────────────────────────────────────────────────
 const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
   const fetchEmployees = useEmployeeStore((state) => state.fetchEmployees);
@@ -87,9 +63,10 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
     register,
     handleSubmit,
     control,
-    formState: { isSubmitting, isValid },
+    reset,
+    formState: { isSubmitting, isValid, errors },
   } = useForm<UpdateFormValues>({
-    mode: "onChange",
+    mode: "all",
     resolver: zodResolver(updateSchema),
     defaultValues: {
       fullName: employee?.fullName || "",
@@ -99,6 +76,16 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
       address: employee?.address || "",
     },
   });
+
+  useEffect(() => {
+    reset({
+      fullName: employee?.fullName || "",
+      email: employee?.email || "",
+      phone: employee?.phone || "",
+      dateOfBirth: employee?.dateOfBirth || "",
+      address: employee?.address || "",
+    });
+  }, [employee, reset]);
 
   const fullNameValue = useWatch({ control, name: "fullName" }) ?? "";
   const emailValue = useWatch({ control, name: "email" }) ?? "";
@@ -143,6 +130,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
             <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-slate-900" />
             <Input id="fullName" className="rounded-lg pl-10" {...register("fullName")} />
           </div>
+          <FieldError errors={[errors.fullName]} />
           <ValidationRules
             value={fullNameValue}
             rules={[
@@ -165,6 +153,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
             <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-slate-900" />
             <Input id="email" type="email" className="rounded-lg pl-10" {...register("email")} />
           </div>
+          <FieldError errors={[errors.email]} />
           <ValidationRules
             value={emailValue}
             rules={[
@@ -187,6 +176,7 @@ const EmployeeUpdateForm = ({ employee }: { employee?: Employee | null }) => {
             <Phone className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-slate-900" />
             <Input id="phone" type="text" className="rounded-lg pl-10" {...register("phone")} />
           </div>
+          <FieldError errors={[errors.phone]} />
           <ValidationRules
             value={phoneValue}
             rules={[
