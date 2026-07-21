@@ -1,4 +1,4 @@
-﻿import { BriefcaseBusiness } from "lucide-react";
+import { BriefcaseBusiness } from "lucide-react";
 import React from "react";
 import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 
@@ -34,18 +34,21 @@ export function BusinessInfoSection({ register, errors, watch }: Props) {
         <Field className="sm:col-span-2">
           <FieldLabel>{SETTINGS.FIELD_RESTAURANT_CODE}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: FOODHUB_01" {...register("restaurantCode")} />
+            <Input
+              placeholder={SETTINGS.FIELD_RESTAURANT_CODE_PLACEHOLDER}
+              {...register("restaurantCode")}
+            />
             <FieldError errors={[errors.restaurantCode]} />
           </FieldContent>
           <ValidationRules
             value={restaurantCodeValue}
             rules={[
               {
-                text: "MÃ£ nhÃ  hÃ ng khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng",
+                text: SETTINGS.ERR_RESTAURANT_CODE_REQUIRED,
                 test: (v) => v.trim().length > 0,
               },
               {
-                text: "Chá»‰ chá»©a chá»¯, sá»‘, dáº¥u gáº¡ch dÆ°á»›i (tá»‘i Ä‘a 50 kÃ½ tá»±)",
+                text: SETTINGS.ERR_RESTAURANT_CODE_FORMAT,
                 test: (v) => /^[a-zA-Z0-9_]{1,50}$/.test(v),
               },
             ]}
@@ -55,7 +58,10 @@ export function BusinessInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_LEGAL_BUSINESS_NAME}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: CÃ”NG TY TNHH FOODHUB" {...register("legalBusinessName")} />
+            <Input
+              placeholder={SETTINGS.FIELD_LEGAL_BUSINESS_NAME_PLACEHOLDER}
+              {...register("legalBusinessName")}
+            />
             <FieldError errors={[errors.legalBusinessName]} />
           </FieldContent>
         </Field>
@@ -63,7 +69,7 @@ export function BusinessInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_BRAND_NAME}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: FoodHub Premium" {...register("brandName")} />
+            <Input placeholder={SETTINGS.FIELD_BRAND_NAME_PLACEHOLDER} {...register("brandName")} />
             <FieldError errors={[errors.brandName]} />
           </FieldContent>
         </Field>
@@ -71,14 +77,14 @@ export function BusinessInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_TAX_CODE}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: 0123456789" {...register("taxCode")} />
+            <Input placeholder={SETTINGS.FIELD_TAX_CODE_PLACEHOLDER} {...register("taxCode")} />
             <FieldError errors={[errors.taxCode]} />
           </FieldContent>
           <ValidationRules
             value={taxCodeValue}
             rules={[
               {
-                text: "MÃ£ sá»‘ thuáº¿ pháº£i bao gá»“m 10 hoáº·c 13 chá»¯ sá»‘",
+                text: SETTINGS.ERR_TAX_CODE_FORMAT,
                 test: (v) => v.length > 0 && /^\d{10}(\d{3})?$/.test(v),
               },
             ]}
@@ -88,7 +94,10 @@ export function BusinessInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_BUSINESS_REG_NUMBER}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: 0123456789" {...register("businessRegistrationNumber")} />
+            <Input
+              placeholder={SETTINGS.FIELD_BUSINESS_REG_NUMBER_PLACEHOLDER}
+              {...register("businessRegistrationNumber")}
+            />
             <FieldError errors={[errors.businessRegistrationNumber]} />
           </FieldContent>
         </Field>
@@ -96,7 +105,10 @@ export function BusinessInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_BRANCH_CODE}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: CN01" {...register("branchCode")} />
+            <Input
+              placeholder={SETTINGS.FIELD_BRANCH_CODE_PLACEHOLDER}
+              {...register("branchCode")}
+            />
             <FieldError errors={[errors.branchCode]} />
           </FieldContent>
         </Field>

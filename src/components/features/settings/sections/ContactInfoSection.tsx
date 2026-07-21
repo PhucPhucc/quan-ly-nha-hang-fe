@@ -1,4 +1,4 @@
-﻿import { PhoneCall } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 import React from "react";
 import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 
@@ -38,14 +38,14 @@ export function ContactInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_HOTLINE}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: 0987654321" {...register("hotline")} />
+            <Input placeholder={SETTINGS.FIELD_HOTLINE_PLACEHOLDER} {...register("hotline")} />
             <FieldError errors={[errors.hotline]} />
           </FieldContent>
           <ValidationRules
             value={hotlineValue}
             rules={[
               {
-                text: "Äá»‹nh dáº¡ng sá»‘ Ä‘iá»‡n thoáº¡i Viá»‡t Nam (10 sá»‘, báº¯t Ä‘áº§u 0, 84, +84)",
+                text: SETTINGS.ERR_PHONE_FORMAT,
                 test: (v) => v.length > 0 && /^(0|84|\+84)(3|5|7|8|9)([0-9]{8})$/.test(v),
               },
             ]}
@@ -55,14 +55,14 @@ export function ContactInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_EMAIL}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: contact@foodhub.vn" {...register("email")} />
+            <Input placeholder={SETTINGS.FIELD_EMAIL_PLACEHOLDER} {...register("email")} />
             <FieldError errors={[errors.email]} />
           </FieldContent>
           <ValidationRules
             value={emailValue}
             rules={[
               {
-                text: "Äá»‹nh dáº¡ng Email há»£p lá»‡",
+                text: SETTINGS.ERR_EMAIL_FORMAT,
                 test: (v) => v.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
               },
             ]}
@@ -72,14 +72,14 @@ export function ContactInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_WEBSITE}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: https://foodhub.vn" {...register("website")} />
+            <Input placeholder={SETTINGS.FIELD_WEBSITE_PLACEHOLDER} {...register("website")} />
             <FieldError errors={[errors.website]} />
           </FieldContent>
           <ValidationRules
             value={websiteValue}
             rules={[
               {
-                text: "Link URL há»£p lá»‡",
+                text: SETTINGS.ERR_URL_FORMAT,
                 test: (v) => v.length > 0 && /^https?:\/\/.+/.test(v),
               },
             ]}
@@ -89,14 +89,14 @@ export function ContactInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_FACEBOOK}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: https://facebook.com/foodhub" {...register("facebook")} />
+            <Input placeholder={SETTINGS.FIELD_FACEBOOK_PLACEHOLDER} {...register("facebook")} />
             <FieldError errors={[errors.facebook]} />
           </FieldContent>
           <ValidationRules
             value={facebookValue}
             rules={[
               {
-                text: "Link URL há»£p lá»‡",
+                text: SETTINGS.ERR_URL_FORMAT,
                 test: (v) => v.length > 0 && /^https?:\/\/.+/.test(v),
               },
             ]}
@@ -106,14 +106,14 @@ export function ContactInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_ZALO_OA}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: https://zalo.me/123456789" {...register("zaloOa")} />
+            <Input placeholder={SETTINGS.FIELD_ZALO_OA_PLACEHOLDER} {...register("zaloOa")} />
             <FieldError errors={[errors.zaloOa]} />
           </FieldContent>
           <ValidationRules
             value={zaloOaValue}
             rules={[
               {
-                text: "Link URL há»£p lá»‡",
+                text: SETTINGS.ERR_URL_FORMAT,
                 test: (v) => v.length > 0 && /^https?:\/\/.+/.test(v),
               },
             ]}
@@ -123,14 +123,14 @@ export function ContactInfoSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_INSTAGRAM}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: https://instagram.com/foodhub" {...register("instagram")} />
+            <Input placeholder={SETTINGS.FIELD_INSTAGRAM_PLACEHOLDER} {...register("instagram")} />
             <FieldError errors={[errors.instagram]} />
           </FieldContent>
           <ValidationRules
             value={instagramValue}
             rules={[
               {
-                text: "Link URL há»£p lá»‡",
+                text: SETTINGS.ERR_URL_FORMAT,
                 test: (v) => v.length > 0 && /^https?:\/\/.+/.test(v),
               },
             ]}

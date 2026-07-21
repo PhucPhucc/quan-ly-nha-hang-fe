@@ -1,4 +1,4 @@
-﻿import { MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import React from "react";
 import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
 
@@ -34,7 +34,7 @@ export function AddressSection({ register, errors, watch }: Props) {
         <Field className="sm:col-span-2">
           <FieldLabel>{SETTINGS.FIELD_COUNTRY}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: Vietnam" {...register("country")} />
+            <Input placeholder={SETTINGS.FIELD_COUNTRY_PLACEHOLDER} {...register("country")} />
             <FieldError errors={[errors.country]} />
           </FieldContent>
         </Field>
@@ -42,7 +42,10 @@ export function AddressSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_PROVINCE_CITY}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: TP. Há»“ ChÃ­ Minh" {...register("provinceCity")} />
+            <Input
+              placeholder={SETTINGS.FIELD_PROVINCE_CITY_PLACEHOLDER}
+              {...register("provinceCity")}
+            />
             <FieldError errors={[errors.provinceCity]} />
           </FieldContent>
         </Field>
@@ -50,7 +53,7 @@ export function AddressSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_DISTRICT}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: Quáº­n 1" {...register("district")} />
+            <Input placeholder={SETTINGS.FIELD_DISTRICT_PLACEHOLDER} {...register("district")} />
             <FieldError errors={[errors.district]} />
           </FieldContent>
         </Field>
@@ -58,7 +61,7 @@ export function AddressSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_WARD}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: PhÆ°á»ng Báº¿n NghÃ©" {...register("ward")} />
+            <Input placeholder={SETTINGS.FIELD_WARD_PLACEHOLDER} {...register("ward")} />
             <FieldError errors={[errors.ward]} />
           </FieldContent>
         </Field>
@@ -66,7 +69,10 @@ export function AddressSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_STREET_ADDRESS}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: 123 ÄÆ°á»ng LÃª Lá»£i" {...register("streetAddress")} />
+            <Input
+              placeholder={SETTINGS.FIELD_STREET_ADDRESS_PLACEHOLDER}
+              {...register("streetAddress")}
+            />
             <FieldError errors={[errors.streetAddress]} />
           </FieldContent>
         </Field>
@@ -74,14 +80,17 @@ export function AddressSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_POSTAL_CODE}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: 700000" {...register("postalCode")} />
+            <Input
+              placeholder={SETTINGS.FIELD_POSTAL_CODE_PLACEHOLDER}
+              {...register("postalCode")}
+            />
             <FieldError errors={[errors.postalCode]} />
           </FieldContent>
           <ValidationRules
             value={postalCodeValue}
             rules={[
               {
-                text: "MÃ£ bÆ°u Ä‘iá»‡n chá»‰ Ä‘Æ°á»£c chá»©a cÃ¡c chá»¯ sá»‘",
+                text: SETTINGS.ERR_POSTAL_CODE_FORMAT,
                 test: (v) => v.length > 0 && /^\d+$/.test(v),
               },
             ]}
@@ -91,14 +100,17 @@ export function AddressSection({ register, errors, watch }: Props) {
         <Field>
           <FieldLabel>{SETTINGS.FIELD_GOOGLE_MAP_URL}</FieldLabel>
           <FieldContent>
-            <Input placeholder="VD: https://goo.gl/maps/123" {...register("googleMapUrl")} />
+            <Input
+              placeholder={SETTINGS.FIELD_GOOGLE_MAP_URL_PLACEHOLDER}
+              {...register("googleMapUrl")}
+            />
             <FieldError errors={[errors.googleMapUrl]} />
           </FieldContent>
           <ValidationRules
             value={googleMapUrlValue}
             rules={[
               {
-                text: "Link URL há»£p lá»‡",
+                text: SETTINGS.ERR_GOOGLE_MAP_URL_FORMAT,
                 test: (v) => v.length > 0 && /^https?:\/\/.+/.test(v),
               },
             ]}
